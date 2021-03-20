@@ -28,7 +28,7 @@ function MyTabs() {
       />
       <Tab.Screen
         name="Notifications"
-        component={ProfileScreen}
+        component={HomeScreen}
         options={{
           tabBarLabel: 'Thông báo',
           tabBarIcon: ({ color, size }) => (
@@ -56,11 +56,37 @@ function MyTabs() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
+            // headerRight:() =>(
+            //   <MaterialCommunityIcons 
+            //   name="account-edit"
+            //   size={25}
+            //   backgroundColor="#fff"
+            //   color="#000"/>
+            // ),   
         }}
       />
     </Tab.Navigator>
   );
 }
+
+// const Profile_Student_Stack = createStackNavigator();
+// export function Profile_Student_StackNavigations(){
+//   return(
+//     <Profile_Student_Stack.Navigator>
+//       <Profile_Student_Stack.Screen
+//         name="Profile_Student"
+//         component={ProfileScreen}
+//         options={{
+//           headerRight: ()=>(
+//             <MaterialCommunityIcons.Button 
+//               name="account-edit"/>
+//           ),
+//         }}/>
+
+
+//     </Profile_Student_Stack.Navigator>
+//   );
+// }
 
 export function BottomTabNavigator() {
   return (

@@ -17,7 +17,7 @@ const LoginScreen = ({ style, navigation }) => {
       <View style={[style, styles.buttonLoginContainer]}>
         <TouchableOpacity style={styles.btnLoginTouchable}
           onPress={() => {
-            navigation.navigate("Home");
+            navigation.navigate("Main");
           }}
         >
           <Text style={styles.textBtnLogIn}>Đăng nhập</Text>

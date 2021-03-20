@@ -19,20 +19,11 @@ const RegisterScreen = ({ style }) => {
           onPress={() => {
           }}
         >
-          <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
+          <Text style={styles.textBtnLogIn}>Đăng kí</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity>
-        <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
-      </TouchableOpacity>
 
-      <View style={styles.bottomText}>
-        <Text>Chưa có tài khoản?</Text>
-        <TouchableOpacity>
-          <Text style={styles.signupText}>Đăng ký ngay</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };

@@ -4,51 +4,55 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { BottomTabNavigator } from "./BottomTabNavigation";
 import LoginScreen from "../screens/authentications/Login";
-import { HomeScreen } from "../screens/home/Home";
-import  RegisterScreen  from "../screens/authentications/Register";
+import RegisterScreen  from "../screens/authentications/Register";
+// import ProfileScreen from "../screens/profile/Profile";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const MainStack = createStackNavigator();
 
-export function MainStackNavigation() {
+
+const AuthenStack = createStackNavigator();
+
+export function AuthenStackNavigation() {
   return (
-    <MainStack.Navigator initialRouteName="Login">
-      <MainStack.Screen
+    <AuthenStack.Navigator initialRouteName="Login">
+      <AuthenStack.Screen
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-      <MainStack.Screen
-        name="Home"
+      <AuthenStack.Screen
+        name="Main"
         component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
 
-      <MainStack.Screen
+      <AuthenStack.Screen
       name="Register"
-      component={BottomTabNavigator}
+      component={RegisterScreen}
       options={{ headerShown: false }}
       />
-    </MainStack.Navigator>
+    </AuthenStack.Navigator>
   );
-}
+};
 
-// const RegisterStack = createStackNavigator();
+// const Profile_Student_Stack = createStackNavigator();
+// export function Profile_Student_StackNavigations(){
+//   return(
+//     <Profile_Student_Stack.Navigator>
+//       <Profile_Student_Stack.Screen
+//         name="Profile_Student"
+//         component={ProfileScreen}
+//         options={{
+//           headerRight: ()=>(
+//             <MaterialCommunityIcons.Button 
+//               name="account-edit"/>
+//           ),
+//         }}/>
 
-// export function RegisterNavigation() {
-//   return (
-//     <RegisterStack.Navigator initialRouteName="Login">
-//       <RegisterStack.Screen
-//         name="Login"
-//         component={LoginScreen}
-//         options={{ headerShown: false }}
-//       />
-//       <RegisterStack.Screen
-//         name="Register"
-//         component={RegisterScreen}
-//         options={{ headerShown: false }}
-//       />
-//     </RegisterStack.Navigator>
+
+//     </Profile_Student_Stack.Navigator>
 //   );
 // }
+
 
 

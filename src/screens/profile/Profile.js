@@ -33,7 +33,8 @@ export function ProfileScreen() {
   return (
     <View style={styles.container}>
       <Header
-        backgroundColor="#33CCFF"
+        //backgroundColor="transparent"
+
         rightComponent={
           <TouchableOpacity>
             <Icon name="account-edit" type="material-community" color="#EEEEEE" />
@@ -66,13 +67,15 @@ export function ProfileScreen() {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.signoutBtnTouchable}
+      <View style={styles.signoutBtnTouchable}>
+      <TouchableOpacity 
           onPress={() => {
           }}>
         <View style={styles.signoutBtn}>          
             <Text style={styles.signoutTextBtn}>Đăng xuất</Text>
         </View>
       </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -80,7 +83,6 @@ export function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
   },
 
   nameText: {
@@ -102,17 +104,15 @@ const styles = StyleSheet.create({
   },
 
   headerTitle: {
-    fontSize:20,
-    fontWeight: "bold",
+    fontSize:18,
     color:"#FFFFFF"
   },
 
   signoutBtn: {
     alignItems: "center",
-    justifyContent: "center",
     padding: 15,
     marginVertical: 20,
-    marginHorizontal:30,
+    marginHorizontal:10,
     borderRadius: 30,
     borderColor:"red",
     borderWidth: 1,
@@ -121,13 +121,15 @@ const styles = StyleSheet.create({
   signoutBtnTouchable:{
     flex: 1,
     justifyContent: 'flex-end',
-    marginBottom: -10
+    marginBottom: -10,
+    width: "100%"
   },
 
   signoutTextBtn:{
     color:"red",
     fontWeight: "bold",
-  }
+  },
+
 });
 
 // export default ProfileScreen;

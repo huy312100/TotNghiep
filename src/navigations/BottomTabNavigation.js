@@ -38,12 +38,12 @@ function MyTabs() {
       />
 
       <Tab.Screen
-        name="Forum"
+        name="Message"
         component={HomeScreen}
         options={{ 
-            tabBarLabel:'Diễn đàn',
+            tabBarLabel:'Tin nhắn',
             tabBarIcon:({ color,size }) => (
-                <MaterialCommunityIcons name="forum" color={color} size={size} />
+                <MaterialCommunityIcons name="message-processing" color={color} size={size} />
             ),
         }}      
       />

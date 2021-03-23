@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
 
   bottomText: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     position: "absolute",
     bottom: 0,
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
   },
 
   btnLoginTouchable:{
-    width: "100%"
+    width: "120%"
   }
 });
 

@@ -1,58 +1,75 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { BottomTabNavigator } from "./BottomTabNavigation";
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
+import {HomeScreen} from "../screens/home/Home";
+import {CalendarScreen} from "../screens/home/Calendar";
+
+
 // import ProfileScreen from "../screens/profile/Profile";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 
-const AuthenStack = createStackNavigator();
+const Stack = createStackNavigator();
 
 export function AuthenStackNavigation() {
   return (
-    <AuthenStack.Navigator initialRouteName="Login">
-      <AuthenStack.Screen
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-      <AuthenStack.Screen
+      <Stack.Screen
         name="Main"
         component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
 
-      <AuthenStack.Screen
+      <Stack.Screen
       name="Register"
       component={RegisterScreen}
       options={{ headerShown: false }}
       />
-    </AuthenStack.Navigator>
+    </Stack.Navigator>
   );
 };
 
-// const Profile_Student_Stack = createStackNavigator();
-// export function Profile_Student_StackNavigations(){
-//   return(
-//     <Profile_Student_Stack.Navigator>
-//       <Profile_Student_Stack.Screen
-//         name="Profile_Student"
-//         component={ProfileScreen}
-//         options={{
-//           headerRight: ()=>(
-//             <MaterialCommunityIcons.Button 
-//               name="account-edit"/>
-//           ),
-//         }}/>
+export function HomeStackNavigation({navigation}) { 
+  return(
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        options={{ title: "Lịch hoạt động" }}
+      />
+
+    </Stack.Navigator>
+  )
+}
 
 
-//     </Profile_Student_Stack.Navigator>
-//   );
-// }
+
+function handleBottomTab({navigation}){
+  let tabBarVisible = true;
+
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+}
+
+
 
 
 

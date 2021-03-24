@@ -1,10 +1,12 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {HomeScreen} from '../screens/home/Home';
 import {ProfileScreen} from '../screens/profile/Profile';
+import {NotificationScreen} from '../screens/notifications/Notification';
+import MessageScreen from '../screens/message/Message';
+import {HomeStackNavigation} from './StackNavigation';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,17 +20,18 @@ function MyTabs() {
     >
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
-        options={{
+        component={HomeStackNavigation}
+        options={({route})=>({
           tabBarLabel: 'Trang chủ',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
-        }}
+          tabBarVisible: getTabBarVisibility(route),
+        })}
       />
       <Tab.Screen
         name="Notifications"
-        component={HomeScreen}
+        component={NotificationScreen}
         options={{
           tabBarLabel: 'Thông báo',
           tabBarIcon: ({ color, size }) => (
@@ -39,7 +42,7 @@ function MyTabs() {
 
       <Tab.Screen
         name="Message"
-        component={HomeScreen}
+        component={MessageScreen}
         options={{ 
             tabBarLabel:'Tin nhắn',
             tabBarIcon:({ color,size }) => (
@@ -56,37 +59,22 @@ function MyTabs() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
-            // headerRight:() =>(
-            //   <MaterialCommunityIcons 
-            //   name="account-edit"
-            //   size={25}
-            //   backgroundColor="#fff"
-            //   color="#000"/>
-            // ),   
         }}
       />
     </Tab.Navigator>
   );
 }
 
-// const Profile_Student_Stack = createStackNavigator();
-// export function Profile_Student_StackNavigations(){
-//   return(
-//     <Profile_Student_Stack.Navigator>
-//       <Profile_Student_Stack.Screen
-//         name="Profile_Student"
-//         component={ProfileScreen}
-//         options={{
-//           headerRight: ()=>(
-//             <MaterialCommunityIcons.Button 
-//               name="account-edit"/>
-//           ),
-//         }}/>
 
+const getTabBarVisibility = (route) => {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? '';
 
-//     </Profile_Student_Stack.Navigator>
-//   );
-// }
+  if (routeName === 'Calendar') {
+      return false;
+  }
+
+  return true;
+};
 
 export function BottomTabNavigator() {
   return (

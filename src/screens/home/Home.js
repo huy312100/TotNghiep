@@ -7,7 +7,7 @@ import { ListItem, Header, Icon } from "react-native-elements";
 const DeviceWidth = Dimensions.get('window').width
 
 
-export function HomeScreen() {
+export function HomeScreen({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.label}>Khám phá ngay</Text>
@@ -15,7 +15,9 @@ export function HomeScreen() {
         <View style={styles.gridMainFunctions} >
           
           <View style={styles.gridItemShape} >
-            <TouchableOpacity style={styles.gridTouchable}>
+            <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
+              navigation.navigate("Calendar");
+            }}>
                 <Icon name="calendar-alt" type="font-awesome-5" color="red" size={40}/>
                 <Text style={styles.textItem}>Lịch hoạt động</Text>
               </TouchableOpacity>
@@ -61,9 +63,7 @@ export function HomeScreen() {
           </View>
 
         </View>
-
- 
-              
+             
       </View>
         
 

@@ -5,8 +5,9 @@ import { BottomTabNavigator } from "./BottomTabNavigation";
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
 import {HomeScreen} from "../screens/home/Home";
-import {CalendarScreen} from "../screens/home/Calendar";
-
+import CalendarScreen from "../screens/home/Calendar";
+import MessageScreen from "../screens/message/Message";
+import {ChatScreen} from "../screens/message/Chat";
 
 // import ProfileScreen from "../screens/profile/Profile";
 
@@ -55,19 +56,28 @@ export function HomeStackNavigation({navigation}) {
   )
 }
 
+export function MessageStackNavigation({navigation}) { 
+  return(
+    <Stack.Navigator initialRouteName="Message">
+      <Stack.Screen
+        name="Message"
+        component={MessageScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={({route}) =>({
+          title:route.params.userName,
+          headerTitleAlign: 'center',
+          headerBackTitle:false,
+        })}
+      />
 
-
-function handleBottomTab({navigation}){
-  let tabBarVisible = true;
-
-  if (navigation.state.index > 0) {
-    tabBarVisible = false;
-  }
-
-  return {
-    tabBarVisible,
-  };
+    </Stack.Navigator>
+  )
 }
+
 
 
 

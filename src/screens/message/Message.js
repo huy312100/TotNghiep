@@ -1,17 +1,6 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
-import {
-  Container,
-  Card,
-  UserInfo,
-  UserImgWrapper,
-  UserImg,
-  UserInfoText,
-  UserName,
-  PostTime,
-  MessageText,
-  TextSection,
-} from '../../styles/MessageStyles';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image } from 'react-native';
+
 
 const Messages = [
   {
@@ -122,28 +111,28 @@ const Messages = [
 
 const MessageScreen = ({navigation}) => {
     return (
-      <Container>
+      <View style={styles.container}>
         <FlatList 
           data={Messages}
           keyExtractor={item=>item.id}
           renderItem={({item}) => (
-            <Card >
-              <UserInfo>
-                <UserImgWrapper>
-                  <UserImg source={item.userImg} />
-                </UserImgWrapper>
-                <TextSection>
-                  <UserInfoText>
-                    <UserName>{item.userName}</UserName>
-                    <PostTime>{item.messageTime}</PostTime>
-                  </UserInfoText>
-                  <MessageText>{item.messageText}</MessageText>
-                </TextSection>
-              </UserInfo>
-            </Card>
+            <TouchableOpacity style={styles.card} onPress={() =>navigation.navigate("Chat",{userName:item.userName})}>
+              <View style={styles.userInfo}>
+                <View style={styles.userImgWrapper}>
+                  <Image style={styles.userImg} source={item.userImg} />
+                </View>
+                <View style={styles.textSection}>
+                  <View style={styles.userInfoText}>
+                    <Text style={styles.userName}>{item.userName}</Text>
+                    <Text style={styles.postTime}>{item.messageTime}</Text>
+                  </View>
+                  <Text style={styles.messageText}>{item.messageText}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
           )}
         />
-      </Container>
+      </View>
     );
 };
 
@@ -151,10 +140,62 @@ export default MessageScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center',
+    flex: 1,
+  paddingLeft:15,
+  alignItems: 'center',
+  backgroundColor: '#ffffff',
+  paddingTop: 30,
   },
 
+  card: {
+    width: '100%',
+  },
 
+  userInfo:{
+    flexDirection:"row",
+    justifyContent: "space-between",
+  },
+
+  userImgWrapper:{
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+
+  userImg:{
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+
+  textSection:{
+    flexDirection: "column",
+    justifyContent: "center",
+    padding: 15,
+    paddingLeft: 0,
+    marginLeft: 10,
+    width: 300,
+    borderBottomWidth: 1,
+    borderBottomColor: "#cccccc",
+  },
+
+  userInfoText:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 5,
+  },
+
+  userName:{
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+
+  postTime: {
+    fontSize: 12,
+    color:"#666",
+  },
+
+  messageText:{
+    fontSize: 14,
+    color: "#333333",
+  }
 });

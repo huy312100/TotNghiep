@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {ProfileScreen} from '../screens/profile/Profile';
 import {NotificationScreen} from '../screens/notifications/Notification';
 import MessageScreen from '../screens/message/Message';
-import {HomeStackNavigation} from './StackNavigation';
+import {HomeStackNavigation,MessageStackNavigation} from './StackNavigation';
 
 const Tab = createBottomTabNavigator();
 
@@ -42,13 +42,14 @@ function MyTabs() {
 
       <Tab.Screen
         name="Message"
-        component={MessageScreen}
-        options={{ 
-            tabBarLabel:'Tin nhắn',
-            tabBarIcon:({ color,size }) => (
-                <MaterialCommunityIcons name="message-processing" color={color} size={size} />
-            ),
-        }}      
+        component={MessageStackNavigation}
+        options={({route})=>({
+          tabBarLabel: 'Tin nhắn',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="message-processing" color={color} size={size} />
+          ),
+          tabBarVisible: getTabBarVisibility(route),
+        })}
       />
  
       <Tab.Screen
@@ -69,7 +70,7 @@ function MyTabs() {
 const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ?? '';
 
-  if (routeName === 'Calendar') {
+  if (routeName === 'Calendar' || routeName === 'Chat') {
       return false;
   }
 

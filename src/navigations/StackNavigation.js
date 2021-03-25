@@ -1,20 +1,29 @@
 import "react-native-gesture-handler";
 import * as React from "react";
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createStackNavigator } from "@react-navigation/stack";
-import { BottomTabNavigator } from "./BottomTabNavigation";
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
 import {HomeScreen} from "../screens/home/Home";
-import CalendarScreen from "../screens/home/Calendar";
+import CalendarScreen from "../screens/home/calendar/Calendar";
 import MessageScreen from "../screens/message/Message";
 import {ChatScreen} from "../screens/message/Chat";
-
-// import ProfileScreen from "../screens/profile/Profile";
+import {ProfileScreen} from '../screens/profile/Profile';
+import {NotificationScreen} from '../screens/notifications/Notification';
+import MyCoursesInfoScreen from '../screens/home/courses/MyCoursesInfo';
+import AllCoursesInfoScreen from '../screens/home/courses/AllCoursesInfo';
 
 
 
 const Stack = createStackNavigator();
+const bottomTab = createBottomTabNavigator();
+const topTab= createMaterialTopTabNavigator();
 
+
+//All Stack navigation of our app
 export function AuthenStackNavigation() {
   return (
     <Stack.Navigator initialRouteName="Login">
@@ -38,7 +47,7 @@ export function AuthenStackNavigation() {
   );
 };
 
-export function HomeStackNavigation({navigation}) { 
+function HomeStackNavigation() { 
   return(
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
@@ -51,12 +60,17 @@ export function HomeStackNavigation({navigation}) {
         component={CalendarScreen}
         options={{ title: "Lịch hoạt động" }}
       />
+      <Stack.Screen
+        name="Course"
+        component={CourseInfoTopTab}
+        options={{ title: "Thông tin khóa học" }}
+      />
 
     </Stack.Navigator>
   )
 }
 
-export function MessageStackNavigation({navigation}) { 
+function MessageStackNavigation() { 
   return(
     <Stack.Navigator initialRouteName="Message">
       <Stack.Screen
@@ -79,6 +93,99 @@ export function MessageStackNavigation({navigation}) {
 }
 
 
+
+//Bottom tab 
+function MyBottomTabs() {
+  return (
+    <bottomTab.Navigator
+      initialRouteName="Home"
+      tabBarOptions={{
+        activeTintColor: '#6666FF',
+      }}
+    >
+      <bottomTab.Screen
+        name="Home"
+        component={HomeStackNavigation}
+        options={({route})=>({
+          tabBarLabel: 'Trang chủ',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home" color={color} size={size} />
+          ),
+          tabBarVisible: getTabBarVisibility(route),
+        })}
+      />
+      <bottomTab.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        options={{
+          tabBarLabel: 'Thông báo',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="bell" color={color} size={size} />
+          ),
+        }}
+      />
+
+      <bottomTab.Screen
+        name="Message"
+        component={MessageStackNavigation}
+        options={({route})=>({
+          tabBarLabel: 'Tin nhắn',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="message-processing" color={color} size={size} />
+          ),
+          tabBarVisible: getTabBarVisibility(route),
+        })}
+      />
+ 
+      <bottomTab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: 'Tài khoản',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" color={color} size={size} />
+          ),
+        }}
+      />
+    </bottomTab.Navigator>
+  );
+}
+
+const getTabBarVisibility = (route) => {
+  let routeName = getFocusedRouteNameFromRoute(route) ?? '';
+
+  if (routeName === 'Calendar' || routeName === 'Chat' ||routeName === 'Course') {
+      return false;
+  }
+  return true;
+};
+
+function BottomTabNavigator() {
+  return (
+      <MyBottomTabs />
+  );
+}
+
+//Top tab of course screen
+function CourseInfoTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="All Course">
+      <topTab.Screen 
+        name="All Courses" 
+        component={AllCoursesInfoScreen} 
+        options={{
+          tabBarLabel:'Tất cả'
+        }}/>
+      <topTab.Screen 
+        name="My Courses" 
+        component={MyCoursesInfoScreen}
+        options={{
+          tabBarLabel:'Của tôi'
+        }}
+        />
+    </topTab.Navigator>
+  )
+}
 
 
 

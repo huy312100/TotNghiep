@@ -24,7 +24,9 @@ export function HomeScreen({navigation}) {
           </View>
 
           <View style={styles.gridItemShape}  >
-            <TouchableOpacity style={styles.gridTouchable}>
+            <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
+              navigation.navigate("Course")
+            }}>
             <Icon name="graduation-cap" type="font-awesome-5" color="red" size={40} />
                 <Text style={styles.textItem}>Thông tin khóa học</Text>
             </TouchableOpacity> 

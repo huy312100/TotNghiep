@@ -1,11 +1,9 @@
 import * as React from "react";
 import {
-  SafeAreaView,
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
 } from "react-native";
 import { ListItem, Header, Icon } from "react-native-elements";
 import RoundedImage from "../../components/profile/main/RoundedImage";
@@ -29,14 +27,14 @@ const categoryProfile = [
   // more items
 ];
 
-export function ProfileScreen() {
+export function ProfileScreen({navigation}) {
   return (
     <View style={styles.container}>
       <Header
         //backgroundColor="transparent"
 
         rightComponent={
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Change Profile")}>
             <Icon name="account-edit" type="material-community" color="#EEEEEE" />
           </TouchableOpacity>
         }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image } from 'react-native';
-
+import{SafeAreaView} from 'react-native-safe-area-context'
 
 const Messages = [
   {
@@ -111,7 +111,7 @@ const Messages = [
 
 const MessageScreen = ({navigation}) => {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <FlatList 
           data={Messages}
           keyExtractor={item=>item.id}
@@ -132,7 +132,7 @@ const MessageScreen = ({navigation}) => {
             </TouchableOpacity>
           )}
         />
-      </View>
+      </SafeAreaView>
     );
 };
 
@@ -140,11 +140,10 @@ export default MessageScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+  flex: 1,
   paddingLeft:15,
   alignItems: 'center',
   backgroundColor: '#ffffff',
-  paddingTop: 30,
   },
 
   card: {

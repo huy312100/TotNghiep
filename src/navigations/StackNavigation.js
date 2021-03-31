@@ -12,9 +12,10 @@ import CalendarScreen from "../screens/home/calendar/Calendar";
 import MessageScreen from "../screens/message/Message";
 import {ChatScreen} from "../screens/message/Chat";
 import {ProfileScreen} from '../screens/profile/Profile';
-import {NotificationScreen} from '../screens/notifications/Notification';
+import NotificationScreen from '../screens/notifications/Notification';
 import MyCoursesInfoScreen from '../screens/home/courses/MyCoursesInfo';
 import AllCoursesInfoScreen from '../screens/home/courses/AllCoursesInfo';
+import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 
 
 
@@ -92,7 +93,22 @@ function MessageStackNavigation() {
   )
 }
 
-
+function ProfileStackNavigation() { 
+  return(
+    <Stack.Navigator initialRouteName="Profile">
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{headerShown: false }}
+      />
+      <Stack.Screen
+        name="Change Profile"
+        component={ChangeProfileScreen}
+        options={{ title: "Thay đổi thông tin" }}
+      />
+    </Stack.Navigator>
+  )
+}
 
 //Bottom tab 
 function MyBottomTabs() {
@@ -122,6 +138,7 @@ function MyBottomTabs() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
           ),
+          tabBarBadge:4,         
         }}
       />
 
@@ -134,27 +151,28 @@ function MyBottomTabs() {
             <MaterialCommunityIcons name="message-processing" color={color} size={size} />
           ),
           tabBarVisible: getTabBarVisibility(route),
+          tabBarBadge:13,
         })}
       />
  
       <bottomTab.Screen
         name="Profile"
-        component={ProfileScreen}
-        options={{
+        component={ProfileStackNavigation}
+        options={({route})=>({
           tabBarLabel: 'Tài khoản',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
-        }}
+          tabBarVisible: getTabBarVisibility(route),
+        })}
       />
     </bottomTab.Navigator>
   );
 }
 
 const getTabBarVisibility = (route) => {
-  let routeName = getFocusedRouteNameFromRoute(route) ?? '';
-
-  if (routeName === 'Calendar' || routeName === 'Chat' ||routeName === 'Course') {
+  const routeName = getFocusedRouteNameFromRoute(route) ;
+  if (routeName === 'Calendar' || routeName === 'Chat' ||routeName === 'Course'|| routeName==='Change Profile') {
       return false;
   }
   return true;

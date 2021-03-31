@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { StyleSheet, View, Text,Dimensions,SafeAreaView,TouchableOpacity } from 'react-native';
-import { ListItem, Header, Icon } from "react-native-elements";
+import { StyleSheet, View, Text,Dimensions,TouchableOpacity } from 'react-native';
+import { Icon } from "react-native-elements";
+import {SafeAreaView} from 'react-native-safe-area-context'
 
 
 const DeviceWidth = Dimensions.get('window').width
@@ -77,7 +78,6 @@ export function HomeScreen({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
     flex: 1,
   },
 

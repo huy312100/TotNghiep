@@ -110,6 +110,4 @@ const styles = StyleSheet.create({
   textItem: {
     marginTop:15,
   },
-
-
 })

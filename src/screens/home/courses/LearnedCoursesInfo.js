@@ -1,11 +1,11 @@
 import React from 'react'
 import { View, Text,TouchableOpacity,StyleSheet} from 'react-native';
 
-function MyCoursesInfoScreen(){
+function LearnedInfoScreen(){
     return (
         <View style={styles.container}>
             <Text>
-                My Courses
+                Đã học
             </Text>
         </View>
     )
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default MyCoursesInfoScreen;
+export default LearnedInfoScreen;

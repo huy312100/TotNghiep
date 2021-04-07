@@ -1,15 +1,30 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+import{Input} from "react-native-elements";
+
 import RoundedImage from "../../components/profile/main/RoundedImage";
 
 function ChangeProfileScreen() {
   return (
+    <ScrollView>
+
     <View style={styles.container}>
       <View style={styles.infoView}>
         <RoundedImage></RoundedImage>
-        <Text style={styles.nameText}>Nguyễn Ngọc Đức Huy</Text>
       </View>
+      <View style={styles.inputText}>
+        <Text style={styles.labelText}>Họ và tên</Text>
+        <Input></Input>
+      </View>
+
+      <View style={styles.inputText}>
+        <Text style={styles.labelText}>Email</Text>
+        <Input></Input>
+      </View>
+
     </View>
+    </ScrollView>
+
   );
 }
 
@@ -20,9 +35,15 @@ const styles = StyleSheet.create({
 
   infoView: {
     alignItems: "center",
+    paddingBottom:20
   }, 
-  nameText: {
-      marginTop:20,
+  labelText: {
+    paddingLeft:10,
+    fontWeight: "bold",
+  },
+  inputText: {
+    paddingLeft:15,
+    paddingRight:15
   }
 });
 

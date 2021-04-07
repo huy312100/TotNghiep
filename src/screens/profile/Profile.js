@@ -31,7 +31,7 @@ export function ProfileScreen({navigation}) {
   return (
     <View style={styles.container}>
       <Header
-        //backgroundColor="transparent"
+        backgroundColor="#33CCFF"
 
         rightComponent={
           <TouchableOpacity onPress={() => navigation.navigate("Change Profile")}>
@@ -49,10 +49,11 @@ export function ProfileScreen({navigation}) {
         <RoundedImage></RoundedImage>
         <Text style={styles.nameText}>Nguyễn Ngọc Đức Huy</Text>
       </View>
+      
       <View style={styles.nameText}>
         {categoryProfile.map((item, index) => (
-          <ListItem key={index} bottomDivider>
-            <TouchableOpacity style={styles.itemBtn}>
+          <ListItem key={index}  bottomDivider>
+            <TouchableOpacity style={styles.itemBtn} >
               <Icon name={item.icon} type={item.type_icon} />
               <ListItem.Content>
                 <ListItem.Title style={styles.itemName}>
@@ -66,12 +67,9 @@ export function ProfileScreen({navigation}) {
       </View>
 
       <View style={styles.signoutBtnTouchable}>
-      <TouchableOpacity 
-          onPress={() => {
-          }}>
-        <View style={styles.signoutBtn}>          
+      <TouchableOpacity style={styles.signoutBtn}
+          onPress={() => {}}>        
             <Text style={styles.signoutTextBtn}>Đăng xuất</Text>
-        </View>
       </TouchableOpacity>
       </View>
     </View>
@@ -95,6 +93,7 @@ const styles = StyleSheet.create({
   itemBtn: {
     flex: 1,
     flexDirection: "row",
+    height:"100%"
   },
 
   itemName: {
@@ -120,7 +119,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     marginBottom: -10,
-    width: "100%"
+    width: "100%",
+
   },
 
   signoutTextBtn:{

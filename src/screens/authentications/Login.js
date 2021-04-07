@@ -1,4 +1,4 @@
-import React from "react";
+import React,{ useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback } from "react-native";
 import {
   Heading,
@@ -6,23 +6,55 @@ import {
   PasswordInput,
 } from "../../components/authentications/commons/Index";
 
+
 const LoginScreen = ({ style, navigation }) => {
+  const [username,setUsername]=useState('');
+  const [password,setPassword]=useState('');
+
+  const [message,setMessage]=useState('');
+
+  const Login = async()=>{
+    if(username!="" && password!=""){
+      await fetch('https://hcmusemu.herokuapp.com/account/signin',{
+        method: 'POST',
+        headers: {
+          'Accept':'application/json',
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify({
+          "username":username,
+          "password":password
+        })
+
+      }).then(res=>res.json())
+      .then(resData=>{
+        if(resData.message==="Auth successful"){
+          navigation.navigate("Main");
+        }else{
+          alert(resData.message);        
+        }
+      })
+    }
+    else{
+      alert("Xin vui lòng điển đầy đủ thông tin")
+    }
+  }
   return (
     <View style={styles.container}>
       <Heading>Đăng nhập</Heading>
-      <UsernameInput placeholder={"Tên đăng nhập"}></UsernameInput>
+      <UsernameInput placeholder={"Tên đăng nhập"}
+        onChangeText={(username)=>setUsername(username)}
+      ></UsernameInput>
 
-      <PasswordInput placeholder={"Mật khẩu"}></PasswordInput>
+      <PasswordInput placeholder={"Mật khẩu"}
+        onChangeText={(password)=>setPassword(password)}
+      ></PasswordInput>
 
-      <View style={[style, styles.buttonLoginContainer]}>
-        <TouchableOpacity style={styles.btnLoginTouchable}
-          onPress={() => {
-            navigation.navigate("Main");
-          }}
-        >
-          <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
-        </TouchableOpacity>
-      </View>
+
+      <TouchableOpacity style={styles.buttonLoginContainer}
+        onPress={() => {Login()}}>
+        <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity>
         <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
@@ -81,9 +113,10 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
     marginVertical: 20,
     borderRadius: 10,
+    paddingTop:20,
+    paddingBottom:20
   },
 
   textBtnLogIn: {
@@ -93,9 +126,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  btnLoginTouchable:{
-    width: "120%"
-  }
 });
 
 export default LoginScreen;

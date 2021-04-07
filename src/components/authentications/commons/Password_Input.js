@@ -7,8 +7,8 @@ export function PasswordInput({ children, style,...props }) {
     const [visible,setVisible]=React.useState(true);
 
     return (
-    <View style={styles.passInput}>
-      <TextInput {...props} secureTextEntry={visible} style={styles.inputText}>
+      <View style={styles.passInput}>
+        <TextInput {...props} secureTextEntry={visible} style={styles.inputText}>
           {children}
       </TextInput>
       <TouchableOpacity style={styles.eyeBtn}  onPress={()=>{
@@ -17,17 +17,12 @@ export function PasswordInput({ children, style,...props }) {
       }}>
         <MaterialCommunityIcons name={show===false ? "eye-outline" : "eye-off-outline"} size={16} ></MaterialCommunityIcons>
       </TouchableOpacity>
-    </View>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
   passInput: {
-    backgroundColor: "#ccc",
-    width: "100%",
-    marginVertical: 20,
-    padding: 20,
-    borderRadius: 10,
     alignItems: "center",
     flexDirection:"row",
   },
@@ -39,6 +34,10 @@ const styles = StyleSheet.create({
   },
 
   inputText:{
-      paddingRight:10,
+    backgroundColor: "#ccc",
+    width: "100%",
+    marginVertical: 20,
+    padding: 20,
+    borderRadius: 10,
   }
 });

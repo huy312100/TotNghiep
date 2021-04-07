@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
 import * as React from "react";
+import {TouchableOpacity} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -13,8 +14,8 @@ import MessageScreen from "../screens/message/Message";
 import {ChatScreen} from "../screens/message/Chat";
 import {ProfileScreen} from '../screens/profile/Profile';
 import NotificationScreen from '../screens/notifications/Notification';
-import MyCoursesInfoScreen from '../screens/home/courses/MyCoursesInfo';
-import AllCoursesInfoScreen from '../screens/home/courses/AllCoursesInfo';
+import LearnedInfoScreen from '../screens/home/courses/LearnedCoursesInfo';
+import LearningInfoScreen from '../screens/home/courses/LearningCoursesInfo';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 
 
@@ -54,17 +55,27 @@ function HomeStackNavigation() {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{ headerShown: false }}
+        options={{ 
+          headerShown: false
+        }}
       />
       <Stack.Screen
         name="Calendar"
         component={CalendarScreen}
-        options={{ title: "Lịch hoạt động" }}
+        options={{ 
+          title: "Lịch hoạt động",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+       }}
       />
       <Stack.Screen
         name="Course"
         component={CourseInfoTopTab}
-        options={{ title: "Thông tin khóa học" }}
+        options={{ 
+          title: "Thông tin khóa học",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+        }}
       />
 
     </Stack.Navigator>
@@ -86,6 +97,7 @@ function MessageStackNavigation() {
           title:route.params.userName,
           headerTitleAlign: 'center',
           headerBackTitle:false,
+          headerTruncatedBackTitle:false,
         })}
       />
 
@@ -104,7 +116,24 @@ function ProfileStackNavigation() {
       <Stack.Screen
         name="Change Profile"
         component={ChangeProfileScreen}
-        options={{ title: "Thay đổi thông tin" }}
+        options={{ 
+          title: "Thay đổi thông tin",
+          headerTitleAlign: 'center',
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+          headerTintColor:"#FFFFFF",
+          headerStyle:{
+            backgroundColor:"#33CCFF"
+          },
+          headerRight:()=>(
+            <TouchableOpacity>
+              <MaterialCommunityIcons name="check-bold" size={20} color={"#FFFFFF"} />
+            </TouchableOpacity>
+          ),
+          headerRightContainerStyle:{
+            paddingRight:10
+          }
+        }}
       />
     </Stack.Navigator>
   )
@@ -187,18 +216,18 @@ function BottomTabNavigator() {
 //Top tab of course screen
 function CourseInfoTopTab(){
   return (
-    <topTab.Navigator initialRouteName="All Course">
+    <topTab.Navigator initialRouteName="Learning">
       <topTab.Screen 
-        name="All Courses" 
-        component={AllCoursesInfoScreen} 
+        name="Learning" 
+        component={LearningInfoScreen} 
         options={{
-          tabBarLabel:'Tất cả'
+          tabBarLabel:'Đang học'
         }}/>
       <topTab.Screen 
-        name="My Courses" 
-        component={MyCoursesInfoScreen}
+        name="Learned" 
+        component={LearnedInfoScreen}
         options={{
-          tabBarLabel:'Của tôi'
+          tabBarLabel:'Đã học'
         }}
         />
     </topTab.Navigator>

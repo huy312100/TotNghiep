@@ -30,7 +30,7 @@ const categoryProfile = [
 export function ProfileScreen({navigation}) {
   return (
     <View style={styles.container}>
-      <Header
+      {/* <Header
         backgroundColor="#33CCFF"
 
         rightComponent={
@@ -44,7 +44,7 @@ export function ProfileScreen({navigation}) {
             Tài khoản của tôi
           </Text>
         }
-      />
+      /> */}
       <View style={styles.infoView}>
         <RoundedImage></RoundedImage>
         <Text style={styles.nameText}>Nguyễn Ngọc Đức Huy</Text>

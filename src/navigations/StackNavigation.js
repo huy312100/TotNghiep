@@ -105,13 +105,32 @@ function MessageStackNavigation() {
   )
 }
 
-function ProfileStackNavigation() { 
+function ProfileStackNavigation({navigation}) { 
   return(
     <Stack.Navigator initialRouteName="Profile">
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{headerShown: false }}
+        options={{
+          //headerShown: false
+          title: "Tài khoản của tôi",
+          headerTitleAlign: 'center',
+          headerTintColor:"#FFFFFF",
+          headerStyle:{
+            backgroundColor:"#33CCFF"
+          },
+          headerRight:()=>(
+            <TouchableOpacity onPress={() => navigation.navigate("Change Profile")}>
+              <MaterialCommunityIcons name="account-edit" size={20} color={"#FFFFFF"} />
+            </TouchableOpacity>
+          ),
+          headerRightContainerStyle:{
+            paddingRight:10
+          },
+          headerLeft:()=>{
+            return null;
+          }
+        }}
       />
       <Stack.Screen
         name="Change Profile"

@@ -1,5 +1,5 @@
 import React,{ useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity,ActivityIndicator} from "react-native";
 import {
   Heading,
   UsernameInput,
@@ -10,49 +10,65 @@ import {
 const LoginScreen = ({ style, navigation }) => {
   const [username,setUsername]=useState('');
   const [password,setPassword]=useState('');
-
+  const [isLoading,setLoading]=useState(false);
   const [message,setMessage]=useState('');
 
-  const Login = async()=>{
+  const getLoginAPI=async()=>{
     if(username!="" && password!=""){
-      await fetch('https://hcmusemu.herokuapp.com/account/signin',{
+      setLoading(true);
+      let details = {
+        'username': username,
+        'password': password
+    };
+  
+    let formBody = [];
+    for (let property in details) {
+        let encodedKey = encodeURIComponent(property);
+        let encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+  
+    await fetch('https://hcmusemu.herokuapp.com/account/signin', {
         method: 'POST',
         headers: {
-          'Accept':'application/json',
-          'Content-Type':'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-          "username":username,
-          "password":password
-        })
-
-      }).then(res=>res.json())
-      .then(resData=>{
-        if(resData.message==="Auth successful"){
-          navigation.navigate("Main");
-        }else{
-          alert(resData.message);        
-        }
+        body: formBody
+      }).then((response) => {
+        const statusCode = response.status;
+        const data = response.json();
+        return Promise.all([statusCode, data]);
       })
+        .then( ([statusCode, data]) => {
+            //console.log(statusCode,data);
+            setLoading(false);
+            if(statusCode===200){
+              navigation.navigate("Main");
+            }else{
+              alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")
+            }
+        }).done();
     }
+
     else{
-      alert("Xin vui lòng điển đầy đủ thông tin")
+      alert("Xin vui lòng điển đầy đủ thông tin");
     }
-  }
+  
+ }
+
   return (
     <View style={styles.container}>
       <Heading>Đăng nhập</Heading>
       <UsernameInput placeholder={"Tên đăng nhập"}
-        onChangeText={(username)=>setUsername(username)}
-      ></UsernameInput>
+        onChangeText={(username)=>setUsername(username)}/>
 
       <PasswordInput placeholder={"Mật khẩu"}
-        onChangeText={(password)=>setPassword(password)}
-      ></PasswordInput>
+        onChangeText={(password)=>setPassword(password)}/>
 
 
       <TouchableOpacity style={styles.buttonLoginContainer}
-        onPress={() => {Login()}}>
+        onPress={() => {getLoginAPI()}}>
         <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
       </TouchableOpacity>
 
@@ -68,6 +84,11 @@ const LoginScreen = ({ style, navigation }) => {
           <Text style={styles.signupText}>Đăng ký ngay</Text>
         </TouchableOpacity>
       </View>
+
+      {isLoading && <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#EEEEEE" />
+        <Text style={styles.txtIndicator}>Đang xử lí ...</Text>
+        </View>}
     </View>
   );
 };
@@ -126,6 +147,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.5)'
+  },
+
+  txtIndicator: {
+    fontSize:15,
+    fontWeight: "bold",
+    color:"#EEEEEE"
+  }
 });
 
 export default LoginScreen;

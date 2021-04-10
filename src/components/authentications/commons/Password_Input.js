@@ -2,14 +2,14 @@ import React from "react";
 import { View,TextInput, StyleSheet,TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export function PasswordInput({ children, style,...props }) {
+export function PasswordInput(props) {
     const [show,setShow]=React.useState(true);
     const [visible,setVisible]=React.useState(true);
 
     return (
       <View style={styles.passInput}>
         <TextInput {...props} secureTextEntry={visible} style={styles.inputText}>
-          {children}
+          {props.children}
       </TextInput>
       <TouchableOpacity style={styles.eyeBtn}  onPress={()=>{
           setVisible(!visible);

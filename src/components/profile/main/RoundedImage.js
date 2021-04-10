@@ -1,20 +1,29 @@
-import React from "react";
-import { SafeAreaView, View, ScrollView,StyleSheet } from "react-native";
+import React,{ useState} from "react";
+import { SafeAreaView, View, ImageBackground,StyleSheet } from "react-native";
 
-const RoundedImage =()=>{
+const RoundedImage =(props)=>{
+    const [image, setImage] = useState('https://baodansinh.mediacdn.vn/2019/12/30/va-1577670930380-15776709303872011433781.jpg');
+
     return(
-        <View style={styles.image}>
-        </View>
+        <ImageBackground
+            {...props}
+            style={styles.image}
+            imageStyle={styles.imgShape}>
+                {props.children}
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
     image: {
-        width:120,
-        height:120,
-        borderRadius:60,
-        backgroundColor:'#dcdcdc',
-        marginTop: 30,
+        width:100,
+        height:100,
+        marginTop: 10,
+    },
+
+    imgShape: {
+        borderRadius: 60,
+        backgroundColor:'#dcdcdc'
     }
 })
 

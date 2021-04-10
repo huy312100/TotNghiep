@@ -1,10 +1,10 @@
 import React from 'react';
 import { TextInput,StyleSheet } from 'react-native';
 
-export function UsernameInput({children,style,...props}) {
+export function UsernameInput(props) {
     return(
-        <TextInput {...props} style={[style,styles.input]} keyboardType="default">
-            {children}
+        <TextInput {...props} style={styles.input} keyboardType="default">
+            {props.children}
         </TextInput>
     );
 }

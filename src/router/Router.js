@@ -6,7 +6,10 @@ import {
     Link
   } from "react-router-dom";
 import Login from "../Component/Login/Login";
+import Signup from "../Component/Login/Signup";
 import Student from "../Component/Mainpage/Student/Student";
+import Message from "../Component/Mainpage/Student/Message/Message";
+
 
 class RouterMD extends Component {
     render() {
@@ -26,11 +29,19 @@ class RouterMD extends Component {
                     </ul> */}
 
                     <Switch>
-                        <Route exact path="/">
-                            <Login />
+                        <Route path="/" render={() => {
+                            return localStorage.getItem("token") ? <Student />:<Login />
+                        }}>
+                            {/* <Login /> */}
+                        </Route>
+                        <Route exact path="/signup">
+                            <Signup />
                         </Route>
                         <Route path="/home">
                             <Student />
+                        </Route>
+                        <Route path="/message">
+                            <Message />
                         </Route>
                     </Switch>
                 </div>

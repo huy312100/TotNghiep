@@ -1,0 +1,56 @@
+.wrap {
+    display: flex;
+}
+
+.listfriend-box {
+ background: black;
+}
+
+.box-input{
+    margin: 1vw;
+    width: 28vw;
+    height: 40px;
+}
+
+.listfriend {
+    height: 79vh;
+    width: 30vw;
+    /* background-color: blue; */
+    overflow: auto;
+}
+
+.message-box {
+    height: 79vh;
+    width: 50vw;
+    /* background-color: blue; */
+    overflow: auto;
+}
+
+.message-box .box-friend{
+    margin: 5px;
+}
+
+.message-box .box-user{
+    display: flex;
+    margin: 5px;
+    justify-content: flex-end;
+}
+
+.friend{
+    display: inline-block;
+    background: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 10px;
+    padding: 5px;
+}
+
+.user{
+    display: inline-block;
+    background: black;
+    border: 1px solid white;
+    border-radius: 5px;
+    font-size: 10px;
+    padding: 5px;
+    color: white;
+}

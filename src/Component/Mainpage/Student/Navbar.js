@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "../../../style/Navbar.css"
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import UserBox from '../../../hook/userbox';
 
 class Navbar extends Component {
@@ -13,41 +13,49 @@ class Navbar extends Component {
         }
     }
 
+
+
     async componentDidMount() {
         var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
         var urlencoded = new URLSearchParams();
-        urlencoded.append("wstoken", localStorage.getItem("token"));
-        urlencoded.append("wsfunction", "core_user_get_users_by_field");
-        urlencoded.append("field", "username");
-        urlencoded.append("values[0]", localStorage.getItem("username"));
-        urlencoded.append("moodlewsrestformat", "json");
 
         var requestOptions = {
-            method: 'POST',
+            method: 'GET',
             headers: myHeaders,
-            body: urlencoded,
             redirect: 'follow'
         };
 
-        fetch("https://courses.ctda.hcmus.edu.vn/webservice/rest/server.php", requestOptions)
+        fetch("https://hcmusemu.herokuapp.com/profile/view", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
-                this.setState({ username: result[0].fullname })
+                this.setState({ username: result[0].HoTen })
             })
             .catch(error => console.log('error', error));
     }
-
 
 
     ActionLogout = () => {
         localStorage.removeItem("token");
     }
 
+
     renderUserBox = () => (
-        <UserBox/>
+        <div className="action-box">
+            <div className="user-content">
+                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67"></img>
+                <h5 className="user-content-name">
+                    {this.state.username}
+                </h5>
+            </div>
+            {/* <hr/> */}
+                <Link className="user-link" to="/profile" style={{ textDecoration: 'none' }}>Thông tin cá nhân</Link>
+                <Link className="user-link" style={{ textDecoration: 'none' }}>Thiết lập</Link>
+            <UserBox />
+        </div>
     )
 
 
@@ -134,8 +142,8 @@ class Navbar extends Component {
                   APPNAME
                 </a>
                     <ul className="navbar-nav">
-                        <li className="nav-tem">
-                            <p>{this.state.username}</p>
+                        <li className="nav-item">
+                            <div className="nav-link active">{this.state.username}</div>
                         </li>
                         <li className="nav-item">
                             <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/message.png'} />

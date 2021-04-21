@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Footer from '../Footer';
 import '../../style/Login.css';
+import { Link, useHistory } from "react-router-dom";
+
 
 
 class Login extends Component {
@@ -12,7 +14,7 @@ class Login extends Component {
         }
     }
 
-    AcctionLogin = () => {
+    AcctionLogin = () =>{
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
@@ -20,14 +22,14 @@ class Login extends Component {
         urlencoded.append("username", this.state.username);
         urlencoded.append("password", this.state.password);
 
-        var requestOptions = {  
+        var requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: urlencoded,
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/account/signin", requestOptions)
+         fetch("https://hcmusemu.herokuapp.com/account/signin", requestOptions)
             .then(response => {
                 // console.log(response.clone)
                 if (response.ok) {
@@ -40,8 +42,9 @@ class Login extends Component {
                 // console.log(result.token)
                 if (result.token !== undefined) {
                     localStorage.setItem("token", result.token)
-                    localStorage.setItem("username", this.state.username)
+                    // localStorage.setItem("username", this.state.username)
                     console.log(result.token)
+                    console.log(this.state.username)
                 }
                 // alert("Thanh cong")
             })
@@ -50,6 +53,7 @@ class Login extends Component {
                 console.log('error', error)
                 // alert(localStorage.getItem("token"))
             });
+            // return false;
     }
 
     setParams = (event) => {

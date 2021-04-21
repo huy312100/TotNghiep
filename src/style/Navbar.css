@@ -66,3 +66,32 @@ li.nav-item {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
+
+.user-content{
+    padding: 5px 0 0px 5px;
+    margin:5px 5px 10px 5px;
+    display: flex;
+    align-items: center;
+}
+
+.user-content-name{
+    margin-top: 0;
+    margin-left: 10px;
+    /* text  */
+    /* display: inline-block; */
+    /* vertical-align: text-top; */
+}
+
+.user-link{
+    margin:1px;
+    padding: 10px;
+    font-weight: 500;
+    color: black;
+    display: block;
+    border-radius: 10px;
+}
+
+.user-link:hover{
+    background: rgb(231, 231, 231);
+    color: black;
+}

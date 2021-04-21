@@ -9,6 +9,7 @@ import Login from "../Component/Login/Login";
 import Signup from "../Component/Login/Signup";
 import Student from "../Component/Mainpage/Student/Student";
 import Message from "../Component/Mainpage/Student/Message/Message";
+import Profile from '../Component/Mainpage/Student/Setting/EditProfile/Profile';
 
 
 class RouterMD extends Component {
@@ -29,10 +30,8 @@ class RouterMD extends Component {
                     </ul> */}
 
                     <Switch>
-                        <Route path="/" render={() => {
-                            return localStorage.getItem("token") ? <Student />:<Login />
-                        }}>
-                            {/* <Login /> */}
+                        <Route path="/profile">
+                            <Profile/>
                         </Route>
                         <Route exact path="/signup">
                             <Signup />
@@ -42,6 +41,11 @@ class RouterMD extends Component {
                         </Route>
                         <Route path="/message">
                             <Message />
+                        </Route>
+                        <Route path="/" render={() => {
+                            return localStorage.getItem("token") ? <Student />:<Login />
+                        }}>
+                            {/* <Login /> */}
                         </Route>
                     </Switch>
                 </div>

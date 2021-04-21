@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 export default function LoginButton() {
     let history= useHistory();
     let login = () => {
-        localStorage.setItem("token",true);
+        // localStorage.setItem("token",true);
         history.replace("/");
     }
     return (

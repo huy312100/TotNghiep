@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
-import {HomeScreen} from "../screens/home/Home";
+import HomeScreen from "../screens/home/Home";
 import CalendarScreen from "../screens/home/calendar/Calendar";
 import MessageScreen from "../screens/message/Message";
 import {ChatScreen} from "../screens/message/Chat";
@@ -17,7 +17,7 @@ import NotificationScreen from '../screens/notifications/Notification';
 import LearnedInfoScreen from '../screens/home/courses/LearnedCoursesInfo';
 import LearningInfoScreen from '../screens/home/courses/LearningCoursesInfo';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
-
+import ConnectAppScreen from '../screens/profile/ConnectApplication';
 
 
 const Stack = createStackNavigator();
@@ -132,6 +132,7 @@ function ProfileStackNavigation({navigation}) {
           }
         }}
       />
+
       <Stack.Screen
         name="Change Profile"
         component={ChangeProfileScreen}
@@ -152,6 +153,29 @@ function ProfileStackNavigation({navigation}) {
           headerRightContainerStyle:{
             paddingRight:10
           }
+        }}
+      />
+
+      <Stack.Screen
+        name="Connect application"
+        component={ConnectAppScreen}
+        options={{ 
+          title: "Kết nối ứng dụng",
+          headerTitleAlign: 'center',
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+          headerTintColor:"#FFFFFF",
+          headerStyle:{
+            backgroundColor:"#33CCFF"
+          },
+          // headerRight:()=>(
+          //   <TouchableOpacity>
+          //     <MaterialCommunityIcons name="check-bold" size={20} color={"#FFFFFF"} />
+          //   </TouchableOpacity>
+          // ),
+          // headerRightContainerStyle:{
+          //   paddingRight:10
+          // }
         }}
       />
     </Stack.Navigator>
@@ -220,7 +244,7 @@ function MyBottomTabs() {
 
 const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ;
-  if (routeName === 'Calendar' || routeName === 'Chat' ||routeName === 'Course'|| routeName==='Change Profile') {
+  if (routeName === 'Calendar' || routeName === 'Chat' ||routeName === 'Course'|| routeName==='Change Profile'||routeName=='Connect application') {
       return false;
   }
   return true;

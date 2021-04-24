@@ -1,7 +1,8 @@
 class Login{
-    constructor(username, password){
+    constructor(username, password,token){
         this.username = username;
         this.password=password;
+        this.token=token;
     }
 }
 

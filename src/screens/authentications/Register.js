@@ -1,30 +1,43 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity,ScrollView,Keyboard,TouchableWithoutFeedback } from "react-native";
 import {
   Heading,
   UsernameInput,
   PasswordInput,
-} from "../../components/authentications/commons/Index";
+} from "../../components/authentications/common/Index";
+import RNPickerSelect from 'react-native-picker-select';
 
 const RegisterScreen = ({ style }) => {
   return (
-    <View style={styles.container}>
-      <Heading>Đăng nhập</Heading>
-      <UsernameInput placeholder={"Tên đăng nhập"}></UsernameInput>
+    <TouchableWithoutFeedback onPress={()=>{
+      Keyboard.dismiss();
+    }}>
+      <ScrollView>
+        <View style={styles.container}>
+          <Heading>Đăng ký</Heading>
+          <UsernameInput placeholder={"Tên đăng nhập"}></UsernameInput>
 
-      <PasswordInput placeholder={"Mật khẩu"}></PasswordInput>
+          <PasswordInput placeholder={"Mật khẩu"}></PasswordInput>
 
-      <View style={[style, styles.buttonLoginContainer]}>
-        <TouchableOpacity style={styles.btnLoginTouchable}
-          onPress={() => {
-          }}
-        >
-          <Text style={styles.textBtnLogIn}>Đăng kí</Text>
-        </TouchableOpacity>
-      </View>
+          <PasswordInput placeholder={"Nhập lại mật khẩu"}></PasswordInput>
 
+          <UsernameInput placeholder={"Họ và tên"}></UsernameInput>
 
-    </View>
+          <UsernameInput placeholder={"Tên đăng nhập"}></UsernameInput>
+          <UsernameInput placeholder={"Tên đăng nhập"}></UsernameInput>
+
+          <View style={[style, styles.buttonLoginContainer]}>
+            <TouchableOpacity style={styles.btnLoginTouchable}
+              onPress={() => {
+              }}
+            >
+              <Text style={styles.textBtnLogIn}>Đăng ký</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+    </ScrollView>
+    </TouchableWithoutFeedback>
+    
   );
 };
 

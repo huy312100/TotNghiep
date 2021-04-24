@@ -1,95 +1,120 @@
 import React,{ useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,ActivityIndicator} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity,ActivityIndicator,Keyboard,TouchableWithoutFeedback} from "react-native";
 import {
   Heading,
   UsernameInput,
   PasswordInput,
-} from "../../components/authentications/commons/Index";
+} from "../../components/authentications/common/Index";
 
+import { useDispatch } from 'react-redux';
+import * as authActions from '../../../store/actions/Authen';
 
-const LoginScreen = ({ style, navigation }) => {
+const LoginScreen = ({ navigation }) => {
+
   const [username,setUsername]=useState('');
   const [password,setPassword]=useState('');
   const [isLoading,setLoading]=useState(false);
-  const [message,setMessage]=useState('');
+  const dispatch = useDispatch();
 
-  const getLoginAPI=async()=>{
-    if(username!="" && password!=""){
-      setLoading(true);
-      let details = {
-        'username': username,
-        'password': password
-    };
+//   const getLoginAPI=async()=>{
+//     Keyboard.dismiss();
+//     if(username!="" && password!=""){
+//       setLoading(true);
+//       let details = {
+//         'username': username,
+//         'password': password
+//     };
   
-    let formBody = [];
-    for (let property in details) {
-        let encodedKey = encodeURIComponent(property);
-        let encodedValue = encodeURIComponent(details[property]);
-        formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
+//     let formBody = [];
+//     for (let property in details) {
+//         let encodedKey = encodeURIComponent(property);
+//         let encodedValue = encodeURIComponent(details[property]);
+//         formBody.push(encodedKey + "=" + encodedValue);
+//     }
+//     formBody = formBody.join("&");
   
-    await fetch('https://hcmusemu.herokuapp.com/account/signin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formBody
-      }).then((response) => {
-        const statusCode = response.status;
-        const data = response.json();
-        return Promise.all([statusCode, data]);
-      })
-        .then( ([statusCode, data]) => {
-            //console.log(statusCode,data);
-            setLoading(false);
-            if(statusCode===200){
-              navigation.navigate("Main");
-            }else{
-              alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")
-            }
-        }).done();
-    }
+//     await fetch('https://hcmusemu.herokuapp.com/account/signin', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded'
+//         },
+//         body: formBody
+//       }).then((response) => {
+//         const statusCode = response.status;
+//         const data = response.json();
+//         return Promise.all([statusCode, data]);
+//       })
+//         .then( ([statusCode, data]) => {
+//             //console.log(statusCode,data);
+//             setLoading(false);
+//             if(statusCode===200){
+//               navigation.navigate("Main");
+//             }else{
+//               alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")
+//             }
+//         }).done();
+//     }
 
-    else{
-      alert("Xin vui lòng điển đầy đủ thông tin");
+//     else{
+//       alert("Xin vui lòng điển đầy đủ thông tin");
+//     }
+//  }
+
+  const loginHandler = async () =>{
+    Keyboard.dismiss();
+    setLoading(true);
+
+    try{
+      await dispatch(authActions.login(username,password));
+      navigation.navigate("Main");
     }
-  
- }
+    catch(err){
+      console.log(err.message);
+      setLoading(false);
+    }
+  }
 
   return (
-    <View style={styles.container}>
-      <Heading>Đăng nhập</Heading>
-      <UsernameInput placeholder={"Tên đăng nhập"}
-        onChangeText={(username)=>setUsername(username)}/>
+    <TouchableWithoutFeedback onPress={()=>{
+      Keyboard.dismiss();
+    }}>
+      <View style={styles.container}>
 
-      <PasswordInput placeholder={"Mật khẩu"}
-        onChangeText={(password)=>setPassword(password)}/>
+        <Heading>Đăng nhập</Heading>
+        <UsernameInput placeholder={"Tên đăng nhập"}
+          onChangeText={(username)=>setUsername(username)}/>
+
+        <PasswordInput placeholder={"Mật khẩu"}
+          onChangeText={(password)=>setPassword(password)}/>
 
 
-      <TouchableOpacity style={styles.buttonLoginContainer}
-        onPress={() => {getLoginAPI()}}>
-        <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity>
-        <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
-      </TouchableOpacity>
-
-      <View style={styles.bottomText}>
-        <Text>Chưa có tài khoản?</Text>
-        <TouchableOpacity onPress={() =>{
-          navigation.navigate("Register");
-        }}>
-          <Text style={styles.signupText}>Đăng ký ngay</Text>
+        <TouchableOpacity style={styles.buttonLoginContainer}
+          onPress={() => {
+            loginHandler();
+            }}>
+          <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
         </TouchableOpacity>
-      </View>
 
-      {isLoading && <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#EEEEEE" />
-        <Text style={styles.txtIndicator}>Đang xử lí ...</Text>
-        </View>}
-    </View>
+        <TouchableOpacity>
+          <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
+        </TouchableOpacity>
+
+        <View style={styles.bottomText}>
+          <Text>Chưa có tài khoản?</Text>
+          <TouchableOpacity onPress={() =>{
+            navigation.navigate("Register");
+          }}>
+            <Text style={styles.signupText}>Đăng ký ngay</Text>
+          </TouchableOpacity>
+        </View>
+
+        {isLoading && <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#EEEEEE" />
+          <Text style={styles.txtIndicator}>Đang xử lí ...</Text>
+          </View>}
+        </View>
+    </TouchableWithoutFeedback>
+    
   );
 };
 

@@ -1,19 +1,27 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import {AuthenStackNavigation} from './src/navigations/StackNavigation';
 
-import{HomeScreen} from './src/screens/home/Home'
+import { Provider } from 'react-redux';
+import { createStore,combineReducers,applyMiddleware } from 'redux';
+import ReduxThunk from 'redux-thunk';
 
-const Stack = createStackNavigator();
+import authenReducer from './store/reducers/Authen';
+
+const rootReducer = combineReducers({
+  authen:authenReducer,
+});
+
+const store = createStore(rootReducer,applyMiddleware(ReduxThunk));
 
 function App() {
   return (
-    <NavigationContainer>
-      <AuthenStackNavigation/>
-    </NavigationContainer>
-
-    
+    <Provider store={store}>
+      <NavigationContainer>
+        <AuthenStackNavigation/>
+      </NavigationContainer>
+    </Provider>
   );
 }
+
 export default App;

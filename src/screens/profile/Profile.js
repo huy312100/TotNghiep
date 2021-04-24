@@ -53,7 +53,11 @@ export function ProfileScreen({navigation}) {
       <View style={styles.nameText}>
         {categoryProfile.map((item, index) => (
           <ListItem key={index}  bottomDivider>
-            <TouchableOpacity style={styles.itemBtn} >
+            <TouchableOpacity style={styles.itemBtn} onPress={() =>{
+              if(index === 1){
+                navigation.navigate("Connect application");
+              }
+            }}>
               <Icon name={item.icon} type={item.type_icon} />
               <ListItem.Content>
                 <ListItem.Title style={styles.itemName}>

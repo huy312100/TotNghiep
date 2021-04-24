@@ -7,7 +7,7 @@ import {
 } from "../../components/authentications/common/Index";
 import RNPickerSelect from 'react-native-picker-select';
 
-const RegisterScreen = ({ style }) => {
+const RegisterScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={()=>{
       Keyboard.dismiss();
@@ -15,25 +15,65 @@ const RegisterScreen = ({ style }) => {
       <ScrollView>
         <View style={styles.container}>
           <Heading>Đăng ký</Heading>
-          <UsernameInput placeholder={"Tên đăng nhập"}></UsernameInput>
+          <UsernameInput placeholder={"Tên đăng nhập"}/>
 
-          <PasswordInput placeholder={"Mật khẩu"}></PasswordInput>
+          <PasswordInput placeholder={"Mật khẩu"}/>
 
-          <PasswordInput placeholder={"Nhập lại mật khẩu"}></PasswordInput>
+          <PasswordInput placeholder={"Nhập lại mật khẩu"}/>
 
-          <UsernameInput placeholder={"Họ và tên"}></UsernameInput>
+          <UsernameInput placeholder={"Họ và tên"}/>
 
-          <UsernameInput placeholder={"Tên đăng nhập"}></UsernameInput>
-          <UsernameInput placeholder={"Tên đăng nhập"}></UsernameInput>
+          <View style={styles.dropdown}>
+          <RNPickerSelect
+            onValueChange={(value) => console.log(value)}
+                        style={{ inputAndroid: { color: 'black' } }}
+                        useNativeAndroidPickerStyle={false}
+                        fixAndroidTouchableBug={true}
+                        placeholder={{
+                          label: 'Chọn trường',
+                          value: null}}
+                        items={[
+                            { label: 'Moodle', value: 'Moodle' },
+                            { label: 'Slack', value: 'Slack' },
+                            { label: 'Trello', value: 'Trello' },
+                            { label: 'Classroom', value: 'Classroom' }]}/>
+          </View>
+          
 
-          <View style={[style, styles.buttonLoginContainer]}>
+          <View style={styles.dropdown}>
+          <RNPickerSelect
+            onValueChange={(value) => console.log(value)}
+                        style={{ inputAndroid: { color: 'black' } }}
+                        useNativeAndroidPickerStyle={false}
+                        fixAndroidTouchableBug={true}
+                        placeholder={{
+                          label: 'Chọn khoa',
+                          value: null}}
+                        onOpen={() =>{placeholder={}}}
+                        items={[
+                            { label: 'Moodle', value: 'Moodle' },
+                            { label: 'Slack', value: 'Slack' },
+                            { label: 'Trello', value: 'Trello' },
+                            { label: 'Classroom', value: 'Classroom' }]}/>
+          </View>
+
+          <View style={styles.buttonLoginContainer}>
             <TouchableOpacity style={styles.btnLoginTouchable}
               onPress={() => {
               }}
             >
-              <Text style={styles.textBtnLogIn}>Đăng ký</Text>
+              <Text style={styles.textBtnLogIn}>Tạo tài khoản</Text>
             </TouchableOpacity>
           </View>
+
+          <View style={styles.bottomText}>
+            <Text>Đã có tài khoản?</Text>
+            <TouchableOpacity onPress={() =>{
+              navigation.navigate("Login");
+            }}>
+              <Text style={styles.signupText}>Tham gia ngay</Text>
+            </TouchableOpacity>
+        </View>
         </View>
     </ScrollView>
     </TouchableWithoutFeedback>
@@ -50,32 +90,16 @@ const styles = StyleSheet.create({
     paddingTop: 120,
   },
 
-  passInput: {
-    backgroundColor: "#ccc",
+  dropdown: {
+    marginLeft:15,
+    marginRight:15,
+    backgroundColor:"#cccc",
+    paddingLeft:20,
+    paddingTop:20,
+    paddingBottom:20,
     width: "100%",
-  },
-
-  forgetPassText: {
-    fontWeight: "bold",
-    color: "blue",
-    fontSize: 16,
-  },
-
-  bottomText: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    bottom: 0,
-    marginBottom: 20,
-    flexDirection: "row",
-    fontSize: 14,
-  },
-
-  signupText: {
-    color: "red",
-    fontWeight: "bold",
-    marginLeft: 5,
+    borderRadius:10,
+    marginVertical:20,
   },
 
   buttonLoginContainer: {
@@ -92,11 +116,25 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 20,
+    textAlign: "center",
   },
 
   btnLoginTouchable:{
     width: "100%"
-  }
+  },
+
+  bottomText: {
+    flex: 1,
+    alignItems: "center",
+    flexDirection: "row",
+    fontSize: 14,
+  },
+
+  signupText: {
+    color: "#000088",
+    fontWeight: "bold",
+    marginLeft: 5,
+  },
 });
 
 export default RegisterScreen;

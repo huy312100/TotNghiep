@@ -29,7 +29,7 @@ export const login = (username, password) => {
         const dataRes = response.json();
         return Promise.all([statusCode, dataRes]);
     }).then(([statusCode, dataRes])=>{
-      if(statusCode===200){
+      if(statusCode === 200){
         console.log(dataRes);
         loginAction({
           type: LOGIN,
@@ -42,8 +42,8 @@ export const login = (username, password) => {
       }
       //console.log(dataRes.token);
     }).done();
-
   }
-}
+};
+
 
 

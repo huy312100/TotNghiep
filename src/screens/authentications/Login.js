@@ -8,6 +8,8 @@ import {
 
 import { useDispatch } from 'react-redux';
 import * as authActions from '../../../store/actions/Authen';
+import * as universityActions from "../../../store/actions/University";
+
 
 const LoginScreen = ({ navigation }) => {
 
@@ -45,7 +47,7 @@ const LoginScreen = ({ navigation }) => {
 //         return Promise.all([statusCode, data]);
 //       })
 //         .then( ([statusCode, data]) => {
-//             //console.log(statusCode,data);
+//             console.log(statusCode,data);
 //             setLoading(false);
 //             if(statusCode===200){
 //               navigation.navigate("Main");
@@ -102,7 +104,9 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.bottomText}>
           <Text>Chưa có tài khoản?</Text>
           <TouchableOpacity onPress={() =>{
+            dispatch(universityActions.getAllInfoUniversity());
             navigation.navigate("Register");
+            
           }}>
             <Text style={styles.signupText}>Đăng ký ngay</Text>
           </TouchableOpacity>

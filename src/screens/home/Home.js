@@ -3,8 +3,7 @@ import React,{useState,useEffect} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image } from 'react-native';
 import { Icon } from "react-native-elements";
 import {SafeAreaView} from 'react-native-safe-area-context';
-import 'localstorage-polyfill' 
-global.localStorage ;
+
 
 const DeviceWidth = Dimensions.get('window').width
 
@@ -18,7 +17,7 @@ const HomeScreen=({navigation}) =>{
   const [eventName,setEventName]=useState('');
 
   var d = new Date();
-  console.log(localStorage.getItem("tokenModdle"));
+  //console.log(localStorage.getItem("tokenModdle"));
   //console.log(eventName);a
 
   // componentDidMount()=async()=>{

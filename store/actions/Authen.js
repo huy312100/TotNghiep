@@ -1,8 +1,8 @@
-
-const LOGIN = 'LOGIN';
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 
 export const login = (username, password) => {
-  return async loginAction => {
+  return async dispatch => {
 
     let details = {
       username: username,
@@ -31,7 +31,7 @@ export const login = (username, password) => {
     }).then(([statusCode, dataRes])=>{
       if(statusCode === 200){
         console.log(dataRes);
-        loginAction({
+        dispatch({
           type: LOGIN,
           token: dataRes.token,
         })
@@ -40,10 +40,19 @@ export const login = (username, password) => {
         let message = 'Thông tin không hợp lệ . Xin vui lòng thử lại';
         throw new Error(message);
       }
-      //console.log(dataRes.token);
     }).done();
   }
 };
+
+export const register = () =>{
+  return async dispatch =>{
+    
+  }
+}
+
+export const logout = () => {
+  return {type: LOGOUT};
+}
 
 
 

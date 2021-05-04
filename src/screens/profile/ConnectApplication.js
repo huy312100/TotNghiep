@@ -2,70 +2,80 @@ import React,{useState} from "react";
 import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity} from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import 'localstorage-polyfill' 
-global.localStorage ;
+import {useDispatch} from "react-redux";
+import * as profileActions from '../../../store/actions/Profile';
+
 
 
 const ConnectAppScreen = ({navigation})=>{
 
     const [show,setShow]= useState(true);
     const [visible,setVisible]= useState(true);
+    const [typeUrl,setTypeUrl] =useState('');
+    const [url,setUrl]=useState('');
     const [username,setUsername]=useState('');
     const [password,setPassword]=useState('');
-    const [url,setUrl]=useState('');
+    const [isLoading,setLoading]=useState(false);
+
+    const dispatch=useDispatch();
+
     var d = new Date();
     var n = d.getFullYear();
 
-    const ConnectApi =async () => {
-        Keyboard.dismiss();
-        var requestOptions = {
-            method: 'POST',
-            redirect: 'follow'
-          };
+
+//     const ConnectApi =async () => {
+//         Keyboard.dismiss();
+//         var requestOptions = {
+//             method: 'POST',
+//             redirect: 'follow'
+//           };
           
-          await fetch(`${url}/login/token.php?service=moodle_mobile_app&username=${username}&password=${password}`, requestOptions)
-            .then(response => response.json())
-            .then(result => {             
+//           await fetch(`${url}/login/token.php?service=moodle_mobile_app&username=${username}&password=${password}`, requestOptions)
+//             .then(response => response.json())
+//             .then(result => {             
 
-                localStorage.setItem("tokenModdle",result.token);
-                //console.log(localStorage.getItem("tokenModdle"));
-                console.log(url);
-                console.log(requestOptions);
-                console.log(result.token);
-                //deadlineModdle();
-                navigation.navigate("Profile");
+//                 localStorage.setItem("tokenModdle",result.token);
+//                 //console.log(localStorage.getItem("tokenModdle"));
+//                 console.log(url);
+//                 console.log(requestOptions);
+//                 console.log(result.token);
+//                 //deadlineModdle();
+//                 navigation.navigate("Profile");
 
-                })
-            .catch(error => console.log('error', error));
-    }
-   // console.log(token);
+//                 })
+//             .catch(error => console.log('error', error));
+//     }
+//    // console.log(token);
 
-   const deadlineModdle =()=>{
+//    const deadlineModdle =()=>{
 
-      var requestOptions = {
-        method: 'POST',
-        redirect: 'follow'
-      };
+//       var requestOptions = {
+//         method: 'POST',
+//         redirect: 'follow'
+//       };
       
-       fetch(`${url}/webservice/rest/server.php?moodlewsrestformat=json&wstoken=${localStorage.getItem("tokenModdle")}&wsfunction=core_calendar_get_calendar_monthly_view&year=${d.getFullYear()}&month=${d.getMonth()+1}`, requestOptions)
-        .then(response => response.json())
-        .then(result => {             
+//        fetch(`${url}/webservice/rest/server.php?moodlewsrestformat=json&wstoken=${localStorage.getItem("tokenModdle")}&wsfunction=core_calendar_get_calendar_monthly_view&year=${d.getFullYear()}&month=${d.getMonth()+1}`, requestOptions)
+//         .then(response => response.json())
+//         .then(result => {             
 
-            //localStorage.setItem("tokenModdle",result.token);
-            //console.log(localStorage.getItem("tokenModdle"));
-            console.log();
-            //moodleObj.courseName=;
-            localStorage.setItem("Course Name",result.weeks[2].days[6].events[0].course.fullname);
-            localStorage.setItem("Day",result.weeks[2].days[6].mday);
-            localStorage.setItem("Month",d.getMonth()+1);
-            localStorage.setItem("Year",d.getFullYear());
-            localStorage.setItem("Full Date",localStorage.getItem("Day")+"/"+localStorage.getItem("Month")+"/"+localStorage.getItem("Year"));
-            localStorage.setItem("Event name",result.weeks[2].days[6].events[0].name);
-            console.log(localStorage.getItem("Event name"))
-            })
-        .catch(error => console.log('error', error));
-
-  }
+//             //localStorage.setItem("tokenModdle",result.token);
+//             //console.log(localStorage.getItem("tokenModdle"));
+//             console.log();
+//             //moodleObj.courseName=;
+//             localStorage.setItem("Course Name",result.weeks[2].days[6].events[0].course.fullname);
+//             localStorage.setItem("Day",result.weeks[2].days[6].mday);
+//             localStorage.setItem("Month",d.getMonth()+1);
+//             localStorage.setItem("Year",d.getFullYear());
+//             localStorage.setItem("Full Date",localStorage.getItem("Day")+"/"+localStorage.getItem("Month")+"/"+localStorage.getItem("Year"));
+//             localStorage.setItem("Event name",result.weeks[2].days[6].events[0].name);
+//             console.log(localStorage.getItem("Event name"))
+//             })
+//         .catch(error => console.log('error', error));
+        const ConnectAppHandler = async()=>{
+            Keyboard.dismiss();
+            await dispatch(profileActions.connectApplication(typeUrl,url,username,password));
+            navigation.navigate("Profile");
+        }
 
     return (
         <TouchableWithoutFeedback onPress={() =>{
@@ -77,11 +87,14 @@ const ConnectAppScreen = ({navigation})=>{
                 </Text>
                 <View backgroundColor={"#cccc"} style={styles.input}>
                     <RNPickerSelect 
-                        onValueChange={(value) => console.log(value)}
+                        onValueChange={(value) => setTypeUrl(value)}
                         style={{ inputAndroid: { color: 'black' } }}
                         useNativeAndroidPickerStyle={false}
                         fixAndroidTouchableBug={true}
-                        placeholder={{}}
+                        placeholder={{
+                            label: 'Chọn loại ứng dụng',
+                            value: null,
+                            color: '#777777'}}
                         items={[
                             { label: 'Moodle', value: 'Moodle' },
                             { label: 'Slack', value: 'Slack' },
@@ -119,7 +132,7 @@ const ConnectAppScreen = ({navigation})=>{
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => {ConnectApi()}}>
+                onPress={() => {ConnectAppHandler()}}>
                 <Text style={styles.textBtnConnect}>Kết nối</Text>
             </TouchableOpacity>
         </View>
@@ -158,6 +171,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#ccc",
         width: "100%",
         marginVertical: 10,
+        borderRadius:10
     },
 
     button:{
@@ -171,6 +185,7 @@ const styles = StyleSheet.create({
         marginLeft:15,
         marginRight:15,
         backgroundColor:"#cccc",
+        borderRadius:10,
     },
 
     textBtnConnect: {

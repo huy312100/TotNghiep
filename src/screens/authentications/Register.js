@@ -1,66 +1,139 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity,ScrollView,Keyboard,TouchableWithoutFeedback } from "react-native";
+import React, { useState, useEffect, useMemo,useCallback,useLayoutEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Platform
+} from "react-native";
 import {
   Heading,
   UsernameInput,
   PasswordInput,
 } from "../../components/authentications/common/Index";
-import RNPickerSelect from 'react-native-picker-select';
+import RNPickerSelect from "react-native-picker-select";
+import { useDispatch, useSelector,useStore,shallowEqual  } from "react-redux";
+import * as universityActions from "../../../store/actions/University";
 
 const RegisterScreen = ({ navigation }) => {
+  const [idUni,setIdUni] = useState('');
+  const [itemNameUniversity,setItemNameUniversity] = useState([]);
+  const [itemFacultyName,setItemFacultyName] = useState([]);
+  const [flag,setFlag] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const uniName = useSelector((state) => state.university.universityInfo,shallowEqual);
+  const facultyName = useSelector((state) => state.university.facultyInfo);
+
+
+  useEffect(() => {
+    const getAllUniNames = () => {
+      dispatch(universityActions.getAllInfoUniversity());
+      console.log(uniName);   
+        
+      //if(uniName.length!=0) {
+    };
+    getAllUniNames();
+  },[uniName.length]);
+
+
+    // const temp=[];
+    // for (const key in uniName) {
+    //   temp.push({
+    //     label: uniName[key].name,
+    //     value: uniName[key].id,
+    //   });
+    // }
+    // console.log(temp);
+    // setItemNameUniversity(temp);
+
+  // useEffect(() =>{
+    // const getAllFacultyName = () =>{
+    //   //dispatch(universityActions.getAllFacultyOfUniversity(test));
+      
+    //   const temp=[];
+    //   //console.log(facultyName);
+  
+    //   for (const key in facultyName) {
+    //     temp.push({
+    //       label: facultyName[key].name,
+    //       value: facultyName[key].id,
+    //     });
+    //   }
+    //   //console.log(temp);
+    //   setItemFacultyName(temp);
+    // };
+  //   getAllFacultyName();
+  // },[idUni])
+  
+
+  
+
   return (
-    <TouchableWithoutFeedback onPress={()=>{
-      Keyboard.dismiss();
-    }}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}>
       <ScrollView>
         <View style={styles.container}>
           <Heading>Đăng ký</Heading>
-          <UsernameInput placeholder={"Tên đăng nhập"}/>
+          <UsernameInput placeholder={"Tên đăng nhập"} />
 
-          <PasswordInput placeholder={"Mật khẩu"}/>
+          <PasswordInput placeholder={"Mật khẩu"} />
 
-          <PasswordInput placeholder={"Nhập lại mật khẩu"}/>
+          <PasswordInput placeholder={"Nhập lại mật khẩu"} />
 
-          <UsernameInput placeholder={"Họ và tên"}/>
+          <UsernameInput placeholder={"Họ và tên"} />
 
-          <View style={styles.dropdown}>
-          <RNPickerSelect
-            onValueChange={(value) => console.log(value)}
-                        style={{ inputAndroid: { color: 'black' } }}
-                        useNativeAndroidPickerStyle={false}
-                        fixAndroidTouchableBug={true}
-                        placeholder={{
-                          label: 'Chọn trường',
-                          value: null}}
-                        items={[
-                            { label: 'Moodle', value: 'Moodle' },
-                            { label: 'Slack', value: 'Slack' },
-                            { label: 'Trello', value: 'Trello' },
-                            { label: 'Classroom', value: 'Classroom' }]}/>
-          </View>
           
+          <View style={styles.dropdown}>
+            <RNPickerSelect
+              onValueChange={(value) => { 
+                if(value!=null){
+                  console.log(value);
+                  //setIdUni(value);
+                  //dispatch(universityActions.getAllFacultyOfUniversity(value));
+                  //getAllFacultyName(value);
+
+                  //console.log("ABC")
+                  
+                }
+              }}
+              //style={{...pickerSelectStyles}}
+              useNativeAndroidPickerStyle={false}
+              //fixAndroidTouchableBug={true}
+              placeholder={{
+                label: "Chọn trường",
+                value: null,
+              }}
+              items={itemNameUniversity}
+            />
+            </View>
 
           <View style={styles.dropdown}>
-          <RNPickerSelect
-            onValueChange={(value) => console.log(value)}
-                        style={{ inputAndroid: { color: 'black' } }}
-                        useNativeAndroidPickerStyle={false}
-                        fixAndroidTouchableBug={true}
-                        placeholder={{
-                          label: 'Chọn khoa',
-                          value: null}}
-                        onOpen={() =>{placeholder={}}}
-                        items={[
-                            { label: 'Moodle', value: 'Moodle' },
-                            { label: 'Slack', value: 'Slack' },
-                            { label: 'Trello', value: 'Trello' },
-                            { label: 'Classroom', value: 'Classroom' }]}/>
+            <RNPickerSelect
+              onValueChange={(value) => {
+                console.log(value);
+              }}
+              //style={{ inputAndroid: { color: "black" } }}
+              useNativeAndroidPickerStyle={false}
+              //fixAndroidTouchableBug={true}
+              placeholder={{
+                label: "Chọn khoa",
+                value: null,
+              }}
+              items={itemFacultyName}
+            />
           </View>
 
           <View style={styles.buttonLoginContainer}>
-            <TouchableOpacity style={styles.btnLoginTouchable}
-              onPress={() => {
-              }}
+            <TouchableOpacity
+              style={styles.btnLoginTouchable}
+              onPress={() => {}}
             >
               <Text style={styles.textBtnLogIn}>Tạo tài khoản</Text>
             </TouchableOpacity>
@@ -68,16 +141,17 @@ const RegisterScreen = ({ navigation }) => {
 
           <View style={styles.bottomText}>
             <Text>Đã có tài khoản?</Text>
-            <TouchableOpacity onPress={() =>{
-              navigation.navigate("Login");
-            }}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+            >
               <Text style={styles.signupText}>Tham gia ngay</Text>
             </TouchableOpacity>
+          </View>
         </View>
-        </View>
-    </ScrollView>
+      </ScrollView>
     </TouchableWithoutFeedback>
-    
   );
 };
 
@@ -91,15 +165,15 @@ const styles = StyleSheet.create({
   },
 
   dropdown: {
-    marginLeft:15,
-    marginRight:15,
-    backgroundColor:"#cccc",
-    paddingLeft:20,
-    paddingTop:20,
-    paddingBottom:20,
+    marginLeft: 15,
+    marginRight: 15,
+    backgroundColor: "#cccc",
+    paddingLeft: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
     width: "100%",
-    borderRadius:10,
-    marginVertical:20,
+    borderRadius: 10,
+    marginVertical: 20,
   },
 
   buttonLoginContainer: {
@@ -119,8 +193,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  btnLoginTouchable:{
-    width: "100%"
+  btnLoginTouchable: {
+    width: "100%",
   },
 
   bottomText: {
@@ -134,6 +208,31 @@ const styles = StyleSheet.create({
     color: "#000088",
     fontWeight: "bold",
     marginLeft: 5,
+  },
+
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    marginLeft: 15,
+    marginRight: 15,
+    backgroundColor: "#cccc",
+    paddingLeft: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+    width: "100%",
+    borderRadius: 10,
+    marginVertical: 20,
   },
 });
 

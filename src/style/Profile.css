@@ -1,0 +1,60 @@
+.info {
+  width: 80vw;
+  margin: 30px auto;
+  background: #fff;
+}
+
+/* table{
+    margin: auto;
+} */
+
+hr {
+  border-top: 1px solid gray;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  font-size: 14px;
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.firstcol{
+  font-weight: bold;
+}
+
+td{
+  padding: 15px 0px 15px 5px;
+}
+
+.tb-row:hover{
+  background: rgb(226, 226, 226);
+  cursor:pointer;
+}
+
+.edit{
+  color: rgb(71, 71, 194);
+} 
+
+.confirm{
+  margin: 2px;
+  padding: 5px;
+  background: #304f8d;
+  color: white;
+}
+
+.cancel{
+  margin: 2px;
+  padding: 4px;
+  background: #ffffff;
+  border:1px solid;
+}
+
+.image{
+  border-radius: 100px;
+}

@@ -4,12 +4,14 @@ import {
     Switch,
     Route,
     Link
-  } from "react-router-dom";
+} from "react-router-dom";
 import Login from "../Component/Login/Login";
 import Signup from "../Component/Login/Signup";
 import Student from "../Component/Mainpage/Student/Student";
 import Message from "../Component/Mainpage/Student/Message/Message";
 import Profile from '../Component/Mainpage/Student/Setting/EditProfile/Profile';
+import SetURL from '../Component/Mainpage/Student/Setting/Config/SetURL';
+import ChangePW from '../Component/Mainpage/Student/Setting/Config/ChangePW';
 
 
 class RouterMD extends Component {
@@ -29,11 +31,13 @@ class RouterMD extends Component {
                         </li>
                     </ul> */}
 
+
                     <Switch>
+                       
                         <Route path="/profile">
-                            <Profile/>
+                            <Profile />
                         </Route>
-                        <Route exact path="/signup">
+                        <Route path="/signup">
                             <Signup />
                         </Route>
                         <Route path="/home">
@@ -42,11 +46,17 @@ class RouterMD extends Component {
                         <Route path="/message">
                             <Message />
                         </Route>
-                        <Route path="/" render={() => {
-                            return localStorage.getItem("token") ? <Student />:<Login />
-                        }}>
-                            {/* <Login /> */}
+                        <Route path="/setting">
+                            <SetURL />
                         </Route>
+                        <Route path="/changepw">
+                            <ChangePW />
+                        </Route>
+                        <Route exect path="/" render={() => {
+                            return localStorage.getItem("token") ? <Student /> : <Login />
+                        }}>
+                        </Route>
+
                     </Switch>
                 </div>
             </Router>

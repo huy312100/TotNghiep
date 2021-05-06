@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import '../../style/Signup.css';
+import { Link } from 'react-router-dom';
 
 
 class Signup extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            name:"",
             email: "",
             password: "",
             pwrepeat: "",
             uniselected: "",
-            university: [],
+            facselected:"",
+            university: [], 
             faculty: []
         }
         this.handleChange = this.handleChange.bind(this);
@@ -39,8 +42,12 @@ class Signup extends Component {
     //     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
     //     var urlencoded = new URLSearchParams();
-    //     urlencoded.append("username", this.state.username);
+    //     urlencoded.append("username", this.state.email);
     //     urlencoded.append("password", this.state.password);
+    //     urlencoded.append("HoTen", this.state.name);
+    //     urlencoded.append("MaTruong", "");
+    //     urlencoded.append("MaKhoa", "");
+    //     urlencoded.append("AnhSV", "");
 
     //     var requestOptions = {
     //         method: 'POST',
@@ -48,7 +55,6 @@ class Signup extends Component {
     //         body: urlencoded,
     //         redirect: 'follow'
     //     };
-
     //     fetch("https://hcmusemu.herokuapp.com/account/signup", requestOptions)
     //         .then(response => {
     //             if (response.status == 409) {
@@ -74,7 +80,7 @@ class Signup extends Component {
 
 
     async handleChange(event) {
-        await this.setState({ uniselected: event.target.value });
+        await this.setState({ [event.target.name]: event.target.value });
         // console.log(this.state.uniselected)
         this.loadingFaculty();
     }
@@ -115,7 +121,7 @@ class Signup extends Component {
         urlencoded.append("password", this.state.password);
         urlencoded.append("HoTen", this.state.name);
         urlencoded.append("MaTruong", this.state.uniselected);
-        urlencoded.append("MaKhoa", this.state.faculty);
+        urlencoded.append("MaKhoa", this.state.facselected);
         // console.log(this.state.email)
 
         var requestOptions = {
@@ -128,11 +134,14 @@ class Signup extends Component {
         fetch("https://hcmusemu.herokuapp.com/account/signup", requestOptions)
             .then(response => response.json())
             .then(result => {
-               if (result.message=="account created"){
-                alert("Tạo thành công")
-               }
+                if (result.message == "account created") {
+                    alert("Tạo thành công")
+                }
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                console.log('error', error);
+                return false;
+            });
     }
 
     setParams = (event) => {
@@ -152,11 +161,11 @@ class Signup extends Component {
                         <h1>Đăng kí</h1>
                         <hr />
                         <label htmlFor="email"><b>Nhập Email</b></label>
-                        <input type="text" placeholder="Nhập tên đăng nhập" name="email" onChange={this.setParams} />
+                        <input type="text" placeholder="Nhập tên đăng nhập" name="email" onChange={this.setParams} required />
                         <label htmlFor="psw"><b>Mật khẩu</b></label>
-                        <input type="password" placeholder="Nhập mật khẩu" name="password" onChange={this.setParams} />
+                        <input type="password" placeholder="Nhập mật khẩu" name="password" onChange={this.setParams} required />
                         <label htmlFor="psw-repeat"><b>Nhập lại mật khẩu</b></label>
-                        <input type="password" placeholder="Nhập lại mật khẩu" name="pwrepeat" onChange={this.setParams} />
+                        <input type="password" placeholder="Nhập lại mật khẩu" name="pwrepeat" onChange={this.setParams} required />
                         <label htmlFor="email"><b>Nhập tên</b></label>
                         <input type="text" placeholder="Nhập tên" name="name" onChange={this.setParams} />
                         <label htmlFor="university"><b>Chọn trường</b></label>
@@ -164,8 +173,8 @@ class Signup extends Component {
                             <option>Chọn trường</option>
                             {this.state.university}
                         </select>
-                        <label htmlFor="faculty" style={{paddingTop:"30px"}}><b>Chọn khoa</b></label>
-                        <select className="form-control" id="faculty" >
+                        <label htmlFor="faculty" style={{ paddingTop: "30px" }}><b>Chọn khoa</b></label>
+                        <select className="form-control" name="facselected" onChange={this.handleChange} value={this.state.facselected}>
                             <option>Chọn khoa</option>
                             {this.state.faculty}
                         </select>
@@ -173,7 +182,7 @@ class Signup extends Component {
                         <p>Bằng cách nhấp vào Đăng ký, bạn đồng ý với  <a href="#" style={{ color: 'dodgerblue' }}>Điều khoản &amp; Chính sách</a> của chúng tôi.</p>
                         <div className="clearfix">
                             <button type="button" className="signupbtn" onClick={() => this.checkPasswordRepeat()}>Đăng Kí</button>
-                            <a href="/" type="button" className="cancelbtn">Trở về</a>
+                            <Link to="/" type="button" className="cancelbtn">Trở về</Link>
                         </div>
                     </div>
                 </form>

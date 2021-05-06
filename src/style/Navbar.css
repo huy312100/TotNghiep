@@ -1,6 +1,7 @@
 .bg-icon {
-    background-color: #bcc2cc;
+    background-color: #ffffff;
     padding: 10%;
+    border: black solid 1px;
     border-radius: 100%;
 }
 
@@ -18,12 +19,17 @@ li.nav-item {
 
 .navbar {
     border-bottom: 2px solid black;
+    /* position: fixed;
+    top: 0; */
+    width: 100%;
+    z-index: 99;
 }
 
 .action-box {
-    width: 25%;
+    width: 25vw;
     position: fixed;
     right: 5px;
+    top:56px;
     z-index: 0;
     background: white;
     border: 1px solid rgb(170, 170, 170);
@@ -34,12 +40,12 @@ li.nav-item {
 
 .message-content {
     padding: 5px 0 0px 5px;
-    margin:5px 5px 10px 5px;
+    margin: 5px 5px 10px 5px;
     display: flex;
     align-items: start;
 }
 
-.message-content:hover{
+.message-content:hover {
     background: rgb(196, 196, 196);
     border-radius: 10px;
 }
@@ -67,14 +73,14 @@ li.nav-item {
     -webkit-box-orient: vertical;
 }
 
-.user-content{
+.user-content {
     padding: 5px 0 0px 5px;
-    margin:5px 5px 10px 5px;
+    margin: 5px 5px 10px 5px;
     display: flex;
     align-items: center;
 }
 
-.user-content-name{
+.user-content-name {
     margin-top: 0;
     margin-left: 10px;
     /* text  */
@@ -82,8 +88,8 @@ li.nav-item {
     /* vertical-align: text-top; */
 }
 
-.user-link{
-    margin:1px;
+.user-link {
+    margin: 1px;
     padding: 10px;
     font-weight: 500;
     color: black;
@@ -91,7 +97,7 @@ li.nav-item {
     border-radius: 10px;
 }
 
-.user-link:hover{
+.user-link:hover {
     background: rgb(231, 231, 231);
     color: black;
 }

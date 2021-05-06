@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import "../../../style/Navbar.css"
+import "../../../style/Navbar.css";
 import { Link, useHistory } from "react-router-dom";
 import UserBox from '../../../hook/userbox';
 
@@ -52,8 +52,8 @@ class Navbar extends Component {
                 </h5>
             </div>
             {/* <hr/> */}
-                <Link className="user-link" to="/profile" style={{ textDecoration: 'none' }}>Thông tin cá nhân</Link>
-                <Link className="user-link" style={{ textDecoration: 'none' }}>Thiết lập</Link>
+                <Link to="/profile" className="user-link" style={{ textDecoration: 'none' }}>Thông tin cá nhân</Link>
+                <Link to="/setting" className="user-link" style={{ textDecoration: 'none' }}>Thiết lập</Link>
             <UserBox />
         </div>
     )
@@ -135,7 +135,7 @@ class Navbar extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar navbar-light bg-light">
+                <nav className="navbar navbar-light bg-light fixed-top">
                     {/* <div className="container"> */}
                     <a className="navbar-brand" href="/home">
                         <img className="d-inline-block align-top" width="10%" src={process.env.PUBLIC_URL + 'logo192.png'} />

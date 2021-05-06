@@ -37,37 +37,6 @@ class Signup extends Component {
             .catch(error => console.log('error', error));
     }
 
-    // ActionSignup = () => {
-    //     var myHeaders = new Headers();
-    //     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-    //     var urlencoded = new URLSearchParams();
-    //     urlencoded.append("username", this.state.email);
-    //     urlencoded.append("password", this.state.password);
-    //     urlencoded.append("HoTen", this.state.name);
-    //     urlencoded.append("MaTruong", "");
-    //     urlencoded.append("MaKhoa", "");
-    //     urlencoded.append("AnhSV", "");
-
-    //     var requestOptions = {
-    //         method: 'POST',
-    //         headers: myHeaders,
-    //         body: urlencoded,
-    //         redirect: 'follow'
-    //     };
-    //     fetch("https://hcmusemu.herokuapp.com/account/signup", requestOptions)
-    //         .then(response => {
-    //             if (response.status == 409) {
-    //                 alert("Tai khoan ton tai")
-    //                 throw Error(response.status)
-    //             }
-    //             return response.json()
-    //         })
-    //         .then(result => {
-    //             alert("Dang ki thanh cong")
-    //         })
-    //         .catch(error => console.log('error', error));
-    // }
 
     checkPasswordRepeat = () => {
         if (this.state.password === this.state.pwrepeat) {

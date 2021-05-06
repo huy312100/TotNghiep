@@ -22,7 +22,7 @@ class NavSetting extends Component {
                     <NavLink className="sidelink" to="changepw" activeClassName="selected">
                         <div className="nav-text">
                             <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/pw.png'}></img>
-                            <div className="side-text">Mật khẩu</div>
+                            <div className="side-text">Đổi mật khẩu</div>
                         </div>
                     </NavLink>
                 </div>

@@ -1,0 +1,31 @@
+.seturl-box {
+    width: 60vw;
+    margin: 100px auto;
+    background: #fff;
+    padding: 5px;
+}
+
+.lb-input {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.lb-input .inputops {
+    width: 40vw;
+}
+
+.btnconnect-box {
+    display: flex;
+    justify-content: flex-end;
+    margin: 20px;
+}
+
+.btnconnect {
+    text-align: center;
+    width: 10vw;
+    padding: 5px;
+    border: 1px solid grey;
+    background: #0184ff;
+    color: white;
+}

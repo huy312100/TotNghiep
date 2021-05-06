@@ -10,11 +10,16 @@ class Profile extends Component {
         this.state = {
             name: "",
             email: "",
-            uni: "",
+            university: "",
             fac: "",
+
+            uniselected: "",
+
             editname: 0,
-            editimg:0,
-            loading:0,
+            editimg: 0,
+            edituni: 0,
+
+            loading: 0,
 
             picture: "",
             imgData: process.env.PUBLIC_URL + 'uploadimg.png'
@@ -40,9 +45,9 @@ class Profile extends Component {
                 this.setState({
                     name: result[0].HoTen,
                     email: result[0].Email,
-                    uni: result[0].TenTruongDH,
+                    university: result[0].TenTruongDH,
                     fac: result[0].TenKhoa,
-                    loading:1
+                    loading: 1
                 })
                 console.log(this.state.name)
             })
@@ -70,12 +75,12 @@ class Profile extends Component {
     }
 
     CancelEdit = () => {
-        this.setState({ editname: 0 })
+        this.setState({ editname: 0,edituni:0 })
     }
 
     updateProfile = async () => {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer "+localStorage.getItem("token"));
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
         var urlencoded = new URLSearchParams();
         urlencoded.append("HoTen", this.state.name);
@@ -94,7 +99,7 @@ class Profile extends Component {
             .then(response => response.json())
             .then(result => {
                 console.log(result)
-                if (result.message==="profile edited"){
+                if (result.message === "profile edited") {
                     alert("Đổi thành công");
                 }
                 this.CancelEdit();
@@ -119,35 +124,83 @@ class Profile extends Component {
             </tr>
         }
     }
-    
+
+    loadUni = () => {
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/university/getname", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var uni = result.map((value, index) => {
+                    return <option key={index} value={value.MaTruong}>{value.TenTruongDH}</option>;
+                })
+                console.log(uni)
+                this.setState({ university: uni })
+            })
+            .catch(error => console.log('error', error));
+    }
+
+
+
+    EditUni = () => {
+        this.setState({
+            edituni: 1
+        })
+        this.loadUni();
+    }
+
+    changeUni = () => {
+        if (this.state.edituni === 0) {
+            return <tr className="tb-row" onClick={this.EditUni}>
+                <td className="firstcol">Trường</td>
+                <td>{this.state.university}</td>
+                <td className="edit" >Chỉnh sửa</td>
+            </tr>
+        }
+        else {
+            return <tr>
+                <td className="firstcol">Trường</td>
+                <td><select className="form-control" name="uniselected" onChange={this.setParams} value={this.state.uniselected}>
+                    <option>Chọn trường</option>
+                    {this.state.university}
+                </select></td>
+                <td><span className="confirm" type="button" onClick={this.updateProfile}>Xác nhận</span><span className="cancel" type="button" onClick={this.CancelEdit}>Hủy</span></td>
+            </tr>
+        }
+    }
+
+
 
     setParams = (event) => {
         this.setState({ [event.target.name]: event.target.value })
     }
 
-    checkPopup =() =>{
-        if (this.state.editimg===0){
+    checkPopup = () => {
+        if (this.state.editimg === 0) {
             return <></>
         }
-        else{
-            return  this.popupBox();
+        else {
+            return this.popupBox();
         }
     }
 
-    changeIMG = () =>{
-        if (this.state.editimg===0){
+    changeIMG = () => {
+        if (this.state.editimg === 0) {
             this.setState({
-                editimg:1
+                editimg: 1
             })
         }
         else {
             this.setState({
-                editimg:0
+                editimg: 0
             })
         }
     }
 
-    popupBox=()=> {
+    popupBox = () => {
         return (
             <div className="popup-box">
                 <div className="header">
@@ -191,29 +244,25 @@ class Profile extends Component {
                             <col style={{ width: "25%" }} />
                         </colgroup>
                         <tbody>
-                        <tr className="tb-row" onClick={this.changeIMG}>
-                            <td className="firstcol">Ảnh</td>
-                            <td style={{ color: "grey" }}>Thêm hình ảnh để cá nhân hóa tài khoản</td>
-                            <td><img className="image" width="50vw" height="50vh" src="https://i.pinimg.com/originals/a4/f8/f9/a4f8f91b31d2c63a015ed34ae8c13bbd.jpg"></img></td>
-                        </tr>
+                            <tr className="tb-row" onClick={this.changeIMG}>
+                                <td className="firstcol">Ảnh</td>
+                                <td style={{ color: "grey" }}>Thêm hình ảnh để cá nhân hóa tài khoản</td>
+                                <td><img className="image" width="50vw" height="50vh" src="https://i.pinimg.com/originals/a4/f8/f9/a4f8f91b31d2c63a015ed34ae8c13bbd.jpg"></img></td>
+                            </tr>
 
-                        {this.changeName()}
+                            {this.changeName()}
 
-                        <tr className="tb-row">
-                            <td className="firstcol">Email</td>
-                            <td>{this.state.email}</td>
-                            <td></td>
-                        </tr>
-                        <tr className="tb-row">
-                            <td className="firstcol">Trường</td>
-                            <td>{this.state.uni}</td>
-                            <td className="edit">Chỉnh sửa</td>
-                        </tr>
-                        <tr className="tb-row">
-                            <td className="firstcol">Khoa</td>
-                            <td>{this.state.fac}</td>
-                            <td ><div className="edit">Chỉnh sửa</div></td>
-                        </tr>
+                            <tr className="tb-row">
+                                <td className="firstcol">Email</td>
+                                <td>{this.state.email}</td>
+                                <td></td>
+                            </tr>
+                            {this.changeUni()}
+                            <tr className="tb-row">
+                                <td className="firstcol">Khoa</td>
+                                <td>{this.state.fac}</td>
+                                <td ><div className="edit">Chỉnh sửa</div></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

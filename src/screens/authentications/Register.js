@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo,useCallback,useLayoutEffect } from "react";
+import React, { useState, useEffect,useMemo  } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,6 @@ import {
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
-  Platform
 } from "react-native";
 import {
   Heading,
@@ -24,18 +23,25 @@ const RegisterScreen = ({ navigation }) => {
   const [itemFacultyName,setItemFacultyName] = useState([]);
   const [flag,setFlag] = useState(null);
 
-  const dispatch = useDispatch();
-
   const uniName = useSelector((state) => state.university.universityInfo,shallowEqual);
   const facultyName = useSelector((state) => state.university.facultyInfo);
 
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const getAllUniNames = () => {
-      dispatch(universityActions.getAllInfoUniversity());
-      console.log(uniName);   
+    const getAllUniNames = async() => {
+      await dispatch(universityActions.getAllInfoUniversity());
+      //console.log(uniName);   
         
-      //if(uniName.length!=0) {
+      const temp=[];
+      for (const key in uniName) {
+        temp.push({
+          label: uniName[key].name,
+          value: uniName[key].id,
+        });
+      }
+      console.log(temp);
+      setItemNameUniversity(temp);
     };
     getAllUniNames();
   },[uniName.length]);
@@ -52,23 +58,25 @@ const RegisterScreen = ({ navigation }) => {
     // setItemNameUniversity(temp);
 
   // useEffect(() =>{
-    // const getAllFacultyName = () =>{
-    //   //dispatch(universityActions.getAllFacultyOfUniversity(test));
-      
-    //   const temp=[];
-    //   //console.log(facultyName);
-  
-    //   for (const key in facultyName) {
-    //     temp.push({
-    //       label: facultyName[key].name,
-    //       value: facultyName[key].id,
-    //     });
-    //   }
-    //   //console.log(temp);
-    //   setItemFacultyName(temp);
-    // };
+    function getAllFacultyName (idUni) {
+      dispatch(universityActions.getAllFacultyOfUniversity(idUni));
+
+      if(facultyName.length!=0){
+        const temp=[];
+        console.log(facultyName);
+    
+        for (const key in facultyName) {
+          temp.push({
+            label: facultyName[key].name,
+            value: facultyName[key].id,
+          });
+        }
+        console.log(temp);
+        setItemFacultyName(temp);
+      }
+    };
   //   getAllFacultyName();
-  // },[idUni])
+  // },[idUni,facultyName.length]);
   
 
   
@@ -97,7 +105,8 @@ const RegisterScreen = ({ navigation }) => {
                   console.log(value);
                   //setIdUni(value);
                   //dispatch(universityActions.getAllFacultyOfUniversity(value));
-                  //getAllFacultyName(value);
+                  
+                  getAllFacultyName(value);
 
                   //console.log("ABC")
                   
@@ -117,6 +126,7 @@ const RegisterScreen = ({ navigation }) => {
           <View style={styles.dropdown}>
             <RNPickerSelect
               onValueChange={(value) => {
+
                 console.log(value);
               }}
               //style={{ inputAndroid: { color: "black" } }}

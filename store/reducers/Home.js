@@ -1,18 +1,16 @@
-import { LOGIN , LOGOUT } from '../actions/Authen';
+import { GET_NEWEST_DEADLINE } from '../actions/Home';
 
 
 const initialState = {
-    token:""
+    newDeadline:[],
 }
 
 export default (state=initialState,action) => {
     switch (action.type) {
-        case LOGIN:
+        case GET_NEWEST_DEADLINE:
             return {
-                token:action.token
+                newDeadline:action.newDeadline
         }
-        case LOGOUT:
-            return initialState;
         default:
             return state;
     }

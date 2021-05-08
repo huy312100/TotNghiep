@@ -1,68 +1,59 @@
-
-import React,{useState,useEffect} from 'react';
-import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image } from 'react-native';
+import React,{useEffect,useRef} from 'react';
+import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert } from 'react-native';
 import { Icon } from "react-native-elements";
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+import {useDispatch,useSelector} from "react-redux";
 
-const DeviceWidth = Dimensions.get('window').width
+import * as homeActions from "../../../store/actions/Home";
+
+const DeviceWidth = Dimensions.get('window').width;
 
 const HomeScreen=({navigation}) =>{
 
-  const [courseName,setCourseName]=useState('');
-  const [day,setDay]=useState('');
-  const [month,setMonth]=useState('');
-  const [year,setYear]=useState('');
-  const [fulldate,setFullDate]=useState('');
-  const [eventName,setEventName]=useState('');
 
-  var d = new Date();
-  //console.log(localStorage.getItem("tokenModdle"));
-  //console.log(eventName);a
+  const unmounted = useRef(false);
 
-  // componentDidMount()=async()=>{
-    const ConnectApi = async () => {
-      // var myHeaders = new Headers();
-      //   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+  const newDeadline = useSelector((state) => state.home.newDeadline);
 
-      //   var urlencoded = new URLSearchParams();
-      //   urlencoded.append(moodlewsrestformat, "json");
-      //   urlencoded.append(wstoken, localStorage.getItem("tokenModdle"));
-      //   urlencoded.append(wsfunction, core_calendar_get_calendar_monthly_view);
-      //   urlencoded.append(year, d.getFullYear());
-      //   urlencoded.append(month, d.getMonth()+1);
+  const dispatch = useDispatch();
 
-      //   var requestOptions = {
-      //       method: 'POST',
-      //       headers: myHeaders,
-      //       body: urlencoded,
-      //       redirect: 'follow'
-      //   };
+  function convertTimestamp(timestamp) {
+    var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
+        yyyy = d.getFullYear(),
+        mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+        dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+        hh = d.getHours(),
+        h = hh,
+        min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+        ampm = 'AM',
+        time;
+    if (hh > 12) {
+        h = hh - 12;
+        ampm = 'PM';
+    } else if (hh === 12) {
+        h = 12;
+        ampm = 'PM';
+    } else if (hh == 0) {
+        h = 12;
+    }
+    // ie: 2014-03-24, 3:00 PM
+    time = dd + '-' + mm + '-' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
+    return time;
+};
 
-      var requestOptions = {
-        method: 'POST',
-        redirect: 'follow'
-      };
-      
-      await fetch(`https://courses.ctda.hcmus.edu.vn/webservice/rest/server.php?moodlewsrestformat=json&wstoken=${localStorage.getItem("tokenModdle")}&wsfunction=core_calendar_get_calendar_monthly_view&year=${d.getFullYear()}&month=${d.getMonth()+1}`, requestOptions)
-        .then(response => response.json())
-        .then(result => {             
+  useEffect(() =>{
+    const getAllNewDeadlines = async() =>{
+      await dispatch(homeActions.NewestDeadline());
+      console.log(newDeadline);
 
-            //localStorage.setItem("tokenModdle",result.token);
-            //console.log(localStorage.getItem("tokenModdle"));
-            console.log();
-            //moodleObj.courseName=;
-            setCourseName(result.weeks[2].days[6].events[0].course.fullname);
-            setDay(result.weeks[2].days[6].mday);
-            setMonth(d.getMonth()+1);
-            setYear(d.getFullYear());
-            setFullDate(result.weeks[2].days[6].mday+"/"+"4"+"/"+d.getFullYear());
-            setEventName(result.weeks[2].days[6].events[0].name);
-            })
-        .catch(error => console.log('error', error));
- 
+    }
+    getAllNewDeadlines();
+    return()=>{
+      unmounted.current = true
+    };
+  },[newDeadline.length]);
 
-  }
   
     return (
       <SafeAreaView style={styles.container}>
@@ -127,30 +118,41 @@ const HomeScreen=({navigation}) =>{
   
         <Text style={styles.label}>Deadline gần nhất</Text>
         
-        <View style={styles.userInfo}>
-                <View style={styles.userImgWrapper}>
-                    <View >
-                        <Image style={styles.userImg} source={require("../../../assets/moodle-deadline.png")}/>
-                        
-                    </View>
+        {newDeadline.length > 0 &&
+          <FlatList 
+          data={newDeadline}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => (
+            <TouchableOpacity style={styles.card} onPress={() =>{
+              Alert.alert(
+                "Chuyển tiếp",
+                "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
+                [
+                  { text: "Từ chối", 
+                    style: "cancel"
+                  },
+                  {
+                    text: "Cho phép",
+                    onPress: () => Linking.openURL(item.url),
+                  },
+                ]
+              );
+              
+            }}>
+              <View style={styles.deadlineInfo}>
+                <View style={styles.deadlineImgWrapper}>
+                  <Image style={styles.deadlineImg} source={require("../../../assets/moodle-deadline.png")} />
                 </View>
                 <View style={styles.textSection}>
-                  <View style={styles.userInfoText}>
-                    <Text style={styles.userName}>{courseName}</Text>
-                    <Text style={styles.postTime}>{fulldate}</Text>
+                  <View style={styles.courseInfoText}>
+                    <Text style={styles.courseName}>{item.nameCourese}</Text>
+                    <Text style={styles.timeDeadline}>{convertTimestamp(item.duedate)}</Text>
                   </View>
-                  <Text style={styles.messageText}>{eventName}</Text>
+                  <Text style={styles.contentDeadline}>{item.decription}</Text>
                 </View>
               </View>
-
-
-        <TouchableOpacity
-                style={styles.button}
-                onPress={() => {ConnectApi()}}
-                >
-                <Text>tset</Text>
-            </TouchableOpacity>
-  
+            </TouchableOpacity>)}/>
+        }
       </SafeAreaView>
     )
 
@@ -191,7 +193,7 @@ const styles = StyleSheet.create({
     marginTop:15,
   },
 
-  userInfo:{
+  deadlineInfo:{
     flexDirection:"row",
     justifyContent: "space-between",
   },
@@ -199,49 +201,47 @@ const styles = StyleSheet.create({
   textSection:{
     flexDirection: "column",
     justifyContent: "center",
-    padding: 15,
-    paddingLeft: 0,
-    marginLeft: 10,
-    width: 300,
+    width: '100%',
+    marginHorizontal: 5,
     borderBottomWidth: 1,
     borderBottomColor: "#cccccc",
   },
 
-  userInfoText:{
+  courseInfoText:{
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 5,
+    marginBottom: 10,
   },
 
-  userName:{
-    fontSize: 14,
+  courseName:{
+    fontSize: 13,
     fontWeight: "bold",
   },
 
-  postTime: {
-    fontSize: 10,
+  timeDeadline: {
+    fontSize: 11,
     color:"#666",
+    marginLeft:25
   },
 
-  messageText:{
-    fontSize: 14,
+  contentDeadline:{
+    fontSize: 15,
     color: "#333333",
   },
 
-  userInfo:{
-    flexDirection:"row",
-    justifyContent: "space-between",
-  },
-  userImgWrapper:{
-    paddingTop: 15,
-    paddingBottom: 15,
+  deadlineImgWrapper:{
+    paddingTop: 10,
+    paddingBottom: 10,
   },
 
-  userImg:{
+  deadlineImg:{
     width: 50,
     height: 50,
     backgroundColor: "transparent",
-    marginLeft:15
+    marginLeft:5
+  },
+
+  card: {
+    width: '100%',
   },
 })
 

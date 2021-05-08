@@ -68,7 +68,9 @@ const LoginScreen = ({ navigation }) => {
 
     try{
       await dispatch(authActions.login(username,password));
-      navigation.navigate("Main");
+      setLoading(false);
+      navigation.navigate("Main");  
+
     }
     catch(err){
       console.log(err.message);
@@ -104,7 +106,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.bottomText}>
           <Text>Chưa có tài khoản?</Text>
           <TouchableOpacity onPress={() =>{
-            dispatch(universityActions.getAllInfoUniversity());
+            //dispatch(universityActions.getAllInfoUniversity());
             navigation.navigate("Register");
             
           }}>

@@ -18,7 +18,7 @@ export const login = (username, password) => {
     }
     formBody = formBody.join("&");
 
-    await fetch("https://hcmusemu.herokuapp.com/account/signin", {
+    fetch("https://hcmusemu.herokuapp.com/account/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

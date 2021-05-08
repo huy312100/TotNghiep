@@ -7,6 +7,9 @@ import {
 } from "react-native";
 import { ListItem, Header, Icon } from "react-native-elements";
 import RoundedImage from "../../components/profile/main/RoundedImage";
+import {useDispatch} from "react-redux";
+
+import * as authenActions from "../../../store/actions/Authen";
 
 const categoryProfile = [
   {
@@ -28,6 +31,8 @@ const categoryProfile = [
 ];
 
 export function ProfileScreen({navigation}) {
+  const dispatch = useDispatch();
+
   return (
     <View style={styles.container}>
       {/* <Header
@@ -72,7 +77,10 @@ export function ProfileScreen({navigation}) {
 
       <View style={styles.signoutBtnTouchable}>
       <TouchableOpacity style={styles.signoutBtn}
-          onPress={() => {}}>        
+          onPress={() => {
+            dispatch(authenActions.logout);
+            navigation.navigate("Login");
+          }}>        
             <Text style={styles.signoutTextBtn}>Đăng xuất</Text>
       </TouchableOpacity>
       </View>

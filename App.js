@@ -9,11 +9,13 @@ import ReduxThunk from 'redux-thunk';
 import authenReducer from './store/reducers/Authen';
 import profileReducer from './store/reducers/Profile';
 import universityReducer from './store/reducers/University';
+import homeReducer from './store/reducers/Home';
 
 const rootReducer = combineReducers({
   authen:authenReducer,
   profile:profileReducer,
-  university:universityReducer
+  university:universityReducer,
+  home:homeReducer
 });
 
 const store = createStore(rootReducer,applyMiddleware(ReduxThunk));

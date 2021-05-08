@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "../../../style/Navbar.css";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import UserBox from '../../../hook/userbox';
 
 class Navbar extends Component {
@@ -20,7 +20,7 @@ class Navbar extends Component {
 
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
-        var urlencoded = new URLSearchParams();
+        // var urlencoded = new URLSearchParams();
 
         var requestOptions = {
             method: 'GET',
@@ -46,7 +46,7 @@ class Navbar extends Component {
     renderUserBox = () => (
         <div className="action-box">
             <div className="user-content">
-                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67"></img>
+                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67" alt=""></img>
                 <h5 className="user-content-name">
                     {this.state.username}
                 </h5>
@@ -63,7 +63,7 @@ class Navbar extends Component {
         <div className="action-box">
             <h4 style={{ fontWeight: 'bold', margin: "10px" }}>Thông báo</h4>
             <div className="message-content">
-                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67"></img>
+                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67" alt=""></img>
                 <span className="message-content-text">
                     <div className="text">
                         Nguyễn Quốc Duy đã gửi cho bạn một thông báo
@@ -74,7 +74,7 @@ class Navbar extends Component {
                 </span>
             </div>
             <div className="message-content">
-                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67"></img>
+                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67" alt=""></img>
                 <span className="message-content-text">
                     <div className="text">
                         Nguyễn Quốc Duy đã gửi cho bạn một thông báo
@@ -85,7 +85,7 @@ class Navbar extends Component {
                 </span>
             </div>
             <div className="message-content">
-                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67"></img>
+                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67" alt=""></img>
                 <span className="message-content-text">
                     <div className="text">
                         Nguyễn Quốc Duy đã gửi cho bạn một thông báo
@@ -122,7 +122,7 @@ class Navbar extends Component {
     ActionBoxCheck = () => {
         if (this.state.noti === 1) {
             return this.renderNotiBox();
-            return (<div></div>);
+            // return (<div></div>);
         }
         if (this.state.user === 1) {
             return this.renderUserBox();
@@ -138,7 +138,7 @@ class Navbar extends Component {
                 <nav className="navbar navbar-light bg-light fixed-top">
                     {/* <div className="container"> */}
                     <a className="navbar-brand" href="/home">
-                        <img className="d-inline-block align-top" width="10%" src={process.env.PUBLIC_URL + 'logo192.png'} />
+                        <img className="d-inline-block align-top" width="10%" src={process.env.PUBLIC_URL + 'logo192.png'} alt=""/>
                   APPNAME
                 </a>
                     <ul className="navbar-nav">
@@ -146,13 +146,13 @@ class Navbar extends Component {
                             <div className="nav-link active">{this.state.username}</div>
                         </li>
                         <li className="nav-item">
-                            <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/message.png'} />
+                            <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/message.png'} alt=""/>
                         </li>
                         <li className="nav-item" onClick={() => this.NotiClick()}>
-                            <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/noti.png'} />
+                            <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/noti.png'} alt=""/>
                         </li>
                         <li className="nav-item" onClick={() => this.UserClick()}>
-                            <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/user.png'} />
+                            <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/user.png'} alt=""/>
                         </li>
                     </ul>
                     {/* </div> */}

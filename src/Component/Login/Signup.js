@@ -148,7 +148,7 @@ class Signup extends Component {
                             {this.state.faculty}
                         </select>
                         <hr />
-                        <p>Bằng cách nhấp vào Đăng ký, bạn đồng ý với  <a href="#" style={{ color: 'dodgerblue' }}>Điều khoản &amp; Chính sách</a> của chúng tôi.</p>
+                        <p>Bằng cách nhấp vào Đăng ký, bạn đồng ý với  <Link style={{ color: 'dodgerblue' }}>Điều khoản &amp; Chính sách</Link> của chúng tôi.</p>
                         <div className="clearfix">
                             <button type="button" className="signupbtn" onClick={() => this.checkPasswordRepeat()}>Đăng Kí</button>
                             <Link to="/" type="button" className="cancelbtn">Trở về</Link>

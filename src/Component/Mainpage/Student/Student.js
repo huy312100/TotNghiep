@@ -18,7 +18,7 @@ class Student extends Component {
             <div>
                 <Navbar />
                <Sidebar/>
-                <Footer />
+                {/* <Footer /> */}
             </div>
 
         );

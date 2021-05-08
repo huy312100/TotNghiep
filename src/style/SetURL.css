@@ -8,17 +8,27 @@
 .lb-input {
     display: flex;
     justify-content: space-between;
-    margin: 20px;
+    align-items:center;
+    margin: 10px;
 }
 
 .lb-input .inputops {
     width: 40vw;
+    font-size:16px;
+    height: 30px;
+}
+
+.info-connect{
+    display: flex;
+    justify-content: flex-end;
 }
 
 .btnconnect-box {
+    width: 40vw;
     display: flex;
-    justify-content: flex-end;
-    margin: 20px;
+    justify-content: space-between;
+    margin:0px 10px 10px 0;
+    align-items: center;
 }
 
 .btnconnect {
@@ -28,4 +38,59 @@
     border: 1px solid grey;
     background: #0184ff;
     color: white;
+    border-radius: 2px;
 }
+
+input{
+    padding: 5px;
+}
+
+.lb-input input[type=password] {
+    /* font:small-caption; */
+    font-size:16px;
+    height: 30px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 1.5px;
+    margin: 0;
+    padding: 5px;
+}
+
+.lb-input input[type=password]:focus{
+    background: white;
+    box-shadow:0px 0px 0px 0.5px black inset;
+}
+
+.connect-status{
+    color: red;
+    font-size: 14px;
+}
+
+.success-box{
+    display: flex;
+    flex-direction:column;
+    text-align: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.success-box .content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-weight: 300;
+    margin-bottom: 30px;
+}
+
+.success-box .back{
+    padding: 10px;
+    width: 20vw;
+    /* margin: 10px; */
+    border:1px solid black;
+    /* background: green; */
+    /* color: white; */
+    border-radius: 2px;
+}
+
+

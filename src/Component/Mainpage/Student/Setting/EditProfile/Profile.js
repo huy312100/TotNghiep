@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import Navbar from '../../Navbar';
 import "../../../../../style/Profile.css";
 import Sidebar from '../../Sidebar';
-import PopupAddIMG from './Popup/PopupAddIMG';
+// import PopupAddIMG from './Popup/PopupAddIMG';
+import "../../../../../style/PopupAddIMG.css";
+
 
 class Profile extends Component {
     constructor(props) {
@@ -12,12 +14,17 @@ class Profile extends Component {
             email: "",
             university: "",
             fac: "",
+            
+            listuniversity:[],
+            listfaculty:[],
 
             uniselected: "",
+            facselected: "",
 
             editname: 0,
             editimg: 0,
             edituni: 0,
+            editfac:0,
 
             loading: 0,
 
@@ -47,7 +54,9 @@ class Profile extends Component {
                     email: result[0].Email,
                     university: result[0].TenTruongDH,
                     fac: result[0].TenKhoa,
-                    loading: 1
+                    loading: 1,
+                    facselected:result[0].MaKhoa,
+                    uniselected:result[0].MaTruong
                 })
                 console.log(this.state.name)
             })
@@ -75,7 +84,7 @@ class Profile extends Component {
     }
 
     CancelEdit = () => {
-        this.setState({ editname: 0,edituni:0 })
+        this.setState({ editname: 0,edituni:0,editfac:0 })
     }
 
     updateProfile = async () => {
@@ -84,8 +93,8 @@ class Profile extends Component {
 
         var urlencoded = new URLSearchParams();
         urlencoded.append("HoTen", this.state.name);
-        urlencoded.append("MaTruong", this.state.uni);
-        urlencoded.append("MaKhoa", this.state.fac);
+        urlencoded.append("MaTruong", this.state.uniselected);
+        urlencoded.append("MaKhoa", this.state.facselected);
         urlencoded.append("AnhSV", "");
 
         var requestOptions = {
@@ -100,7 +109,8 @@ class Profile extends Component {
             .then(result => {
                 console.log(result)
                 if (result.message === "profile edited") {
-                    alert("Đổi thành công");
+                    window.location.reload();
+                    // alert("Đổi thành công");
                 }
                 this.CancelEdit();
             })
@@ -138,7 +148,34 @@ class Profile extends Component {
                     return <option key={index} value={value.MaTruong}>{value.TenTruongDH}</option>;
                 })
                 console.log(uni)
-                this.setState({ university: uni })
+                this.setState({ listuniversity: uni })
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    loadingFaculty = () => {
+        // console.log(this.state.uniselected)
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("MaTruong", this.state.uniselected);
+        // console.log(this.state.uniselected)
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/faculty/getname", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var fa = result.map((value, index) => {
+                    return <option key={index} value={value.MaKhoa}>{value.TenKhoa}</option>;
+                })
+                // console.log(fa)
+                this.setState({ listfaculty: fa })
             })
             .catch(error => console.log('error', error));
     }
@@ -150,6 +187,13 @@ class Profile extends Component {
             edituni: 1
         })
         this.loadUni();
+    }
+
+    EditFac = () => {
+        this.setState({
+            editfac: 1
+        })
+        this.loadingFaculty();
     }
 
     changeUni = () => {
@@ -164,8 +208,28 @@ class Profile extends Component {
             return <tr>
                 <td className="firstcol">Trường</td>
                 <td><select className="form-control" name="uniselected" onChange={this.setParams} value={this.state.uniselected}>
-                    <option>Chọn trường</option>
-                    {this.state.university}
+                    {/* <option>Chọn trường</option> */}
+                    {this.state.listuniversity}
+                </select></td>
+                <td><span className="confirm" type="button" onClick={this.updateProfile}>Xác nhận</span><span className="cancel" type="button" onClick={this.CancelEdit}>Hủy</span></td>
+            </tr>
+        }
+    }
+
+    changeFac = () => {
+        if (this.state.editfac === 0) {
+            return <tr className="tb-row" onClick={this.EditFac}>
+                <td className="firstcol">Khoa</td>
+                <td>{this.state.fac}</td>
+                <td className="edit" >Chỉnh sửa</td>
+            </tr>
+        }
+        else {
+            return <tr>
+                <td className="firstcol">Khoa</td>
+                <td><select className="form-control" name="facselected" onChange={this.setParams} value={this.state.facselected}>
+                    {/* <option>Chọn khoa</option> */}
+                    {this.state.listfaculty}
                 </select></td>
                 <td><span className="confirm" type="button" onClick={this.updateProfile}>Xác nhận</span><span className="cancel" type="button" onClick={this.CancelEdit}>Hủy</span></td>
             </tr>
@@ -209,7 +273,7 @@ class Profile extends Component {
                     <div className="tag">Ảnh của bạn</div> */}
                 </div>
                 <div className="body">
-                    <img width="150vw" height="150vh" src={this.state.imgData}></img>
+                    <img width="150vw" height="150vh" src={this.state.imgData} alt=""></img>
                     <label className="custom-file-upload">
                         <input type="file" accept="image/png, image/jpeg" onChange={this.onChangePicture} />Chọn ảnh từ máy tính của bạn
                     </label>
@@ -241,13 +305,13 @@ class Profile extends Component {
                         <colgroup>
                             <col style={{ width: "20%" }} />
                             <col style={{ width: "65%" }} />
-                            <col style={{ width: "25%" }} />
+                            <col style={{ width: "20%" }} />
                         </colgroup>
                         <tbody>
                             <tr className="tb-row" onClick={this.changeIMG}>
                                 <td className="firstcol">Ảnh</td>
                                 <td style={{ color: "grey" }}>Thêm hình ảnh để cá nhân hóa tài khoản</td>
-                                <td><img className="image" width="50vw" height="50vh" src="https://i.pinimg.com/originals/a4/f8/f9/a4f8f91b31d2c63a015ed34ae8c13bbd.jpg"></img></td>
+                                <td><img className="image" width="50vw" height="50vh" src="https://i.pinimg.com/originals/a4/f8/f9/a4f8f91b31d2c63a015ed34ae8c13bbd.jpg" alt=""></img></td>
                             </tr>
 
                             {this.changeName()}
@@ -258,11 +322,7 @@ class Profile extends Component {
                                 <td></td>
                             </tr>
                             {this.changeUni()}
-                            <tr className="tb-row">
-                                <td className="firstcol">Khoa</td>
-                                <td>{this.state.fac}</td>
-                                <td ><div className="edit">Chỉnh sửa</div></td>
-                            </tr>
+                            {this.changeFac()}
                         </tbody>
                     </table>
                 </div>

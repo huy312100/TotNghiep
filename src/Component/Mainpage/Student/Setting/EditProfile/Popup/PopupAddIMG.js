@@ -36,7 +36,7 @@ class PopupAddIMG extends Component {
                     <div className="tag">Ảnh của bạn</div> */}
                 </div>
                 <div className="body">
-                    <img width="150vw" height="150vh" src={this.state.imgData}></img>
+                    <img width="150vw" height="150vh" src={this.state.imgData} alt=""></img>
                     <label className="custom-file-upload">
                         <input type="file" accept="image/png, image/jpeg" onChange={this.onChangePicture} />Chọn ảnh từ máy tính của bạn
                     </label>

@@ -1,8 +1,0 @@
-class Faculty {
-    constructor(id, name){
-        this.id = id;
-        this.name=name;
-    }
-}
-
-export default Faculty;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useMemo  } from "react";
+import React, { useState, useEffect,useRef  } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,23 +14,20 @@ import {
   PasswordInput,
 } from "../../components/authentications/common/Index";
 import RNPickerSelect from "react-native-picker-select";
-import { useDispatch, useSelector,useStore,shallowEqual  } from "react-redux";
+import { useDispatch, useSelector,shallowEqual  } from "react-redux";
 import * as universityActions from "../../../store/actions/University";
 
 const RegisterScreen = ({ navigation }) => {
-  const [idUni,setIdUni] = useState('');
   const [itemNameUniversity,setItemNameUniversity] = useState([]);
   const [itemFacultyName,setItemFacultyName] = useState([]);
-  const [flag,setFlag] = useState(null);
 
   const uniName = useSelector((state) => state.university.universityInfo,shallowEqual);
-  const facultyName = useSelector((state) => state.university.facultyInfo);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getAllUniNames = async() => {
-      await dispatch(universityActions.getAllInfoUniversity());
+      dispatch(universityActions.getAllInfoUniversity());
       //console.log(uniName);   
         
       const temp=[];
@@ -47,39 +44,53 @@ const RegisterScreen = ({ navigation }) => {
   },[uniName.length]);
 
 
-    // const temp=[];
-    // for (const key in uniName) {
-    //   temp.push({
-    //     label: uniName[key].name,
-    //     value: uniName[key].id,
-    //   });
-    // }
-    // console.log(temp);
-    // setItemNameUniversity(temp);
 
   // useEffect(() =>{
-    function getAllFacultyName (idUni) {
-      dispatch(universityActions.getAllFacultyOfUniversity(idUni));
+  const getAllFacultyName = (idUni) => {
+    let details = {
+      MaTruong: idUni,
+    };
 
-      if(facultyName.length!=0){
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    fetch("https://hcmusemu.herokuapp.com/faculty/getname", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formBody,
+      }).then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes])=>{
+        //console.log(dataRes);
         const temp=[];
-        console.log(facultyName);
     
-        for (const key in facultyName) {
+
+        for (const key in dataRes) {
           temp.push({
-            label: facultyName[key].name,
-            value: facultyName[key].id,
+            label: dataRes[key].TenKhoa,
+            value: dataRes[key].MaKhoa,
           });
         }
         console.log(temp);
         setItemFacultyName(temp);
-      }
-    };
-  //   getAllFacultyName();
-  // },[idUni,facultyName.length]);
-  
 
-  
+      }).done();
+
+
+  };
+  //   getAllFacultyName();
+  // },[idUni]);
+
 
   return (
     <TouchableWithoutFeedback
@@ -102,13 +113,12 @@ const RegisterScreen = ({ navigation }) => {
             <RNPickerSelect
               onValueChange={(value) => { 
                 if(value!=null){
-                  console.log(value);
+                  //console.log(value);
                   //setIdUni(value);
                   //dispatch(universityActions.getAllFacultyOfUniversity(value));
-                  
                   getAllFacultyName(value);
 
-                  //console.log("ABC")
+                  //console.log(idUni)
                   
                 }
               }}

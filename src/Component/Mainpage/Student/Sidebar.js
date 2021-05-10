@@ -15,7 +15,7 @@ class Sidebar extends Component {
                             <div className="side-text">Trang chủ</div>
                         </div>
                     </NavLink>
-                    <NavLink to="/event" className="content-sidenav" activeClassName="selected">
+                    <NavLink to="/deadline" className="content-sidenav" activeClassName="selected">
                         <div className="nav-text">
                             <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/calendar.png'} alt=""></img>
                             <div className="side-text">Deadline</div>

@@ -1,0 +1,46 @@
+.deadline-page{
+    width: 50vw;
+    margin: 56px auto;
+    background: white;
+}
+
+.deadline{
+    /* border: 1px solid black; */
+    padding: 30px 30px 0 30px;
+}
+
+.deadline .titlee{
+    font-size: 20px;
+    font-weight: 500;
+    border: 1px solid black;
+    padding:5px;
+}
+
+.deadline .decription{
+    font-size: 18px;
+    /* font-weight: 500; */
+    padding: 5px;
+}
+
+.deadline .duedate{
+    font-size: 14px;
+    /* font-weight: 500; */
+    padding: 5px;
+}
+
+.deadline .link{
+    font-size: 14px;
+    padding: 5px;
+    /* font-weight: 500; */
+}
+
+.datepicker{
+    display: flex;
+    justify-content: space-around;
+}
+
+
+/* .datepicker select{
+    width: 30vw;
+    height: 5vh;
+} */

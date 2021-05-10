@@ -8,7 +8,6 @@ import {
 
 import { useDispatch } from 'react-redux';
 import * as authActions from '../../../store/actions/Authen';
-import * as universityActions from "../../../store/actions/University";
 
 
 const LoginScreen = ({ navigation }) => {

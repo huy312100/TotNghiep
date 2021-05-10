@@ -16,10 +16,27 @@ import {
 import RNPickerSelect from "react-native-picker-select";
 import { useDispatch, useSelector,shallowEqual  } from "react-redux";
 import * as universityActions from "../../../store/actions/University";
+import * as authActions from '../../../store/actions/Authen';
+
 
 const RegisterScreen = ({ navigation }) => {
+  const [username,setUsername] = useState("");
+  const [password,setPassword] = useState("");
+  const [confirmPwd,setConfirmPwd] =useState("");
+  const [fullname,setFullname] = useState("");
+  const [idUni,setIdUni] = useState("");
+  const [idFaculty,setIdFaculty] = useState("");
+
   const [itemNameUniversity,setItemNameUniversity] = useState([]);
   const [itemFacultyName,setItemFacultyName] = useState([]);
+
+  const allInfo = {
+    username:"",
+    password:"",
+    fullname:"",
+    idUni:"",
+    idFaculty:"",
+  };
 
   const uniName = useSelector((state) => state.university.universityInfo,shallowEqual);
 
@@ -27,8 +44,31 @@ const RegisterScreen = ({ navigation }) => {
 
   useEffect(() => {
     const getAllUniNames = async() => {
+
       dispatch(universityActions.getAllInfoUniversity());
       //console.log(uniName);   
+
+      // fetch("https://hcmusemu.herokuapp.com/university/getname")
+      // .then((response) => response.json())
+      // .then((json) => {
+      //   //console.log(json);
+
+      //   const temp=[];
+      //   for (const key in json) {
+      //     temp.push({
+      //       label: json[key].TenTruongDH,
+      //       value: json[key].MaTruong,
+      //     });
+      //   }
+      //   console.log(temp);
+      //   setItemNameUniversity(temp);
+
+        
+      //   //console.log(dataUniversity);
+       
+      // })
+      // .catch((err) => console.log(err, "error"));
+      // //console.log(uniName); 
         
       const temp=[];
       for (const key in uniName) {
@@ -85,12 +125,35 @@ const RegisterScreen = ({ navigation }) => {
         setItemFacultyName(temp);
 
       }).done();
-
-
   };
-  //   getAllFacultyName();
-  // },[idUni]);
 
+  const checkUsername = () => {
+    var EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var WHITESPACE_REGEX = /\s/;
+    if(!EMAIL_REGEX.test(username.toLowerCase()) || username.trim().length === 0 || WHITESPACE_REGEX.test(username)){
+      return false;
+    }
+    return true;
+  }
+
+  const checkPassword = () => {
+
+    if(password.length===0) {
+      return false;
+    }
+    else {
+      if(password!=confirmPwd){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  const register = (registerInfo) => {
+    dispatch(authActions.register(registerInfo)).then(() =>{
+      navigation.navigate("Login");
+    })
+  }
 
   return (
     <TouchableWithoutFeedback
@@ -100,26 +163,27 @@ const RegisterScreen = ({ navigation }) => {
       <ScrollView>
         <View style={styles.container}>
           <Heading>Đăng ký</Heading>
-          <UsernameInput placeholder={"Tên đăng nhập"} />
+          <UsernameInput placeholder={"Tên đăng nhập"}
+          onChangeText={(username) => setUsername(username)} />
 
-          <PasswordInput placeholder={"Mật khẩu"} />
+          <PasswordInput placeholder={"Mật khẩu"}
+          onChangeText={(password) => setPassword(password)} />
 
-          <PasswordInput placeholder={"Nhập lại mật khẩu"} />
+          <PasswordInput placeholder={"Nhập lại mật khẩu"}
+          onChangeText={(password) => setConfirmPwd(password)} />
 
-          <UsernameInput placeholder={"Họ và tên"} />
+          <UsernameInput placeholder={"Họ và tên"} 
+          onChangeText={(fullname) => setFullname(fullname)} />
 
-          
           <View style={styles.dropdown}>
             <RNPickerSelect
               onValueChange={(value) => { 
                 if(value!=null){
-                  //console.log(value);
-                  //setIdUni(value);
-                  //dispatch(universityActions.getAllFacultyOfUniversity(value));
+                  setIdUni(value);
+                  
                   getAllFacultyName(value);
 
-                  //console.log(idUni)
-                  
+                  console.log(allInfo);
                 }
               }}
               //style={{...pickerSelectStyles}}
@@ -137,7 +201,12 @@ const RegisterScreen = ({ navigation }) => {
             <RNPickerSelect
               onValueChange={(value) => {
 
-                console.log(value);
+                if(value!=null){
+                  console.log(value);
+                  setIdFaculty(value);
+                }
+               
+               
               }}
               //style={{ inputAndroid: { color: "black" } }}
               useNativeAndroidPickerStyle={false}
@@ -153,7 +222,33 @@ const RegisterScreen = ({ navigation }) => {
           <View style={styles.buttonLoginContainer}>
             <TouchableOpacity
               style={styles.btnLoginTouchable}
-              onPress={() => {}}
+              onPress={() => {
+                if(checkPassword() && checkUsername() && idUni!="" && idFaculty !="" && fullname.trim().length>0) {
+                  allInfo.fullname=fullname;
+                  allInfo.idUni=idUni;
+                  allInfo.username=username;
+                  allInfo.password=password;
+                  allInfo.idFaculty=idFaculty;
+
+                  register(allInfo);
+                }
+                else if(fullname.trim().length===0){
+                  alert("Tên không được bỏ trống");
+                }
+                else if(!checkUsername()){
+                  alert("Tên tài khoản không hợp lệ");
+                }
+                else if(idUni===""){
+                  alert("Xin vui lòng chọn trường");
+                }
+                else if(idFaculty ===""){
+                  alert("Xin vui lòng chọn khoa");
+                }
+                else{
+                  alert("Mặt khẩu hoặc mật khẩu xác nhận không hợp lệ");
+                }
+                
+              }}
             >
               <Text style={styles.textBtnLogIn}>Tạo tài khoản</Text>
             </TouchableOpacity>

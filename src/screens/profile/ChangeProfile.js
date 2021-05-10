@@ -12,7 +12,7 @@ import RoundedImage from "../../components/profile/main/RoundedImage";
 
 
 function ChangeProfileScreen() {
-  const [image, setImage] = useState('https://baodansinh.mediacdn.vn/2019/12/30/va-1577670930380-15776709303872011433781.jpg');
+  const [image, setImage] = useState('');
   const [itemNameUniversity,setItemNameUniversity] = useState([]);
 
   const dispatch = useDispatch();
@@ -46,14 +46,21 @@ function ChangeProfileScreen() {
     }
 
     let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    console.log(pickerResult);
+
+    if(!pickerResult.cancelled){
+      setImage(pickerResult.uri);
+      console.log(pickerResult);
+    }
+    
   }
   return (
     <ScrollView style={styles.container}>
 
       <View style={styles.infoView}>
         <TouchableOpacity onPress={openImagePickerAsync}>
-          <RoundedImage>
+          <RoundedImage
+            source={{uri: image !=="" ? image :undefined}}
+          >
             <View
               style={styles.backgroundOpacity}>
                 <Icon name="camera-plus" 

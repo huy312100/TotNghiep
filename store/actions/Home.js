@@ -3,7 +3,7 @@ export const GET_NEWEST_DEADLINE = "GET_NEWEST_DEADLINE";
 export const NewestDeadline = () => {
   return async (dispatch,getState) => {
     const token = getState().authen.token;
-    console.log(token);
+    //console.log(token);
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `bearer ${token}`);
 

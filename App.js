@@ -10,12 +10,14 @@ import authenReducer from './store/reducers/Authen';
 import profileReducer from './store/reducers/Profile';
 import universityReducer from './store/reducers/University';
 import homeReducer from './store/reducers/Home';
+import courseReducer from './store/reducers/Course';
 
 const rootReducer = combineReducers({
   authen:authenReducer,
   profile:profileReducer,
   university:universityReducer,
-  home:homeReducer
+  home:homeReducer,
+  course:courseReducer,
 });
 
 const store = createStore(rootReducer,applyMiddleware(ReduxThunk));

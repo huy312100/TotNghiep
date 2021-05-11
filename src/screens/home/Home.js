@@ -46,7 +46,6 @@ const HomeScreen=({navigation}) =>{
     const getAllNewDeadlines = async() =>{
       await dispatch(homeActions.NewestDeadline());
       console.log(newDeadline);
-
     }
     getAllNewDeadlines();
     return()=>{

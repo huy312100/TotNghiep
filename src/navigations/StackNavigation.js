@@ -14,8 +14,8 @@ import MessageScreen from "../screens/message/Message";
 import {ChatScreen} from "../screens/message/Chat";
 import {ProfileScreen} from '../screens/profile/Profile';
 import NotificationScreen from '../screens/notifications/Notification';
-import LearnedInfoScreen from '../screens/home/courses/LearnedCoursesInfo';
-import LearningInfoScreen from '../screens/home/courses/LearningCoursesInfo';
+import AllCourseInfoScreen from '../screens/home/courses/AllCourse';
+import CurrentCourseInfoScreen from '../screens/home/courses/CurrentCourse';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 import ConnectAppScreen from '../screens/profile/ConnectApplication';
 
@@ -261,16 +261,16 @@ function CourseInfoTopTab(){
   return (
     <topTab.Navigator initialRouteName="Learning">
       <topTab.Screen 
-        name="Learning" 
-        component={LearningInfoScreen} 
+        name="Current Course" 
+        component={CurrentCourseInfoScreen} 
         options={{
           tabBarLabel:'Đang học'
         }}/>
       <topTab.Screen 
-        name="Learned" 
-        component={LearnedInfoScreen}
+        name="All Course" 
+        component={AllCourseInfoScreen}
         options={{
-          tabBarLabel:'Đã học'
+          tabBarLabel:'Tất cả môn học'
         }}
         />
     </topTab.Navigator>

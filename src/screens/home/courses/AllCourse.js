@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import { View, Text,TouchableOpacity,StyleSheet} from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
 
@@ -9,6 +9,10 @@ const AllCourseInfoScreen = () =>{
 
     // const dispatch = useDispatch();
     // const allCourses = useSelector((state) => state.course.allCourses);
+
+    // const [data,setData] = useState([]);
+    // const token = useSelector((state) => state.authen.token);
+    // const tmp=[];
 
 
     // useEffect(() => {

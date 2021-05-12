@@ -1,10 +1,10 @@
-import React,{useEffect,useRef,useState} from 'react'
+import React,{useEffect,useRef,useState} from 'react';
 import { View, Text,TouchableOpacity,StyleSheet,FlatList} from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
 
 import * as courseActions from "../../../../store/actions/Course";
 
-const CurrentCourseInfoScreen = () => {
+const CurrentCourseInfoScreen = ( {navigation} ) => {
     const dispatch = useDispatch();
     const unmounted = useRef(false);
 
@@ -36,7 +36,7 @@ const CurrentCourseInfoScreen = () => {
                 
                   for (const key in json) {
                     tmp.push({
-                     idCourse: json[key].IDCourses,
+                      idCourse: json[key].IDCourses,
                       category:json[key].category,
                       name:json[key].name,
                       startDate:json[key].startDate,
@@ -61,9 +61,14 @@ const CurrentCourseInfoScreen = () => {
           
             <FlatList
             data={data}
-            keyExtractor={(item,index)=>index.toString()}
+            keyExtractor={item=>item.idCourse}
             renderItem={({item})=>(
-              <TouchableOpacity style={styles.card}>
+              <TouchableOpacity style={styles.card} onPress={() =>{
+                navigation.navigate("Content Course",{
+                  idCourse : item.idCourse,
+                  name : item.name
+                });
+              }}>
                 <View style={styles.courseInfo}>
                   
                   <View style={styles.textSection}>

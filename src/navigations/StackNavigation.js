@@ -18,6 +18,7 @@ import AllCourseInfoScreen from '../screens/home/courses/AllCourse';
 import CurrentCourseInfoScreen from '../screens/home/courses/CurrentCourse';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 import ConnectAppScreen from '../screens/profile/ConnectApplication';
+import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse';
 
 
 const Stack = createStackNavigator();
@@ -78,6 +79,16 @@ function HomeStackNavigation() {
         }}
       />
 
+      <Stack.Screen 
+        name="Content Course"
+        component={ContentCourseInfoScreen}
+        options={({route}) =>({
+          title:route.params.name,
+          headerTitleAlign: 'center',
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+        })}
+      />
     </Stack.Navigator>
   )
 }
@@ -244,7 +255,7 @@ function MyBottomTabs() {
 
 const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ;
-  if (routeName === 'Calendar' || routeName === 'Chat' ||routeName === 'Course'|| routeName==='Change Profile'||routeName=='Connect application') {
+  if (routeName === 'Calendar' || routeName === 'Chat' ||routeName === 'Course'|| routeName==='Change Profile'||routeName=='Connect application' || routeName==='Content Course') {
       return false;
   }
   return true;

@@ -61,7 +61,6 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
           
             <FlatList
             data={data}
-            keyExtractor={item=>item.idCourse}
             renderItem={({item})=>(
               <TouchableOpacity style={styles.card} onPress={() =>{
                 navigation.navigate("Content Course",{
@@ -85,7 +84,8 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
                   </View>
                 </View>
               </TouchableOpacity>
-              )}/>
+              )}
+              keyExtractor={(item,index) =>index.toString()}/>
       
         </View>
     )

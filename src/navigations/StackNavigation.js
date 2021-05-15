@@ -19,6 +19,7 @@ import CurrentCourseInfoScreen from '../screens/home/courses/CurrentCourse';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 import ConnectAppScreen from '../screens/profile/ConnectApplication';
 import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse';
+import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
 
 
 const Stack = createStackNavigator();
@@ -132,7 +133,7 @@ function ProfileStackNavigation({navigation}) {
           },
           headerRight:()=>(
             <TouchableOpacity onPress={() => navigation.navigate("Change Profile")}>
-              <MaterialCommunityIcons name="account-edit" size={20} color={"#FFFFFF"} />
+              <MaterialCommunityIcons name="account-edit" size={22} color={"#FFFFFF"} />
             </TouchableOpacity>
           ),
           headerRightContainerStyle:{
@@ -158,7 +159,7 @@ function ProfileStackNavigation({navigation}) {
           },
           headerRight:()=>(
             <TouchableOpacity>
-              <MaterialCommunityIcons name="check-bold" size={20} color={"#FFFFFF"} />
+              <MaterialCommunityIcons name="check-bold" size={23} color={"#FFFFFF"} />
             </TouchableOpacity>
           ),
           headerRightContainerStyle:{
@@ -179,9 +180,32 @@ function ProfileStackNavigation({navigation}) {
           headerStyle:{
             backgroundColor:"#33CCFF"
           },
+          headerRight:()=>(
+            <TouchableOpacity onPress={() => navigation.navigate("Web Customed")}>
+              <MaterialCommunityIcons name="playlist-check" size={28} color={"#FFFFFF"} />
+            </TouchableOpacity>
+          ),
+          headerRightContainerStyle:{
+            paddingRight:10
+          }
+        }}
+      />
+
+      <Stack.Screen
+        name="Web Customed"
+        component={WebCustomedScreen}
+        options={{ 
+          title: "Ứng dụng đã được kết nối",
+          headerTitleAlign: 'center',
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+          headerTintColor:"#FFFFFF",
+          headerStyle:{
+            backgroundColor:"#33CCFF"
+          },
           // headerRight:()=>(
-          //   <TouchableOpacity>
-          //     <MaterialCommunityIcons name="check-bold" size={20} color={"#FFFFFF"} />
+          //   <TouchableOpacity onPress={navigation.navigate("")}>
+          //     <MaterialCommunityIcons name="playlist-check" size={28} color={"#FFFFFF"} />
           //   </TouchableOpacity>
           // ),
           // headerRightContainerStyle:{
@@ -255,8 +279,13 @@ function MyBottomTabs() {
 
 const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ;
-  if (routeName === 'Calendar' || routeName === 'Chat' ||routeName === 'Course'|| routeName==='Change Profile'||routeName=='Connect application' || routeName==='Content Course') {
+
+  const arrHideBotTab=["Calendar","Chat","Course","Change Profile","Connect application","Content Course","Web Customed"];
+
+  for (var i = 0; i < arrHideBotTab.length; i++) {
+    if (routeName === arrHideBotTab[i]) {
       return false;
+    }
   }
   return true;
 };

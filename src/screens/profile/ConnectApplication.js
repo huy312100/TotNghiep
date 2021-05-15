@@ -22,60 +22,11 @@ const ConnectAppScreen = ({navigation})=>{
     var d = new Date();
     var n = d.getFullYear();
 
-
-//     const ConnectApi =async () => {
-//         Keyboard.dismiss();
-//         var requestOptions = {
-//             method: 'POST',
-//             redirect: 'follow'
-//           };
-          
-//           await fetch(`${url}/login/token.php?service=moodle_mobile_app&username=${username}&password=${password}`, requestOptions)
-//             .then(response => response.json())
-//             .then(result => {             
-
-//                 localStorage.setItem("tokenModdle",result.token);
-//                 //console.log(localStorage.getItem("tokenModdle"));
-//                 console.log(url);
-//                 console.log(requestOptions);
-//                 console.log(result.token);
-//                 //deadlineModdle();
-//                 navigation.navigate("Profile");
-
-//                 })
-//             .catch(error => console.log('error', error));
-//     }
-//    // console.log(token);
-
-//    const deadlineModdle =()=>{
-
-//       var requestOptions = {
-//         method: 'POST',
-//         redirect: 'follow'
-//       };
-      
-//        fetch(`${url}/webservice/rest/server.php?moodlewsrestformat=json&wstoken=${localStorage.getItem("tokenModdle")}&wsfunction=core_calendar_get_calendar_monthly_view&year=${d.getFullYear()}&month=${d.getMonth()+1}`, requestOptions)
-//         .then(response => response.json())
-//         .then(result => {             
-
-//             //localStorage.setItem("tokenModdle",result.token);
-//             //console.log(localStorage.getItem("tokenModdle"));
-//             console.log();
-//             //moodleObj.courseName=;
-//             localStorage.setItem("Course Name",result.weeks[2].days[6].events[0].course.fullname);
-//             localStorage.setItem("Day",result.weeks[2].days[6].mday);
-//             localStorage.setItem("Month",d.getMonth()+1);
-//             localStorage.setItem("Year",d.getFullYear());
-//             localStorage.setItem("Full Date",localStorage.getItem("Day")+"/"+localStorage.getItem("Month")+"/"+localStorage.getItem("Year"));
-//             localStorage.setItem("Event name",result.weeks[2].days[6].events[0].name);
-//             console.log(localStorage.getItem("Event name"))
-//             })
-//         .catch(error => console.log('error', error));
-        const ConnectAppHandler = async()=>{
-            Keyboard.dismiss();
-            await dispatch(profileActions.connectApplication(typeUrl,url,username,password));
-            navigation.navigate("Profile");
-        }
+    const ConnectAppHandler = async()=>{
+        Keyboard.dismiss();
+        await dispatch(profileActions.connectApplication(typeUrl,url,username,password));
+        navigation.navigate("Profile");
+    }
 
     return (
         <TouchableWithoutFeedback onPress={() =>{
@@ -157,21 +108,23 @@ const styles = StyleSheet.create({
     passInput: {
         alignItems: "center",
         flexDirection:"row",
-        marginLeft:15,
-        marginRight:15,
+        marginHorizontal:15,
+        
       },
     
     eyeBtn: {
         position: 'absolute',
         right: 0,
         paddingRight:10,
+        paddingLeft:10,
     },
 
     passInputText:{
         backgroundColor: "#ccc",
         width: "100%",
-        marginVertical: 10,
-        borderRadius:10
+        borderRadius:10,
+        padding:10,
+        paddingRight:30
     },
 
     button:{
@@ -186,6 +139,7 @@ const styles = StyleSheet.create({
         marginRight:15,
         backgroundColor:"#cccc",
         borderRadius:10,
+        padding:10
     },
 
     textBtnConnect: {

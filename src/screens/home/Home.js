@@ -115,7 +115,7 @@ const HomeScreen=({navigation}) =>{
         </View>
           
   
-        <Text style={styles.label}>Deadline gần nhất</Text>
+        <Text style={styles.label}>Deadline trong tháng</Text>
         
         {newDeadline.length > 0 &&
           <FlatList 

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React,{useEffect} from "react";
 import {
   Text,
   View,
@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { ListItem, Header, Icon } from "react-native-elements";
 import RoundedImage from "../../components/profile/main/RoundedImage";
-import {useDispatch} from "react-redux";
+import {useDispatch,useSelector} from "react-redux";
 
 import * as authenActions from "../../../store/actions/Authen";
 
@@ -33,26 +33,14 @@ const categoryProfile = [
 export function ProfileScreen({navigation}) {
   const dispatch = useDispatch();
 
+  const profile=useSelector((state) => state.profile.profile);
+
+
   return (
     <View style={styles.container}>
-      {/* <Header
-        backgroundColor="#33CCFF"
-
-        rightComponent={
-          <TouchableOpacity onPress={() => navigation.navigate("Change Profile")}>
-            <Icon name="account-edit" type="material-community" color="#EEEEEE" />
-          </TouchableOpacity>
-        }
-
-        centerComponent={
-          <Text style={styles.headerTitle}>
-            Tài khoản của tôi
-          </Text>
-        }
-      /> */}
       <View style={styles.infoView}>
         <RoundedImage></RoundedImage>
-        <Text style={styles.nameText}>Nguyễn Ngọc Đức Huy</Text>
+        <Text style={styles.nameText}>{profile[0].HoTen}</Text>
       </View>
       
       <View style={styles.nameText}>

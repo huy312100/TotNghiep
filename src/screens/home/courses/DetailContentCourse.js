@@ -93,8 +93,7 @@ const ContentCourseInfoScreen = ({route}) => {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item,index) => index.toString()}
-        ListEmptyComponent={renderEmpty}/>
-      
+        ListEmptyComponent={renderEmpty}/>  
     </View>
   )
 };

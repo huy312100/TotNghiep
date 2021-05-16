@@ -75,7 +75,8 @@ const AllCourseInfoScreen = ({navigation}) => {
             <View style={styles.teacherName}>
               {item.teacher.map((item, index) => (
                 <Text>Giáo viên : {item}</Text>
-              ))}
+              ))
+              }
             </View>
           </View>
         </View>

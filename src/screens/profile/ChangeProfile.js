@@ -18,6 +18,7 @@ function ChangeProfileScreen() {
   const dispatch = useDispatch();
 
   const uniName = useSelector((state) => state.university.universityInfo);
+  const profile=useSelector((state) => state.profile.profile);
 
   useEffect(() => {
     const getAllUniNames = () => {
@@ -31,6 +32,7 @@ function ChangeProfileScreen() {
           value: uniName[key].id,
         });
       }
+      //const newArr=removeDuplicateName(temp);
       console.log(temp);
       setItemNameUniversity(temp);
     };
@@ -51,7 +53,29 @@ function ChangeProfileScreen() {
       setImage(pickerResult.uri);
       console.log(pickerResult);
     }
-    
+  }
+
+  var removeByAttr = function(arr, attr, value){
+    var i = arr.length;
+    while(i--){
+       if( arr[i] 
+           && arr[i].hasOwnProperty(attr) 
+           && (arguments.length > 2 && arr[i][attr] === value ) ){ 
+
+           arr.splice(i,1);
+
+       }
+    }
+    return arr;
+  }
+
+  const removeDuplicateName = (arr) =>{
+    for(const item in arr){
+      if(item.value === profile[0].MaTruong){
+        console.log(item.value);
+        return removeByAttr(arr,'value',item.value);
+      }
+    }
   }
   return (
     <ScrollView style={styles.container}>
@@ -74,15 +98,19 @@ function ChangeProfileScreen() {
       </View>
       
         <Text style={styles.labelText}>Họ và tên</Text>
-        <Input/>
+        <Input>{profile[0].HoTen}</Input>
 
         <Text style={styles.labelText}>Email</Text>
-        <Input/>
+        <Input>{profile[0].Email}</Input>
       
       <Text style={styles.labelText}>Chọn trường</Text>
         <RNPickerSelect
             style={pickerSelectStyles}
             onValueChange={(value) => console.log(value)}
+            placeholder={{
+              label:profile[0].TenTruongDH,
+              value:profile[0].MaTruong
+            }}
             useNativeAndroidPickerStyle={false}
             items={itemNameUniversity}/>
 

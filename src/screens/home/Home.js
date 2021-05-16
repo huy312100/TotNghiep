@@ -6,11 +6,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch,useSelector} from "react-redux";
 
 import * as homeActions from "../../../store/actions/Home";
+import * as profileActions from "../../../store/actions/Profile";
 
 const DeviceWidth = Dimensions.get('window').width;
 
 const HomeScreen=({navigation}) =>{
 
+  const token = useSelector((state) => state.authen.token);
 
   const unmounted = useRef(false);
 
@@ -45,13 +47,38 @@ const HomeScreen=({navigation}) =>{
   useEffect(() =>{
     const getAllNewDeadlines = async() =>{
       await dispatch(homeActions.NewestDeadline());
-      console.log(newDeadline);
+      //console.log(newDeadline);
+
+      getProfile();
+
     }
     getAllNewDeadlines();
     return()=>{
       unmounted.current = true
     };
   },[newDeadline.length]);
+
+  const getProfile = async() =>{
+    //console.log(token);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+    };
+
+    fetch("https://hcmusemu.herokuapp.com/profile/view",requestOptions)
+      .then((response) => response.json())
+      .then((json) => {
+        //console.log(json);
+
+        //console.log(dataUniversity);
+        dispatch(profileActions.getProfile(json));
+      })
+      .catch((err) => console.log(err, "error"));
+  }
 
   
     return (

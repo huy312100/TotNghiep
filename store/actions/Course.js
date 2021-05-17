@@ -17,7 +17,6 @@ export const getAllCourses = ()=>{
       fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses",requestOptions)
         .then((response) => response.json())
         .then((json) => {
-          //console.log(json);
   
           //console.log(dataUniversity);
           dispatch({

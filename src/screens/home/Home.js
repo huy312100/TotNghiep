@@ -76,8 +76,7 @@ const HomeScreen=({navigation}) =>{
 
         //console.log(dataUniversity);
         dispatch(profileActions.getProfile(json));
-      })
-      .catch((err) => console.log(err, "error"));
+      }).catch((err) => console.log(err, "error"));
   }
 
   

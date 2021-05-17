@@ -157,14 +157,14 @@ function ProfileStackNavigation({navigation}) {
           headerStyle:{
             backgroundColor:"#33CCFF"
           },
-          headerRight:()=>(
-            <TouchableOpacity>
-              <MaterialCommunityIcons name="check-bold" size={23} color={"#FFFFFF"} />
-            </TouchableOpacity>
-          ),
-          headerRightContainerStyle:{
-            paddingRight:10
-          }
+          // headerRight:()=>(
+          //   <TouchableOpacity>
+          //     <MaterialCommunityIcons name="check-bold" size={23} color={"#FFFFFF"} />
+          //   </TouchableOpacity>
+          // ),
+          // headerRightContainerStyle:{
+          //   paddingRight:10
+          // }
         }}
       />
 

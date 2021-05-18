@@ -1,7 +1,6 @@
 import React,{ useState } from 'react';
 import { View, Text,TouchableOpacity,Keyboard,TouchableWithoutFeedback,StyleSheet,TextInput} from 'react-native';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Divider } from 'react-native-elements';
 
 
 const ChangePasswordScreen = () => {
@@ -9,7 +8,8 @@ const ChangePasswordScreen = () => {
     const [show,setShow]= useState(true);
     const [visible,setVisible]= useState(true);
     const [password,setPassword]=useState('');
-
+    const [newPassword,setNewPassword]=useState('');
+    const [confirmPassword,setConfirmPassword]=useState('');
 
 
     const checkConditionPasswords = () =>{
@@ -20,6 +20,13 @@ const ChangePasswordScreen = () => {
         }
         return true;
     };
+
+    const checkInfo = () => {
+        if(password === "" || newPassword === "" || confirmPassword ===""){
+          return false;
+        }
+        return true;
+      }
 
     return(
     <TouchableWithoutFeedback onPress={() =>{
@@ -73,11 +80,16 @@ const ChangePasswordScreen = () => {
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity
-                style={styles.button}>
+            {checkInfo()?   <TouchableOpacity
+                style={[styles.button,{backgroundColor:'green'}]}>
                 <Text style={styles.textBtnConfirm}>Đổi mật khẩu </Text>
             </TouchableOpacity>
-
+            :
+            <TouchableOpacity
+                disabled={true}
+                style={[styles.button,{backgroundColor:'grey'}]}>
+                <Text style={styles.textBtnConfirm}>Đổi mật khẩu </Text>
+            </TouchableOpacity>}
         </View>
     </TouchableWithoutFeedback>
     )
@@ -91,7 +103,7 @@ const styles = StyleSheet.create({
     instruction: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:'#99FFFF',
+        backgroundColor:'#FFFFCC',
         paddingVertical: 10,
         paddingHorizontal:20
     },

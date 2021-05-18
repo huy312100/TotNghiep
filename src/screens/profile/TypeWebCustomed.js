@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import {useSelector,useDispatch} from "react-redux";
@@ -13,29 +13,34 @@ const WebCustomedScreen = () =>{
     const token = useSelector((state) => state.authen.token);
     const webCustomed=useSelector((state) => state.profile.allWebCustomed);
     const [data,setData] = useState([]);
+    const [isLoading,setLoading] = useState(false);
+
     const dispatch = useDispatch();
 
 
     useEffect(() =>{
         const getWebCustomed = () =>{
             //console.log(token);
-                var myHeaders = new Headers();
-                myHeaders.append("Authorization", `bearer ${token}`);
-    
-                var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-                };
-    
-                fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
-                .then((response) => response.json())
-                .then((json) => {
-                    //console.log(json);
-                    setData(json);
-                    dispatch(profileActions.getAllWebCustomed(json));
-                })
-                .catch((err) => console.log(err, "error"));
+            setLoading(true);
+
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `bearer ${token}`);
+
+            var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+            };
+
+            fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
+            .then((response) => response.json())
+            .then((json) => {
+                //console.log(json);
+                setData(json);
+                dispatch(profileActions.getAllWebCustomed(json));
+                setLoading(false);
+            })
+            .catch((err) => console.log(err, "error"));
         }
         getWebCustomed();
     },[]);
@@ -115,15 +120,21 @@ const WebCustomedScreen = () =>{
 
     return(
         <View style={styles.container}>
-            { data.length > 0 ?
+            <View style={{height:10}}/>
+            { data.length === 0 ? renderEmpty() :
              <SwipeListView
                 data={data}
                 keyExtractor={(item,index) => index.toString()}
                 renderItem={renderItem}
                 renderHiddenItem={renderHiddenItem}
                 rightOpenValue={-85}/>
-                
-            : renderEmpty() }
+             }
+
+        {isLoading && <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#EEEEEE" />
+          <Text style={styles.txtIndicator}>Đang xử lí ...</Text>
+          </View>}
+
         </View>
     )
 } 
@@ -131,11 +142,9 @@ const WebCustomedScreen = () =>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop:10
     },
 
     card: {
-
         width: '100%',
         backgroundColor:'white',
         borderBottomWidth:1,
@@ -176,7 +185,24 @@ const styles = StyleSheet.create({
         flex: 1, 
         alignItems: 'center',
         justifyContent: 'center', 
-    }
+    },
+
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(52, 52, 52, 0.5)'
+      },
+    
+      txtIndicator: {
+        fontSize:15,
+        fontWeight: "bold",
+        color:"#EEEEEE"
+      }
 });
 
 export default WebCustomedScreen;

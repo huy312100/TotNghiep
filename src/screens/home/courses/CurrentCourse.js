@@ -1,6 +1,9 @@
 import React,{useEffect,useRef,useState} from 'react';
 import { View, Text,TouchableOpacity,StyleSheet,FlatList} from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+
+import LoadingWithSkeletonScreen from "./LoadingSkeleton";
 
 import * as courseActions from "../../../../store/actions/Course";
 
@@ -9,6 +12,8 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
     const unmounted = useRef(false);
 
     const [data,setData] = useState([]);
+    const [isLoading,setLoading]=useState(false);
+
 
     const currCourses = useSelector((state) => state.course.currCourses);
     const token = useSelector((state) => state.authen.token);
@@ -16,48 +21,52 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
 
     useEffect(() => {
         const getCurrentCourses = async () =>{
-            
-            var myHeaders = new Headers();
-            myHeaders.append("Authorization", `bearer ${token}`);
+          setLoading(true);
+          var myHeaders = new Headers();
+          myHeaders.append("Authorization", `bearer ${token}`);
 
-            var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-            };
+          var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+          };
 
-            fetch("https://hcmusemu.herokuapp.com/studycourses/currentcourses",requestOptions)
-              .then((response) => response.json())
-              .then((json) => {
-                console.log(json);
-                console.log(tmp.length);   
+          fetch("https://hcmusemu.herokuapp.com/studycourses/currentcourses",requestOptions)
+            .then((response) => response.json())
+            .then((json) => {
+              console.log(json);
+              console.log(tmp.length);   
 
-                //console.log(dataUniversity);
-                
-                  for (const key in json) {
-                    tmp.push({
-                      idCourse: json[key].IDCourses,
-                      category:json[key].category,
-                      name:json[key].name,
-                      startDate:json[key].startDate,
-                      teacherName:json[key].teacher
-                    });
-                  }
-                
-                  setData(tmp) ;
+              //console.log(dataUniversity);
+              
+                for (const key in json) {
+                  tmp.push({
+                    idCourse: json[key].IDCourses,
+                    category:json[key].category,
+                    name:json[key].name,
+                    startDate:json[key].startDate,
+                    teacherName:json[key].teacher
+                  });
+                }
+              
+                setData(tmp) ;
+                setLoading(false);
 
-              }).catch((err) => console.log(err, "error"));
-                    //console.log(currCourses.length); 
-            //dispatch(courseActions.getCurrentCourses());
-            //setData(currCourses);
+            }).catch((err) => console.log(err, "error"));
+                  //console.log(currCourses.length); 
+          //dispatch(courseActions.getCurrentCourses());
+          //setData(currCourses);
         }
         getCurrentCourses();
     },[tmp.length]);
+
 
     return (
               
         <View style={styles.container}>
           {/* <Text>{data.length}</Text> */}
+
+          {isLoading && LoadingWithSkeletonScreen()}
           
             <FlatList
             data={data}
@@ -77,11 +86,8 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
                      <View style={styles.teacherName}>
                        {item.teacherName.map((item,index)=>(
                           <Text>Giáo viên : {item}</Text>
-                       ))
-                       }
-                      
-                     </View>
-                   
+                       ))}
+                     </View>    
                   </View>
                 </View>
               </TouchableOpacity>
@@ -123,12 +129,11 @@ const styles = StyleSheet.create({
     borderColor: "#cccccc",
     borderRadius: 10,
   },
-
   teacherName: {
     marginVertical:30,
     marginHorizontal:20,
   }
-})
+});
 
 export default CurrentCourseInfoScreen;
 

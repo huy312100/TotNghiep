@@ -15,7 +15,7 @@ const ConnectAppScreen = ({navigation})=>{
     const [url,setUrl]=useState('');
     const [username,setUsername]=useState('');
     const [password,setPassword]=useState('');
-    const [isLoading,setLoading]=useState(false);
+    const [isLoading,setLoading] = useState(false);
 
     const dispatch=useDispatch();
 

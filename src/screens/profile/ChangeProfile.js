@@ -11,7 +11,6 @@ import * as profileActions from "../../../store/actions/Profile";
 import RoundedImage from "../../components/profile/main/RoundedImage";
 
 
-
 function ChangeProfileScreen({navigation}) {
   const token = useSelector((state) => state.authen.token);
   const dispatch = useDispatch();
@@ -159,8 +158,6 @@ function ChangeProfileScreen({navigation}) {
           navigation.navigate("Profile");
         }
       }).done();
-
-      
 
   }
 

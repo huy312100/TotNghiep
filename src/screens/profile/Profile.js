@@ -50,6 +50,12 @@ export function ProfileScreen({navigation}) {
               if(index === 1){
                 navigation.navigate("Connect application");
               }
+              else if(index === 2){
+                navigation.navigate("Change Password");
+              }
+              else{
+
+              }
             }}>
               <Icon name={item.icon} type={item.type_icon} />
               <ListItem.Content>

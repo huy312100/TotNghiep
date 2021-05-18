@@ -20,6 +20,7 @@ import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 import ConnectAppScreen from '../screens/profile/ConnectApplication';
 import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse';
 import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
+import ChangePasswordScreen from '../screens/authentications/ChangePassword';
 
 
 const Stack = createStackNavigator();
@@ -211,6 +212,21 @@ function ProfileStackNavigation({navigation}) {
           // headerRightContainerStyle:{
           //   paddingRight:10
           // }
+        }}
+      />
+
+      <Stack.Screen
+        name="Change Password"
+        component={ChangePasswordScreen}
+        options={{ 
+          title: "Thay đổi mật khẩu",
+          headerTitleAlign: 'center',
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+          headerTintColor:"#FFFFFF",
+          headerStyle:{
+            backgroundColor:"#33CCFF"
+          },
         }}
       />
     </Stack.Navigator>

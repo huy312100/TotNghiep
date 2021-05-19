@@ -1,4 +1,4 @@
-import { LOGIN , LOGOUT ,REGISTER } from '../actions/Authen';
+import { LOGIN , LOGOUT ,REGISTER,CHANGE_PASSWORD } from '../actions/Authen';
 
 
 const initialState = {
@@ -16,6 +16,9 @@ export default (state=initialState,action) => {
            
         case REGISTER:
             return initialState;
+
+        case CHANGE_PASSWORD:
+            return{...state}
         default:
             return state;
     }

@@ -6,6 +6,7 @@ import {useSelector,useDispatch} from "react-redux";
 
 import * as profileActions from '../../../store/actions/Profile';
 
+import LoadingScreen from '../LoadingScreen';
 
 
 const WebCustomedScreen = () =>{
@@ -130,10 +131,7 @@ const WebCustomedScreen = () =>{
                 rightOpenValue={-85}/>
              }
 
-        {isLoading && <View style={styles.loading}>
-          <ActivityIndicator size="large" color="#EEEEEE" />
-          <Text style={styles.txtIndicator}>Đang xử lí ...</Text>
-          </View>}
+        {isLoading && LoadingScreen()}
 
         </View>
     )

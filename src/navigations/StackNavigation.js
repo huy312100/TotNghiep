@@ -296,7 +296,7 @@ function MyBottomTabs() {
 const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ;
 
-  const arrHideBotTab=["Calendar","Chat","Course","Change Profile","Connect application","Content Course","Web Customed"];
+  const arrHideBotTab=["Calendar","Chat","Course","Change Profile","Connect application","Content Course","Web Customed","Change Password"];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {

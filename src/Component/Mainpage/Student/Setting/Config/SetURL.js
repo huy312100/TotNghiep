@@ -8,12 +8,13 @@ class SetURL extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            type: "Moodle",
+            type: "Portal",
             username: "",
             password: "",
             url: "",
             success: -1,
-            loadding: 0
+            loadding: 0,
+            tag: 0
         }
     }
 
@@ -119,9 +120,29 @@ class SetURL extends Component {
         })
     }
 
-    renderSetULRbox = () => (
-        <div>
-            <div className="lb-input">
+    clickTag = (numtag) => {
+        var type = ['Portal', 'Moodle', 'Trello', 'Slack'];
+        if (numtag!==this.state.tag){
+            this.setState({
+                success:-1
+            })
+        }
+        this.setState({
+            tag: numtag,
+            type:type[numtag]
+        })
+    }
+
+    renderSetULRbox = () => {
+        var portaltag = this.state.tag === 0 ? "portal" : "";
+        var moodletag = this.state.tag === 1 ? "moodle" : "";
+        var trellotag = this.state.tag === 2 ? "trello" : "";
+        var slacktag = this.state.tag === 3 ? "slack" : "";
+
+
+        return (
+            <div>
+                {/* <div className="lb-input">
                 <label>Loại trang web</label>
                 <select className="inputops typebox" name="type" onChange={this.setParams} value={this.state.type}>
                     <option value="Moodle">Moodle</option>
@@ -129,32 +150,46 @@ class SetURL extends Component {
                     <option value="Trello">Trello</option>
                     <option value="Portal">Portal</option>
                 </select>
-            </div>
-            <div className="lb-input">
-                <label>Địa chỉ trang web(URL)</label>
-                <input className="inputops inputpw" name="url" onChange={this.setParams} value={this.state.url} />
-            </div>
-            {this.checkTypeWeb()}
-            <div className="info-connect">
+            </div> */}
+                <div className="seturl-tag">
+                    <div className="tag">
+                        <div type="button" className={"btn-seturl " + portaltag} onClick={(numtag) => this.clickTag(0)}>Portal
+                        </div>
+                        <div type="button" className={"btn-seturl " + moodletag} onClick={(numtag) => this.clickTag(1)}>Moodle
+                        </div>
+                        <div type="button" className={"btn-seturl " + trellotag} onClick={(numtag) => this.clickTag(2)}>Trello
+                        </div>
+                        <div type="button" className={"btn-seturl " + slacktag} onClick={(numtag) => this.clickTag(3)}>Slack
+                        </div>
+                    </div>
+                </div>
+                <div className="seturl-box">
 
-                {this.checkConnect()}
+                    <div className="lb-input">
+                        <label>Địa chỉ trang web(URL)</label>
+                        <input className="inputops inputpw" name="url" onChange={this.setParams} value={this.state.url} />
+                    </div>
+                    {this.checkTypeWeb()}
+                    <div className="info-connect">
 
+                        {this.checkConnect()}
+                    </div>
+                </div>
             </div>
-        </div>
         )
+    }
 
 
     render() {
-        console.log( this.state.success===0)
-        let checkrender = this.state.success===1 ?  <SetURLSuccuss />: this.renderSetULRbox();
+        console.log(this.state.success === 0)
+        let checkrender = this.state.success === 1 ? (<div className="seturl-box"><SetURLSuccuss /></div>) : this.renderSetULRbox();
         return (
             <div>
                 <Navbar />
                 <NavSetting />
                 <div>
-                    <div className="seturl-box">
-                        {checkrender}
-                    </div>
+                    {checkrender}
+
                 </div>
 
             </div>

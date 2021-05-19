@@ -12,6 +12,8 @@ import Profile from '../Component/Mainpage/Student/Setting/EditProfile/Profile';
 import SetURL from '../Component/Mainpage/Student/Setting/Config/SetURL';
 import ChangePW from '../Component/Mainpage/Student/Setting/Config/ChangePW';
 import Deadline from '../Component/Mainpage/Student/Sidebar/Deadline';
+import Course from '../Component/Mainpage/Student/Sidebar/Course/Course';
+import DetailCourse from '../Component/Mainpage/Student/Sidebar/Course/DetailCourse';
 
 
 class RouterMD extends Component {
@@ -33,8 +35,12 @@ class RouterMD extends Component {
 
 
                     <Switch>
+                        <Route path="/course/:id" component={DetailCourse}  />
+                        <Route path="/course">
+                            <Course />
+                        </Route>
                         <Route path="/deadline">
-                            <Deadline/>
+                            <Deadline />
                         </Route>
                         <Route path="/profile">
                             <Profile />

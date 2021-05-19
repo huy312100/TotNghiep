@@ -1,0 +1,104 @@
+.course-page {
+    width: 75vw;
+    margin: 0px 20vw;
+    /* background: white; */
+}
+
+.course-tag {
+    width: 85vw;
+    margin: 56px 0 0 15vw;
+    background: white;
+    /* padding: 10px; */
+}
+
+.course-tag .tag {
+    background: white;
+    /* border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px; */
+    box-shadow: 0px 0.5px 1px grey;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.course {
+    /* border: 1px solid rgb(214, 214, 214); */
+    margin-top: 10px;
+    padding: 30px 30px 5px 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0.5px 1px grey;
+    /* padding: 5px; */
+    background: white;
+}
+
+.course .titlee {
+    font-size: 24px;
+    font-weight: 500;
+    /* border: 1px solid black; */
+    padding:5px;
+    background: #18468b;
+    border-radius: 10px;
+    color: white;   
+}
+
+.list-teacher {
+    /* border: 1px solid rgb(214, 214, 214);
+     */
+    box-shadow: 0px 0.5px 1px grey;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+
+.list-teacher .content {
+    padding: 10px;
+}
+
+.course-tag .btn-course {
+    display: inline-block;
+    padding: 15px;
+    width: 50vw;
+    font-size: 16px;
+    font-weight: 500;
+    /* border-bottom: 2px solid black; */
+}
+
+.course-tag .tag .current {
+    border-bottom: 2px solid rgb(125, 149, 255);
+    color: rgb(125, 149, 255);
+    /* border-bottom-left-radius: 10px; */
+}
+
+.course-tag .tag .all {
+    border-bottom: 2px solid rgb(255, 116, 116);
+    color: rgb(255, 116, 116);
+}
+
+.loadding {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.course .direct{
+    /* display: flex;
+    justify-content: flex-start; */
+    /* padding: 5px; */
+    text-decoration: none;
+    color:black;
+}
+
+.course .link{
+    font-size: 16px;
+    text-align: center;
+    width: 70vw;
+    padding: 5px;
+    /* font-weight: 500; */
+    /* background: grey; */
+    border-radius: 10px;
+    font-weight: 450;
+    
+}
+
+.course .link:hover{
+    background: rgb(243, 243, 243);
+}

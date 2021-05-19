@@ -297,15 +297,15 @@ class Profile extends Component {
                 <Navbar />
                 <Sidebar />
                 {this.checkPopup()}
-                <div className="info">
+                <div className="info-profile">
                     <h3>Thông tin cá nhân</h3>
                     <hr />
 
                     <table>
                         <colgroup>
-                            <col style={{ width: "20%" }} />
+                            <col style={{ width: "25%" }} />
                             <col style={{ width: "65%" }} />
-                            <col style={{ width: "20%" }} />
+                            <col style={{ width: "15%" }} />
                         </colgroup>
                         <tbody>
                             <tr className="tb-row" onClick={this.changeIMG}>

@@ -1,8 +1,11 @@
-.info {
-  width: 90vw;
-  margin: 50px 0 0 190px;
+.info-profile {
+  width: 80vw;
+  margin: 76px 17.5vw;
   background: #fff;
   padding:20px;
+  border-radius: 10px;
+  box-shadow: 0px 1px 2px grey;
+
 }
 
 /* table{
@@ -27,6 +30,7 @@ th, td {
 
 .firstcol{
   font-weight: bold;
+  padding-left: 20px;
 }
 
 td{
@@ -34,7 +38,9 @@ td{
 }
 
 .tb-row:hover{
-  background: rgb(226, 226, 226);
+  /* background: rgb(226, 226, 226); */
+  background: rgb(243, 243, 243);
+
   cursor:pointer;
 }
 
@@ -58,4 +64,8 @@ td{
 
 .image{
   border-radius: 100px;
+}
+
+.info-profile input{
+  width: 45vw;
 }

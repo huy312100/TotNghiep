@@ -18,6 +18,7 @@ class Student extends Component {
             <div>
                 <Navbar />
                <Sidebar/>
+               {/* <img src="https://studenthcmusedu-my.sharepoint.com/personal/1753041_student_hcmus_edu_vn/Documents/73691.jpg"/> */}
                 {/* <Footer /> */}
             </div>
 

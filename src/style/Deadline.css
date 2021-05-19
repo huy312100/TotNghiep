@@ -1,42 +1,88 @@
 .deadline-page{
-    width: 50vw;
-    margin: 56px auto;
-    background: white;
+    width: 75vw;
+    margin: 0px 20vw;
+    /* background: white; */
+}
+
+.deadline-box{
+    margin-top: 0px;
 }
 
 .deadline{
     /* border: 1px solid black; */
-    padding: 30px 30px 0 30px;
+    padding: 30px 30px 10px 30px;
+    margin-top: 10px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0.5px 1px grey;
+
 }
 
 .deadline .titlee{
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 500;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     padding:5px;
+    background: #18468b;
+    border-radius: 10px;
+    color: white;
 }
 
 .deadline .decription{
     font-size: 18px;
-    /* font-weight: 500; */
+    font-weight: 400;
     padding: 5px;
+    color: rgb(56, 56, 56);
 }
 
 .deadline .duedate{
     font-size: 14px;
     /* font-weight: 500; */
     padding: 5px;
+    color: grey;
+
+}
+
+.deadline .direct{
+    display: flex;
+    justify-content: space-around;
+    /* padding: 5px; */
 }
 
 .deadline .link{
-    font-size: 14px;
+    font-size: 16px;
+    text-align: center;
+    width: 33vw;
     padding: 5px;
     /* font-weight: 500; */
+    /* background: grey; */
+    border-radius: 10px;
+    font-weight: 450;
+    
+}
+.deadline a{
+    text-decoration: none;
+    color: black;
+}
+
+.deadline .link:hover{
+    background: rgb(243, 243, 243);
 }
 
 .datepicker{
+    width: 85vw;
+    margin: 56px 0 0 15vw;
+    background: white;
     display: flex;
     justify-content: space-around;
+    padding: 10px;
+    font-weight: 500;
+    background: white;
+    /* border-radius: 10px; */
+    box-shadow: 0px 0.5px 1px grey;
+        /* position: fixed;
+        width: 50vw; */
+
 }
 
 
@@ -44,3 +90,27 @@
     width: 30vw;
     height: 5vh;
 } */
+.datepicker .month{
+    font-size: 24px;
+}
+
+.datepicker .change-month{
+    /* background: rgb(189, 241, 172); */
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    width: 10vw;
+    text-align: center;
+    box-shadow: 0px 1px 2px grey;
+
+}
+
+.datepicker .change-month:hover{
+    background: rgb(243, 243, 243);
+
+}
+
+.deadline-page hr{
+    padding: 0px;
+    margin: 10px;    
+  }

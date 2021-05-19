@@ -46,12 +46,12 @@ class Navbar extends Component {
     renderUserBox = () => (
         <div className="action-box">
             <div className="user-content">
-                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t1.0-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=LwcMpKKt09IAX_mc3do&_nc_ht=scontent.fsgn2-4.fna&tp=29&oh=97697f34d86e2c3d654570bb99ea2d71&oe=60801F67" alt=""></img>
+                <img width="50vw" style={{ borderRadius: "100px" }} src="https://scontent.fsgn8-1.fna.fbcdn.net/v/t1.18169-1/c66.0.168.168a/10400818_1451280791797635_4493168487969578882_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=oAkgwsQVYg0AX8VfWuz&_nc_ht=scontent.fsgn8-1.fna&tp=29&oh=68b00fe95981fb4da378346365a346d7&oe=60CA8C4F" alt=""></img>
                 <h5 className="user-content-name">
                     {this.state.username}
                 </h5>
             </div>
-            {/* <hr/> */}
+            <hr/>
                 <Link to="/profile" className="user-link" style={{ textDecoration: 'none' }}>Thông tin cá nhân</Link>
                 <Link to="/setting" className="user-link" style={{ textDecoration: 'none' }}>Thiết lập</Link>
             <UserBox />
@@ -135,7 +135,7 @@ class Navbar extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar navbar-light bg-light fixed-top">
+                <nav className="navbar navbar-light fixed-top">
                     {/* <div className="container"> */}
                     <a className="navbar-brand" href="/home">
                         <img className="d-inline-block align-top" width="10%" src={process.env.PUBLIC_URL + 'logo192.png'} alt=""/>
@@ -145,13 +145,13 @@ class Navbar extends Component {
                         <li className="nav-item">
                             <div className="nav-link active">{this.state.username}</div>
                         </li>
-                        <li className="nav-item">
+                        <li type="button" className="nav-item">
                             <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/message.png'} alt=""/>
                         </li>
-                        <li className="nav-item" onClick={() => this.NotiClick()}>
+                        <li type="button" className="nav-item" onClick={() => this.NotiClick()}>
                             <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/noti.png'} alt=""/>
                         </li>
-                        <li className="nav-item" onClick={() => this.UserClick()}>
+                        <li type="button" className="nav-item" onClick={() => this.UserClick()}>
                             <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/user.png'} alt=""/>
                         </li>
                     </ul>

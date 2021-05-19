@@ -20,7 +20,7 @@
     /* padding-top: 2vh; */
     transition: width 0.2s;
     /* border-right:1px solid black; */
-    box-shadow: 0px 0px 5px 0px;
+    /* box-shadow: 0px 0px 5px 0px; */
 }
 
 a.content-sidenav{
@@ -56,6 +56,7 @@ a.content-sidenav{
 
 .side-text {
     margin-left: 10px;
+    font-size: 14px;
 }
 
 .selected, .selected:hover {

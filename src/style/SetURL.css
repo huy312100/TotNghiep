@@ -1,24 +1,26 @@
 .seturl-box {
     width: 60vw;
-    margin: 100px auto;
+    margin: 20px 350px;
     background: #fff;
     padding: 5px;
+    box-shadow: 0px 0.5px 1px grey;
+    border-radius: 10px;
 }
 
 .lb-input {
     display: flex;
     justify-content: space-between;
-    align-items:center;
+    align-items: center;
     margin: 10px;
 }
 
 .lb-input .inputops {
     width: 40vw;
-    font-size:16px;
+    font-size: 16px;
     height: 30px;
 }
 
-.info-connect{
+.info-connect {
     display: flex;
     justify-content: flex-end;
 }
@@ -27,7 +29,7 @@
     width: 40vw;
     display: flex;
     justify-content: space-between;
-    margin:0px 10px 10px 0;
+    margin: 0px 10px 10px 0;
     align-items: center;
 }
 
@@ -41,13 +43,13 @@
     border-radius: 2px;
 }
 
-input{
+input {
     padding: 5px;
 }
 
 .lb-input input[type=password] {
     /* font:small-caption; */
-    font-size:16px;
+    font-size: 16px;
     height: 30px;
     background: white;
     border: 1px solid black;
@@ -56,25 +58,25 @@ input{
     padding: 5px;
 }
 
-.lb-input input[type=password]:focus{
+.lb-input input[type=password]:focus {
     background: white;
-    box-shadow:0px 0px 0px 0.5px black inset;
+    box-shadow: 0px 0px 0px 0.5px black inset;
 }
 
-.connect-status{
+.connect-status {
     color: red;
     font-size: 14px;
 }
 
-.success-box{
+.success-box {
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     text-align: center;
     justify-content: center;
     margin: 20px 0;
 }
 
-.success-box .content{
+.success-box .content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -83,14 +85,66 @@ input{
     margin-bottom: 30px;
 }
 
-.success-box .back{
+.success-box .back {
     padding: 10px;
     width: 20vw;
     /* margin: 10px; */
-    border:1px solid black;
+    border: 1px solid black;
     /* background: green; */
     /* color: white; */
     border-radius: 2px;
 }
 
+.seturl-tag {
+    width: 85vw;
+    margin: 56px 0 0 15vw;
+    background: white;
+    /* padding: 10px; */
+}
 
+.seturl-tag .tag {
+    background: white;
+    /* border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px; */
+    box-shadow: 0px 0.5px 1px grey;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.seturl-tag .btn-seturl {
+    display: inline-block;
+    padding: 15px;
+    width: 50vw;
+    font-size: 16px;
+    font-weight: 500;
+    /* border-bottom: 2px solid black; */
+}
+
+.seturl-tag .tag .portal {
+    border-bottom: 2px solid grey;
+    color: gray;
+    /* border-bottom-left-radius: 10px; */
+}
+
+.seturl-tag .tag .moodle {
+    border-bottom: 2px solid rgb(255, 116, 116);
+    color: rgb(255, 116, 116);
+}
+
+.seturl-tag .tag .trello {
+    border-bottom: 2px solid #0c63dc;
+    color: #0c63dc;
+}
+
+.seturl-tag .tag .slack {
+    /* border-bottom: 2px solid linear-gradient(to right, red, purple);
+     */
+    
+    background: linear-gradient( to right, #36c5f0, #2eb67c, #edb32e, #e01e5b) bottom no-repeat;
+    /* background-size: 100% 5px; */
+    background-size:100% 2px;
+    color: rgb(255, 116, 116);
+    /* border-bottom: 2px solid grey; */
+    /* padding-bottom: 1px; */
+}

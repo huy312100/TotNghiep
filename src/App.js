@@ -9,7 +9,7 @@ import RouterMD from './router/Router';
 
 function App() {
   return (
-    <div style={{backgroundColor:"#ebf2ff"}}>
+    <div>
       <RouterMD/>
     </div>
   );

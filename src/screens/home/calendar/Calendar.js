@@ -1,8 +1,20 @@
 import React, {Component} from 'react';
 import {Alert, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {Agenda} from 'react-native-calendars';
+import { Agenda } from 'react-native-calendars';
 
 const testIDs = require('./testIDs');
+
+import {LocaleConfig} from 'react-native-calendars';
+
+LocaleConfig.locales['vn'] = {
+  monthNames: ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'],
+  monthNamesShort: ['Thg 1','Thg 2','Thg 3','Thg 4','Thg 5','Thg 6','Thg 7.','Thg 8','Thg 9','Thg 10','Thg 11','Thg 12'],
+  dayNames: ['Chủ nhật','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'],
+  dayNamesShort: ['CN','T2','T3','T4','T5','T6','T7'],
+  today: 'Hôm nay'
+};
+LocaleConfig.defaultLocale = 'vn';
+
 
 export default class CalendarScreen extends Component {
   constructor(props) {
@@ -11,6 +23,30 @@ export default class CalendarScreen extends Component {
     this.state = {
       items: {}
     };
+  };
+
+  getCurrentDate = () =>{
+    var today = new Date(); 
+    var day= today.getDate();
+    var year= today.getFullYear();
+    var month= today.getMonth() + 1;
+    if(month < 10 && day > 10){
+      let date =year+'-'+'0'+month+'-'+day;
+      return date;
+    }
+    else if(month < 10 && day < 10){
+      let date = year+'-'+'0'+month+'-'+'0'+day;
+      return date;
+    }
+    else if(month > 10 && day < 10){
+      let date = year+'-'+month+'-'+'0'+day;
+      return date;
+    }
+    else{
+      let date =year+'-'+month+'-'+day;
+      return date;
+    }
+   
   }
 
   render() {
@@ -19,10 +55,14 @@ export default class CalendarScreen extends Component {
         testID={testIDs.agenda.CONTAINER}
         items={this.state.items}
         loadItemsForMonth={this.loadItems.bind(this)}
-        selected={'2021-03-31'}
+        selected={this.getCurrentDate()}
         renderItem={this.renderItem.bind(this)}
         renderEmptyDate={this.renderEmptyDate.bind(this)}
         rowHasChanged={this.rowHasChanged.bind(this)}
+        minDate={'2021-05-01'}
+  // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+        maxDate={'2021-05-30'}
+        pastScrollRange={50}
       />
     );
   }

@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-import {TouchableOpacity} from "react-native"
+import {TouchableOpacity,Text} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -21,6 +21,7 @@ import ConnectAppScreen from '../screens/profile/ConnectApplication';
 import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse';
 import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
 import ChangePasswordScreen from '../screens/authentications/ChangePassword';
+import AddToCalendarScreen from '../screens/home/calendar/AddToCalendar';
 
 
 const Stack = createStackNavigator();
@@ -52,7 +53,7 @@ export function AuthenStackNavigation() {
   );
 };
 
-function HomeStackNavigation() { 
+function HomeStackNavigation({navigation}) { 
   return(
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
@@ -69,7 +70,15 @@ function HomeStackNavigation() {
           title: "Lịch hoạt động",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
-       }}
+          headerRight:()=>(
+            <TouchableOpacity onPress={() =>navigation.navigate('Add Event')}>
+              <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
+            </TouchableOpacity>
+          ),
+          headerRightContainerStyle:{
+            paddingRight:10
+          },
+        }}
       />
       <Stack.Screen
         name="Course"
@@ -90,6 +99,28 @@ function HomeStackNavigation() {
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
         })}
+      />
+
+      <Stack.Screen
+        name="Add Event"
+        component={AddToCalendarScreen}
+        options={{ 
+          title: "Sự kiện mới",
+          headerBackTitle:'Huỷ',
+          headerBackTitleStyle:{color: 'red'},
+          headerTintColor:'red',
+          headerTitleStyle: {
+            color: 'black'
+          },
+          headerRight:()=>(
+            <TouchableOpacity >
+              <Text style={{fontSize:17,color:'blue'}}>Thêm</Text>
+            </TouchableOpacity>
+          ),
+          headerRightContainerStyle:{
+            paddingRight:10
+          },
+        }}
       />
     </Stack.Navigator>
   )
@@ -296,7 +327,7 @@ function MyBottomTabs() {
 const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ;
 
-  const arrHideBotTab=["Calendar","Chat","Course","Change Profile","Connect application","Content Course","Web Customed","Change Password"];
+  const arrHideBotTab=["Calendar","Chat","Course","Change Profile","Connect application","Content Course","Web Customed","Change Password","Add Event"];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {

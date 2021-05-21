@@ -1,13 +1,14 @@
 
 import _ from 'lodash';
 import XDate from 'xdate';
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useRef} from 'react';
 import {Platform, StyleSheet, View, Text, TouchableOpacity, Button,Alert} from 'react-native';
 import {ExpandableCalendar, Timeline, CalendarProvider,LocaleConfig} from 'react-native-calendars';
 import {sameDate} from './dateutils';
 
 import {useDispatch,useSelector} from 'react-redux';
 import * as calendarActions from '../../../../store/actions/Calendar';
+
 
 LocaleConfig.locales['vn'] = {
   monthNames: ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'],
@@ -18,88 +19,23 @@ LocaleConfig.locales['vn'] = {
 };
 LocaleConfig.defaultLocale = 'vn';
 
-const EVENTS = [
-  {
-    start: '2021-05-20 00:30:00',
-    end: '2021-05-20 23:59:00',
-    title: 'Dr. Mariana Joseph',
-    summary: '3412 Piedmont Rd NE, GA 3032',
-    color: '#e6add8'
-  },
-  {
-    start: '2021-05-21 00:00:00',
-    end: '2021-05-21 12:30:00',
-    title: 'Dr. Mariana Joseph',
-    summary: '3412 Piedmont Rd NE, GA 3032',
-    color: '#e6add8'
-  },
-  {
-    start: '2021-05-20 00:30:00',
-    end: '2021-05-20 12:30:00',
-    title: 'Visit Grand Mother',
-    summary: 'Visit Grand Mother and bring some fruits.',
-    color: '#ade6d8'
-  },
-  {
-    start: '2021-05-20 00:30:00',
-    end: '2021-05-20 12:30:00',
-    title: 'Dr. Mariana Joseph',
-    summary: '3412 Piedmont Rd NE, GA 3032',
-    color: '#e6add8'
-  },
-  {
-    start: '2021-05-20 00:30:00',
-    end: '2021-05-20 12:30:00',
-    title: 'Tea Time with Dr. Hasan',
-    summary: 'Tea Time with Dr. Hasan, Talk about Project'
-  },
-  {
-    start: '2021-05-20 00:30:00',
-    end: '2021-05-20 12:30:00',
-    title: 'Dr. Mariana Joseph',
-    summary: '3412 Piedmont Rd NE, GA 3032'
-  },
-  {
-    start: '2017-09-07 14:30:00',
-    end: '2017-09-07 16:30:00',
-    title: 'Meeting Some Friends in ARMED',
-    summary: 'Arsalan, Hasnaat, Talha, Waleed, Bilal',
-    color: '#d8ade6'
-  },
-  {
-    start: '2017-09-08 01:40:00',
-    end: '2017-09-08 02:25:00',
-    title: 'Meet Sir Khurram Iqbal',
-    summary: 'Computer Science Dept. Comsats Islamabad',
-    color: '#e6bcad'
-  },
-  {
-    start: '2017-09-08 04:10:00',
-    end: '2017-09-08 04:40:00',
-    title: 'Tea Time with Colleagues',
-    summary: 'WeRplay'
-  },
-  {
-    start: '2017-09-08 00:45:00',
-    end: '2017-09-08 01:45:00',
-    title: 'Lets Play Apex Legends',
-    summary: 'with Boys at Work'
-  },
-  {
-    start: '2017-09-08 11:30:00',
-    end: '2017-09-08 12:30:00',
-    title: 'Dr. Mariana Joseph',
-    summary: '3412 Piedmont Rd NE, GA 3032'
-  },
-  {
-    start: '2017-09-10 12:10:00',
-    end: '2017-09-10 13:45:00',
-    title: 'Merge Request to React Native Calendards',
-    summary: 'Merge Timeline Calendar to React Native Calendars'
-  }
-];
-
 const CalendarScreen =()=> {
+
+  // const EVENTS = [
+  //   { 
+  //     "end": "2021-05-19 18:00",
+  //     "start": "2021-05-19 14:00",
+  //     "summary": "",
+  //     "title": "Test Again",
+  //   },
+  //   { 
+  //     "end": "2021-05-13 23:59",
+  //     "start": "2021-05-13 01:00",
+  //     "summary": "[DA-04] LINK NỘP ĐỒ ÁN - YÊU CẦU 5 is due",
+  //     "title": "Quản trị CSDL hiện đại - 17HTTT",
+  //     "color": "#e6bcad"
+  //   },
+  // ];
 
   const getCurrenDay = ()=>{
     var today = new Date(); 
@@ -141,13 +77,38 @@ const CalendarScreen =()=> {
     }
   };
 
+  function convertTimestamp(timestamp) {
+    var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
+        yyyy = d.getFullYear(),
+        mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+        dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+        hh = d.getHours(),
+        h = hh,
+        min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+        time;
+    if (hh > 12) {
+        h = hh ;
+    } else if (hh === 12) {
+        h = 12;
+    } else if (hh == 0) {
+        h = 0;
+    }
+    // ie: 2014-03-24, 3:00 PM
+    time = yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + min ;
+    return time;
+};
+
+
   const token = useSelector((state) => state.authen.token);
 
   const [currentDate,setCurrentDate] = useState(getCurrentDate());
   const [monthChanged,setMonthChanged] = useState(getCurrentMonth());
   const [yearChanged,setYearChanged] = useState(getCurrentYear());
 
+  const [allEvents,setEvent] = useState([]);
   const dispatch = useDispatch();
+  const unmounted = useRef(false);
+
 
   useEffect(() => {
         //console.log(token);
@@ -178,6 +139,37 @@ const CalendarScreen =()=> {
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes])=>{
             console.log(dataRes,statusCode); 
+
+            const dataCalendar = [];
+            for (const key in dataRes) {
+              if(dataRes[key].TypeCalendar === 'custom'){
+                dataCalendar.push({
+                    id:dataRes[key]._id,
+                    //type:dataRes[0].TypeCalendar,
+                    title:dataRes[key].Title,
+                    summary:"",
+                    start:convertTimestamp(dataRes[key].StartHour),
+                    end:convertTimestamp(dataRes[key].EndHour),
+                    //dataRes[key].Decription.url,
+                  
+                })
+              }
+              else{
+                dataCalendar.push({
+                  id:"",
+                  //type:dataRes[0].TypeCalendar,
+                  title:dataRes[key].nameCourese,
+                  summary:dataRes[key].decription,
+                  start:convertTimestamp(dataRes[key].duedate-3600),
+                  end:convertTimestamp(dataRes[key].duedate),
+                  color: '#99FF99'
+              })
+            }
+          }
+              
+            
+            console.log(dataCalendar);
+            setEvent(dataCalendar);
             dispatch(calendarActions.getCalendarOfMonth(dataRes));
         }).catch(error => console.log('error', error));
   },[]);
@@ -298,7 +290,7 @@ const CalendarScreen =()=> {
         <Timeline
           format24h={true}
           eventTapped={e => Alert.alert(e.title)}
-          events={EVENTS.filter(event => sameDate(XDate(event.start), XDate(currentDate)))}
+          events={allEvents.filter(event => sameDate(XDate(event.start), XDate(currentDate)))}
           // scrollToFirst={true}
           // start={0}
           // end={24}

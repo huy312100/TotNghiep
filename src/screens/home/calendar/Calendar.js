@@ -112,66 +112,70 @@ const CalendarScreen =()=> {
 
   useEffect(() => {
         //console.log(token);
-        let details = {
-            year: yearChanged,
-            month: monthChanged,
-          };
-      
-          let formBody = [];
-      
-          for (let property in details) {
-            let encodedKey = encodeURIComponent(property);
-            let encodedValue = encodeURIComponent(details[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-          }
-          formBody = formBody.join("&");
+    const getAllActivitiesInMonth = ()=>{
+      let details = {
+        year: yearChanged,
+        month: monthChanged,
+      };
 
-          fetch("https://hcmusemu.herokuapp.com/calendar/getthismonth", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              "Authorization": `bearer ${token}`
-            },
-            body: formBody,
-        }).then((response) => {
-            const statusCode = response.status;
-            const dataRes = response.json();
-            return Promise.all([statusCode, dataRes]);
-        }).then(([statusCode, dataRes])=>{
-            console.log(dataRes,statusCode); 
+      let formBody = [];
 
-            const dataCalendar = [];
-            for (const key in dataRes) {
-              if(dataRes[key].TypeCalendar === 'custom'){
-                dataCalendar.push({
-                    id:dataRes[key]._id,
-                    //type:dataRes[0].TypeCalendar,
-                    title:dataRes[key].Title,
-                    summary:"",
-                    start:convertTimestamp(dataRes[key].StartHour),
-                    end:convertTimestamp(dataRes[key].EndHour),
-                    //dataRes[key].Decription.url,
-                  
-                })
-              }
-              else{
-                dataCalendar.push({
-                  id:"",
+      for (let property in details) {
+        let encodedKey = encodeURIComponent(property);
+        let encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+
+      fetch("https://hcmusemu.herokuapp.com/calendar/getthismonth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `bearer ${token}`
+        },
+        body: formBody,
+      }).then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes])=>{
+          console.log(dataRes,statusCode); 
+
+          const dataCalendar = [];
+          for (const key in dataRes) {
+            if(dataRes[key].TypeCalendar === 'custom'){
+              dataCalendar.push({
+                  id:dataRes[key]._id,
                   //type:dataRes[0].TypeCalendar,
-                  title:dataRes[key].nameCourese,
-                  summary:dataRes[key].decription,
-                  start:convertTimestamp(dataRes[key].duedate-3600),
-                  end:convertTimestamp(dataRes[key].duedate),
-                  color: '#99FF99'
+                  title:dataRes[key].Title,
+                  summary:"",
+                  start:convertTimestamp(dataRes[key].StartHour),
+                  end:convertTimestamp(dataRes[key].EndHour),
+                  //dataRes[key].Decription.url,
+                
               })
             }
+            else{
+              dataCalendar.push({
+                id:"",
+                //type:dataRes[0].TypeCalendar,
+                title:dataRes[key].nameCourese,
+                summary:dataRes[key].decription,
+                start:convertTimestamp(dataRes[key].duedate-3600),
+                end:convertTimestamp(dataRes[key].duedate),
+                color: '#99FF99'
+            })
           }
-              
-            
-            console.log(dataCalendar);
-            setEvent(dataCalendar);
-            dispatch(calendarActions.getCalendarOfMonth(dataRes));
-        }).catch(error => console.log('error', error));
+        }
+          console.log(dataCalendar);
+          setEvent(dataCalendar);
+          dispatch(calendarActions.getCalendarOfMonth(dataRes));
+      }).catch(error => console.log('error', error));
+    };
+    getAllActivitiesInMonth();
+    return()=>{
+      unmounted.current=true;
+    };
   },[]);
 
 

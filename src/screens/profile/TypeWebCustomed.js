@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react';
 import { View,StyleSheet,Text,TouchableOpacity,ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import {useSelector,useDispatch} from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 
 import * as profileActions from '../../../store/actions/Profile';
 
@@ -50,7 +50,7 @@ const WebCustomedScreen = () =>{
     const renderItem = (data,rowMap) => {
         return (
             <View style={styles.card}>
-                <Text style={styles.deadlineName}>{data.item}</Text>
+                <Text style={styles.connectionName}>{data.item}</Text>
             </View> 
         );
     };
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         borderBottomColor: "#cccccc",
     },
 
-    deadlineName:{
+    connectionName:{
         marginLeft: 40,
         marginVertical:20,
         fontSize:15

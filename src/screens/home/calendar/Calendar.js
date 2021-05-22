@@ -143,7 +143,7 @@ const CalendarScreen =()=> {
 
           const dataCalendar = [];
           for (const key in dataRes) {
-            if(dataRes[key].TypeCalendar === 'custom'){
+            if(dataRes[key].TypeCalendar !== undefined){
               dataCalendar.push({
                   id:dataRes[key]._id,
                   //type:dataRes[0].TypeCalendar,

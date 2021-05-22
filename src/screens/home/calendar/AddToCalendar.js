@@ -1,6 +1,8 @@
 import React,{useState} from 'react';
-import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,TextInput,Switch } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView } from 'react-native';
+import { Ionicons,Entypo,SimpleLineIcons } from '@expo/vector-icons';
+import { Header } from '@react-navigation/stack';
+
 
 
 const AddToCalendarScreen = () => {
@@ -49,17 +51,24 @@ const AddToCalendarScreen = () => {
       
 
     return(
-        <View style={styles.container}>
+        <KeyboardAvoidingView
+        //keyboardVerticalOffset = {Header.HEIGHT + 20} // adjust the value here if you need more padding
+         behavior={Platform.OS === "ios" ? "padding" : "height"}
+         style={styles.container}>
+        <TouchableWithoutFeedback onPress={() =>{
+            Keyboard.dismiss();
+          }}>
+         <ScrollView style={styles.container}>
             <View style={styles.card}>
                 <TextInput style={styles.titleName} placeholder="Tiêu đề"></TextInput>
             </View> 
 
             <View style={styles.card}>
                 <View style={styles.date}>
-                    <Ionicons name="time-outline" size={20} color={"black"} />
-                    <Text style={styles.label} >Cả ngày</Text>
+                <SimpleLineIcons name="clock" size={20} color="red" />
+                    <Text style={styles.label}>Cả ngày</Text>
                     <Switch
-                        style={[{ transform: [{ scaleX: .6 }, { scaleY: .6 }],marginTop:-5,marginRight:-10},styles.onTheRight]}
+                        style={[{ transform: [{ scaleX: .8 }, { scaleY: .8 }],marginTop:-5,marginRight:-10},styles.onTheRight]}
                         trackColor={{ false: "white", true: "green" }}
                         // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
                         ios_backgroundColor="#3e3e3e"
@@ -69,7 +78,7 @@ const AddToCalendarScreen = () => {
                 </View>
 
                 <TouchableOpacity style={styles.date}>
-                    <Text style={[styles.label,{marginLeft:25}]}>Bắt đầu</Text>
+                    <Text style={[styles.label,{marginLeft:32}]}>Bắt đầu</Text>
                     <View style={[styles.onTheRight,{flexDirection:'row'}]}>
                         <Text style={styles.label}>{getCurrenDay(currentTimestamp)+" tháng "+ getCurrentMonth(currentTimestamp)+"," + getCurrentYear(currentTimestamp)}</Text>
                         <Text style={[styles.label,{marginLeft:20}]}>{getCurrentTime(currentTimestamp)}</Text>
@@ -77,14 +86,54 @@ const AddToCalendarScreen = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.date}>
-                    <Text style={[styles.label,{marginLeft:25}]}>Kết thúc</Text>
+                    <Text style={[styles.label,{marginLeft:32}]}>Kết thúc</Text>
                     <View style={[styles.onTheRight,{flexDirection:'row'}]}>
                         <Text style={styles.label}>{getCurrenDay(nextHourTimestamp)+" tháng "+ getCurrentMonth(nextHourTimestamp)+"," + getCurrentYear(nextHourTimestamp)}</Text>
                         <Text style={[styles.label,{marginLeft:20}]}>{getCurrentTime(nextHourTimestamp)}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
-        </View>
+
+
+            <TouchableOpacity style={[styles.card,{marginBottom:0}]}>
+                <View style={styles.date}>
+                <Ionicons name="people-outline" size={23} color="red" />
+                    <Text style={styles.label}>Thêm người</Text>
+                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
+                </View>
+            </TouchableOpacity> 
+
+            <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]}>
+                <View style={styles.date}>
+                <SimpleLineIcons name="event" size={20} color="red" />
+                    <Text style={styles.label}>Loại sự kiện</Text>
+                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
+                </View>
+            </TouchableOpacity> 
+
+            <TouchableOpacity style={[styles.card,{marginTop:0}]}>
+                <View style={styles.date}>
+                <Ionicons name="color-palette-outline" size={23 } color="red" />
+                    <Text style={styles.label}>Màu sắc</Text>
+                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
+                </View>
+            </TouchableOpacity> 
+
+            <View style={[styles.card,{marginBottom:0}]}>
+                <View style={styles.date}>
+                <SimpleLineIcons name="link" size={20} color="red" />
+                   <TextInput style={[styles.label,{width:"100%"}]} placeholder="URL"></TextInput>
+                </View>
+            </View> 
+            <View style={[styles.card,{marginTop:0,height:"25%"}]}>
+                <View style={styles.date}>
+                    <SimpleLineIcons name="note" size={20} color="red" />
+                    <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}></TextInput>
+                </View>
+            </View> 
+            </ScrollView>
+        </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     )
 };
 
@@ -97,12 +146,12 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor:'white',
         borderBottomWidth:1,
-        borderBottomColor: "#cccccc",
+        borderBottomColor: "#EEEEEE",
         marginVertical:20
     },
 
     titleName:{
-        marginLeft: 40,
+        marginLeft: 48,
         marginVertical:10,
         fontSize:20
     },
@@ -115,7 +164,7 @@ const styles = StyleSheet.create({
 
     label: {
         fontSize:18,
-        marginLeft:5
+        marginLeft:15
     },
 
     onTheRight: {

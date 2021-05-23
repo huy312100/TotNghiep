@@ -23,6 +23,9 @@ const AddToCalendarScreen = () => {
     const [visibleOverlayAddTypeEvent, setVisibleOverlayAddTypeEvent] = useState(false);
     const [visibleOverlayAddColor, setVisibleOverlayAddColor] = useState(false);
 
+    const [typeEvent,setTypeEvent]= useState('');
+    const [colorEvent,setColorEvent] =useState('');
+
 
     const toggleOverlayAddPeople = () => {
         setVisibleOverlayAddPeople(!visibleOverlayAddPeople);
@@ -103,6 +106,13 @@ const AddToCalendarScreen = () => {
         return h + ":" + m;
       }
 
+      //Handle Start and End Date
+      const checkValidDate = () =>{
+          if(startTimestamp >= endTimestamp){
+            return false;
+          }
+          return true;
+      }
       
 
     return(
@@ -150,10 +160,10 @@ const AddToCalendarScreen = () => {
                 <TouchableOpacity style={styles.date} onPress={showEndDatePicker}>
                     <Text style={[styles.label,{marginLeft:32}]}>Kết thúc</Text>
                     <View style={[styles.onTheRight,{flexDirection:'row'}]}>
-                        <Text style={styles.label} >
+                        <Text style={[styles.label,{ textDecorationLine: checkValidDate() ? 'none' : 'line-through'}]} >
                             {getCurrenDay(endTimestamp)+" tháng "+ getCurrentMonth(endTimestamp)+"," + getCurrentYear(endTimestamp)}
                         </Text>
-                        {!isEnabled && <Text style={[styles.label,{marginLeft:20}]}>
+                        {!isEnabled && <Text style={[styles.label,{marginLeft:20,textDecorationLine: checkValidDate() ? 'none' : 'line-through'}]}>
                             {getCurrentTime(endTimestamp)}
                         </Text>}
                     </View>
@@ -172,7 +182,7 @@ const AddToCalendarScreen = () => {
                 <View style={styles.date}>
                 <SimpleLineIcons name="event" size={21} color="red" />
                     <Text style={styles.label}>Loại sự kiện</Text>
-                    {/* <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" /> */}
+                    <Text style={[styles.onTheRight,{fontSize:18,color:'#DDDDDD'}]}>{typeEvent}</Text>
                 </View>
             </TouchableOpacity> 
 
@@ -180,7 +190,7 @@ const AddToCalendarScreen = () => {
                 <View style={styles.date}>
                 <Ionicons name="color-palette-outline" size={23 } color="red" />
                     <Text style={styles.label}>Màu sắc</Text>
-                    {/* <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" /> */}
+                    <View style={[styles.onTheRight,colorStyle.SquareShapeView,{backgroundColor: colorEvent}]}/>
                 </View>
             </TouchableOpacity> 
 
@@ -238,6 +248,8 @@ const AddToCalendarScreen = () => {
                 onConfirm={handleEndConfirm}
                 onCancel={hideEndDatePicker}/>
 
+
+
             <Overlay isVisible={visibleOverlayAddPeople} onBackdropPress={toggleOverlayAddPeople}>
                 <View >
                     <Text>Hello from Overlay!</Text>
@@ -245,42 +257,48 @@ const AddToCalendarScreen = () => {
             </Overlay>
 
             <Overlay isVisible={visibleOverlayAddTypeEvent} onBackdropPress={toggleOverlayAddTypeEvent}>
-                <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} >
+                <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Công việc')}}>
                     <View style={styles.date}>
                     <MaterialCommunityIcons name="office-building" size={24} color="black" />
                     <Text style={styles.label}>Công việc</Text>
                     </View>
                 </TouchableOpacity> 
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} >
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Nhà')}}>
                     <View style={styles.date}>
                     <FontAwesome5 name="home" size={20} color="black" />
                     <Text style={styles.label}>Nhà</Text>
                     </View>
                 </TouchableOpacity>        
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} >
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Gia đình')}}>
                     <View style={styles.date}>
                     <MaterialIcons name="family-restroom" size={24} color="black" />
                     <Text style={styles.label}>Gia đình</Text>
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} >
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Giải trí')}}>
                     <View style={styles.date}>
                     <Ionicons name="game-controller" size={24} color="black" />
                     <Text style={styles.label}>Giải trí</Text>
                     </View>
                 </TouchableOpacity> 
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} >
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Bạn bè')}}>
                     <View style={styles.date}>
                     <MaterialCommunityIcons name="party-popper" size={24} color="black" />
                     <Text style={styles.label}>Bạn bè</Text>
                     </View>
                 </TouchableOpacity> 
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} >
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Thể thao')}}>
                     <View style={[styles.date,]}>
                     <MaterialIcons name="sports" size={24} color="black" />
                     <Text style={styles.label}>Thể thao </Text>
@@ -288,10 +306,71 @@ const AddToCalendarScreen = () => {
                 </TouchableOpacity> 
             </Overlay>
 
-            <Overlay isVisible={visibleOverlayAddColor} onBackdropPress={toggleOverlayAddColor}>
-                <View >
-                    <Text>Hello from Overlay!</Text>
-                </View>        
+
+            <Overlay isVisible={visibleOverlayAddColor} onBackdropPress={toggleOverlayAddColor}> 
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddColor();setColorEvent('#00BCD4')}}>
+                    <View style={[styles.date,]}>
+                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#00BCD4'}]}/>
+                        <Text style={styles.label}> Xanh dương </Text>
+                    </View>
+                </TouchableOpacity> 
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddColor();setColorEvent('#FF6666')}}>
+                    <View style={[styles.date,]}>
+                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#FF6666'}]}/>
+                        <Text style={styles.label}> Đỏ </Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddColor();setColorEvent('#CCFF00')}}>
+                    <View style={[styles.date,]}>
+                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#CCFF00'}]}/>
+                        <Text style={styles.label}> Vàng </Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddColor();setColorEvent('#669966')}}>
+                    <View style={[styles.date,]}>
+                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#669966'}]}/>
+                        <Text style={styles.label}> Xanh lá </Text>
+                    </View>
+                </TouchableOpacity>  
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddColor();setColorEvent('#FF99CC')}}>
+                    <View style={[styles.date,]}>
+                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#FF99CC'}]}/>
+                        <Text style={styles.label}> Hồng </Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddColor();setColorEvent('#330099')}}>
+                    <View style={[styles.date,]}>
+                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#330099'}]}/>
+                        <Text style={styles.label}> Tím </Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddColor();setColorEvent('#663300')}}>
+                    <View style={[styles.date,]}>
+                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#663300'}]}/>
+                        <Text style={styles.label}> Nâu </Text>
+                    </View>
+                </TouchableOpacity>  
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddColor();setColorEvent('#DDDDDD')}}>
+                    <View style={[styles.date,]}>
+                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#DDDDDD'}]}/>
+                        <Text style={styles.label}> Xám </Text>
+                    </View>
+                </TouchableOpacity>       
             </Overlay>
             
 
@@ -337,4 +416,11 @@ const styles = StyleSheet.create({
     }
 });
 
+const colorStyle = StyleSheet.create({
+    SquareShapeView: { 
+        width: 20,
+        height: 20,
+        borderRadius:7,
+      },
+});
 export default AddToCalendarScreen;

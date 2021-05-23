@@ -5,7 +5,11 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator,HeaderBackButton } from "@react-navigation/stack";
+
+import { useSelector,useDispatch } from "react-redux";
+import * as calendarActions from '../../store/actions/Calendar';
+
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
 import HomeScreen from "../screens/home/Home";
@@ -54,6 +58,11 @@ export function AuthenStackNavigation() {
 };
 
 function HomeStackNavigation({navigation}) { 
+  const statusTitle = useSelector((state) => state.calendar.statusTitle);
+  const dispatch = useDispatch();
+
+  // dispatch(calendarActions.getStatusOfTitle(true));
+
   return(
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
@@ -105,17 +114,25 @@ function HomeStackNavigation({navigation}) {
         name="Add Event"
         component={AddToCalendarScreen}
         options={{ 
-          title: "Sự kiện mới",
-          headerBackTitle:'Huỷ',
-          headerBackTitleStyle:{color: 'red'},
-          headerTintColor:'red',
+          title: 'Sự kiện mới',
           headerTitleStyle: {
             color: 'black'
           },
           headerRight:()=>(
-            <TouchableOpacity >
-              <Text style={{fontSize:17,color:'blue'}}>Thêm</Text>
-            </TouchableOpacity>
+              <TouchableOpacity disabled={statusTitle}>
+                <Text style={{fontSize:17,color:statusTitle ? 'silver' : 'blue'}}>
+                  Thêm
+                </Text>
+              </TouchableOpacity>
+          ),
+          headerLeft:()=>(
+            <HeaderBackButton 
+            label='Huỷ'
+            tintColor='red'
+            onPress={()=>{
+              dispatch(calendarActions.getStatusOfTitle(true));
+              navigation.navigate("Calendar")
+            }}/>
           ),
           headerRightContainerStyle:{
             paddingRight:10

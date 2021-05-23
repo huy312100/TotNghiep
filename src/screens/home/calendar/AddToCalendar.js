@@ -4,6 +4,9 @@ import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,Mat
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Overlay } from 'react-native-elements';
 import { Header } from '@react-navigation/stack';
+import { useDispatch } from 'react-redux';
+
+import * as calendarActions from '../../../../store/actions/Calendar';
 
 
 
@@ -12,6 +15,8 @@ const AddToCalendarScreen = () => {
     const getCurrentTimestamp=()=>{
         return Date.now();
     };
+
+    const [title,setTitle]=useState('');
 
     const [startTimestamp,setStartTimestamp]=useState(getCurrentTimestamp());
     const [endTimestamp,setEndTimestamp]=useState(getCurrentTimestamp()+3600*1000);
@@ -26,6 +31,7 @@ const AddToCalendarScreen = () => {
     const [typeEvent,setTypeEvent]= useState('');
     const [colorEvent,setColorEvent] =useState('');
 
+    const dispatch=useDispatch();
 
     const toggleOverlayAddPeople = () => {
         setVisibleOverlayAddPeople(!visibleOverlayAddPeople);
@@ -112,6 +118,13 @@ const AddToCalendarScreen = () => {
             return false;
           }
           return true;
+      };
+
+      const checkTitle =() =>{
+          if(title.trim().length === 0){
+              return true;
+          }
+          return false;
       }
       
 
@@ -125,7 +138,13 @@ const AddToCalendarScreen = () => {
           }}>
          <ScrollView style={styles.container}>
             <View style={styles.card}>
-                <TextInput style={styles.titleName} placeholder="Tiêu đề"></TextInput>
+                <TextInput style={styles.titleName} placeholder="Tiêu đề" 
+                onChangeText={(title)=>{
+                    setTitle(title);
+                    console.log(checkTitle());
+                    console.log(title);
+                    dispatch(calendarActions.getStatusOfTitle(checkTitle()))
+                    }}/>
             </View> 
 
             <View style={[styles.card,{marginBottom:0}]}>
@@ -222,7 +241,7 @@ const AddToCalendarScreen = () => {
                 locale={'vi'}
                 isVisible={isEndDatePickerVisible && !isEnabled}
                 mode="datetime"
-                headerTextIOS="Chọn thời điểm bắt đầu"
+                headerTextIOS="Chọn thời điểm kết thúc"
                 cancelTextIOS="Huỷ bỏ"
                 confirmTextIOS="Xác nhận"
                 onConfirm={handleEndConfirm}
@@ -242,7 +261,7 @@ const AddToCalendarScreen = () => {
                 locale={'vi'}
                 isVisible={isEndDatePickerVisible && isEnabled}
                 mode="date"
-                headerTextIOS="Chọn thời điểm bắt đầu"
+                headerTextIOS="Chọn thời điểm kết thúc"
                 cancelTextIOS="Huỷ bỏ"
                 confirmTextIOS="Xác nhận"
                 onConfirm={handleEndConfirm}

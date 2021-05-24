@@ -32,11 +32,16 @@ const AddToCalendarScreen = () => {
     const [visibleOverlayAddPeople, setVisibleOverlayAddPeople] = useState(false);
     const [visibleOverlayAddTypeEvent, setVisibleOverlayAddTypeEvent] = useState(false);
     const [visibleOverlayAddColor, setVisibleOverlayAddColor] = useState(false);
+    const [visibleOverlayRemindNoti, setVisibleOverlayRemindNoti] = useState(false);
+
 
     const [typeEvent,setTypeEvent]= useState('');
     const [colorEvent,setColorEvent] =useState('');
     const [urlEvent,setUrlEvent] =useState('');
     const [decriptionEvent,setDecriptionEvent] =useState('');
+
+
+    const [labelRemindNoti,setLabelRemindNoti] = useState('');
 
     const dispatch=useDispatch();
 
@@ -50,6 +55,10 @@ const AddToCalendarScreen = () => {
 
     const toggleOverlayAddColor = () => {
         setVisibleOverlayAddColor(!visibleOverlayAddColor);
+    };
+
+    const toggleOverlayAddRemindNoti = () => {
+        setVisibleOverlayRemindNoti(!visibleOverlayRemindNoti);
     };
 
 
@@ -257,16 +266,25 @@ const AddToCalendarScreen = () => {
                 <View style={styles.date}>
                 <SimpleLineIcons name="event" size={21} color="red" />
                     <Text style={styles.label}>Loại sự kiện</Text>
-                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,{fontSize:18,color:'#DDDDDD'}]}>{typeEvent}</Text>
+                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{typeEvent}</Text>
                     <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                 </View>
             </TouchableOpacity> 
 
-            <TouchableOpacity style={[styles.card,{marginTop:0}]} onPress={toggleOverlayAddColor}>
+            <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddColor}>
                 <View style={styles.date}>
                 <Ionicons name="color-palette-outline" size={23 } color="red" />
                     <Text style={styles.label}>Màu sắc</Text>
                     <View style={[styles.onTheRight,colorStyle.SquareShapeView,styles.showChooseOnTheRight,{backgroundColor: colorEvent}]}/>
+                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.card,{marginTop:0}]} onPress={toggleOverlayAddRemindNoti}>
+                <View style={styles.date}>
+                <Ionicons name="ios-notifications-outline" size={23} color="red" />
+                    <Text style={styles.label}>Thông báo</Text>
+                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{labelRemindNoti}</Text>
                     <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                 </View>
             </TouchableOpacity> 
@@ -460,6 +478,56 @@ const AddToCalendarScreen = () => {
                     </View>
                 </TouchableOpacity>       
             </Overlay>
+
+                {/* Overlay for remind notification */}
+            <Overlay isVisible={visibleOverlayRemindNoti} onBackdropPress={toggleOverlayAddRemindNoti}>
+                <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 15 phút')}}
+                >
+                    <View style={styles.date}>
+                    <Text style={styles.label}>Trước 15 phút</Text>
+                    </View>
+                </TouchableOpacity> 
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 30 phút')}}
+                >
+                    <View style={styles.date}>
+                    <Text style={styles.label}>Trước 30 phút</Text>
+                    </View>
+                </TouchableOpacity>        
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 1 giờ')}}
+                >
+                    <View style={styles.date}>
+                        <Text style={styles.label}>Trước 1 giờ</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 2 giờ')}}
+                >
+                    <View style={styles.date}>
+                    <Text style={styles.label}>Trước 2 giờ</Text>
+                    </View>
+                </TouchableOpacity> 
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 3 giờ')}}>
+                    <View style={styles.date}>
+                        <Text style={styles.label}>Trước 3 giờ</Text>
+                    </View>
+                </TouchableOpacity> 
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 4 giờ')}}
+                >
+                    <View style={[styles.date,]}>
+                    <Text style={styles.label}>Trước 4 giờ </Text>
+                    </View>
+                </TouchableOpacity> 
+            </Overlay>
             
 
             </ScrollView>
@@ -513,6 +581,11 @@ const colorStyle = StyleSheet.create({
         width: 20,
         height: 20,
         borderRadius:7,
-      },
+    },
+
+    colorLabelOnTheRight: {
+        fontSize:18,
+        color:'#DDDDDD',
+    }
 });
 export default AddToCalendarScreen;

@@ -59,7 +59,16 @@ export function AuthenStackNavigation() {
 
 function HomeStackNavigation({navigation}) { 
   const statusTitle = useSelector((state) => state.calendar.statusTitle);
+  const statusDate = useSelector((state) => state.calendar.statusDate);
   const dispatch = useDispatch();
+
+  const checkDisableAddButton =() =>{
+    console.log(statusTitle,statusDate);
+    if(statusTitle && statusDate){
+      return false;
+    }
+    return true;
+  }
 
   // dispatch(calendarActions.getStatusOfTitle(true));
 
@@ -119,8 +128,10 @@ function HomeStackNavigation({navigation}) {
             color: 'black'
           },
           headerRight:()=>(
-              <TouchableOpacity disabled={statusTitle}>
-                <Text style={{fontSize:17,color:statusTitle ? 'silver' : 'blue'}}>
+              <TouchableOpacity disabled={checkDisableAddButton()} onPress={() =>{
+                console.log(checkDisableAddButton());
+              }}>
+                <Text style={{fontSize:17,color: checkDisableAddButton() ? 'silver' : 'blue'}}>
                   Thêm
                 </Text>
               </TouchableOpacity>
@@ -130,7 +141,8 @@ function HomeStackNavigation({navigation}) {
             label='Huỷ'
             tintColor='red'
             onPress={()=>{
-              dispatch(calendarActions.getStatusOfTitle(true));
+              dispatch(calendarActions.getStatusOfTitle(false));
+              dispatch(calendarActions.getStatusOfDate(true));
               navigation.navigate("Calendar")
             }}/>
           ),

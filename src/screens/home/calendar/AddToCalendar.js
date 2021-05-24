@@ -4,10 +4,11 @@ import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,Mat
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Overlay } from 'react-native-elements';
 import { Header } from '@react-navigation/stack';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 
 import * as calendarActions from '../../../../store/actions/Calendar';
 
+import LoadingScreen from '../../LoadingScreen';
 
 
 const AddToCalendarScreen = () => {
@@ -15,6 +16,10 @@ const AddToCalendarScreen = () => {
     const getCurrentTimestamp=()=>{
         return Date.now();
     };
+
+    const token = useSelector((state) => state.authen.token);
+
+    const [isLoading,setLoading] = useState(false);
 
     const [title,setTitle]=useState('');
 
@@ -30,6 +35,8 @@ const AddToCalendarScreen = () => {
 
     const [typeEvent,setTypeEvent]= useState('');
     const [colorEvent,setColorEvent] =useState('');
+    const [urlEvent,setUrlEvent] =useState('');
+    const [decriptionEvent,setDecriptionEvent] =useState('');
 
     const dispatch=useDispatch();
 
@@ -76,6 +83,7 @@ const AddToCalendarScreen = () => {
     const handleEndConfirm = (date) => {
         //console.warn("A date has been picked: ", date);
         setEndTimestamp(date.getTime());
+        //console.log(checkValidDate());
         hideEndDatePicker();
     };
 
@@ -84,48 +92,97 @@ const AddToCalendarScreen = () => {
         var today = new Date(timestamp); 
         var day= today.getDate();
         return day;
-      };
+    };
+
+    const getCurrentMonth =(timestamp)=> {
+    var today = new Date(timestamp);
+    var month = today.getMonth() + 1;
+    return month; 
+    };
+
+    const getCurrentYear = (timestamp) => {
+    var today = new Date(timestamp); 
+    var year= today.getFullYear();
+    return year;
+    }
     
-      const getCurrentMonth =(timestamp)=> {
-        var today = new Date(timestamp);
-        var month = today.getMonth() + 1;
-        return month; 
-      };
+    const addZero=(i) =>{
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+    }
     
-      const getCurrentYear = (timestamp) => {
-        var today = new Date(timestamp); 
-        var year= today.getFullYear();
-        return year;
-      }
-      
-      const addZero=(i) =>{
-        if (i < 10) {
-          i = "0" + i;
+    const getCurrentTime = (timestamp) => {
+    var d = new Date(timestamp);
+    var h = addZero(d.getHours());
+    var m = addZero(d.getMinutes());
+    return h + ":" + m;
+    }
+
+    //Handle Start and End Date
+    const checkValidDate = () =>{
+        //console.log(startTimestamp,endTimestamp);
+        
+        if(startTimestamp >= endTimestamp){
+        return false;
         }
-        return i;
-      }
-      
-      const getCurrentTime = (timestamp) => {
-        var d = new Date(timestamp);
-        var h = addZero(d.getHours());
-        var m = addZero(d.getMinutes());
-        return h + ":" + m;
-      }
+        return true;
+    };
 
-      //Handle Start and End Date
-      const checkValidDate = () =>{
-          if(startTimestamp >= endTimestamp){
-            return false;
-          }
-          return true;
-      };
+    const checkTitle = (value) =>{
+        if(value.trim().length === 0){
+        return false;
+        }
+        return true;
+    };
 
-      const checkTitle =() =>{
-          if(title.trim().length === 0){
-              return true;
-          }
-          return false;
-      }
+    //call Api
+    const addNewEvent = ()=>{
+        setLoading(true);
+
+        let details = {
+            Tilte: title,
+            TypeEvent:typeEvent,
+            // year:
+            // month: 
+            // day:
+            StartHour:startTimestamp,
+            EndHour:endTimestamp,
+            desciptionText:decriptionEvent,
+            url:urlEvent,
+            Color:colorEvent,
+            // Notification:
+        };
+    
+        let formBody = [];
+    
+        for (let property in details) {
+        let encodedKey = encodeURIComponent(property);
+        let encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+    
+        fetch("https://hcmusemu.herokuapp.com/calendar/post", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `bearer ${token}`
+            },
+            body: formBody,
+        }).then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes])=>{
+            if(statusCode === 200){
+                dispatch(calendarActions.addNewEventToCalendar());
+                setLoading(false);
+            }  
+        }).done();
+    }
+
       
 
     return(
@@ -140,10 +197,9 @@ const AddToCalendarScreen = () => {
             <View style={styles.card}>
                 <TextInput style={styles.titleName} placeholder="Tiêu đề" 
                 onChangeText={(title)=>{
+                    //console.log(checkTitle(title));
                     setTitle(title);
-                    console.log(checkTitle());
-                    console.log(title);
-                    dispatch(calendarActions.getStatusOfTitle(checkTitle()))
+                    dispatch(calendarActions.getStatusOfTitle(checkTitle(title)))
                     }}/>
             </View> 
 
@@ -193,7 +249,7 @@ const AddToCalendarScreen = () => {
                 <View style={styles.date}>
                 <Ionicons name="people-outline" size={23} color="red" />
                     <Text style={styles.label}>Thêm người</Text>
-                    {/* <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" /> */}
+                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                 </View>
             </TouchableOpacity> 
 
@@ -201,7 +257,8 @@ const AddToCalendarScreen = () => {
                 <View style={styles.date}>
                 <SimpleLineIcons name="event" size={21} color="red" />
                     <Text style={styles.label}>Loại sự kiện</Text>
-                    <Text style={[styles.onTheRight,{fontSize:18,color:'#DDDDDD'}]}>{typeEvent}</Text>
+                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,{fontSize:18,color:'#DDDDDD'}]}>{typeEvent}</Text>
+                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                 </View>
             </TouchableOpacity> 
 
@@ -209,20 +266,23 @@ const AddToCalendarScreen = () => {
                 <View style={styles.date}>
                 <Ionicons name="color-palette-outline" size={23 } color="red" />
                     <Text style={styles.label}>Màu sắc</Text>
-                    <View style={[styles.onTheRight,colorStyle.SquareShapeView,{backgroundColor: colorEvent}]}/>
+                    <View style={[styles.onTheRight,colorStyle.SquareShapeView,styles.showChooseOnTheRight,{backgroundColor: colorEvent}]}/>
+                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                 </View>
             </TouchableOpacity> 
 
             <View style={[styles.card,{marginBottom:0}]}>
                 <View style={styles.date}>
                 <SimpleLineIcons name="link" size={20} color="red" />
-                   <TextInput style={[styles.label,{width:"100%"}]} placeholder="URL"></TextInput>
+                   <TextInput style={[styles.label,{width:"100%"}]} placeholder="URL"
+                   onChangeText={(url) => setUrlEvent(url)}/>
                 </View>
             </View> 
             <View style={[styles.card,{marginTop:0,height:"25%"}]}>
                 <View style={styles.date}>
                     <SimpleLineIcons name="note" size={20} color="red" />
-                    <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}></TextInput>
+                    <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}
+                    onChangeText={(decription) => setDecriptionEvent(decription)}/>
                 </View>
             </View> 
 
@@ -231,11 +291,15 @@ const AddToCalendarScreen = () => {
                 locale={'vi'}
                 isVisible={isStartDatePickerVisible && !isEnabled}
                 mode="datetime"
+                value={startTimestamp}
                 headerTextIOS="Chọn thời điểm bắt đầu"
                 cancelTextIOS="Huỷ bỏ"
                 confirmTextIOS="Xác nhận"
                 onConfirm={handleStartConfirm}
-                onCancel={hideStartDatePicker}/>
+                onCancel={hideStartDatePicker}
+                onHide={()=>{
+                    dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                }}/>
 
             <DateTimePickerModal
                 locale={'vi'}
@@ -245,7 +309,10 @@ const AddToCalendarScreen = () => {
                 cancelTextIOS="Huỷ bỏ"
                 confirmTextIOS="Xác nhận"
                 onConfirm={handleEndConfirm}
-                onCancel={hideEndDatePicker}/>
+                onCancel={hideEndDatePicker}
+                onHide={()=>{
+                    dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                }}/>
 
             <DateTimePickerModal
                 locale={'vi'}
@@ -267,6 +334,8 @@ const AddToCalendarScreen = () => {
                 onConfirm={handleEndConfirm}
                 onCancel={hideEndDatePicker}/>
 
+
+            {isLoading && LoadingScreen()}
 
 
             <Overlay isVisible={visibleOverlayAddPeople} onBackdropPress={toggleOverlayAddPeople}>
@@ -432,6 +501,10 @@ const styles = StyleSheet.create({
     onTheRight: {
         position: 'absolute',
         right: 0
+    },
+
+    showChooseOnTheRight:{
+        marginRight:20,
     }
 });
 

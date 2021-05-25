@@ -12,7 +12,7 @@ import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,Mat
 
 import {useDispatch,useSelector} from 'react-redux';
 import * as calendarActions from '../../../../store/actions/Calendar';
-
+import LoadingScreen from '../../LoadingScreen';
 
 LocaleConfig.locales['vn'] = {
   monthNames: ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'],
@@ -23,14 +23,19 @@ LocaleConfig.locales['vn'] = {
 };
 LocaleConfig.defaultLocale = 'vn';
 
-const CalendarScreen =()=> {
+const CalendarScreen =({navigation})=> {
 
   // const EVENTS = [
   //   { 
-  //     "end": "2021-05-19 18:00",
-  //     "start": "2021-05-19 14:00",
-  //     "summary": "",
-  //     "title": "Test Again",
+  //   "color": "#FF6666",
+  //   "end": "2021-05-26 04:59",
+  //   "id": "60ad656caa3cbe0022a39f0f",
+  //   "start": "2021-05-26 03:59",
+  //   "summary": "",
+  //   "title": "a",
+  //   "type": "Gia đình",
+  //   "typeGuest": "Cá nhân",
+  //   "url": "https://alo",
   //   },
   //   { 
   //     "end": "2021-05-13 23:59",
@@ -90,17 +95,16 @@ const CalendarScreen =()=> {
         h = hh,
         min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
         time;
-    if (hh > 12) {
-        h = hh ;
-    } else if (hh === 12) {
-        h = 12;
-    } else if (hh == 0) {
-        h = 0;
+    if (hh < 10) {
+        h = '0'+hh ;
+    } else  {
+        h = hh;
     }
+
     // ie: 2014-03-24, 3:00 PM
     time = yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + min ;
     return time;
-};
+  };
 
 
   const token = useSelector((state) => state.authen.token);
@@ -119,6 +123,8 @@ const CalendarScreen =()=> {
   const [typeGuest,setTypeGuest] = useState('');
   const [urlEvent,setUrlEvent] = useState('');
 
+  const [isLoading,setLoading] = useState(false);
+
 
 
   const [allEvents,setEvent] = useState([]);
@@ -127,85 +133,132 @@ const CalendarScreen =()=> {
 
   const toggleOverlay = () => {
     setVisibleOverlay(!visibleOverlay);
-};
+  };
+
+ 
+
+
+  //Call getCalendarThis Month Calendar
+  const getAllActivitiesInMonth = ()=>{
+    let details = {
+      year: yearChanged,
+      month: monthChanged,
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    fetch("https://hcmusemu.herokuapp.com/calendar/getthismonth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `bearer ${token}`
+      },
+      body: formBody,
+    }).then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=>{
+        console.log(dataRes,statusCode); 
+        if(statusCode === 200){}
+        const dataCalendar = [];
+        for (const key in dataRes) {
+          if(dataRes[key].TypeCalendar !== undefined){
+            if(dataRes[key].ListGuest.length===0){
+              dataCalendar.push({
+                id:dataRes[key]._id,
+                type:dataRes[key].TypeEvent,
+                title:dataRes[key].Title,
+                summary:"",
+                start:convertTimestamp(dataRes[key].StartHour),
+                end:convertTimestamp(dataRes[key].EndHour),
+                url:dataRes[key].Decription.url,
+                typeGuest:"Cá nhân",
+                color:dataRes[key].Color,
+            })}
+            else{
+              dataCalendar.push({
+                id:dataRes[key]._id,
+                type:dataRes[key].TypeCalendar,
+                title:dataRes[key].Title,
+                summary:"",
+                start:convertTimestamp(dataRes[key].StartHour),
+                end:convertTimestamp(dataRes[key].EndHour),
+                url:dataRes[key].Decription.url,
+                typeGuest:dataRes[key].ListGuest,
+                color:dataRes[key].Color,
+            })}
+          }
+          else{
+            dataCalendar.push({
+              id:"",
+              //type:dataRes[0].TypeCalendar,
+              title:dataRes[key].nameCourese,
+              summary:dataRes[key].decription,
+              start:convertTimestamp(dataRes[key].duedate-3600),
+              end:convertTimestamp(dataRes[key].duedate),
+              type:"Deadline",
+              color: '#99FF99',
+              url:dataRes[key].url,
+              typeGuest:"Cá nhân",
+          })
+        }
+      }
+        console.log(dataCalendar);
+        setEvent(dataCalendar);
+        dispatch(calendarActions.getCalendarOfMonth(dataRes));
+    }).catch(error => console.log('error', error));
+  };
+
+  //Call api delete event in calendar
+  const deleteEventInCalendar = () => {
+
+    setLoading(true);
+    let details = {
+      id:idEvent
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    fetch("https://hcmusemu.herokuapp.com/calendar/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `bearer ${token}`
+      },
+      body: formBody,
+    }).then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=>{
+      console.log(dataRes,statusCode); 
+      if(statusCode === 200){
+        getAllActivitiesInMonth();
+        toggleOverlay();
+        setLoading(false);
+      }
+
+
+    }).catch(error => console.log('error', error));
+  }
 
   useEffect(() => {
         //console.log(token);
-    const getAllActivitiesInMonth = ()=>{
-      let details = {
-        year: yearChanged,
-        month: monthChanged,
-      };
-
-      let formBody = [];
-
-      for (let property in details) {
-        let encodedKey = encodeURIComponent(property);
-        let encodedValue = encodeURIComponent(details[property]);
-        formBody.push(encodedKey + "=" + encodedValue);
-      }
-      formBody = formBody.join("&");
-
-      fetch("https://hcmusemu.herokuapp.com/calendar/getthismonth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": `bearer ${token}`
-        },
-        body: formBody,
-      }).then((response) => {
-          const statusCode = response.status;
-          const dataRes = response.json();
-          return Promise.all([statusCode, dataRes]);
-      }).then(([statusCode, dataRes])=>{
-          console.log(dataRes,statusCode); 
-
-          const dataCalendar = [];
-          for (const key in dataRes) {
-            if(dataRes[key].TypeCalendar !== undefined){
-              if(dataRes[key].ListGuest.length===0){
-                dataCalendar.push({
-                  id:dataRes[key]._id,
-                  type:dataRes[key].TypeCalendar,
-                  title:dataRes[key].Title,
-                  summary:"",
-                  start:convertTimestamp(dataRes[key].StartHour),
-                  end:convertTimestamp(dataRes[key].EndHour),
-                  url:dataRes[key].Decription.url,
-                  typeGuest:"Cá nhân",
-              })}
-              else{
-                dataCalendar.push({
-                  id:dataRes[key]._id,
-                  type:dataRes[key].TypeCalendar,
-                  title:dataRes[key].Title,
-                  summary:"",
-                  start:convertTimestamp(dataRes[key].StartHour),
-                  end:convertTimestamp(dataRes[key].EndHour),
-                  url:dataRes[key].Decription.url,
-                  typeGuest:dataRes[key].ListGuest,
-              })}
-            }
-            else{
-              dataCalendar.push({
-                id:"",
-                //type:dataRes[0].TypeCalendar,
-                title:dataRes[key].nameCourese,
-                summary:dataRes[key].decription,
-                start:convertTimestamp(dataRes[key].duedate-3600),
-                end:convertTimestamp(dataRes[key].duedate),
-                type:"Deadline",
-                color: '#99FF99',
-                url:dataRes[key].url,
-                typeGuest:"Cá nhân",
-            })
-          }
-        }
-          console.log(dataCalendar);
-          setEvent(dataCalendar);
-          dispatch(calendarActions.getCalendarOfMonth(dataRes));
-      }).catch(error => console.log('error', error));
-    };
     getAllActivitiesInMonth();
     return()=>{
       unmounted.current=true;
@@ -237,7 +290,6 @@ const CalendarScreen =()=> {
     if (_.isEmpty(item)) {
       return this.renderEmptyItem();
     }
-
     return (
       <TouchableOpacity style={styles.item}>
         <View>
@@ -329,14 +381,14 @@ const CalendarScreen =()=> {
           format24h={true}
           eventTapped={e => {
             toggleOverlay();
+            setIdEvent(e.id);
             setNameEvent(e.title);
             setStartTimeEvent(e.start);
             setEndTimeEvent(e.end);
             setDecriptionEvent(e.summary);
             setTypeEvent(e.type);
             setTypeGuest(e.typeGuest);
-            setUrlEvent(e.url);
-            
+            setUrlEvent(e.url);            
           }}
           events={allEvents.filter(event => sameDate(XDate(event.start), XDate(currentDate)))}
           // scrollToFirst={true}
@@ -421,23 +473,29 @@ const CalendarScreen =()=> {
                       </View>
                   </View>
 
-                  <View style={[styles.card,{marginBottom:0}]} >
+                  {typeEvent !=='Deadline' &&<View style={[styles.card,{marginBottom:0}]} >
                       <View style={overlayStyle.row}>
                       {/* <Ionicons name="people-outline" size={23} color="red" /> */}
-                        <TouchableOpacity style={[overlayStyle.button,{backgroundColor:'red'}]}>
+                        <TouchableOpacity style={[overlayStyle.button,{backgroundColor:'red'}]}
+                        onPress={() =>{
+                          deleteEventInCalendar();
+                        }}>
                             <Text style={overlayStyle.textBtnConnect}>Xóa</Text>
                         </TouchableOpacity>
 
                         
-                        <TouchableOpacity style={[overlayStyle.button,{backgroundColor:'#3366FF'}]}>
+                        <TouchableOpacity style={[overlayStyle.button,{backgroundColor:'#3366FF'}]}
+                        onPress={() => {
+                          toggleOverlay();
+                          navigation.navigate('Add Event')}}>
                             <Text style={overlayStyle.textBtnConnect}>Cập nhật</Text>
                         </TouchableOpacity>
 
 
                       </View>
-                  </View>
+                  </View>}
 
-                  
+                  {isLoading && LoadingScreen()}
           </Overlay>
       </CalendarProvider>   
       

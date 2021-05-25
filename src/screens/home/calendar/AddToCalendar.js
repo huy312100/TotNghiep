@@ -2,8 +2,7 @@ import React,{useState} from 'react';
 import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView } from 'react-native';
 import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { Overlay } from 'react-native-elements';
-import { Header } from '@react-navigation/stack';
+import { Overlay,Header } from 'react-native-elements';
 import { useDispatch,useSelector } from 'react-redux';
 
 import * as calendarActions from '../../../../store/actions/Calendar';
@@ -11,7 +10,7 @@ import * as calendarActions from '../../../../store/actions/Calendar';
 import LoadingScreen from '../../LoadingScreen';
 
 
-const AddToCalendarScreen = () => {
+const AddToCalendarScreen = ({navigation}) => {
 
     const getCurrentTimestamp=()=>{
         return Date.now();
@@ -39,11 +38,35 @@ const AddToCalendarScreen = () => {
     const [colorEvent,setColorEvent] =useState('');
     const [urlEvent,setUrlEvent] =useState('');
     const [decriptionEvent,setDecriptionEvent] =useState('');
+    const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
 
 
     const [labelRemindNoti,setLabelRemindNoti] = useState('');
 
     const dispatch=useDispatch();
+
+    const statusTitle = useSelector((state) => state.calendar.statusTitle);
+    const statusDate = useSelector((state) => state.calendar.statusDate);
+
+    function convertTimestamp(timestamp) {
+        var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
+            yyyy = d.getFullYear(),
+            mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+            dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+            hh = d.getHours(),
+            h = hh,
+            min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+            time;
+        if (hh < 10) {
+            h = '0'+hh ;
+        } else  {
+            h = hh;
+        }
+    
+        // ie: 2014-03-24, 3:00 PM
+        time = yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + min ;
+        return time;
+      };
 
     const toggleOverlayAddPeople = () => {
         setVisibleOverlayAddPeople(!visibleOverlayAddPeople);
@@ -146,50 +169,130 @@ const AddToCalendarScreen = () => {
         return true;
     };
 
-    //call Api
-    const addNewEvent = ()=>{
+    //Back button handler
+    const backButtonHandler = ()=>{
+
+        dispatch(calendarActions.getStatusOfTitle(false));
+        dispatch(calendarActions.getStatusOfDate(true));
+        navigation.navigate("Calendar")
+    }
+
+    //Handle for clickable add button
+    const checkDisableAddButton =() =>{
+        console.log(statusTitle,statusDate);
+        if(statusTitle && statusDate){
+        return false;
+        }
+        return true;
+    }
+
+    //Handle for Add Button
+    const addButtonHandler = async() => {
+        await addNewEvent();
+    }
+
+    //Call getCalendarThis Month Calendar
+  const getAllActivitiesInMonth = ()=>{
+    let details = {
+      year: getCurrentMonth(),
+      month: getCurrentYear(),
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    fetch("https://hcmusemu.herokuapp.com/calendar/getthismonth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `bearer ${token}`
+      },
+      body: formBody,
+    }).then((response) => {})
+    .then(([statusCode, dataRes])=>{
+        //console.log(dataRes,statusCode); 
+        dispatch(calendarActions.getCalendarOfMonth(dataRes));
+    }).catch(error => console.log('error', error));
+  };
+
+    //call Api post calendar
+    const addNewEvent = async ()=>{
         setLoading(true);
 
-        let details = {
-            Tilte: title,
-            TypeEvent:typeEvent,
-            // year:
-            // month: 
-            // day:
-            StartHour:startTimestamp,
-            EndHour:endTimestamp,
-            desciptionText:decriptionEvent,
-            url:urlEvent,
-            Color:colorEvent,
-            // Notification:
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `bearer ${token}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+        "Title": title,
+        "TypeEvent": typeEvent,
+        "year": getCurrentYear(startTimestamp).toString(),
+        "month": getCurrentMonth(startTimestamp).toString(),
+        "day": getCurrenDay(startTimestamp).toString(),
+        "StartHour": Math.floor(startTimestamp/1000),
+        "EndHour": Math.floor(endTimestamp/1000),
+        "desciptionText": decriptionEvent,
+        "url": urlEvent,
+        "UnderLine": false,
+        "Italic": false,
+        "Bold": false,
+        "Color": colorEvent,
+        "listguestEmail": [],
+        "listguestName": [],
+        "Notification": timestampRemindNoti
+        });
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
         };
-    
-        let formBody = [];
-    
-        for (let property in details) {
-        let encodedKey = encodeURIComponent(property);
-        let encodedValue = encodeURIComponent(details[property]);
-        formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-    
-        fetch("https://hcmusemu.herokuapp.com/calendar/post", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": `bearer ${token}`
-            },
-            body: formBody,
-        }).then((response) => {
+
+        fetch("https://hcmusemu.herokuapp.com/calendar/post", requestOptions)
+        .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes])=>{
+            console.log(raw);
+            console.log(dataRes);
             if(statusCode === 200){
-                dispatch(calendarActions.addNewEventToCalendar());
+                getAllActivitiesInMonth();
+                //dispatch(calendarActions.addNewEventToCalendar());
                 setLoading(false);
+                navigation.navigate('Calendar');
             }  
-        }).done();
+        })
+        .catch(error => console.log('error', error));
+
+        
+    
+        // fetch("https://hcmusemu.herokuapp.com/calendar/post", {
+        //     method: "POST",
+        //     headers: {
+        //     "Content-Type": "application/x-www-form-urlencoded",
+        //     "Authorization": `bearer ${token}`
+        //     },
+        //     body: formBody,
+        // }).then((response) => {
+        //     const statusCode = response.status;
+        //     const dataRes = response.json();
+        //     return Promise.all([statusCode, dataRes]);
+        // }).then(([statusCode, dataRes])=>{
+        //     if(statusCode === 200){
+        //         dispatch(calendarActions.addNewEventToCalendar());
+        //         setLoading(false);
+        //     }  
+        // }).done();
+    
+        
     }
 
       
@@ -203,6 +306,32 @@ const AddToCalendarScreen = () => {
             Keyboard.dismiss();
           }}>
          <ScrollView style={styles.container}>
+
+         <Header
+            containerStyle={{
+                backgroundColor: 'white',
+                justifyContent: 'space-around',
+            }}
+            leftComponent={
+                <TouchableOpacity style={{flexDirection:'row'}} onPress={() =>{backButtonHandler()}}>
+                    <Entypo name="chevron-thin-left" size={24} color="red" />
+                    <Text style={headerStyle.textLeftComponent}>Hủy</Text>
+                </TouchableOpacity>
+            }
+            centerComponent={
+                <Text style={headerStyle.textCenterComponent}>Sự kiện mới</Text>
+            }
+            rightComponent={
+                <TouchableOpacity disabled={checkDisableAddButton()}
+                onPress={() =>{addNewEvent()}}>
+                    <Text style={[headerStyle.textRightComponent,{color: checkDisableAddButton() ? 'silver' : 'blue'}]}>
+                        Thêm
+                    </Text>
+                </TouchableOpacity>
+            }/>
+
+
+
             <View style={styles.card}>
                 <TextInput style={styles.titleName} placeholder="Tiêu đề" 
                 onChangeText={(title)=>{
@@ -482,7 +611,9 @@ const AddToCalendarScreen = () => {
                 {/* Overlay for remind notification */}
             <Overlay isVisible={visibleOverlayRemindNoti} onBackdropPress={toggleOverlayAddRemindNoti}>
                 <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 15 phút')}}
+                onPress={() => {toggleOverlayAddRemindNoti();
+                    setLabelRemindNoti('Trước 15 phút');
+                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*15))}}
                 >
                     <View style={styles.date}>
                     <Text style={styles.label}>Trước 15 phút</Text>
@@ -490,7 +621,9 @@ const AddToCalendarScreen = () => {
                 </TouchableOpacity> 
 
                 <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 30 phút')}}
+                onPress={() => {toggleOverlayAddRemindNoti();
+                    setLabelRemindNoti('Trước 30 phút');
+                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*30))}}
                 >
                     <View style={styles.date}>
                     <Text style={styles.label}>Trước 30 phút</Text>
@@ -498,7 +631,9 @@ const AddToCalendarScreen = () => {
                 </TouchableOpacity>        
 
                 <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 1 giờ')}}
+                onPress={() => {toggleOverlayAddRemindNoti();
+                    setLabelRemindNoti('Trước 1 giờ');
+                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60))}}
                 >
                     <View style={styles.date}>
                         <Text style={styles.label}>Trước 1 giờ</Text>
@@ -506,7 +641,9 @@ const AddToCalendarScreen = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 2 giờ')}}
+                onPress={() => {toggleOverlayAddRemindNoti();
+                    setLabelRemindNoti('Trước 2 giờ');
+                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*2))}}
                 >
                     <View style={styles.date}>
                     <Text style={styles.label}>Trước 2 giờ</Text>
@@ -514,14 +651,19 @@ const AddToCalendarScreen = () => {
                 </TouchableOpacity> 
 
                 <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 3 giờ')}}>
+                onPress={() => {toggleOverlayAddRemindNoti();
+                    setLabelRemindNoti('Trước 3 giờ');
+                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*3))}}
+                >
                     <View style={styles.date}>
                         <Text style={styles.label}>Trước 3 giờ</Text>
                     </View>
                 </TouchableOpacity> 
 
                 <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();setLabelRemindNoti('Trước 4 giờ')}}
+                onPress={() => {toggleOverlayAddRemindNoti();
+                    setLabelRemindNoti('Trước 4 giờ');
+                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*4))}}
                 >
                     <View style={[styles.date,]}>
                     <Text style={styles.label}>Trước 4 giờ </Text>
@@ -588,4 +730,25 @@ const colorStyle = StyleSheet.create({
         color:'#DDDDDD',
     }
 });
+
+const headerStyle = StyleSheet.create({
+    textRightComponent:{
+        fontSize:19,
+        marginHorizontal:5
+    },
+
+    textLeftComponent:{
+        color:'red',
+        fontSize:19,
+    },
+
+    textCenterComponent:{
+        color: 'black',
+        fontSize:17,
+        fontWeight:'bold',
+        marginTop:2
+    }
+});
+
+
 export default AddToCalendarScreen;

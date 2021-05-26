@@ -1,0 +1,134 @@
+.calendar-page {
+    width: 75vw;
+    margin: 76px 20vw;
+    /* background: white; */
+    display: flex;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0.5px 1px grey;
+    /* max-height: 70vh; */
+}
+
+.calendar-page .calendar {
+    width: 45vw;
+}
+
+.calendar-page .calendar .title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #18468b;
+}
+
+/* body {font-family: Verdana, sans-serif;} */
+
+.calendar-page ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.calendar-page .calendar .picker {
+    display: flex;
+    justify-content: space-around;
+    color: #18468b;
+    font-weight: 500;
+    padding: 5px;
+    font-size: 18px;
+}
+
+.calendar-page .calendar .picker i {
+    font-weight: 1000;
+}
+
+.calendar-page .calendar hr {
+    padding: 0;
+    margin: 2px;
+}
+
+/* .calendar-page .dayofweek {
+    display: flex;
+    width: 30vw;
+    justify-content: space-around;
+} */
+
+.dayofweek {
+    margin: 0;
+    padding: 10px 0;
+    /* background-color: #ddd; */
+}
+
+.dayofweek li {
+    display: inline-block;
+    width: 6vw;
+    /* color: #666; */
+    text-align: center;
+}
+
+.days li {
+    /* list-style-type: none; */
+    display: inline-block;
+    width: 6vw;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+    /* color: #777; */
+}
+
+.days li .active {
+    padding: 5px;
+    background: #1abc9c;
+    border-radius: 5px;
+    /* color: white !important */
+}
+
+.days {
+    padding: 10px 0;
+    /* background: #eee; */
+    margin: 0;
+}
+
+.calendar-page .schedule {
+    width: 30vw;
+    background: #3a7cdf;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.calendar-page .schedule .date {
+    font-size: 18px;
+    font-weight: 400;
+    /* padding: 10px; */
+    margin: 10px 5px;
+}
+
+.calendar-page .schedule .event{
+    max-height: 55vh;
+    overflow: auto;
+}
+
+.calendar-page .schedule td {
+    padding: 5px;
+    vertical-align: top;
+}
+
+.calendar-page .schedule .time {
+    white-space: nowrap;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#style-3::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+}
+
+#style-3::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+#style-3::-webkit-scrollbar-thumb {
+    background-color: #000000;
+}

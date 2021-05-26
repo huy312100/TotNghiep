@@ -39,6 +39,12 @@ class Sidebar extends Component {
                             <div className="side-text">Diễn đàn</div>
                         </div>
                     </NavLink>
+                    <NavLink to="calendar" className="content-sidenav" activeClassName="selected">
+                        <div className="nav-text">
+                            <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/forum.png'} alt=""></img>
+                            <div className="side-text">Lịch</div>
+                        </div>
+                    </NavLink>
                 </div>
             </div>
         );

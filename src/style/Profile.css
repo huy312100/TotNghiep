@@ -12,57 +12,57 @@
     margin: auto;
 } */
 
-hr {
+.info-profile hr {
   border-top: 1px solid gray;
 }
 
-table {
+.info-profile table {
   border-collapse: collapse;
   width: 100%;
 }
 
-th, td {
+.info-profile th,.info-profile td {
   font-size: 14px;
   padding: 8px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
-.firstcol{
+.info-profile .firstcol{
   font-weight: bold;
   padding-left: 20px;
 }
 
-td{
+.info-profile td{
   padding: 15px 0px 15px 5px;
 }
 
-.tb-row:hover{
+.info-profile .tb-row:hover{
   /* background: rgb(226, 226, 226); */
   background: rgb(243, 243, 243);
 
   cursor:pointer;
 }
 
-.edit{
+.info-profile .edit{
   color: rgb(71, 71, 194);
 } 
 
-.confirm{
+.info-profile .confirm{
   margin: 2px;
   padding: 5px;
   background: #304f8d;
   color: white;
 }
 
-.cancel{
+.info-profile .cancel{
   margin: 2px;
   padding: 4px;
   background: #ffffff;
   border:1px solid;
 }
 
-.image{
+.info-profile .image{
   border-radius: 100px;
 }
 

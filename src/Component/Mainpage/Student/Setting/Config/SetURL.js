@@ -14,8 +14,35 @@ class SetURL extends Component {
             url: "",
             success: -1,
             loadding: 0,
-            tag: 0
+            unlinkloadding: 0,
+            tag: 0,
+            connected: []
         }
+    }
+
+    getConnectedWeb = () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/web/getcustomlink", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                this.setState({
+                    connected: result
+                })
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    componentDidMount() {
+        this.getConnectedWeb();
     }
 
 
@@ -42,10 +69,26 @@ class SetURL extends Component {
     }
 
     checkConnect = () => {
+        var portalunlink = this.state.connected.indexOf("Portal") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy kết nối</div>;
+        var moodleunlink = this.state.connected.indexOf("Moodle") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy kết nối</div>;
+        var trellounlink = this.state.connected.indexOf("Trello") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy kết nối</div>;
+        var slackunlink = this.state.connected.indexOf("Slack") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy kết nối</div>;
+        var type = [portalunlink, moodleunlink, trellounlink, slackunlink];
+
+
         if (this.state.loadding === 1) {
             return <div className="btnconnect-box">
                 <div></div>
                 <div className="btnconnect" type="button"><i class="fa fa-circle-o-notch fa-spin"></i>Kết nối</div>
+            </div>
+        }
+        if (this.state.unlinkloadding === 1) {
+            return <div className="btnconnect-box">
+                <div></div>
+                <div className="gr-btnconnect">
+                    <div className="btndisconnect" type="button"><i class="fa fa-circle-o-notch fa-spin"></i>Hủy kết nối</div>
+                    <div className="btnconnect" type="button"><i class="fa fa-circle-o-notch fa-spin"></i>Chờ</div>
+                </div>
             </div>
         }
         if (this.state.success === 0) {
@@ -61,9 +104,54 @@ class SetURL extends Component {
         else {
             return <div className="btnconnect-box">
                 <div></div>
-                <div className="btnconnect" type="button" onClick={this.connect3rdApp}>Kết nối</div>
+                <div className="gr-btnconnect">
+                    {type[this.state.tag]}
+                    <div className="btnconnect" type="button" onClick={this.connect3rdApp}>Kết nối</div>
+                </div>
             </div>
         }
+    }
+
+    disconnect3rdApp = async () => {
+        this.setState({ unlinkloadding: 1 })
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("typeUrl", "Portal");
+
+        var requestOptions = {
+            method: 'DELETE',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        await fetch("https://hcmusemu.herokuapp.com/web/deleteaccount", requestOptions)
+            .then(response => {
+                console.log(response.status);
+                if (response.status === 500) {
+                    return response.text();
+                }
+                else {
+                    throw new Error('Hủy kết nối thất bại');
+                }
+            })
+            .then(result => {
+                console.log(result)
+                this.setState({
+                    unlinkloadding: 0
+                })
+            })
+            .catch(error => {
+                console.log('error', error)
+                this.setState({
+                    unlinkloadding: 0
+                })
+            });
+
+        this.getConnectedWeb();
     }
 
     connect3rdApp = () => {
@@ -122,14 +210,14 @@ class SetURL extends Component {
 
     clickTag = (numtag) => {
         var type = ['Portal', 'Moodle', 'Trello', 'Slack'];
-        if (numtag!==this.state.tag){
+        if (numtag !== this.state.tag) {
             this.setState({
-                success:-1
+                success: -1
             })
         }
         this.setState({
             tag: numtag,
-            type:type[numtag]
+            type: type[numtag]
         })
     }
 
@@ -139,6 +227,10 @@ class SetURL extends Component {
         var trellotag = this.state.tag === 2 ? "trello" : "";
         var slacktag = this.state.tag === 3 ? "slack" : "";
 
+        var portallink = this.state.connected.indexOf("Portal") === -1 ? "" : <i class="fa fa-link fa-fw" style={{ color: "green" }}></i>;
+        var moodlelink = this.state.connected.indexOf("Moodle") === -1 ? "" : <i class="fa fa-link fa-fw" style={{ color: "green" }}></i>;
+        var trellolink = this.state.connected.indexOf("Trello") === -1 ? "" : <i class="fa fa-link fa-fw" style={{ color: "green" }}></i>;
+        var slacklink = this.state.connected.indexOf("Slack") === -1 ? "" : <i class="fa fa-link fa-fw" style={{ color: "green" }}></i>;
 
         return (
             <div>
@@ -153,13 +245,13 @@ class SetURL extends Component {
             </div> */}
                 <div className="seturl-tag">
                     <div className="tag">
-                        <div type="button" className={"btn-seturl " + portaltag} onClick={(numtag) => this.clickTag(0)}>Portal
+                        <div type="button" className={"btn-seturl " + portaltag} onClick={(numtag) => this.clickTag(0)}>Portal {portallink}
                         </div>
-                        <div type="button" className={"btn-seturl " + moodletag} onClick={(numtag) => this.clickTag(1)}>Moodle
+                        <div type="button" className={"btn-seturl " + moodletag} onClick={(numtag) => this.clickTag(1)}>Moodle {moodlelink}
                         </div>
-                        <div type="button" className={"btn-seturl " + trellotag} onClick={(numtag) => this.clickTag(2)}>Trello
+                        <div type="button" className={"btn-seturl " + trellotag} onClick={(numtag) => this.clickTag(2)}>Trello {trellolink}
                         </div>
-                        <div type="button" className={"btn-seturl " + slacktag} onClick={(numtag) => this.clickTag(3)}>Slack
+                        <div type="button" className={"btn-seturl " + slacktag} onClick={(numtag) => this.clickTag(3)}>Slack {slacklink}
                         </div>
                     </div>
                 </div>
@@ -181,8 +273,8 @@ class SetURL extends Component {
 
 
     render() {
-        console.log(this.state.success === 0)
-        let checkrender = this.state.success === 1 ? (<div className="seturl-box"><SetURLSuccuss /></div>) : this.renderSetULRbox();
+        // console.log(this.state.success === 0)
+        let checkrender = this.state.success === 1 ? (<div className="seturl-successbox"><SetURLSuccuss /></div>) : this.renderSetULRbox();
         return (
             <div>
                 <Navbar />

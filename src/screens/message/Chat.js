@@ -1,10 +1,13 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { GiftedChat } from 'react-native-gifted-chat'
+import React, { useState, useCallback, useEffect } from 'react';
+import { GiftedChat } from 'react-native-gifted-chat';
+import io from 'socket.io-client';
 
 export function ChatScreen() {
     const [messages, setMessages] = useState([]);
-  
+    var socket ;
+
     useEffect(() => {
+        socket=io("http://192.168.0.102:3002");
         setMessages([
           {
             _id: 1,
@@ -20,6 +23,8 @@ export function ChatScreen() {
     }, [])
   
     const onSend = useCallback((messages = []) => {
+      socket.emit('messageApp', messages[0].text);
+      console.log(messages[0].text);
       setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
     }, [])
   

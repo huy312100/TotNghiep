@@ -10,7 +10,7 @@ import * as calendarActions from '../../../../store/actions/Calendar';
 import LoadingScreen from '../../LoadingScreen';
 
 
-const AddToCalendarScreen = ({navigation}) => {
+const ModifyCalendarScreen = ({navigation,route}) => {
 
     const getCurrentTimestamp=()=>{
         return Date.now();
@@ -20,12 +20,13 @@ const AddToCalendarScreen = ({navigation}) => {
 
     const [isLoading,setLoading] = useState(false);
 
+    const [idEvent,setIdEvent] = useState(route.params.idEvent);
     
-    const [title,setTitle]=useState('');
+    const [title,setTitle]=useState(route.params.nameEvent);
     
 
-    const [startTimestamp,setStartTimestamp]=useState(getCurrentTimestamp());
-    const [endTimestamp,setEndTimestamp]=useState(getCurrentTimestamp()+3600*1000);
+    const [startTimestamp,setStartTimestamp]=useState(route.params.startTimestamp*1000);
+    const [endTimestamp,setEndTimestamp]=useState(route.params.endTimestamp*1000);
     const [isEnabled, setIsEnabled] = useState(false);
 
     const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
@@ -36,10 +37,10 @@ const AddToCalendarScreen = ({navigation}) => {
     const [visibleOverlayRemindNoti, setVisibleOverlayRemindNoti] = useState(false);
 
 
-    const [typeEvent,setTypeEvent]= useState('');
-    const [colorEvent,setColorEvent] =useState('');
-    const [urlEvent,setUrlEvent] =useState('');
-    const [decriptionEvent,setDecriptionEvent] =useState('');
+    const [typeEvent,setTypeEvent]= useState(route.params.typeEvent);
+    const [colorEvent,setColorEvent] =useState(route.params.colorEvent);
+    const [urlEvent,setUrlEvent] =useState(route.params.urlEvent);
+    const [decriptionEvent,setDecriptionEvent] =useState(route.params.decriptionEvent);
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
 
 
@@ -168,10 +169,6 @@ const AddToCalendarScreen = ({navigation}) => {
         return true;
     }
 
-    //Handle for Add Button
-    const addButtonHandler = async() => {
-        await addNewEvent();
-    }
 
     //Call getCalendarThis Month Calendar
   const getAllActivitiesInMonth = ()=>{
@@ -204,7 +201,7 @@ const AddToCalendarScreen = ({navigation}) => {
   };
 
     //call Api post calendar
-    const addNewEvent = async ()=>{
+    const modifyEvent = async ()=>{
         setLoading(true);
 
         var myHeaders = new Headers();
@@ -212,6 +209,7 @@ const AddToCalendarScreen = ({navigation}) => {
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
+        "id":idEvent,
         "Title": title,
         "TypeEvent": typeEvent,
         "year": getCurrentYear(startTimestamp).toString(),
@@ -237,7 +235,7 @@ const AddToCalendarScreen = ({navigation}) => {
         redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/calendar/post", requestOptions)
+        fetch("https://hcmusemu.herokuapp.com/calendar/edit", requestOptions)
         .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
@@ -301,13 +299,13 @@ const AddToCalendarScreen = ({navigation}) => {
                 </TouchableOpacity>
             }
             centerComponent={
-                <Text style={headerStyle.textCenterComponent}>Sự kiện mới</Text>
+                <Text style={headerStyle.textCenterComponent}>Cập nhật sự kiện</Text>
             }
             rightComponent={
               <TouchableOpacity disabled={checkDisableAddButton()}
-                onPress={() =>{addNewEvent()}}>
+                onPress={() =>{modifyEvent()}}>
                     <Text style={[headerStyle.textRightComponent,{color: checkDisableAddButton() ? 'silver' : 'blue'}]}>
-                        Thêm
+                        Sửa
                     </Text>
                 </TouchableOpacity>
                
@@ -316,12 +314,12 @@ const AddToCalendarScreen = ({navigation}) => {
 
 
             <View style={styles.card}>
-                <TextInput style={styles.titleName} placeholder='Tiêu đề'
+                <TextInput style={styles.titleName}
                 onChangeText={(title)=>{
                     //console.log(checkTitle(title));
                     setTitle(title);
                     dispatch(calendarActions.getStatusOfTitle(checkTitle(title)))
-                    }}/>
+                    }}>{title}</TextInput>
             </View> 
 
             <View style={[styles.card,{marginBottom:0}]}>
@@ -405,14 +403,14 @@ const AddToCalendarScreen = ({navigation}) => {
                 <View style={styles.date}>
                 <SimpleLineIcons name="link" size={20} color="red" />
                    <TextInput style={[styles.label,{width:"100%"}]} placeholder="URL"
-                   onChangeText={(url) => setUrlEvent(url)}/>
+                   onChangeText={(url) => setUrlEvent(url)}>{urlEvent}</TextInput>
                 </View>
             </View> 
             <View style={[styles.card,{marginTop:0,height:"25%"}]}>
                 <View style={styles.date}>
                     <SimpleLineIcons name="note" size={20} color="red" />
                     <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}
-                    onChangeText={(decription) => setDecriptionEvent(decription)}/>
+                    onChangeText={(decription) => setDecriptionEvent(decription)}>{decriptionEvent}</TextInput>
                 </View>
             </View> 
 
@@ -734,4 +732,4 @@ const headerStyle = StyleSheet.create({
 });
 
 
-export default AddToCalendarScreen;
+export default ModifyCalendarScreen;

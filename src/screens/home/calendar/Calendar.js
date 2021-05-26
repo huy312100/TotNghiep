@@ -122,6 +122,10 @@ const CalendarScreen =({navigation})=> {
   const [typeEvent,setTypeEvent] = useState('');
   const [typeGuest,setTypeGuest] = useState('');
   const [urlEvent,setUrlEvent] = useState('');
+  const [colorEvent,setColorEvent] = useState('');
+
+  const [startTimestamp,setStartTimestamp] = useState('');
+  const [endTimestamp,setEndTimestamp] = useState('');
 
   const [isLoading,setLoading] = useState(false);
 
@@ -182,6 +186,8 @@ const CalendarScreen =({navigation})=> {
                 url:dataRes[key].Decription.url,
                 typeGuest:"Cá nhân",
                 color:dataRes[key].Color,
+                startTimestamp:dataRes[key].StartHour,
+                endTimestamp:dataRes[key].EndHour
             })}
             else{
               dataCalendar.push({
@@ -194,6 +200,8 @@ const CalendarScreen =({navigation})=> {
                 url:dataRes[key].Decription.url,
                 typeGuest:dataRes[key].ListGuest,
                 color:dataRes[key].Color,
+                startTimestamp:dataRes[key].StartHour,
+                endTimestamp:dataRes[key].EndHour
             })}
           }
           else{
@@ -388,7 +396,10 @@ const CalendarScreen =({navigation})=> {
             setDecriptionEvent(e.summary);
             setTypeEvent(e.type);
             setTypeGuest(e.typeGuest);
-            setUrlEvent(e.url);            
+            setUrlEvent(e.url);           
+            setColorEvent(e.color); 
+            setStartTimestamp(e.startTimestamp);
+            setEndTimestamp(e.endTimestamp);
           }}
           events={allEvents.filter(event => sameDate(XDate(event.start), XDate(currentDate)))}
           // scrollToFirst={true}
@@ -487,7 +498,19 @@ const CalendarScreen =({navigation})=> {
                         <TouchableOpacity style={[overlayStyle.button,{backgroundColor:'#3366FF'}]}
                         onPress={() => {
                           toggleOverlay();
-                          navigation.navigate('Add Event')}}>
+                          navigation.navigate('Modify Event',{
+                            idEvent:idEvent,
+                            nameEvent: nameEvent,
+                            startTimeEvent:Date.parse(startTimeEvent),
+                            endTimeEvent:Date.parse(endTimeEvent),
+                            decriptionEvent:decriptionEvent,
+                            typeEvent:typeEvent,
+                            urlEvent:urlEvent,
+                            colorEvent:colorEvent,
+                            startTimestamp:startTimestamp,
+                            endTimestamp:endTimestamp,
+                          });
+                          }}>
                             <Text style={overlayStyle.textBtnConnect}>Cập nhật</Text>
                         </TouchableOpacity>
 

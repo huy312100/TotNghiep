@@ -26,6 +26,7 @@ import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse
 import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
 import ChangePasswordScreen from '../screens/authentications/ChangePassword';
 import AddToCalendarScreen from '../screens/home/calendar/AddToCalendar';
+import ModifyCalendarScreen from '../screens/home/calendar/ModifyCalendar';
 
 
 const Stack = createStackNavigator();
@@ -117,6 +118,14 @@ function HomeStackNavigation({navigation}) {
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
         })}
+      />
+
+      <Stack.Screen
+        name="Modify Event"
+        component={ModifyCalendarScreen}
+        options={{ 
+          headerShown: false
+        }}
       />
 
       <Stack.Screen

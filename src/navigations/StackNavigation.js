@@ -15,6 +15,7 @@ import RegisterScreen  from "../screens/authentications/Register";
 import HomeScreen from "../screens/home/Home";
 import CalendarScreen from "../screens/home/calendar/Calendar";
 import MessageScreen from "../screens/message/Message";
+import FindToChatScreen from "../screens/message/FindToChat";
 import {ChatScreen} from "../screens/message/Chat";
 import {ProfileScreen} from '../screens/profile/Profile';
 import NotificationScreen from '../screens/notifications/Notification';
@@ -27,6 +28,7 @@ import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
 import ChangePasswordScreen from '../screens/authentications/ChangePassword';
 import AddToCalendarScreen from '../screens/home/calendar/AddToCalendar';
 import ModifyCalendarScreen from '../screens/home/calendar/ModifyCalendar';
+import AddPeopleToCalendarScreen from '../screens/home/calendar/AddPeopleToCalendar';
 
 
 const Stack = createStackNavigator();
@@ -99,6 +101,15 @@ function HomeStackNavigation({navigation}) {
           },
         }}
       />
+
+      {/* <Stack.Screen
+        name="Add people to calendar"
+        component={AddPeopleToCalendarScreen}
+        options={{ 
+          headerShown: false
+        }}
+      /> */}
+
       <Stack.Screen
         name="Course"
         component={CourseInfoTopTab}
@@ -178,11 +189,19 @@ function MessageStackNavigation() {
         name="Chat"
         component={ChatScreen}
         options={({route}) =>({
-          title:route.params.userName,
+          title:route.params.name,
           headerTitleAlign: 'center',
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
         })}
+      />
+
+      <Stack.Screen
+        name="Find to Chat"
+        component={FindToChatScreen}
+        options={{ 
+          headerShown: false
+        }}
       />
 
     </Stack.Navigator>
@@ -370,7 +389,7 @@ const getTabBarVisibility = (route) => {
   const arrHideBotTab=["Calendar",
   "Chat","Course","Change Profile","Connect application",
   "Content Course","Web Customed","Change Password","Add Event",
-  'Modify Event'];
+  'Modify Event','Find to Chat'];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {

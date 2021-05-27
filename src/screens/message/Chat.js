@@ -2,16 +2,26 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import io from 'socket.io-client';
 
-export function ChatScreen() {
+export function ChatScreen({route}) {
     const [messages, setMessages] = useState([]);
     var socket ;
 
+    const [roomID,setRoomID] = useState('');
+
     useEffect(() => {
-        socket=io("http://192.168.0.102:3002");
+        socket=io("https://hcmusemu.herokuapp.com");
+
+        socket.emit('Create-Room',[route.params.token,route.params.email]);
+
+        socket.on('Reply-Create-Room',(data)=>{
+          console.log(data);
+          setRoomID(data);
+        });
+
         setMessages([
           {
             _id: 1,
-            text: 'Hello developer',
+            text: 'Hello',
             createdAt: new Date(),
             user: {
               _id: 2,
@@ -23,7 +33,8 @@ export function ChatScreen() {
     }, [])
   
     const onSend = useCallback((messages = []) => {
-      socket.emit('messageApp', messages[0].text);
+
+      socket.emit('Message-to-Server',[roomID,route.params.token,messages[0].text])
       console.log(messages[0].text);
       setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
     }, [])

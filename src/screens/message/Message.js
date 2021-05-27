@@ -1,118 +1,145 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image } from 'react-native';
-import{SafeAreaView} from 'react-native-safe-area-context'
+import{SafeAreaView} from 'react-native-safe-area-context';
+import {Header,SearchBar} from 'react-native-elements';
+import { MaterialCommunityIcons} from '@expo/vector-icons';
+
 
 const Messages = [
-  {
-    id: '1',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '2',
-    userName: 'Hoang Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '2 hours ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '3',
-    userName: 'Vien Du',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '1 hours ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '4',
-    userName: 'Trong Dat',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '1 day ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '5',
-    userName: 'Quoc Duy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '2 days ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '6',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '7',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '8',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '9',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '10',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '11',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '12',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
-  {
-    id: '13',
-    userName: 'Duc Huy',
-    userImg: require("../../../assets/user-icon.png"),
-    messageTime: '4 mins ago',
-    messageText:
-      'Hey there, this is my test for a post of my social app in React Native.',
-  },
+  // {
+  //   id: '1',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '2',
+  //   userName: 'Hoang Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '2 hours ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '3',
+  //   userName: 'Vien Du',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '1 hours ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '4',
+  //   userName: 'Trong Dat',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '1 day ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '5',
+  //   userName: 'Quoc Duy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '2 days ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '6',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '7',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '8',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '9',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '10',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '11',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '12',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
+  // {
+  //   id: '13',
+  //   userName: 'Duc Huy',
+  //   userImg: require("../../../assets/user-icon.png"),
+  //   messageTime: '4 mins ago',
+  //   messageText:
+  //     'Hey there, this is my test for a post of my social app in React Native.',
+  // },
 ];
 
 const MessageScreen = ({navigation}) => {
     return (
-      <SafeAreaView style={styles.container}>
-        <FlatList 
+      <View style={styles.container}>
+         <Header
+            containerStyle={{
+                backgroundColor: 'white',
+                justifyContent: 'space-around',
+                borderBottomColor:'#DDDDDD'
+            }}
+
+            centerComponent={
+                <Text style={headerStyle.centerText}>Tin nhắn</Text>
+            }
+            rightComponent={
+              <TouchableOpacity onPress={() =>{ navigation.navigate('Find to Chat')}}>
+                    <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
+                </TouchableOpacity>
+
+            }/>
+
+        {/* <SearchBar
+          placeholder="Type Here..."
+          style={{width:'100%'}}
+          //onChangeText={this.updateSearch}
+          //value={search}
+        /> */}
+
+        <FlatList
           data={Messages}
           keyExtractor={item=>item.id}
           renderItem={({item}) => (
@@ -132,7 +159,7 @@ const MessageScreen = ({navigation}) => {
             </TouchableOpacity>
           )}
         />
-      </SafeAreaView>
+      </View>
     );
 };
 
@@ -198,3 +225,10 @@ const styles = StyleSheet.create({
     color: "#333333",
   }
 });
+
+const headerStyle = StyleSheet.create({
+  centerText:{
+    fontSize: 18,
+    fontWeight: "bold"
+  }
+})

@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView } from 'react-native';
+import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView,FlatList } from 'react-native';
 import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Overlay,Header } from 'react-native-elements';
@@ -8,6 +8,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import * as calendarActions from '../../../../store/actions/Calendar';
 
 import LoadingScreen from '../../LoadingScreen';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const AddToCalendarScreen = ({navigation}) => {
@@ -41,6 +42,12 @@ const AddToCalendarScreen = ({navigation}) => {
     const [urlEvent,setUrlEvent] =useState('');
     const [decriptionEvent,setDecriptionEvent] =useState('');
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
+
+    const [listGuestEmail,setGuestEmail] = useState([]);
+    const [listGuestName,setGuestName] = useState([]);
+
+
+    const [dataOfAllPeolple,setDataOfAllPeolple] = useState([]);
 
 
     const [labelRemindNoti,setLabelRemindNoti] = useState('');
@@ -171,7 +178,8 @@ const AddToCalendarScreen = ({navigation}) => {
     //Handle for Add Button
     const addButtonHandler = async() => {
         await addNewEvent();
-    }
+    };
+
 
     //Call getCalendarThis Month Calendar
   const getAllActivitiesInMonth = ()=>{
@@ -273,10 +281,9 @@ const AddToCalendarScreen = ({navigation}) => {
         //         setLoading(false);
         //     }  
         // }).done();
-    
-        
-    }
+    };
 
+    
       
 
     return(
@@ -366,13 +373,13 @@ const AddToCalendarScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View>
                
-            <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={toggleOverlayAddPeople}>
+            {/* <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={navigation.navigate('Add people to calendar')}>
                 <View style={styles.date}>
                 <Ionicons name="people-outline" size={23} color="red" />
                     <Text style={styles.label}>Thêm người</Text>
                     <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                 </View>
-            </TouchableOpacity> 
+            </TouchableOpacity>  */}
 
             <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddTypeEvent}>
                 <View style={styles.date}>
@@ -469,9 +476,10 @@ const AddToCalendarScreen = ({navigation}) => {
 
 
             <Overlay isVisible={visibleOverlayAddPeople} onBackdropPress={toggleOverlayAddPeople}>
-                <View >
-                    <Text>Hello from Overlay!</Text>
-                </View>        
+                
+    
+            
+                     
             </Overlay>
 
             <Overlay isVisible={visibleOverlayAddTypeEvent} onBackdropPress={toggleOverlayAddTypeEvent}>
@@ -732,6 +740,43 @@ const headerStyle = StyleSheet.create({
         marginTop:2
     }
 });
+
+const addPeopleStyle = StyleSheet.create({
+    
+
+    input:{
+        flexDirection:'row',
+        width:'95%',
+        backgroundColor:"#cccc",
+        borderRadius:10,
+        padding:10,
+    },
+
+    card: {
+        paddingHorizontal:10,
+        backgroundColor: "white",
+        borderWidth: 1,
+        borderColor: "#cccccc",
+        flexDirection: "row",
+
+    },
+    name:{
+        marginTop:10,
+        marginHorizontal:20
+    },
+    nameUniversity:{
+        fontSize:12,
+        marginHorizontal:20
+    },
+
+    header: {
+        flexDirection:'row',
+        paddingTop: 10,
+        paddingBottom: 15,
+        borderBottomColor:'#DDDDDD',
+        borderBottomWidth:.2,
+    },
+})
 
 
 export default AddToCalendarScreen;

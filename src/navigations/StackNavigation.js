@@ -16,7 +16,7 @@ import HomeScreen from "../screens/home/Home";
 import CalendarScreen from "../screens/home/calendar/Calendar";
 import MessageScreen from "../screens/message/Message";
 import FindToChatScreen from "../screens/message/FindToChat";
-import {ChatScreen} from "../screens/message/Chat";
+import ChatScreen from "../screens/message/Chat";
 import {ProfileScreen} from '../screens/profile/Profile';
 import NotificationScreen from '../screens/notifications/Notification';
 import AllCourseInfoScreen from '../screens/home/courses/AllCourse';

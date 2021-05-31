@@ -294,10 +294,11 @@ const AddToCalendarScreen = ({navigation}) => {
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
           }}>
-         <ScrollView style={styles.container}>
+         
+        <View style={styles.container}>
 
-         <Header
-            containerStyle={{
+        
+         <Header containerStyle={{
                 backgroundColor: 'white',
                 justifyContent: 'space-around',
             }}
@@ -321,351 +322,353 @@ const AddToCalendarScreen = ({navigation}) => {
             }/>
 
 
+            <ScrollView>
 
-            <View style={styles.card}>
-                <TextInput style={styles.titleName} placeholder='Tiêu đề'
-                onChangeText={(title)=>{
-                    //console.log(checkTitle(title));
-                    setTitle(title);
-                    dispatch(calendarActions.getStatusOfTitle(checkTitle(title)))
-                    }}/>
-            </View> 
+                <View style={styles.card}>
+                    <TextInput style={styles.titleName} placeholder='Tiêu đề'
+                    onChangeText={(title)=>{
+                        //console.log(checkTitle(title));
+                        setTitle(title);
+                        dispatch(calendarActions.getStatusOfTitle(checkTitle(title)))
+                        }}/>
+                </View> 
 
-            <View style={[styles.card,{marginBottom:0}]}>
-                <View style={styles.date}>
-                    <SimpleLineIcons name="clock" size={20} color="red" />
-                    <Text style={styles.label}>Cả ngày</Text>
-                    <Switch
-                        style={[{ transform: [{ scaleX: .8 }, { scaleY: .8 }],marginTop:-5,marginRight:-10},styles.onTheRight]}
-                        trackColor={{ false: "white", true: "green" }}
-                        // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                        ios_backgroundColor="white"
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                        size="medium"/>  
-                </View>
-            </View>
-
-            <View style={[styles.card,{marginTop:0}]}>
-                <TouchableOpacity style={styles.date} onPress={showStartDatePicker}>
-                    <Text style={[styles.label,{marginLeft:32}]}>Bắt đầu</Text>
-                    <View style={[styles.onTheRight,{flexDirection:'row'}]}>
-                        <Text style={styles.label} >
-                            {getCurrenDay(startTimestamp)+" tháng "+ getCurrentMonth(startTimestamp)+"," + getCurrentYear(startTimestamp)}    
-                        </Text>
-
-                         {!isEnabled &&<Text style={[styles.label,{marginLeft:20}]} >
-                            {getCurrentTime(startTimestamp)}
-                        </Text>}
+                <View style={[styles.card,{marginBottom:0}]}>
+                    <View style={styles.date}>
+                        <SimpleLineIcons name="clock" size={20} color="red" />
+                        <Text style={styles.label}>Cả ngày</Text>
+                        <Switch
+                            style={[{ transform: [{ scaleX: .8 }, { scaleY: .8 }],marginTop:-5,marginRight:-10},styles.onTheRight]}
+                            trackColor={{ false: "white", true: "green" }}
+                            // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                            ios_backgroundColor="white"
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
+                            size="medium"/>  
                     </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.date} onPress={showEndDatePicker}>
-                    <Text style={[styles.label,{marginLeft:32}]}>Kết thúc</Text>
-                    <View style={[styles.onTheRight,{flexDirection:'row'}]}>
-                        <Text style={[styles.label,{ textDecorationLine: checkValidDate() ? 'none' : 'line-through'}]} >
-                            {getCurrenDay(endTimestamp)+" tháng "+ getCurrentMonth(endTimestamp)+"," + getCurrentYear(endTimestamp)}
-                        </Text>
-                        {!isEnabled && <Text style={[styles.label,{marginLeft:20,textDecorationLine: checkValidDate() ? 'none' : 'line-through'}]}>
-                            {getCurrentTime(endTimestamp)}
-                        </Text>}
-                    </View>
-                </TouchableOpacity>
-            </View>
-               
-            {/* <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={navigation.navigate('Add people to calendar')}>
-                <View style={styles.date}>
-                <Ionicons name="people-outline" size={23} color="red" />
-                    <Text style={styles.label}>Thêm người</Text>
-                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                 </View>
-            </TouchableOpacity>  */}
 
-            <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddTypeEvent}>
-                <View style={styles.date}>
-                <SimpleLineIcons name="event" size={21} color="red" />
-                    <Text style={styles.label}>Loại sự kiện</Text>
-                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{typeEvent}</Text>
-                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
+                <View style={[styles.card,{marginTop:0}]}>
+                    <TouchableOpacity style={styles.date} onPress={showStartDatePicker}>
+                        <Text style={[styles.label,{marginLeft:32}]}>Bắt đầu</Text>
+                        <View style={[styles.onTheRight,{flexDirection:'row'}]}>
+                            <Text style={styles.label} >
+                                {getCurrenDay(startTimestamp)+" tháng "+ getCurrentMonth(startTimestamp)+"," + getCurrentYear(startTimestamp)}    
+                            </Text>
+
+                            {!isEnabled &&<Text style={[styles.label,{marginLeft:20}]} >
+                                {getCurrentTime(startTimestamp)}
+                            </Text>}
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.date} onPress={showEndDatePicker}>
+                        <Text style={[styles.label,{marginLeft:32}]}>Kết thúc</Text>
+                        <View style={[styles.onTheRight,{flexDirection:'row'}]}>
+                            <Text style={[styles.label,{ textDecorationLine: checkValidDate() ? 'none' : 'line-through'}]} >
+                                {getCurrenDay(endTimestamp)+" tháng "+ getCurrentMonth(endTimestamp)+"," + getCurrentYear(endTimestamp)}
+                            </Text>
+                            {!isEnabled && <Text style={[styles.label,{marginLeft:20,textDecorationLine: checkValidDate() ? 'none' : 'line-through'}]}>
+                                {getCurrentTime(endTimestamp)}
+                            </Text>}
+                        </View>
+                    </TouchableOpacity>
                 </View>
-            </TouchableOpacity> 
-
-            <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddColor}>
-                <View style={styles.date}>
-                <Ionicons name="color-palette-outline" size={23 } color="red" />
-                    <Text style={styles.label}>Màu sắc</Text>
-                    <View style={[styles.onTheRight,colorStyle.SquareShapeView,styles.showChooseOnTheRight,{backgroundColor: colorEvent}]}/>
-                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
-                </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.card,{marginTop:0}]} onPress={toggleOverlayAddRemindNoti}>
-                <View style={styles.date}>
-                <Ionicons name="ios-notifications-outline" size={23} color="red" />
-                    <Text style={styles.label}>Thông báo</Text>
-                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{labelRemindNoti}</Text>
-                    <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
-                </View>
-            </TouchableOpacity> 
-
-            <View style={[styles.card,{marginBottom:0}]}>
-                <View style={styles.date}>
-                <SimpleLineIcons name="link" size={20} color="red" />
-                   <TextInput style={[styles.label,{width:"100%"}]} placeholder="URL"
-                   onChangeText={(url) => setUrlEvent(url)}/>
-                </View>
-            </View> 
-            <View style={[styles.card,{marginTop:0,height:"25%"}]}>
-                <View style={styles.date}>
-                    <SimpleLineIcons name="note" size={20} color="red" />
-                    <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}
-                    onChangeText={(decription) => setDecriptionEvent(decription)}/>
-                </View>
-            </View> 
-
-
-            <DateTimePickerModal
-                locale={'vi'}
-                isVisible={isStartDatePickerVisible && !isEnabled}
-                mode="datetime"
-                value={startTimestamp}
-                headerTextIOS="Chọn thời điểm bắt đầu"
-                cancelTextIOS="Huỷ bỏ"
-                confirmTextIOS="Xác nhận"
-                onConfirm={handleStartConfirm}
-                onCancel={hideStartDatePicker}
-                onHide={()=>{
-                    dispatch(calendarActions.getStatusOfDate(checkValidDate()));
-                }}/>
-
-            <DateTimePickerModal
-                locale={'vi'}
-                isVisible={isEndDatePickerVisible && !isEnabled}
-                mode="datetime"
-                headerTextIOS="Chọn thời điểm kết thúc"
-                cancelTextIOS="Huỷ bỏ"
-                confirmTextIOS="Xác nhận"
-                onConfirm={handleEndConfirm}
-                onCancel={hideEndDatePicker}
-                onHide={()=>{
-                    dispatch(calendarActions.getStatusOfDate(checkValidDate()));
-                }}/>
-
-            <DateTimePickerModal
-                locale={'vi'}
-                isVisible={isStartDatePickerVisible && isEnabled}
-                mode="date"
-                headerTextIOS="Chọn thời điểm bắt đầu"
-                cancelTextIOS="Huỷ bỏ"
-                confirmTextIOS="Xác nhận"
-                onConfirm={handleStartConfirm}
-                onCancel={hideStartDatePicker}/>
-
-            <DateTimePickerModal
-                locale={'vi'}
-                isVisible={isEndDatePickerVisible && isEnabled}
-                mode="date"
-                headerTextIOS="Chọn thời điểm kết thúc"
-                cancelTextIOS="Huỷ bỏ"
-                confirmTextIOS="Xác nhận"
-                onConfirm={handleEndConfirm}
-                onCancel={hideEndDatePicker}/>
-
-
-            {isLoading && LoadingScreen()}
-
-
-            <Overlay isVisible={visibleOverlayAddPeople} onBackdropPress={toggleOverlayAddPeople}>
                 
-    
-            
-                     
-            </Overlay>
-
-            <Overlay isVisible={visibleOverlayAddTypeEvent} onBackdropPress={toggleOverlayAddTypeEvent}>
-                <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Công việc')}}>
+                {/* <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={navigation.navigate('Add people to calendar')}>
                     <View style={styles.date}>
-                    <MaterialCommunityIcons name="office-building" size={24} color="black" />
-                    <Text style={styles.label}>Công việc</Text>
+                    <Ionicons name="people-outline" size={23} color="red" />
+                        <Text style={styles.label}>Thêm người</Text>
+                        <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
+                    </View>
+                </TouchableOpacity>  */}
+
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddTypeEvent}>
+                    <View style={styles.date}>
+                    <SimpleLineIcons name="event" size={21} color="red" />
+                        <Text style={styles.label}>Loại sự kiện</Text>
+                        <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{typeEvent}</Text>
+                        <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                     </View>
                 </TouchableOpacity> 
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Nhà')}}>
+                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddColor}>
                     <View style={styles.date}>
-                    <FontAwesome5 name="home" size={20} color="black" />
-                    <Text style={styles.label}>Nhà</Text>
-                    </View>
-                </TouchableOpacity>        
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Gia đình')}}>
-                    <View style={styles.date}>
-                    <MaterialIcons name="family-restroom" size={24} color="black" />
-                    <Text style={styles.label}>Gia đình</Text>
+                    <Ionicons name="color-palette-outline" size={23 } color="red" />
+                        <Text style={styles.label}>Màu sắc</Text>
+                        <View style={[styles.onTheRight,colorStyle.SquareShapeView,styles.showChooseOnTheRight,{backgroundColor: colorEvent}]}/>
+                        <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Giải trí')}}>
+                <TouchableOpacity style={[styles.card,{marginTop:0}]} onPress={toggleOverlayAddRemindNoti}>
                     <View style={styles.date}>
-                    <Ionicons name="game-controller" size={24} color="black" />
-                    <Text style={styles.label}>Giải trí</Text>
+                    <Ionicons name="ios-notifications-outline" size={23} color="red" />
+                        <Text style={styles.label}>Thông báo</Text>
+                        <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{labelRemindNoti}</Text>
+                        <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                     </View>
                 </TouchableOpacity> 
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Bạn bè')}}>
+                <View style={[styles.card,{marginBottom:0}]}>
                     <View style={styles.date}>
-                    <MaterialCommunityIcons name="party-popper" size={24} color="black" />
-                    <Text style={styles.label}>Bạn bè</Text>
+                    <SimpleLineIcons name="link" size={20} color="red" />
+                    <TextInput style={[styles.label,{width:"100%"}]} placeholder="URL"
+                    onChangeText={(url) => setUrlEvent(url)}/>
                     </View>
-                </TouchableOpacity> 
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Thể thao')}}>
-                    <View style={[styles.date,]}>
-                    <MaterialIcons name="sports" size={24} color="black" />
-                    <Text style={styles.label}>Thể thao </Text>
-                    </View>
-                </TouchableOpacity> 
-            </Overlay>
-
-
-            <Overlay isVisible={visibleOverlayAddColor} onBackdropPress={toggleOverlayAddColor}> 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddColor();setColorEvent('#00BCD4')}}>
-                    <View style={[styles.date,]}>
-                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#00BCD4'}]}/>
-                        <Text style={styles.label}> Xanh dương </Text>
-                    </View>
-                </TouchableOpacity> 
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddColor();setColorEvent('#FF6666')}}>
-                    <View style={[styles.date,]}>
-                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#FF6666'}]}/>
-                        <Text style={styles.label}> Đỏ </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddColor();setColorEvent('#CCFF00')}}>
-                    <View style={[styles.date,]}>
-                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#CCFF00'}]}/>
-                        <Text style={styles.label}> Vàng </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddColor();setColorEvent('#669966')}}>
-                    <View style={[styles.date,]}>
-                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#669966'}]}/>
-                        <Text style={styles.label}> Xanh lá </Text>
-                    </View>
-                </TouchableOpacity>  
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddColor();setColorEvent('#FF99CC')}}>
-                    <View style={[styles.date,]}>
-                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#FF99CC'}]}/>
-                        <Text style={styles.label}> Hồng </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddColor();setColorEvent('#330099')}}>
-                    <View style={[styles.date,]}>
-                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#330099'}]}/>
-                        <Text style={styles.label}> Tím </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddColor();setColorEvent('#663300')}}>
-                    <View style={[styles.date,]}>
-                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#663300'}]}/>
-                        <Text style={styles.label}> Nâu </Text>
-                    </View>
-                </TouchableOpacity>  
-
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddColor();setColorEvent('#DDDDDD')}}>
-                    <View style={[styles.date,]}>
-                    <View style={[colorStyle.SquareShapeView,{backgroundColor: '#DDDDDD'}]}/>
-                        <Text style={styles.label}> Xám </Text>
-                    </View>
-                </TouchableOpacity>       
-            </Overlay>
-
-                {/* Overlay for remind notification */}
-            <Overlay isVisible={visibleOverlayRemindNoti} onBackdropPress={toggleOverlayAddRemindNoti}>
-                <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();
-                    setLabelRemindNoti('Trước 15 phút');
-                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*15))}}
-                >
+                </View> 
+                <View style={[styles.card,{marginTop:0,height:"25%"}]}>
                     <View style={styles.date}>
-                    <Text style={styles.label}>Trước 15 phút</Text>
+                        <SimpleLineIcons name="note" size={20} color="red" />
+                        <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}
+                        onChangeText={(decription) => setDecriptionEvent(decription)}/>
                     </View>
-                </TouchableOpacity> 
+                </View> 
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();
-                    setLabelRemindNoti('Trước 30 phút');
-                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*30))}}
-                >
-                    <View style={styles.date}>
-                    <Text style={styles.label}>Trước 30 phút</Text>
-                    </View>
-                </TouchableOpacity>        
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();
-                    setLabelRemindNoti('Trước 1 giờ');
-                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60))}}
-                >
-                    <View style={styles.date}>
-                        <Text style={styles.label}>Trước 1 giờ</Text>
-                    </View>
-                </TouchableOpacity>
+                <DateTimePickerModal
+                    locale={'vi'}
+                    isVisible={isStartDatePickerVisible && !isEnabled}
+                    mode="datetime"
+                    value={startTimestamp}
+                    headerTextIOS="Chọn thời điểm bắt đầu"
+                    cancelTextIOS="Huỷ bỏ"
+                    confirmTextIOS="Xác nhận"
+                    onConfirm={handleStartConfirm}
+                    onCancel={hideStartDatePicker}
+                    onHide={()=>{
+                        dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                    }}/>
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();
-                    setLabelRemindNoti('Trước 2 giờ');
-                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*2))}}
-                >
-                    <View style={styles.date}>
-                    <Text style={styles.label}>Trước 2 giờ</Text>
-                    </View>
-                </TouchableOpacity> 
+                <DateTimePickerModal
+                    locale={'vi'}
+                    isVisible={isEndDatePickerVisible && !isEnabled}
+                    mode="datetime"
+                    headerTextIOS="Chọn thời điểm kết thúc"
+                    cancelTextIOS="Huỷ bỏ"
+                    confirmTextIOS="Xác nhận"
+                    onConfirm={handleEndConfirm}
+                    onCancel={hideEndDatePicker}
+                    onHide={()=>{
+                        dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                    }}/>
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();
-                    setLabelRemindNoti('Trước 3 giờ');
-                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*3))}}
-                >
-                    <View style={styles.date}>
-                        <Text style={styles.label}>Trước 3 giờ</Text>
-                    </View>
-                </TouchableOpacity> 
+                <DateTimePickerModal
+                    locale={'vi'}
+                    isVisible={isStartDatePickerVisible && isEnabled}
+                    mode="date"
+                    headerTextIOS="Chọn thời điểm bắt đầu"
+                    cancelTextIOS="Huỷ bỏ"
+                    confirmTextIOS="Xác nhận"
+                    onConfirm={handleStartConfirm}
+                    onCancel={hideStartDatePicker}/>
 
-                <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
-                onPress={() => {toggleOverlayAddRemindNoti();
-                    setLabelRemindNoti('Trước 4 giờ');
-                    setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*4))}}
-                >
-                    <View style={[styles.date,]}>
-                    <Text style={styles.label}>Trước 4 giờ </Text>
-                    </View>
-                </TouchableOpacity> 
-            </Overlay>
-            
+                <DateTimePickerModal
+                    locale={'vi'}
+                    isVisible={isEndDatePickerVisible && isEnabled}
+                    mode="date"
+                    headerTextIOS="Chọn thời điểm kết thúc"
+                    cancelTextIOS="Huỷ bỏ"
+                    confirmTextIOS="Xác nhận"
+                    onConfirm={handleEndConfirm}
+                    onCancel={hideEndDatePicker}/>
+
+
+                {isLoading && LoadingScreen()}
+
+
+                <Overlay isVisible={visibleOverlayAddPeople} onBackdropPress={toggleOverlayAddPeople}>
+                    
+        
+                
+                        
+                </Overlay>
+
+                <Overlay isVisible={visibleOverlayAddTypeEvent} onBackdropPress={toggleOverlayAddTypeEvent}>
+                    <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Công việc')}}>
+                        <View style={styles.date}>
+                        <MaterialCommunityIcons name="office-building" size={24} color="black" />
+                        <Text style={styles.label}>Công việc</Text>
+                        </View>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Nhà')}}>
+                        <View style={styles.date}>
+                        <FontAwesome5 name="home" size={20} color="black" />
+                        <Text style={styles.label}>Nhà</Text>
+                        </View>
+                    </TouchableOpacity>        
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Gia đình')}}>
+                        <View style={styles.date}>
+                        <MaterialIcons name="family-restroom" size={24} color="black" />
+                        <Text style={styles.label}>Gia đình</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Giải trí')}}>
+                        <View style={styles.date}>
+                        <Ionicons name="game-controller" size={24} color="black" />
+                        <Text style={styles.label}>Giải trí</Text>
+                        </View>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Bạn bè')}}>
+                        <View style={styles.date}>
+                        <MaterialCommunityIcons name="party-popper" size={24} color="black" />
+                        <Text style={styles.label}>Bạn bè</Text>
+                        </View>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddTypeEvent();setTypeEvent('Thể thao')}}>
+                        <View style={[styles.date,]}>
+                        <MaterialIcons name="sports" size={24} color="black" />
+                        <Text style={styles.label}>Thể thao </Text>
+                        </View>
+                    </TouchableOpacity> 
+                </Overlay>
+
+
+                <Overlay isVisible={visibleOverlayAddColor} onBackdropPress={toggleOverlayAddColor}> 
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddColor();setColorEvent('#00BCD4')}}>
+                        <View style={[styles.date,]}>
+                            <View style={[colorStyle.SquareShapeView,{backgroundColor: '#00BCD4'}]}/>
+                            <Text style={styles.label}> Xanh dương </Text>
+                        </View>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddColor();setColorEvent('#FF6666')}}>
+                        <View style={[styles.date,]}>
+                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#FF6666'}]}/>
+                            <Text style={styles.label}> Đỏ </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddColor();setColorEvent('#CCFF00')}}>
+                        <View style={[styles.date,]}>
+                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#CCFF00'}]}/>
+                            <Text style={styles.label}> Vàng </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddColor();setColorEvent('#669966')}}>
+                        <View style={[styles.date,]}>
+                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#669966'}]}/>
+                            <Text style={styles.label}> Xanh lá </Text>
+                        </View>
+                    </TouchableOpacity>  
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddColor();setColorEvent('#FF99CC')}}>
+                        <View style={[styles.date,]}>
+                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#FF99CC'}]}/>
+                            <Text style={styles.label}> Hồng </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddColor();setColorEvent('#330099')}}>
+                        <View style={[styles.date,]}>
+                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#330099'}]}/>
+                            <Text style={styles.label}> Tím </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddColor();setColorEvent('#663300')}}>
+                        <View style={[styles.date,]}>
+                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#663300'}]}/>
+                            <Text style={styles.label}> Nâu </Text>
+                        </View>
+                    </TouchableOpacity>  
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddColor();setColorEvent('#DDDDDD')}}>
+                        <View style={[styles.date,]}>
+                        <View style={[colorStyle.SquareShapeView,{backgroundColor: '#DDDDDD'}]}/>
+                            <Text style={styles.label}> Xám </Text>
+                        </View>
+                    </TouchableOpacity>       
+                </Overlay>
+
+                    {/* Overlay for remind notification */}
+                <Overlay isVisible={visibleOverlayRemindNoti} onBackdropPress={toggleOverlayAddRemindNoti}>
+                    <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddRemindNoti();
+                        setLabelRemindNoti('Trước 15 phút');
+                        setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*15))}}
+                    >
+                        <View style={styles.date}>
+                        <Text style={styles.label}>Trước 15 phút</Text>
+                        </View>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddRemindNoti();
+                        setLabelRemindNoti('Trước 30 phút');
+                        setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*30))}}
+                    >
+                        <View style={styles.date}>
+                        <Text style={styles.label}>Trước 30 phút</Text>
+                        </View>
+                    </TouchableOpacity>        
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddRemindNoti();
+                        setLabelRemindNoti('Trước 1 giờ');
+                        setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60))}}
+                    >
+                        <View style={styles.date}>
+                            <Text style={styles.label}>Trước 1 giờ</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddRemindNoti();
+                        setLabelRemindNoti('Trước 2 giờ');
+                        setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*2))}}
+                    >
+                        <View style={styles.date}>
+                        <Text style={styles.label}>Trước 2 giờ</Text>
+                        </View>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddRemindNoti();
+                        setLabelRemindNoti('Trước 3 giờ');
+                        setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*3))}}
+                    >
+                        <View style={styles.date}>
+                            <Text style={styles.label}>Trước 3 giờ</Text>
+                        </View>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:0}]} 
+                    onPress={() => {toggleOverlayAddRemindNoti();
+                        setLabelRemindNoti('Trước 4 giờ');
+                        setTimestampRemindNoti(Math.floor(startTimestamp/1000)-(60*60*4))}}
+                    >
+                        <View style={[styles.date,]}>
+                        <Text style={styles.label}>Trước 4 giờ </Text>
+                        </View>
+                    </TouchableOpacity> 
+                </Overlay>
+                
 
             </ScrollView>
+            </View>
         </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+    </KeyboardAvoidingView>
     )
 };
 

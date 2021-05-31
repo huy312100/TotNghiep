@@ -100,7 +100,7 @@ const HomeScreen=({navigation}) =>{
                 navigation.navigate("Course")
               }}>
               <Icon name="graduation-cap" type="font-awesome-5" color="red" size={40} />
-                  <Text style={styles.textItem}>Thông tin khóa học</Text>
+                  <Text style={styles.textItem}> Khóa học</Text>
               </TouchableOpacity> 
             </View>
   

@@ -122,12 +122,13 @@ const WebCustomedScreen = () =>{
     return(
         <View style={styles.container}>
             <View style={{height:10}}/>
-            { data.length === 0 ? renderEmpty() :
+            { data.length === 0 && !isLoading ? renderEmpty() :
              <SwipeListView
                 data={data}
                 keyExtractor={(item,index) => index.toString()}
                 renderItem={renderItem}
                 renderHiddenItem={renderHiddenItem}
+                renderEm
                 rightOpenValue={-85}/>
              }
 

@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         marginHorizontal:20
     },
     nameUniversity:{
-        fontSize:12,
+        fontSize:9,
         marginHorizontal:20
     }
 

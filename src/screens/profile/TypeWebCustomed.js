@@ -128,7 +128,6 @@ const WebCustomedScreen = () =>{
                 keyExtractor={(item,index) => index.toString()}
                 renderItem={renderItem}
                 renderHiddenItem={renderHiddenItem}
-                renderEm
                 rightOpenValue={-85}/>
              }
 

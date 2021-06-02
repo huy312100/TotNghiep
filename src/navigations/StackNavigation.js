@@ -1,11 +1,11 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-import {TouchableOpacity,Text} from "react-native"
+import {TouchableOpacity} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { createStackNavigator,HeaderBackButton } from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 
 import { useSelector,useDispatch } from "react-redux";
 import * as calendarActions from '../../store/actions/Calendar';
@@ -29,6 +29,9 @@ import ChangePasswordScreen from '../screens/authentications/ChangePassword';
 import AddToCalendarScreen from '../screens/home/calendar/AddToCalendar';
 import ModifyCalendarScreen from '../screens/home/calendar/ModifyCalendar';
 import AddPeopleToCalendarScreen from '../screens/home/calendar/AddPeopleToCalendar';
+import UniversityInfoScreen from '../screens/home/info_university/UniversityInfo';
+import FacultyNewScreen from '../screens/home/info_university/FacultyNew';
+import UniversityNewScreen from '../screens/home/info_university/UniversityNew';
 
 
 const Stack = createStackNavigator();
@@ -171,6 +174,16 @@ function HomeStackNavigation({navigation}) {
         //   headerRightContainerStyle:{
         //     paddingRight:10
         //   },
+        }}
+      />
+
+      <Stack.Screen
+        name="University Info"
+        component={UniversityInfoTopTab}
+        options={{ 
+          title: "Thông tin trường",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
         }}
       />
     </Stack.Navigator>
@@ -389,7 +402,7 @@ const getTabBarVisibility = (route) => {
   const arrHideBotTab=["Calendar",
   "Chat","Course","Change Profile","Connect application",
   "Content Course","Web Customed","Change Password","Add Event",
-  'Modify Event','Find to Chat'];
+  "Modify Event","Find to Chat","University Info"];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {
@@ -420,6 +433,41 @@ function CourseInfoTopTab(){
         component={AllCourseInfoScreen}
         options={{
           tabBarLabel:'Tất cả môn học'
+        }}
+        />
+    </topTab.Navigator>
+  )
+}
+
+//Top tab of university info screen
+function UniversityInfoTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="University Info" 
+    tabBarOptions={{
+      activeTintColor: 'blue',
+      labelStyle: { fontSize: 11 },
+      }}>
+  
+      <topTab.Screen 
+        name="University Info" 
+        component={UniversityInfoScreen} 
+        options={{
+          tabBarLabel:'Thông tin '
+        }}/>
+
+      <topTab.Screen 
+        name="University New" 
+        component={UniversityNewScreen}
+        options={{
+          tabBarLabel:'Tin tức trường'
+        }}
+        />
+
+      <topTab.Screen 
+        name="Faculty New" 
+        component={FacultyNewScreen}
+        options={{
+          tabBarLabel:'Tin tức khoa'
         }}
         />
     </topTab.Navigator>

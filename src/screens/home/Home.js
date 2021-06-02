@@ -105,7 +105,7 @@ const HomeScreen=({navigation}) =>{
             </View>
   
             <View style={styles.gridItemShape}  >
-              <TouchableOpacity style={styles.gridTouchable}>
+              <TouchableOpacity style={styles.gridTouchable} >
               <Icon name="forum" type="material-community" color="red" size={40}/>
                   <Text style={styles.textItem}>Diễn đàn</Text>
               </TouchableOpacity> 
@@ -116,7 +116,9 @@ const HomeScreen=({navigation}) =>{
           <View style={styles.gridMainFunctions}>
   
             <View style={styles.gridItemShape}  >          
-              <TouchableOpacity style={styles.gridTouchable}>
+              <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
+                navigation.navigate("University Info")
+              }}>
               <Icon name="info-circle" type="font-awesome-5" color="red" size={40} />
                   <Text style={styles.textItem}>Thông tin trường</Text>
               </TouchableOpacity> 

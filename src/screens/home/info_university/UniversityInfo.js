@@ -1,20 +1,24 @@
-import React,{useState,useEffect} from "react";
+import React,{ useState,useEffect } from "react";
 import { StyleSheet, Text,ImageBackground,View,Linking,FlatList,TouchableOpacity} from "react-native";
-import {Entypo,MaterialCommunityIcons,FontAwesome5,Fontisto } from '@expo/vector-icons';
+import {Entypo,MaterialCommunityIcons,FontAwesome5,Fontisto,Feather } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+
 
 
 const UniversityInfoScreen = () =>{
 
     const token = useSelector((state) => state.authen.token);
     const [dataUniversity,setDataUniversity] = useState([]);
+    const [isLoading,setLoading]=useState(false);
 
     useEffect(() =>{
         getAllInfoUniversity();
-    }),[];
+    },[]);
 
-    const getAllInfoUniversity=()=>{
-
+    //call api
+    const getAllInfoUniversity= ()=>{
+        setLoading(true);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `bearer ${token}`);
 
@@ -29,14 +33,65 @@ const UniversityInfoScreen = () =>{
         .then((json) => {
             //console.log(json);
             setDataUniversity(json);
+            setLoading(false);
         })
         .catch((err) => console.log(err, "error"));
     };
+    
 
     const handleAddressString =(str) => {
         const numberOf = str.split(";").length-1;
         const pos=str.indexOf(";");
         return str.slice(0, pos);
+    }
+
+    const loadingSkeleton = () =>{
+    return(
+            <SkeletonPlaceholder>
+                <View >
+                    <View style={skeletonLoading.card}/>
+                    <View style={skeletonLoading.rowInfo}>
+                        <View style={skeletonLoading.squareShapeView}/>
+                        <View style={skeletonLoading.infoText}/>
+                    </View>
+
+                    <View style={skeletonLoading.rowInfo}>
+                        <View style={skeletonLoading.squareShapeView}/>
+                        <View style={skeletonLoading.infoText}/>
+                    </View>
+
+                    <View style={skeletonLoading.rowInfo}>
+                        <View style={skeletonLoading.squareShapeView}/>
+                        <View style={skeletonLoading.infoText}/>
+                    </View>
+
+                    <View style={skeletonLoading.rowInfo}>
+                        <View style={skeletonLoading.squareShapeView}/>
+                        <View style={skeletonLoading.infoText}/>
+                    </View>
+
+                    <View style={skeletonLoading.rowInfo}>
+                        <View style={skeletonLoading.squareShapeView}/>
+                        <View style={skeletonLoading.infoText}/>
+                    </View>
+
+                    <View style={skeletonLoading.rowInfo}>
+                        <View style={skeletonLoading.squareShapeView}/>
+                        <View style={skeletonLoading.infoText}/>
+                    </View>
+
+                    <View style={skeletonLoading.rowInfo}>
+                        <View style={skeletonLoading.squareShapeView}/>
+                        <View style={skeletonLoading.infoText}/>
+                    </View>
+
+                    <View style={skeletonLoading.rowInfo}>
+                        <View style={skeletonLoading.squareShapeView}/>
+                        <View style={skeletonLoading.infoText}/>
+                    </View>
+                </View>
+            </SkeletonPlaceholder>
+        )
     }
 
     const renderItem = ({ item }) => (
@@ -94,18 +149,39 @@ const UniversityInfoScreen = () =>{
                 </TouchableOpacity>
             </View>
 
+
+            <View style={styles.rowInfo}>
+                <View style={styles.squareShapeView}>
+                    <FontAwesome5 name="user-graduate" size={22} color="#BBBBBB" style={{marginLeft:3}}/>
+                </View>
+                <Text style={styles.infoText}>{item.TenKhoa}</Text>
+            </View>  
+
+            <View style={styles.rowInfo}>
+                <View style={styles.squareShapeView}>
+                    <Feather name="external-link" size={24} color="#BBBBBB" />
+                </View>
+                <TouchableOpacity onPress={() =>{
+                    Linking.openURL(item.Website)
+                }}>
+                    <Text style={[styles.infoText,styles.link]}>{item.Website}</Text>
+                </TouchableOpacity>
+                
+            </View>       
+
             <View style={styles.rowInfo}>
                 <View style={styles.squareShapeView}>
                     <Entypo name="address" size={24} color="#BBBBBB" />
                 </View>
                 <Text style={styles.infoText}>{handleAddressString(item.TenDiaChi)}</Text>
-            </View>       
+            </View>
 
         </View>
     );
 
     return(
         <View style={styles.container}>
+            {isLoading && loadingSkeleton()}
             <FlatList
                 data={dataUniversity}
                 renderItem={renderItem}
@@ -154,6 +230,33 @@ const styles = StyleSheet.create({
         color:'blue',
         textDecorationLine: 'underline'
     }
+});
+
+const skeletonLoading = StyleSheet.create({
+    card: {
+        width:'100%',
+        height:150,
+    },
+  
+    rowInfo: {
+        flexDirection: "row",
+        marginVertical:15,
+        marginHorizontal:20,
+        //borderWidth:1,
+        alignItems: "center",
+    },
+  
+    squareShapeView: { 
+        width: 30,
+        height: 30,
+        borderRadius:7,
+    },
+  
+    infoText:{
+        width: 300,
+        height: 20,
+        marginHorizontal:10,
+    },
 });
 
 export default UniversityInfoScreen;

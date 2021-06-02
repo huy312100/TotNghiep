@@ -53,7 +53,7 @@ const AllCourseInfoScreen = ({navigation}) => {
 
 
   useEffect(() => {
-      setIsLoading(true);
+    setIsLoading(true);
     getAllCourses();
   }, [pageCurrent]);
 

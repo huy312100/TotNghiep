@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Navbar from '../Navbar';
 import Sidebar from '../Sidebar';
 import "../../../../style/Deadline.css";
+import { Link } from 'react-router-dom';
 
 class Deadline extends Component {
     constructor(props) {
@@ -173,13 +174,13 @@ class Deadline extends Component {
                         </div>
                         <hr />
                         <div type="button" class="direct">
-                            <div className="link">
+                            {/* <div className="link">
                                 <i className="fa fa-info fa-fw"></i>
                                 <span>Xem chi tiết môn</span>
-                            </div>
+                            </div> */}
                             <a className="link" href={d.url} target="_blank">
                                 <i className="fa fa-sign-out fa-fw"></i><span>
-                                    Chuyển trang</span>
+                                    Chuyển đến trang môn học</span>
                             </a>
                         </div>
 

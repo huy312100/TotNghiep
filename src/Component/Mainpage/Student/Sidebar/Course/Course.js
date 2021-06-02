@@ -131,7 +131,7 @@ class Course extends Component {
                 {this.state.course.map((c) => {
                     return (
                         <div className="course">
-                            <div className="titlee">{c.name}</div>
+                            <Link to={"/course/"+c.IDCourses} className="titlee direct">{c.name}</Link>
                             <div className="list-teacher">
                                 {c.teacher.map((tc) => (
                                     <div className="content">
@@ -139,12 +139,12 @@ class Course extends Component {
                                         <span>{tc}</span>
                                     </div>))}
                             </div>
-                            <Link to={"/course/"+c.IDCourses} type="button" class="direct">
+                            {/* <Link to={"/course/"+c.IDCourses} type="button" class="direct">
                                 <div className="link">
                                     <i className="fa fa-info fa-fw"></i>
                                     <span>Xem chi tiết môn</span>
                                 </div>
-                            </Link>
+                            </Link> */}
                         </div>
                     )
                 })
@@ -157,7 +157,7 @@ class Course extends Component {
                 {this.state.allcourse.map((c) => {
                     return (
                         <div className="course">
-                            <div className="titlee">{c.name}</div>
+                            <Link to={"/course/"+c.IDCourses} className="titlee direct">{c.name}</Link>
                             <div className="list-teacher">
                                 {c.teacher.map((tc) => (
                                     <div className="content">
@@ -165,12 +165,12 @@ class Course extends Component {
                                         <span>{tc}</span>
                                     </div>))}
                             </div>
-                            <Link to={"/course/"+c.id} class="direct">
+                            {/* <Link to={"/course/"+c.id} class="direct">
                                 <div className="link">
                                     <i className="fa fa-info fa-fw"></i>
                                     <span>Xem chi tiết môn</span>
                                 </div>
-                            </Link>
+                            </Link> */}
                         </div>
                     )
                 })

@@ -32,6 +32,7 @@
 }
 
 .course .titlee {
+    /* display: inline; */
     font-size: 24px;
     font-weight: 500;
     /* border: 1px solid black; */
@@ -84,7 +85,8 @@
     justify-content: flex-start; */
     /* padding: 5px; */
     text-decoration: none;
-    color:black;
+    /* color:black; */
+    display: block;
 }
 
 .course .link{

@@ -112,10 +112,10 @@ class ChangePW extends Component {
 
     checkLoadding = () => {
         if (this.state.loadding === 0) {
-            return <div className="btnconnect" type="button" onClick={this.checkRepeatPassword}>Kết nối</div>
+            return <div className="btnconnect" type="button" onClick={this.checkRepeatPassword}>Đổi mật khẩu</div>
         }
         else {
-            return <div className="btnconnect" type="button" ><i class="fa fa-circle-o-notch fa-spin"></i>Kết nối</div>
+            return <div className="btnconnect" type="button" ><i class="fa fa-circle-o-notch fa-spin"></i>Đổi mật khẩu</div>
         }
     }
 

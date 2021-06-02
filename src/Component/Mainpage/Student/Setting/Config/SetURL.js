@@ -69,24 +69,24 @@ class SetURL extends Component {
     }
 
     checkConnect = () => {
-        var portalunlink = this.state.connected.indexOf("Portal") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy kết nối</div>;
-        var moodleunlink = this.state.connected.indexOf("Moodle") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy kết nối</div>;
-        var trellounlink = this.state.connected.indexOf("Trello") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy kết nối</div>;
-        var slackunlink = this.state.connected.indexOf("Slack") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy kết nối</div>;
+        var portalunlink = this.state.connected.indexOf("Portal") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
+        var moodleunlink = this.state.connected.indexOf("Moodle") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
+        var trellounlink = this.state.connected.indexOf("Trello") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
+        var slackunlink = this.state.connected.indexOf("Slack") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
         var type = [portalunlink, moodleunlink, trellounlink, slackunlink];
 
 
         if (this.state.loadding === 1) {
             return <div className="btnconnect-box">
                 <div></div>
-                <div className="btnconnect" type="button"><i class="fa fa-circle-o-notch fa-spin"></i>Kết nối</div>
+                <div className="btnconnect" type="button"><i class="fa fa-circle-o-notch fa-spin"></i>Lưu</div>
             </div>
         }
         if (this.state.unlinkloadding === 1) {
             return <div className="btnconnect-box">
                 <div></div>
                 <div className="gr-btnconnect">
-                    <div className="btndisconnect" type="button"><i class="fa fa-circle-o-notch fa-spin"></i>Hủy kết nối</div>
+                    <div className="btndisconnect" type="button"><i class="fa fa-circle-o-notch fa-spin"></i>Hủy thông tin đã lưu</div>
                     <div className="btnconnect" type="button"><i class="fa fa-circle-o-notch fa-spin"></i>Chờ</div>
                 </div>
             </div>
@@ -95,7 +95,7 @@ class SetURL extends Component {
             return (
                 <div className="btnconnect-box">
                     <label className="connect-status">
-                        Kết nối thất bại
+                        Lưu thất bại
                 </label>
                     <div className="btnconnect" type="button" onClick={this.connect3rdApp}>Thử lại</div>
                 </div>
@@ -106,7 +106,7 @@ class SetURL extends Component {
                 <div></div>
                 <div className="gr-btnconnect">
                     {type[this.state.tag]}
-                    <div className="btnconnect" type="button" onClick={this.connect3rdApp}>Kết nối</div>
+                    <div className="btnconnect" type="button" onClick={this.connect3rdApp}>Lưu</div>
                 </div>
             </div>
         }
@@ -135,7 +135,7 @@ class SetURL extends Component {
                     return response.text();
                 }
                 else {
-                    throw new Error('Hủy kết nối thất bại');
+                    throw new Error('Hủy thông tin đã lưu thất bại');
                 }
             })
             .then(result => {
@@ -182,7 +182,7 @@ class SetURL extends Component {
                     return response.text();
                 }
                 else {
-                    throw new Error('Kết nối thất bại');
+                    throw new Error('Lưu thất bại');
                 }
             })
             .then(result => {
@@ -227,10 +227,10 @@ class SetURL extends Component {
         var trellotag = this.state.tag === 2 ? "trello" : "";
         var slacktag = this.state.tag === 3 ? "slack" : "";
 
-        var portallink = this.state.connected.indexOf("Portal") === -1 ? "" : <i class="fa fa-link fa-fw" style={{ color: "green" }}></i>;
-        var moodlelink = this.state.connected.indexOf("Moodle") === -1 ? "" : <i class="fa fa-link fa-fw" style={{ color: "green" }}></i>;
-        var trellolink = this.state.connected.indexOf("Trello") === -1 ? "" : <i class="fa fa-link fa-fw" style={{ color: "green" }}></i>;
-        var slacklink = this.state.connected.indexOf("Slack") === -1 ? "" : <i class="fa fa-link fa-fw" style={{ color: "green" }}></i>;
+        var portallink = this.state.connected.indexOf("Portal") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
+        var moodlelink = this.state.connected.indexOf("Moodle") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
+        var trellolink = this.state.connected.indexOf("Trello") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
+        var slacklink = this.state.connected.indexOf("Slack") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
 
         return (
             <div>

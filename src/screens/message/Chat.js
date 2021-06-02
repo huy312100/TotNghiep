@@ -86,10 +86,16 @@ const ChatScreen = ({route}) => {
 
   const onSend = useCallback((messages = []) => {
 
-    socket.emit('Message-to-Server',[roomID,route.params.token,messages[0].text])
-    console.log(messages[0].text);
+    socket.emit('Private-Message',[roomID,route.params.token,route.params.email,messages[0].text]);
+    socket.on('Private-Message',(user) => {
+      console.log(user[3]);
+    });
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-  }, [])
+  }, []);
+
+  const onReceive = () => {
+    socket.emit('Server-to-Client',)
+  }
 
   return (
     <GiftedChat

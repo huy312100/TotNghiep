@@ -3,12 +3,16 @@ import { StyleSheet, Text, View , FlatList,TouchableOpacity,Linking} from "react
 import { Entypo } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import Error500Screen from "../../error/500";
+import Error503Screen from "../../error/503";
+
 
 const FacultyNewScreen = () =>{
 
     const token = useSelector((state) => state.authen.token);
-    const [dataNew,setDataNew] = useState([]);
-    const [isLoading,setLoading]=useState(false);
+    const [dataFacultNew,setDataFacultNew] = useState([]);
+    const [statusCode,setStatusCode] = useState(200);
+    const [isLoadingFacultScreen,setLoadingFacultScreen]=useState(false);
     const unmounted = useRef(false);
 
     useEffect(() => {
@@ -20,7 +24,7 @@ const FacultyNewScreen = () =>{
 
     //call api
     const getFacultyNew = () =>{
-        setLoading(true);
+        setLoadingFacultScreen(true);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `bearer ${token}`);
 
@@ -31,26 +35,42 @@ const FacultyNewScreen = () =>{
         };
 
         fetch("https://hcmusemu.herokuapp.com/info/newsfaculty",requestOptions)
-        .then((response) => response.json())
-        .then((json) => {
-            console.log(json);
-            const tmpFacultyNew =[];
-            for (const key in json) {
-                tmpFacultyNew.push(
-                {
-                    title: json[key].Title,
-                    link:json[key].Link,
-                    date:json[key].Date,
-                });
-            };
-            setDataNew(tmpFacultyNew);
-            console.log(dataNew);
-            setLoading(false);
+        .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes])=> {
+            console.log(statusCode,dataRes);
+
+            if (statusCode === 200) {
+                const tmpFacultyNew =[];
+                for (const key in dataRes) {
+                    tmpFacultyNew.push(
+                    {
+                        title: dataRes[key].Title,
+                        link:dataRes[key].Link,
+                        date:dataRes[key].Date,
+                    });
+                }
+                setDataFacultNew(tmpFacultyNew);
+            }
+
+            else if (statusCode === 500){
+                setStatusCode(statusCode);
+            }
+            else if (statusCode === 503){
+                setStatusCode(statusCode)
+            }
+            else{
+                setStatusCode(statusCode);
+            }
+            
+            setLoadingFacultScreen(false);
         })
         .catch((err) => console.log(err, "error"));
-    }
+    };
 
-    const renderItem = ({item})=>(
+    const renderItemForFacultNew = ({item})=>(
         <TouchableOpacity style={styles.card}
             onPress={() => {Linking.openURL(item.link)}}>
 
@@ -67,7 +87,7 @@ const FacultyNewScreen = () =>{
         </TouchableOpacity>
     );
 
-    const loadingSkeleton = () => {
+    const loadingSkeletonForFacultNewScreen = () => {
         return(
             <SkeletonPlaceholder>
                 <View >
@@ -131,10 +151,12 @@ const FacultyNewScreen = () =>{
 
     return(
         <View style={styles.container}>
-            {isLoading && loadingSkeleton()}
+            {isLoadingFacultScreen && loadingSkeletonForFacultNewScreen()}
+            {statusCode === 500 && !isLoadingFacultScreen && Error500Screen()}
+            {statusCode === 503 && !isLoadingFacultScreen && Error503Screen()}
            <FlatList
-            data={dataNew}
-            renderItem={renderItem}
+            data={dataFacultNew}
+            renderItem={renderItemForFacultNew}
             keyExtractor={(item,index) => index.toString()}
            />
 

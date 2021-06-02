@@ -1,7 +1,8 @@
 import React,{useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert } from 'react-native';
 import { Icon } from "react-native-elements";
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import io from 'socket.io-client';
 
 import {useDispatch,useSelector} from "react-redux";
 
@@ -49,6 +50,8 @@ const HomeScreen=({navigation}) =>{
       await dispatch(homeActions.NewestDeadline());
       //console.log(newDeadline);
 
+      // var socket=io("https://hcmusemu.herokuapp.com");
+      // socket.emit("Start",token);
       getProfile();
 
     }
@@ -104,7 +107,7 @@ const HomeScreen=({navigation}) =>{
               </TouchableOpacity> 
             </View>
   
-            <View style={styles.gridItemShape}  >
+            <View style={styles.gridItemShape} >
               <TouchableOpacity style={styles.gridTouchable} >
               <Icon name="forum" type="material-community" color="red" size={40}/>
                   <Text style={styles.textItem}>Diễn đàn</Text>

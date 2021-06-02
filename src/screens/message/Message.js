@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image } from 'react-native';
+import React,{useState} from 'react';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,ImageBackground } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
 import {Header,SearchBar} from 'react-native-elements';
 import { MaterialCommunityIcons} from '@expo/vector-icons';
@@ -113,6 +113,9 @@ const Messages = [
 ];
 
 const MessageScreen = ({navigation}) => {
+
+    const[data,setData] = useState([]);
+
     return (
       <View style={styles.container}>
          <Header
@@ -132,15 +135,14 @@ const MessageScreen = ({navigation}) => {
 
             }/>
 
-        {/* <SearchBar
-          placeholder="Type Here..."
-          style={{width:'100%'}}
-          //onChangeText={this.updateSearch}
-          //value={search}
-        /> */}
+
+        {/* {data.length==0 && <ImageBackground style={styles.img}
+             source={require('../../../assets/chat.png')}
+             resizeMode='contain'/>} */}
+
 
         <FlatList
-          data={Messages}
+          data={data}
           keyExtractor={item=>item.id}
           renderItem={({item}) => (
             <TouchableOpacity style={styles.card} onPress={() =>navigation.navigate("Chat",{userName:item.userName})}>
@@ -223,7 +225,13 @@ const styles = StyleSheet.create({
   messageText:{
     fontSize: 14,
     color: "#333333",
-  }
+  },
+
+  img: {
+    width:'100%',
+    height:'100%',
+    backgroundColor:'transparent'
+  },
 });
 
 const headerStyle = StyleSheet.create({

@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,ImageBackground } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
 
 import{useSelector} from 'react-redux';
@@ -107,6 +107,10 @@ const FindToChatScreen = ({navigation}) => {
             </View>
         </View>
 
+        {data.length==0 && <ImageBackground style={styles.img}
+             source={require('../../../assets/finding.png')}
+             resizeMode='contain'/>}
+
         <FlatList
             data={data}
             renderItem={renderItem}
@@ -154,6 +158,11 @@ const styles = StyleSheet.create({
     nameUniversity:{
         fontSize:9,
         marginHorizontal:20
+    },
+    img:{
+      width:'100%',
+      height:'100%',
+      backgroundColor:'transparent'
     }
 
 });

@@ -1,4 +1,4 @@
-import React,{useEffect,useRef} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert } from 'react-native';
 import { Icon } from "react-native-elements";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,6 +9,8 @@ import {useDispatch,useSelector} from "react-redux";
 import * as homeActions from "../../../store/actions/Home";
 import * as profileActions from "../../../store/actions/Profile";
 
+import LoadingScreen from '../LoadingScreen';
+
 const DeviceWidth = Dimensions.get('window').width;
 
 const HomeScreen=({navigation}) =>{
@@ -16,8 +18,10 @@ const HomeScreen=({navigation}) =>{
   const token = useSelector((state) => state.authen.token);
 
   const unmounted = useRef(false);
+  const [isLoading,setLoading]=useState(false);
+  const [newDeadline,setNewDeadline]=useState([]);
 
-  const newDeadline = useSelector((state) => state.home.newDeadline);
+  //const newDeadline = useSelector((state) => state.home.newDeadline);
 
   const dispatch = useDispatch();
 
@@ -47,19 +51,20 @@ const HomeScreen=({navigation}) =>{
 
   useEffect(() =>{
     const getAllNewDeadlines = async() =>{
-      await dispatch(homeActions.NewestDeadline());
+      
+      await getNewestDeadline();
       //console.log(newDeadline);
 
       // var socket=io("https://hcmusemu.herokuapp.com");
       // socket.emit("Start",token);
-      getProfile();
-
+      await getProfile();
+      
     }
     getAllNewDeadlines();
     return()=>{
       unmounted.current = true
     };
-  },[newDeadline.length]);
+  },[]);
 
   const getProfile = async() =>{
     //console.log(token);
@@ -79,13 +84,43 @@ const HomeScreen=({navigation}) =>{
 
         //console.log(dataUniversity);
         dispatch(profileActions.getProfile(json));
+        setLoading(false);
       }).catch((err) => console.log(err, "error"));
-  }
+  };
+
+  const getNewestDeadline = () =>{
+    setLoading(true);
+    //console.log(token);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+    };
+
+    fetch("https://hcmusemu.herokuapp.com/deadlinemoodle/month",requestOptions)
+      .then((response) => response.json())
+      .then((json) => {
+        //console.log(json);
+
+        dispatch(homeActions.NewestDeadline(json));
+        //console.log(dataUniversity);
+        setNewDeadline(json);
+        
+      }).catch((err) => console.log(err, "error"));
+  };
 
   
     return (
+
+      
       <SafeAreaView style={styles.container}>
-        <Text style={styles.label}>Khám phá ngay</Text>
+        
+        {isLoading && LoadingScreen()}
+        {!isLoading && <View>
+          <Text style={styles.label}>Khám phá ngay</Text>
         <View >
           <View style={styles.gridMainFunctions} >
             
@@ -183,6 +218,8 @@ const HomeScreen=({navigation}) =>{
               </View>
             </TouchableOpacity>)}/>
         }
+
+      </View>}
       </SafeAreaView>
     )
 

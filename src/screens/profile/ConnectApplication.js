@@ -2,9 +2,10 @@ import React,{useState} from "react";
 import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity} from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import {useDispatch} from "react-redux";
+import {useDispatch,useSelector} from "react-redux";
 import * as profileActions from '../../../store/actions/Profile';
 
+import LoadingScreen from '../LoadingScreen';
 
 
 const ConnectAppScreen = ({navigation})=>{
@@ -18,14 +19,50 @@ const ConnectAppScreen = ({navigation})=>{
     const [isLoading,setLoading] = useState(false);
 
     const dispatch=useDispatch();
+    const token = useSelector((state) => state.authen.token);
 
-    var d = new Date();
-    var n = d.getFullYear();
+    const ConnectAppHandler =()=>{
+        setLoading(true);
+        //console.log(token);
+        let details = {
+            typeUrl: typeUrl,
+            url:url,
+            username: username,
+            password: password,
+          };
+      
+          let formBody = [];
+      
+          for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+          }
+          formBody = formBody.join("&");
 
-    const ConnectAppHandler = async()=>{
-        Keyboard.dismiss();
-        await dispatch(profileActions.connectApplication(typeUrl,url,username,password));
-        navigation.navigate("Profile");
+          fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`
+            },
+            body: formBody,
+        }).then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes])=>{
+            console.log(dataRes,statusCode); 
+            if(statusCode === 200){
+                dispatch(profileActions.connectApplication());
+                navigation.navigate("Profile");
+                setLoading(false);
+            }
+            else{
+                setLoading(false);
+                alert("Lỗi.Xin vui lòng thử lại !!!");
+            }
+        }).catch(error => console.log('error', error));
     }
 
     return (
@@ -33,6 +70,7 @@ const ConnectAppScreen = ({navigation})=>{
             Keyboard.dismiss();
         }}>
             <View style={styles.container}>
+                {isLoading && LoadingScreen()}
                 <Text style={styles.label}>
                     Loại ứng dụng
                 </Text>
@@ -50,6 +88,7 @@ const ConnectAppScreen = ({navigation})=>{
                             { label: 'Moodle', value: 'Moodle' },
                             { label: 'Slack', value: 'Slack' },
                             { label: 'Trello', value: 'Trello' },
+                            { label: 'Portal', value: 'Portal' },
                             { label: 'Classroom', value: 'Classroom' },
                         ]}/>
                 </View> 

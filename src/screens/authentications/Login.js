@@ -8,6 +8,7 @@ import {
 
 import { useDispatch } from 'react-redux';
 import * as authActions from '../../../store/actions/Authen';
+import LoadingScreen from '../LoadingScreen';
 
 
 const LoginScreen = ({ navigation }) => {
@@ -17,65 +18,52 @@ const LoginScreen = ({ navigation }) => {
   const [isLoading,setLoading]=useState(false);
   const dispatch = useDispatch();
 
-//   const getLoginAPI=async()=>{
-//     Keyboard.dismiss();
-//     if(username!="" && password!=""){
-//       setLoading(true);
-//       let details = {
-//         'username': username,
-//         'password': password
-//     };
+  const loginAPI=async()=>{
+    if(username!="" && password!=""){
+      setLoading(true);
+      let details = {
+        'username': username,
+        'password': password
+    };
   
-//     let formBody = [];
-//     for (let property in details) {
-//         let encodedKey = encodeURIComponent(property);
-//         let encodedValue = encodeURIComponent(details[property]);
-//         formBody.push(encodedKey + "=" + encodedValue);
-//     }
-//     formBody = formBody.join("&");
+    let formBody = [];
+    for (let property in details) {
+        let encodedKey = encodeURIComponent(property);
+        let encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
   
-//     await fetch('https://hcmusemu.herokuapp.com/account/signin', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded'
-//         },
-//         body: formBody
-//       }).then((response) => {
-//         const statusCode = response.status;
-//         const data = response.json();
-//         return Promise.all([statusCode, data]);
-//       })
-//         .then( ([statusCode, data]) => {
-//             console.log(statusCode,data);
-//             setLoading(false);
-//             if(statusCode===200){
-//               navigation.navigate("Main");
-//             }else{
-//               alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")
-//             }
-//         }).done();
-//     }
-
-//     else{
-//       alert("Xin vui lòng điển đầy đủ thông tin");
-//     }
-//  }
-
-  const loginHandler = async () =>{
-    Keyboard.dismiss();
-    setLoading(true);
-
-    try{
-      await dispatch(authActions.login(username,password));
-      setLoading(false);
-      navigation.navigate("Main");  
-
+    await fetch('https://hcmusemu.herokuapp.com/account/signin', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formBody
+      }).then((response) => {
+        const statusCode = response.status;
+        const data = response.json();
+        return Promise.all([statusCode, data]);
+      })
+        .then( ([statusCode, data]) => {
+            console.log(statusCode,data);
+            setLoading(false);
+            if(statusCode===200){
+              dispatch(authActions.login(data.token));
+              navigation.navigate("Main");
+              setLoading(false);
+            }else{
+              setLoading(false);
+              alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")
+            }
+        }).done();
     }
-    catch(err){
-      console.log(err.message);
-      setLoading(false);
+    else{
+      alert("Xin vui lòng điển đầy đủ thông tin");
     }
-  }
+ }
+
+  
 
   return (
     <TouchableWithoutFeedback onPress={()=>{
@@ -93,7 +81,7 @@ const LoginScreen = ({ navigation }) => {
 
         <TouchableOpacity style={styles.buttonLoginContainer}
           onPress={() => {
-            loginHandler();
+            loginAPI();
             }}>
           <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
         </TouchableOpacity>
@@ -113,10 +101,7 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {isLoading && <View style={styles.loading}>
-          <ActivityIndicator size="large" color="#EEEEEE" />
-          <Text style={styles.txtIndicator}>Đang xử lí ...</Text>
-          </View>}
+        {isLoading && LoadingScreen()}
         </View>
     </TouchableWithoutFeedback>
     

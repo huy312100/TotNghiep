@@ -41,7 +41,6 @@ const FacultyNewScreen = () =>{
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes])=> {
             console.log(statusCode,dataRes);
-
             if (statusCode === 200) {
                 const tmpFacultyNew =[];
                 for (const key in dataRes) {
@@ -54,7 +53,6 @@ const FacultyNewScreen = () =>{
                 }
                 setDataFacultNew(tmpFacultyNew);
             }
-
             else if (statusCode === 500){
                 setStatusCode(statusCode);
             }
@@ -64,7 +62,6 @@ const FacultyNewScreen = () =>{
             else{
                 setStatusCode(statusCode);
             }
-            
             setLoadingFacultScreen(false);
         })
         .catch((err) => console.log(err, "error"));

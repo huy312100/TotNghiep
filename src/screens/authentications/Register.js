@@ -18,6 +18,10 @@ import { useDispatch, useSelector,shallowEqual  } from "react-redux";
 import * as universityActions from "../../../store/actions/University";
 import * as authActions from '../../../store/actions/Authen';
 
+import LoadingScreen from '../LoadingScreen';
+
+import University from "../../../models/University";
+
 
 const RegisterScreen = ({ navigation }) => {
   const [username,setUsername] = useState("");
@@ -26,6 +30,8 @@ const RegisterScreen = ({ navigation }) => {
   const [fullname,setFullname] = useState("");
   const [idUni,setIdUni] = useState("");
   const [idFaculty,setIdFaculty] = useState("");
+
+  const [isLoading,setLoading] = useState(false);
 
   const [itemNameUniversity,setItemNameUniversity] = useState([]);
   const [itemFacultyName,setItemFacultyName] = useState([]);
@@ -38,52 +44,46 @@ const RegisterScreen = ({ navigation }) => {
     idFaculty:"",
   };
 
-  const uniName = useSelector((state) => state.university.universityInfo,shallowEqual);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getAllUniNames = async() => {
-
-      dispatch(universityActions.getAllInfoUniversity());
-      //console.log(uniName);   
-
-      // fetch("https://hcmusemu.herokuapp.com/university/getname")
-      // .then((response) => response.json())
-      // .then((json) => {
-      //   //console.log(json);
-
-      //   const temp=[];
-      //   for (const key in json) {
-      //     temp.push({
-      //       label: json[key].TenTruongDH,
-      //       value: json[key].MaTruong,
-      //     });
-      //   }
-      //   console.log(temp);
-      //   setItemNameUniversity(temp);
-
-        
-      //   //console.log(dataUniversity);
-       
-      // })
-      // .catch((err) => console.log(err, "error"));
-      // //console.log(uniName); 
-        
-      const temp=[];
-      for (const key in uniName) {
-        temp.push({
-          label: uniName[key].name,
-          value: uniName[key].id,
-        });
-      }
-      console.log(temp);
-      setItemNameUniversity(temp);
+    const getAllUniNames = () => {
+      getAllInfoUniversity();
+      
     };
     getAllUniNames();
-  },[uniName.length]);
+  },[]);
 
+  const getAllInfoUniversity =()=>{
+    fetch("https://hcmusemu.herokuapp.com/university/getname")
+      .then((response) => response.json())
+      .then((json) => {
+        //console.log(json);
+        const dataUniversity = [];
 
+        for (const key in json) {
+          dataUniversity.push(
+            new University(
+              json[key].MaTruong,
+              json[key].TenTruongDH)
+          );
+        }
+
+        const temp=[];
+        for (const key in dataUniversity) {
+          temp.push({
+            label: dataUniversity[key].name,
+            value: dataUniversity[key].id,
+          });
+        }
+        console.log(temp);
+        setItemNameUniversity(temp);
+
+        dispatch(universityActions.getAllInfoUniversity(dataUniversity));
+        //console.log(dataUniversity);
+        
+      }).catch((err) => console.log(err, "error"));
+  }
 
   // useEffect(() =>{
   const getAllFacultyName = (idUni) => {
@@ -149,11 +149,53 @@ const RegisterScreen = ({ navigation }) => {
     return true;
   }
 
+  //call api register
   const register = (registerInfo) => {
-    dispatch(authActions.register(registerInfo)).then(() =>{
-      navigation.navigate("Login");
-    })
-  }
+    setLoading(true);
+    let details = {
+      username: registerInfo.username,
+      password: registerInfo.password,
+      HoTen: registerInfo.HoTen,
+      MaTruong: registerInfo.MaTruong,
+      MaKhoa: registerInfo.MaKhoa,
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    fetch("https://hcmusemu.herokuapp.com/account/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: formBody,
+    }).then((response)=>{
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=>{
+      console.log(statusCode, dataRes);
+      if(statusCode === 500 || statusCode === 201){
+        dispatch(authActions.register());
+        setLoading(false);
+        navigation.navigate("Login");
+      }
+      else if(statusCode === 409){
+        setLoading(false);
+        alert("Tên tài khoản đã bị trùng ");
+      }
+      else{
+        setLoading(false);
+        alert("Đã xảy ra lỗi . Xin vui lòng thử lại sau !!!")
+      }
+    }).done();
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -161,6 +203,8 @@ const RegisterScreen = ({ navigation }) => {
         Keyboard.dismiss();
       }}>
       <ScrollView>
+        {isLoading && LoadingScreen()}
+
         <View style={styles.container}>
           <Heading>Đăng ký</Heading>
           <UsernameInput placeholder={"Tên đăng nhập"}

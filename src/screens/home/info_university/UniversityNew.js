@@ -35,33 +35,33 @@ const UniversityNewScreen = () =>{
         };
 
         fetch("https://hcmusemu.herokuapp.com/info/newsuniversity",requestOptions)
-        .then((response) => {
-            const statusCode = response.status;
-            const dataRes = response.json();
-            return Promise.all([statusCode, dataRes]);
-        }).then(([statusCode, dataRes]) => {
-            console.log(statusCode, dataRes);
-            if(statusCode === 200){
+        .then((responseNewUni) => {
+            const statusCodeNewUni = responseNewUni.status;
+            const dataResNewUni = responseNewUni.json();
+            return Promise.all([statusCodeNewUni, dataResNewUni]);
+        }).then(([statusCodeNewUni, dataResNewUni]) => {
+            console.log(statusCodeNewUni, dataResNewUni);
+            if(statusCodeNewUni === 200){
                 const tmpNew =[];
-                for (const key in dataRes) {
+                for (const key in dataResNewUni) {
                     tmpNew.push(
                     {
-                        title: dataRes[key].Title,
-                        link:dataRes[key].Link,
-                        date:dataRes[key].Date,
+                        title: dataResNewUni[key].Title,
+                        link:dataResNewUni[key].Link,
+                        date:dataResNewUni[key].Date,
                     });
                 };
                 setDataUniNew(tmpNew);
             }
 
-            else if (statusCode === 500){
-                setStatusCode(statusCode);
+            else if (statusCodeNewUni === 500){
+                setStatusCode(statusCodeNewUni);
             }
-            else if (statusCode === 503){
-                setStatusCode(statusCode);
+            else if (statusCodeNewUni === 503){
+                setStatusCode(statusCodeNewUni);
             }
             else{
-                setStatusCode(statusCode);
+                setStatusCode(statusCodeNewUni);
             }
             
             setLoadingUniScreen(false);
@@ -71,7 +71,7 @@ const UniversityNewScreen = () =>{
 
     const renderItemForUniNew = ({item})=>(
         <TouchableOpacity style={styles.card}
-            onPress={() => {Linking.openURL(item.link)}}>
+            onPress={() => {Linking.openURL("https://www.hcmus.edu.vn/"+item.link)}}>
 
             <View style={styles.info}>
                 <Text style={styles.title}>{item.title}</Text>

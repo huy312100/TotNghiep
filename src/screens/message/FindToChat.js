@@ -107,9 +107,14 @@ const FindToChatScreen = ({navigation}) => {
             </View>
         </View>
 
-        {data.length==0 && <ImageBackground style={styles.img}
+        {data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+          <ImageBackground style={styles.img}
              source={require('../../../assets/finding.png')}
-             resizeMode='contain'/>}
+             resizeMode='contain'/>
+          <Text style={{color:'#cccccc'}}>
+            Nhập tên để tìm kiếm bạn bè ngay
+          </Text>
+             </View>}
 
         <FlatList
             data={data}

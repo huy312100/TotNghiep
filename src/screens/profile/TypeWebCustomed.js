@@ -18,34 +18,35 @@ const WebCustomedScreen = () =>{
 
     const dispatch = useDispatch();
 
-
     useEffect(() =>{
-        const getWebCustomed = () =>{
-            //console.log(token);
-            setLoading(true);
-
-            var myHeaders = new Headers();
-            myHeaders.append("Authorization", `bearer ${token}`);
-
-            var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-            };
-
-            fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
-            .then((response) => response.json())
-            .then((json) => {
-                //console.log(json);
-                setData(json);
-                dispatch(profileActions.getAllWebCustomed(json));
-                setLoading(false);
-            })
-            .catch((err) => console.log(err, "error"));
-        }
         getWebCustomed();
-    },[]);
+        console.log('a');
+    },[data.length]);
 
+    //call api get web customed
+    const getWebCustomed = () =>{
+        //console.log(token);
+        setLoading(true);
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `bearer ${token}`);
+
+        var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
+        .then((response) => response.json())
+        .then((json) => {
+            //console.log(json);
+            setData(json);
+            dispatch(profileActions.getAllWebCustomed(json));
+            setLoading(false);
+        })
+        .catch((err) => console.log(err, "error"));
+    }
 
     const renderItem = (data,rowMap) => {
         return (
@@ -90,8 +91,10 @@ const WebCustomedScreen = () =>{
           }).then((response) => {
               response.json();
             }).then((json) => {
-              //console.log(json);
+              console.log(typeUrl);
               dispatch(profileActions.deleteUrl());
+              getWebCustomed();
+
             }).catch((error) => console.log("error", error));
     };
 

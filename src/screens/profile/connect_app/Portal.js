@@ -1,18 +1,17 @@
 import React,{useState} from "react";
-import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity} from "react-native";
+import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity,Alert} from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {useDispatch,useSelector} from "react-redux";
-import * as profileActions from '../../../store/actions/Profile';
+import * as profileActions from '../../../../store/actions/Profile';
 
-import LoadingScreen from '../LoadingScreen';
+import LoadingScreen from '../../LoadingScreen';
 
 
-const ConnectAppScreen = ({navigation})=>{
+const PortalConnectScreen = ({navigation})=>{
 
     const [show,setShow]= useState(true);
     const [visible,setVisible]= useState(true);
-    const [typeUrl,setTypeUrl] =useState('');
     const [url,setUrl]=useState('');
     const [username,setUsername]=useState('');
     const [password,setPassword]=useState('');
@@ -25,7 +24,7 @@ const ConnectAppScreen = ({navigation})=>{
         setLoading(true);
         //console.log(token);
         let details = {
-            typeUrl: typeUrl,
+            typeUrl: 'Portal',
             url:url,
             username: username,
             password: password,
@@ -53,10 +52,22 @@ const ConnectAppScreen = ({navigation})=>{
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes])=>{
             console.log(dataRes,statusCode); 
-            if(statusCode === 200){
+            if(statusCode === 201){
                 dispatch(profileActions.connectApplication());
                 navigation.navigate("Profile");
                 setLoading(false);
+            }
+            else if(statusCode ===409){
+                setLoading(false);
+                Alert.alert(
+                    "Lỗi",
+                    "Loại ứng dụng đã được kết nối trước đó . Vui lòng xoá kết nối trước khi tạo một kết nối ứng dụng mới !",
+                    [
+                      { text: "Xác nhận", 
+                        style: "cancel"
+                      },
+                    ]
+                );
             }
             else{
                 setLoading(false);
@@ -71,34 +82,14 @@ const ConnectAppScreen = ({navigation})=>{
         }}>
             <View style={styles.container}>
                 {isLoading && LoadingScreen()}
-                <Text style={styles.label}>
-                    Loại ứng dụng
-                </Text>
-                <View backgroundColor={"#cccc"} style={styles.input}>
-                    <RNPickerSelect 
-                        onValueChange={(value) => setTypeUrl(value)}
-                        style={{ inputAndroid: { color: 'black' } }}
-                        useNativeAndroidPickerStyle={false}
-                        fixAndroidTouchableBug={true}
-                        placeholder={{
-                            label: 'Chọn loại ứng dụng',
-                            value: null,
-                            color: '#777777'}}
-                        items={[
-                            { label: 'Moodle', value: 'Moodle' },
-                            { label: 'Slack', value: 'Slack' },
-                            { label: 'Trello', value: 'Trello' },
-                            { label: 'Portal', value: 'Portal' },
-                            { label: 'Classroom', value: 'Classroom' },
-                        ]}/>
-                </View> 
+                
                 <Text style={styles.label}>
                     URL
                 </Text>
 
                 <TextInput style={styles.input} onChangeText={(url)=>setUrl(url)}/>
 
-                <Text style={styles.label}>
+                {/* <Text style={styles.label}>
                     Username ứng dụng
                 </Text>
 
@@ -118,7 +109,7 @@ const ConnectAppScreen = ({navigation})=>{
                     }}>
                         <MaterialCommunityIcons name={show===false ? "eye-outline" : "eye-off-outline"} size={16} ></MaterialCommunityIcons>
                     </TouchableOpacity>
-                </View>
+                </View> */}
 
             <TouchableOpacity
                 style={styles.button}
@@ -188,4 +179,4 @@ const styles = StyleSheet.create({
       },
 });
 
-export default ConnectAppScreen;
+export default PortalConnectScreen;

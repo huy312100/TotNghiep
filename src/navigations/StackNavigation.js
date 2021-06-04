@@ -22,7 +22,6 @@ import NotificationScreen from '../screens/notifications/Notification';
 import AllCourseInfoScreen from '../screens/home/courses/AllCourse';
 import CurrentCourseInfoScreen from '../screens/home/courses/CurrentCourse';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
-import ConnectAppScreen from '../screens/profile/ConnectApplication';
 import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse';
 import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
 import ChangePasswordScreen from '../screens/authentications/ChangePassword';
@@ -32,6 +31,11 @@ import AddPeopleToCalendarScreen from '../screens/home/calendar/AddPeopleToCalen
 import UniversityInfoScreen from '../screens/home/info_university/UniversityInfo';
 import FacultyNewScreen from '../screens/home/info_university/FacultyNew';
 import UniversityNewScreen from '../screens/home/info_university/UniversityNew';
+import MoodleConnectScreen from '../screens/profile/connect_app/Moodle';
+import PortalConnectScreen from '../screens/profile/connect_app/Portal';
+import ClassroomConnectScreen from '../screens/profile/connect_app/Classroom';
+import SlackConnectScreen from '../screens/profile/connect_app/Slack';
+import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
 
 
 const Stack = createStackNavigator();
@@ -274,7 +278,7 @@ function ProfileStackNavigation({navigation}) {
 
       <Stack.Screen
         name="Connect application"
-        component={ConnectAppScreen}
+        component={ConnectApplicationTopTab}
         options={{ 
           title: "Kết nối ứng dụng",
           headerTitleAlign: 'center',
@@ -284,14 +288,6 @@ function ProfileStackNavigation({navigation}) {
           headerStyle:{
             backgroundColor:"#33CCFF"
           },
-          headerRight:()=>(
-            <TouchableOpacity onPress={() => navigation.navigate("Web Customed")}>
-              <MaterialCommunityIcons name="playlist-check" size={28} color={"#FFFFFF"} />
-            </TouchableOpacity>
-          ),
-          headerRightContainerStyle:{
-            paddingRight:10
-          }
         }}
       />
 
@@ -470,6 +466,62 @@ function UniversityInfoTopTab(){
           tabBarLabel:'Tin tức khoa'
         }}
         />
+    </topTab.Navigator>
+  )
+}
+
+//Top tab of connect application screen 
+function ConnectApplicationTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="Moodle" 
+    tabBarOptions={{
+      activeTintColor: 'green',
+      inactiveTintColor:'#CCCCCC',
+      indicatorStyle:{
+        backgroundColor: 'green',
+      },
+
+      labelStyle: { fontSize: 10 },
+      }}>
+  
+      <topTab.Screen 
+        name="Moodle" 
+        component={MoodleConnectScreen} 
+        options={{
+          tabBarLabel:'Moodle'
+        }}/>
+
+      <topTab.Screen 
+        name="Portal" 
+        component={PortalConnectScreen}
+        options={{
+          tabBarLabel:'Portal'
+        }}
+        />
+
+      <topTab.Screen 
+        name="Classroom" 
+        component={ClassroomConnectScreen}
+        options={{
+          tabBarLabel:'Classroom'
+        }}
+        />
+
+      <topTab.Screen 
+        name="Slack" 
+        component={SlackConnectScreen}
+        options={{
+          tabBarLabel:'Slack'
+        }}
+        />  
+
+      <topTab.Screen 
+        name="Trello" 
+        component={TrelloConnectScreen}
+        options={{
+          tabBarLabel:'Trello'
+        }}
+        />  
     </topTab.Navigator>
   )
 }

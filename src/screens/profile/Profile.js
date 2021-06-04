@@ -23,6 +23,11 @@ const categoryProfile = [
     type_icon: "material-community",
   },
   {
+    name: "Ứng dụng đã được kết nối",
+    icon: "connectdevelop",
+    type_icon: "font-awesome-5",
+  },
+  {
     name: "Đổi mật khẩu",
     icon: "lock-reset",
     type_icon: "material-community",
@@ -51,13 +56,16 @@ export function ProfileScreen({navigation}) {
                 navigation.navigate("Connect application");
               }
               else if(index === 2){
+                navigation.navigate("Web Customed"); 
+              }
+              else if(index === 3){
                 navigation.navigate("Change Password");
               }
               else{
 
               }
             }}>
-              <Icon name={item.icon} type={item.type_icon} />
+              <Icon name={item.icon} type={item.type_icon} color='black'/>
               <ListItem.Content>
                 <ListItem.Title style={styles.itemName}>
                   {item.name}

@@ -1,7 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import { View, Text,TouchableOpacity,StyleSheet,FlatList} from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
-import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 import LoadingWithSkeletonScreen from "./LoadingSkeleton";
 
@@ -20,46 +19,48 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
     const tmp=[];
 
     useEffect(() => {
-        const getCurrentCourses = async () =>{
-          setLoading(true);
-          var myHeaders = new Headers();
-          myHeaders.append("Authorization", `bearer ${token}`);
+      getCurrentCourses();
+      return()=>{
+        unmounted.current = true;
+      }
+    },[]);
 
-          var requestOptions = {
-          method: 'GET',
-          headers: myHeaders,
-          redirect: 'follow'
-          };
+    const getCurrentCourses = async () =>{
+      setLoading(true);
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `bearer ${token}`);
 
-          fetch("https://hcmusemu.herokuapp.com/studycourses/currentcourses",requestOptions)
-            .then((response) => response.json())
-            .then((json) => {
-              console.log(json);
-              console.log(tmp.length);   
+      var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+      };
 
-              //console.log(dataUniversity);
-              
-                for (const key in json) {
-                  tmp.push({
-                    idCourse: json[key].IDCourses,
-                    category:json[key].category,
-                    name:json[key].name,
-                    startDate:json[key].startDate,
-                    teacherName:json[key].teacher
-                  });
-                }
-              
-                setData(tmp) ;
-                setLoading(false);
+      fetch("https://hcmusemu.herokuapp.com/studycourses/currentcourses",requestOptions)
+        .then((response) => response.json())
+        .then((json) => {
+          console.log(json);
+          //console.log(dataUniversity);
+          
+            for (const key in json) {
+              tmp.push({
+                idCourse: json[key].IDCourses,
+                category:json[key].category,
+                name:json[key].name,
+                startDate:json[key].startDate,
+                teacherName:json[key].teacher
+              });
+            }
+          
+            setData(tmp) ;
+            dispatch(courseActions.getCurrentCourses(json));
+            setLoading(false);
 
-            }).catch((err) => console.log(err, "error"));
-                  //console.log(currCourses.length); 
-          //dispatch(courseActions.getCurrentCourses());
-          //setData(currCourses);
-        }
-        getCurrentCourses();
-    },[tmp.length]);
-
+        }).catch((err) => console.log(err, "error"));
+              //console.log(currCourses.length); 
+      //dispatch(courseActions.getCurrentCourses());
+      //setData(currCourses);
+    };
 
     return (
               

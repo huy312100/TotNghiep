@@ -8,7 +8,7 @@ const AllCourseInfoScreen = ({navigation}) => {
   const [pageCurrent,setPageCurrent] = useState(0);
   const [isLoading,setIsLoading] = useState(false);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const allCourses = useSelector((state) => state.course.allCourses);
 
   const [data, setData] = useState([]);
@@ -45,6 +45,7 @@ const AllCourseInfoScreen = ({navigation}) => {
         console.log(json);
         //tmp.concat(json)
         setData(data.concat(json));
+        dispatch(courseActions.getAllCourses(data.concat(json)));
         setIsLoading(false);
       })
       .catch((err) => console.log(err, "error"));

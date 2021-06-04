@@ -426,7 +426,7 @@ function CourseInfoTopTab(){
         name="Current Course" 
         component={CurrentCourseInfoScreen} 
         options={{
-          tabBarLabel:'Đang học'
+          tabBarLabel:'Học kì gần nhất'
         }}/>
       <topTab.Screen 
         name="All Course" 

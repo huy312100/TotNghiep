@@ -1,7 +1,10 @@
-import React from 'react';
-import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image } from 'react-native';
+import React,{useEffect} from 'react';
+import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image ,Button } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
+import * as Notifications from 'expo-notifications';
 import { Icon,Badge } from 'react-native-elements';
+import {useDispatch,useSelector} from "react-redux";
+
 
 const Notification =[
     {
@@ -33,11 +36,76 @@ const Notification =[
         timeNotification:'31/12/2020',
     },
 
-]
+];
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const NotificationScreen=()=>{
+
+  const tokenNoti = useSelector((state) => state.authen.tokenNotification);
+  //const dispatch =useDispatch();
+
+  useEffect(() => {
+    const backgroundSubscription= Notifications.addNotificationResponseReceivedListener(
+      (response)=>{
+      console.log(response);
+    });
+
+    const foregroundSubscription= Notifications.addNotificationsDroppedListener(
+      (notification)=>{
+      console.log(notification);
+    });
+
+    return ()=>{
+      backgroundSubscription.remove();
+      foregroundSubscription.remove();
+    }
+  },[]);
+
+    //I wrote code below just for testing
+
+    // const triggerNotifications = () => {
+    //   Notifications.scheduleNotificationAsync({
+    //     content:{
+    //       title:'Test',
+    //       body:'We are testing new feature'
+    //     },
+    //     trigger:{
+    //       seconds:10
+    //     }
+    //   })
+
+
+    //   fetch("https://exp.host/--/api/v2/push/send",{
+    //       method:'POST',
+    //       headers:{
+    //         'Accept': 'application/json',
+    //         'Accept-Encoding': 'gzip,deflate',
+    //         'Content-Type': 'application/json'
+    //       },
+    //       body: JSON.stringify({
+    //         to:tokenNoti,
+    //         title:'Sent via app',
+    //         body:'Im just testing'
+    //       })
+    //     })
+    // };
+
     return(
         <SafeAreaView style={styles.container}>
+
+          <Button
+            title="Trigger Notifications"
+            onPress={() => {
+              triggerNotifications();
+            }}
+          />
             <FlatList
             data={Notification}
             keyExtractor={item =>item.id}

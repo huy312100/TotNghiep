@@ -3,11 +3,14 @@ import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linki
 import { Icon } from "react-native-elements";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import io from 'socket.io-client';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
 import {useDispatch,useSelector} from "react-redux";
 
 import * as homeActions from "../../../store/actions/Home";
 import * as profileActions from "../../../store/actions/Profile";
+import * as authActions from "../../../store/actions/Authen";
 
 import LoadingScreen from '../LoadingScreen';
 
@@ -16,6 +19,7 @@ const DeviceWidth = Dimensions.get('window').width;
 const HomeScreen=({navigation}) =>{
 
   const token = useSelector((state) => state.authen.token);
+  const [tokenNotification,setTokenNotification] = useState('');
 
   const unmounted = useRef(false);
   const [isLoading,setLoading]=useState(false);
@@ -50,8 +54,8 @@ const HomeScreen=({navigation}) =>{
 };
 
   useEffect(() =>{
-    const getAllNewDeadlines = async() =>{
-      
+    const getAllHomeInfo = async() =>{
+      await getPermissionNotifications();
       await getNewestDeadline();
       //console.log(newDeadline);
 
@@ -60,7 +64,7 @@ const HomeScreen=({navigation}) =>{
       await getProfile();
       
     }
-    getAllNewDeadlines();
+    getAllHomeInfo();
     return()=>{
       unmounted.current = true
     };
@@ -112,116 +116,140 @@ const HomeScreen=({navigation}) =>{
       }).catch((err) => console.log(err, "error"));
   };
 
+  //Get permission to notifications on iOS 
+  const getPermissionNotifications = () =>{
+    Permissions.getAsync(Permissions.NOTIFICATIONS)
+    .then((statusObj) =>{
+      if(statusObj.status !== 'granted'){
+        return Permissions.askAsync(Permissions.NOTIFICATIONS);
+      }
+      return statusObj;
+    }).then((statusObj) =>{
+      if(statusObj.status !== 'granted'){
+        throw new Error('Permission not granted');
+      }
+    }).then(()=>{
+      return Notifications.getExpoPushTokenAsync();
+    }).then((res)=>{
+      setTokenNotification(res.data);
+      dispatch(authActions.storeTokenNotification(res.data));
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      return null;
+    });
+  }
   
-    return (
+  return (
 
+    
+    <SafeAreaView style={styles.container}>
       
-      <SafeAreaView style={styles.container}>
-        
-        {isLoading && LoadingScreen()}
-        {!isLoading && <View>
-          <Text style={styles.label}>Khám phá ngay</Text>
-        <View >
-          <View style={styles.gridMainFunctions} >
-            
-            <View style={styles.gridItemShape} >
-              <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
-                navigation.navigate("Calendar");
-              }}>
-                  <Icon name="calendar-alt" type="font-awesome-5" color="red" size={40}/>
-                  <Text style={styles.textItem}>Lịch hoạt động</Text>
-                </TouchableOpacity>
-            </View>
-            
-            <View style={styles.gridItemShape}  >
-              <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
-                navigation.navigate("Course")
-              }}>
-              <Icon name="graduation-cap" type="font-awesome-5" color="red" size={40} />
-                  <Text style={styles.textItem}> Khóa học</Text>
-              </TouchableOpacity> 
-            </View>
-  
-            <View style={styles.gridItemShape} >
-              <TouchableOpacity style={styles.gridTouchable} >
-              <Icon name="forum" type="material-community" color="red" size={40}/>
-                  <Text style={styles.textItem}>Diễn đàn</Text>
-              </TouchableOpacity> 
-            </View> 
-  
-          </View>
-  
-          <View style={styles.gridMainFunctions}>
-  
-            <View style={styles.gridItemShape}  >          
-              <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
-                navigation.navigate("University Info")
-              }}>
-              <Icon name="info-circle" type="font-awesome-5" color="red" size={40} />
-                  <Text style={styles.textItem}>Thông tin trường</Text>
-              </TouchableOpacity> 
-            </View>
-  
-            <View style={styles.gridItemShape}  >
-              <TouchableOpacity style={styles.gridTouchable}>
-              <Icon name="pencil-alt" type="font-awesome-5" color="red" size={40} />
-                  <Text style={styles.textItem}>Điểm số</Text>
-              </TouchableOpacity> 
-            </View>
-  
-            <View style={styles.gridItemShape}  >
-              <TouchableOpacity style={styles.gridTouchable}>
-              <Icon name="envelope-open-text" type="font-awesome-5" color="red" size={40} />
-                  <Text style={styles.textItem}>Mail</Text>
-              </TouchableOpacity> 
-            </View>
-  
-          </View>
-               
-        </View>
+      {isLoading && LoadingScreen()}
+      {!isLoading && <View>
+        <Text style={styles.label}>Khám phá ngay</Text>
+      <View >
+        <View style={styles.gridMainFunctions} >
           
-  
-        <Text style={styles.label}>Deadline trong tháng</Text>
-        
-        {newDeadline.length > 0 &&
-          <FlatList 
-          data={newDeadline}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => (
-            <TouchableOpacity style={styles.card} onPress={() =>{
-              Alert.alert(
-                "Chuyển tiếp",
-                "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
-                [
-                  { text: "Từ chối", 
-                    style: "cancel"
-                  },
-                  {
-                    text: "Cho phép",
-                    onPress: () => Linking.openURL(item.url),
-                  },
-                ]
-              );
-              
+          <View style={styles.gridItemShape} >
+            <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
+              navigation.navigate("Calendar");
             }}>
-              <View style={styles.deadlineInfo}>
-                <View style={styles.deadlineImgWrapper}>
-                  <Image style={styles.deadlineImg} source={require("../../../assets/moodle-deadline.png")} />
-                </View>
-                <View style={styles.textSection}>
-                  <View style={styles.courseInfoText}>
-                    <Text style={styles.courseName}>{item.nameCourese}</Text>
-                    <Text style={styles.timeDeadline}>{convertTimestamp(item.duedate)}</Text>
-                  </View>
-                  <Text style={styles.contentDeadline}>{item.decription}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>)}/>
-        }
+                <Icon name="calendar-alt" type="font-awesome-5" color="red" size={40}/>
+                <Text style={styles.textItem}>Lịch hoạt động</Text>
+              </TouchableOpacity>
+          </View>
+          
+          <View style={styles.gridItemShape}  >
+            <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
+              navigation.navigate("Course")
+            }}>
+            <Icon name="graduation-cap" type="font-awesome-5" color="red" size={40} />
+                <Text style={styles.textItem}> Khóa học</Text>
+            </TouchableOpacity> 
+          </View>
 
-      </View>}
-      </SafeAreaView>
-    )
+          <View style={styles.gridItemShape} >
+            <TouchableOpacity style={styles.gridTouchable} >
+            <Icon name="forum" type="material-community" color="red" size={40}/>
+                <Text style={styles.textItem}>Diễn đàn</Text>
+            </TouchableOpacity> 
+          </View> 
+
+        </View>
+
+        <View style={styles.gridMainFunctions}>
+
+          <View style={styles.gridItemShape}  >          
+            <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
+              navigation.navigate("University Info")
+            }}>
+            <Icon name="info-circle" type="font-awesome-5" color="red" size={40} />
+                <Text style={styles.textItem}>Thông tin trường</Text>
+            </TouchableOpacity> 
+          </View>
+
+          <View style={styles.gridItemShape}  >
+            <TouchableOpacity style={styles.gridTouchable}>
+            <Icon name="pencil-alt" type="font-awesome-5" color="red" size={40} />
+                <Text style={styles.textItem}>Điểm số</Text>
+            </TouchableOpacity> 
+          </View>
+
+          <View style={styles.gridItemShape}  >
+            <TouchableOpacity style={styles.gridTouchable}>
+            <Icon name="envelope-open-text" type="font-awesome-5" color="red" size={40} />
+                <Text style={styles.textItem}>Mail</Text>
+            </TouchableOpacity> 
+          </View>
+
+        </View>
+              
+      </View>
+        
+
+      <Text style={styles.label}>Deadline trong tháng</Text>
+      
+      {newDeadline.length > 0 &&
+        <FlatList 
+        data={newDeadline}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <TouchableOpacity style={styles.card} onPress={() =>{
+            Alert.alert(
+              "Chuyển tiếp",
+              "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
+              [
+                { text: "Từ chối", 
+                  style: "cancel"
+                },
+                {
+                  text: "Cho phép",
+                  onPress: () => Linking.openURL(item.url),
+                },
+              ]
+            );
+            
+          }}>
+            <View style={styles.deadlineInfo}>
+              <View style={styles.deadlineImgWrapper}>
+                <Image style={styles.deadlineImg} source={require("../../../assets/moodle-deadline.png")} />
+              </View>
+              <View style={styles.textSection}>
+                <View style={styles.courseInfoText}>
+                  <Text style={styles.courseName}>{item.nameCourese}</Text>
+                  <Text style={styles.timeDeadline}>{convertTimestamp(item.duedate)}</Text>
+                </View>
+                <Text style={styles.contentDeadline}>{item.decription}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>)}/>
+      }
+
+    </View>}
+    </SafeAreaView>
+  )
 
 }
 

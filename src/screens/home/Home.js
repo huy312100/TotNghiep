@@ -59,8 +59,8 @@ const HomeScreen=({navigation}) =>{
       await getNewestDeadline();
       //console.log(newDeadline);
 
-      // var socket=io("https://hcmusemu.herokuapp.com");
-      // socket.emit("Start",token);
+      await connectToSocket();
+      
       await getProfile();
       
     }
@@ -139,7 +139,15 @@ const HomeScreen=({navigation}) =>{
       console.log(err);
       return null;
     });
-  }
+  };
+
+  //Connect to socket
+  const connectToSocket = () => {
+    var socket=io("https://hcmusemu.herokuapp.com");
+    socket.emit("Start",token);
+
+    dispatch(authActions.connectToSocket(socket));
+  };
   
   return (
 

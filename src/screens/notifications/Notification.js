@@ -49,6 +49,7 @@ Notifications.setNotificationHandler({
 const NotificationScreen=()=>{
 
   const tokenNoti = useSelector((state) => state.authen.tokenNotification);
+  const socket = useSelector((state) => state.authen.socket);
   //const dispatch =useDispatch();
 
   useEffect(() => {
@@ -65,21 +66,30 @@ const NotificationScreen=()=>{
     return ()=>{
       backgroundSubscription.remove();
       foregroundSubscription.remove();
-    }
+    } 
   },[]);
 
     //I wrote code below just for testing
 
-    // const triggerNotifications = () => {
-    //   Notifications.scheduleNotificationAsync({
-    //     content:{
-    //       title:'Test',
-    //       body:'We are testing new feature'
-    //     },
-    //     trigger:{
-    //       seconds:10
-    //     }
-    //   })
+    const triggerNotifications = () => {
+
+      //socket.emit('Private-Message',['60b7be14e2cfac00228ccba8','nguyenngocduchuy','abc']);
+      socket.on("Request-Accept",(data)=>{
+        console.log(data);
+      });
+  
+      // Notifications.scheduleNotificationAsync({
+      //   content:{
+      //     title:'Test',
+      //     body:'We are testing new feature'
+      //   },
+      //   trigger:{
+      //     seconds:10
+      //   }
+      // })
+
+
+    }
 
 
     //   fetch("https://exp.host/--/api/v2/push/send",{

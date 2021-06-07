@@ -3,6 +3,7 @@ export const LOGOUT = 'LOGOUT';
 export const REGISTER = 'REGISTER';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 export const TOKEN_NOTIFICATION = 'TOKEN_NOTIFICATION';
+export const CONNECT_TO_SOCKET = 'CONNECT_TO_SOCKET';
 
 export const login = (token) => {
   return async dispatch => {
@@ -40,7 +41,17 @@ export const storeTokenNotification = (data) => {
       tokenNotification:data
     })
   }
+};
+
+export const connectToSocket = (data) => {
+  return async dispatch => {
+    dispatch({
+      type: CONNECT_TO_SOCKET,
+      socket:data
+    })
+  }
 }
+
 
 
 

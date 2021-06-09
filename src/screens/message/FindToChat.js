@@ -16,9 +16,11 @@ const FindToChatScreen = ({navigation}) => {
 
     const socket = useSelector((state) => state.authen.socket);
 
-    const [roomID,setRoomID] = useState('');
+    const [roomID,setRoomID] = useState('x');
 
     const token = useSelector((state) => state.authen.token);
+
+    var abc='xxx';
 
 
     const getInfoFromName =(name) => {
@@ -53,9 +55,10 @@ const FindToChatScreen = ({navigation}) => {
 
     const loadRoomID = useCallback(() => {
       console.log('a');
-      socket.on('Reply-Create-Room',(data)=>{
+      socket.once('Reply-Create-Room',(data)=>{
         //console.log(data);
         setRoomID(data);
+        abc=data;
         console.log(roomID)
       });
       
@@ -65,21 +68,22 @@ const FindToChatScreen = ({navigation}) => {
         <View>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => {
+            onPress={async () => {
               socket.emit('Create-Room',[token,item.Email]);
              
-              socket.on('Reply-Create-Room',(data)=>{
+              socket.once('Reply-Create-Room',(data)=>{
                 //console.log(data);
                 setRoomID(data);
+                abc=data;
                 console.log(roomID)
               });
 
-              loadRoomID();
-              // console.log(roomID);
+              //loadRoomID();
+              //console.log(abc)
+              //console.log(roomID);
 
               navigation.navigate("Chat", {
-                // token:token,
-                // email: item.Email,
+                email: item.Email,
                 name:item.HoTen,
                 idChatRoom:roomID
               });

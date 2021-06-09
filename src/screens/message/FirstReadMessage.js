@@ -44,6 +44,7 @@ const FirstReadMessageScreen = ({navigation}) => {
         getAwaitMessage()
     },[dataMsgFirstRead]);
 
+    //call api get await message 
     const getAwaitMessage =() => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `bearer ${token}`);
@@ -114,7 +115,7 @@ const FirstReadMessageScreen = ({navigation}) => {
             }}>
             <View style={styles.userInfo}>
             <View style={styles.userImgWrapper}>
-                <Image style={styles.userImg} source={item.userImg} />
+                <Image style={styles.userImg} source= {require("../../../assets/user-icon.png")} />
             </View>
             <View style={styles.textSection}>
                 <View style={styles.userInfoText}>
@@ -136,7 +137,7 @@ const FirstReadMessageScreen = ({navigation}) => {
                 refreshControl={<RefreshControl
                     colors={["#9Bd35A", "#689F38"]}
                     // refreshing={this.props.refreshing}
-                    // onRefresh={this._onRefresh.bind(this)}
+                    //onRefresh={getAwaitMessage()_}
                     />}
             />
         </View>

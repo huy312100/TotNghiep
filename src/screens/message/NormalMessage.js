@@ -1,5 +1,8 @@
-import React,{useState} from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,ImageBackground } from 'react-native';
+import React,{useState,useEffect} from 'react';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl,ImageBackground } from 'react-native';
+
+import { useSelector,useDispatch } from 'react-redux';
+
 import{SafeAreaView} from 'react-native-safe-area-context';
 import {Header,SearchBar} from 'react-native-elements';
 import { MaterialCommunityIcons} from '@expo/vector-icons';
@@ -114,7 +117,112 @@ const Messages = [
 
 const NormalMessageScreen = ({navigation}) => {
 
-    const[data,setData] = useState([]);
+    const[dataMsg,setDataMsg] = useState([]);
+
+    const token = useSelector((state) => state.authen.token);
+
+    function convertTimestamp(timestamp) {
+      var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
+          yyyy = d.getFullYear(),
+          mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+          dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+          hh = d.getHours(),
+          h = hh,
+          min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+          ampm = 'AM',
+          time;
+      if (hh > 12) {
+          h = hh - 12;
+          ampm = 'PM';
+      } else if (hh === 12) {
+          h = 12;
+          ampm = 'PM';
+      } else if (hh == 0) {
+          h = 12;
+      }
+      // ie: 2014-03-24, 3:00 PM
+      time = dd + '-' + mm + '-' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
+      return time;
+  };
+
+  useEffect(() => {
+    getAllMessage();
+  },[])
+
+    //call api get all message screen
+    const getAllMessage =() => {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `bearer ${token}`);
+
+      var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+      };
+
+      
+      fetch("https://hcmusemu.herokuapp.com/chat/findchat",requestOptions)
+      .then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes])=> {
+          console.log(statusCode,dataRes);
+          if (statusCode === 200) {
+            if(dataRes.message==='Message is Empty'){
+              setDataMsg([]);
+            }
+            else{
+              const tmpMsg =[];
+              for (const key in dataRes) {
+                  tmpMsg.push(
+                  {
+                    idRoom: dataRes[key].idRoom,
+                    name: dataRes[key].name,
+                    Email: dataRes[key].Email,
+                    Anh: dataRes[key].Anh,
+                    TypeRoom: dataRes[key].TypeRoom,
+                    text: dataRes[key].text,
+                    time: dataRes[key].time,
+                    state:dataRes[key].state
+                  });
+              }
+              setDataMsg(tmpMsg);
+            }
+          }
+         
+          else{
+              console.log(statusCode)
+          }
+          // setLoadingFacultScreen(false);
+      })
+      .catch((err) => console.log(err, "error"));
+  };
+
+  
+  const renderItem =({ item })=>(
+    <TouchableOpacity style={styles.card} onPress={() =>{ 
+      navigation.navigate("Chat",{
+        name:item.name,
+        idChatRoom:item.idRoom,
+        email:item.Email
+      });
+    }}>
+        <View style={styles.userInfo}>
+        <View style={styles.userImgWrapper}>
+            <Image style={styles.userImg} source={require("../../../assets/user-icon.png")}/>
+        </View>
+        <View style={styles.textSection}>
+            <View style={styles.userInfoText}>
+            <Text style={styles.userName}>{item.name}</Text>
+            <Text style={styles.postTime}>{convertTimestamp(item.time/1000)}</Text>
+            </View>
+            <Text style={[styles.messageText,{fontWeight : (item.state) ? "":"bold"}]}>{item.text}</Text>
+        </View>
+        </View>
+    </TouchableOpacity>
+  )
+
 
     return (
       <View style={styles.container}>
@@ -142,24 +250,9 @@ const NormalMessageScreen = ({navigation}) => {
 
 
         <FlatList
-          data={data}
-          keyExtractor={item=>item.id}
-          renderItem={({item}) => (
-            <TouchableOpacity style={styles.card} onPress={() =>navigation.navigate("Chat",{userName:item.userName})}>
-              <View style={styles.userInfo}>
-                <View style={styles.userImgWrapper}>
-                  <Image style={styles.userImg} source={item.userImg} />
-                </View>
-                <View style={styles.textSection}>
-                  <View style={styles.userInfoText}>
-                    <Text style={styles.userName}>{item.userName}</Text>
-                    <Text style={styles.postTime}>{item.messageTime}</Text>
-                  </View>
-                  <Text style={styles.messageText}>{item.messageText}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          )}
+          data={dataMsg}
+          renderItem={renderItem}
+          keyExtractor={(item,index) => index.toString()}
         />
       </View>
     );

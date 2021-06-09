@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useCallback} from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,ImageBackground } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
 
@@ -12,7 +12,11 @@ import RoundedImage from '../../components/profile/main/RoundedImage';
 const FindToChatScreen = ({navigation}) => {
 
     const [nameUser,setNameUser] =useState('');
-    const [data,setData] = useState([]);
+    var [data,setData] = useState([]);
+
+    const socket = useSelector((state) => state.authen.socket);
+
+    const [roomID,setRoomID] = useState('');
 
     const token = useSelector((state) => state.authen.token);
 
@@ -47,20 +51,40 @@ const FindToChatScreen = ({navigation}) => {
           }).catch(error => console.log('error', error));
     };
 
+    const loadRoomID = useCallback(() => {
+      console.log('a');
+      socket.on('Reply-Create-Room',(data)=>{
+        //console.log(data);
+        setRoomID(data);
+        console.log(roomID)
+      });
+      
+    },[roomID]);
+
     const renderItem = ({ item }) => (
         <View>
           <TouchableOpacity
             style={styles.card}
             onPress={() => {
+              socket.emit('Create-Room',[token,item.Email]);
+             
+              socket.on('Reply-Create-Room',(data)=>{
+                //console.log(data);
+                setRoomID(data);
+                console.log(roomID)
+              });
+
+              loadRoomID();
+              // console.log(roomID);
+
               navigation.navigate("Chat", {
-                token:token,
-                email: item.Email,
-                name:item.HoTen
+                // token:token,
+                // email: item.Email,
+                name:item.HoTen,
+                idChatRoom:roomID
               });
             }}
           >
-            
-
 
             <View style={{marginBottom:10}}>
               <RoundedImage />

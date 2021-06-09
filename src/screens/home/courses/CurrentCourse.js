@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import { View, Text,TouchableOpacity,StyleSheet,FlatList} from 'react-native';
+import { View, Text,TouchableOpacity,StyleSheet,FlatList,RefreshControl} from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
 
 import LoadingWithSkeletonScreen from "./LoadingSkeleton";
@@ -93,7 +93,13 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
                 </View>
               </TouchableOpacity>
               )}
-              keyExtractor={(item,index) =>index.toString()}/>
+              keyExtractor={(item,index) =>index.toString()}
+              refreshControl={<RefreshControl
+                colors={["#9Bd35A", "#689F38"]}
+                // refreshing={this.props.refreshing}
+                // onRefresh={this._onRefresh.bind(this)}
+                />}
+              />
       
         </View>
     )

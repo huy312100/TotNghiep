@@ -73,20 +73,22 @@ const NotificationScreen=()=>{
 
     const triggerNotifications = () => {
 
-      //socket.emit('Private-Message',['60b7be14e2cfac00228ccba8','nguyenngocduchuy','abc']);
-      socket.on("Request-Accept",(data)=>{
-        console.log(data);
-      });
+      // socket.on("Request-Accept",(data)=>{
+      //   console.log(data);
+      // });
+
+      // socket.emit('Private-Message',['a','nguyenngocduchuy','abc']);
+      
   
-      // Notifications.scheduleNotificationAsync({
-      //   content:{
-      //     title:'Test',
-      //     body:'We are testing new feature'
-      //   },
-      //   trigger:{
-      //     seconds:10
-      //   }
-      // })
+      Notifications.scheduleNotificationAsync({
+        content:{
+          title:'Test',
+          body:'We are testing new feature'
+        },
+        trigger:{
+          seconds:10
+        }
+      })
 
 
     }

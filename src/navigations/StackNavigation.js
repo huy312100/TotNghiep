@@ -14,7 +14,8 @@ import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
 import HomeScreen from "../screens/home/Home";
 import CalendarScreen from "../screens/home/calendar/Calendar";
-import MessageScreen from "../screens/message/Message";
+import NormalMessageScreen from "../screens/message/NormalMessage";
+import FirstReadMessageScreen from "../screens/message/FirstReadMessage";
 import FindToChatScreen from "../screens/message/FindToChat";
 import ChatScreen from "../screens/message/Chat";
 import {ProfileScreen} from '../screens/profile/Profile';
@@ -194,13 +195,34 @@ function HomeStackNavigation({navigation}) {
   )
 }
 
-function MessageStackNavigation() { 
+function MessageStackNavigation({navigation}) { 
   return(
     <Stack.Navigator initialRouteName="Message">
       <Stack.Screen
         name="Message"
-        component={MessageScreen}
-        options={{ headerShown: false }}
+        component={MessageTopTab}
+        options={{ 
+          title: "Tin nhắn",
+          headerTitleAlign: 'center',
+          headerTintColor:"#FFFFFF",
+          // headerStyle:{
+          //   backgroundColor:"#33CCFF"
+          // },
+          headerTitleStyle: {
+              color: 'black'
+          },
+          headerRight:()=>(
+            <TouchableOpacity onPress={() =>{ navigation.navigate('Find to Chat')}}>
+                <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
+            </TouchableOpacity>
+          ),
+          headerRightContainerStyle:{
+            paddingRight:10
+          },
+          headerLeft:()=>{
+            return null;
+          }
+        }}
       />
       <Stack.Screen
         name="Chat"
@@ -525,6 +547,42 @@ function ConnectApplicationTopTab(){
     </topTab.Navigator>
   )
 }
+
+//Top tab of connect application screen 
+function MessageTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="Normal Message" 
+    tabBarOptions={{
+      activeTintColor: 'green',
+      inactiveTintColor:'#CCCCCC',
+      indicatorStyle:{
+        backgroundColor: 'green',
+      },
+
+      labelStyle: { fontSize: 10 },
+      }}>
+  
+      <topTab.Screen 
+        name="Normal Message" 
+        component={NormalMessageScreen} 
+        options={{
+          tabBarLabel:'Chat'
+        }}/>
+
+      <topTab.Screen 
+        name="First Read Message" 
+        component={FirstReadMessageScreen}
+        options={{
+          tabBarLabel:'Tin nhắn chờ'
+        }}
+        />
+
+     
+    </topTab.Navigator>
+  )
+}
+
+
 
 
 

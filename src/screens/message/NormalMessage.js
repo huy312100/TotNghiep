@@ -112,13 +112,13 @@ const Messages = [
   // },
 ];
 
-const MessageScreen = ({navigation}) => {
+const NormalMessageScreen = ({navigation}) => {
 
     const[data,setData] = useState([]);
 
     return (
       <View style={styles.container}>
-         <Header
+         {/* <Header
             containerStyle={{
                 backgroundColor: 'white',
                 justifyContent: 'space-around',
@@ -133,7 +133,7 @@ const MessageScreen = ({navigation}) => {
                     <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
                 </TouchableOpacity>
 
-            }/>
+            }/> */}
 
 
         {/* {data.length==0 && <ImageBackground style={styles.img}
@@ -165,7 +165,7 @@ const MessageScreen = ({navigation}) => {
     );
 };
 
-export default MessageScreen;
+export default NormalMessageScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -11,6 +11,7 @@ import {useDispatch,useSelector} from "react-redux";
 import * as homeActions from "../../../store/actions/Home";
 import * as profileActions from "../../../store/actions/Profile";
 import * as authActions from "../../../store/actions/Authen";
+import * as msgActions from "../../../store/actions/Message";
 
 import LoadingScreen from '../LoadingScreen';
 
@@ -18,6 +19,7 @@ const DeviceWidth = Dimensions.get('window').width;
 
 const HomeScreen=({navigation}) =>{
 
+  var socket=io("https://hcmusemu.herokuapp.com");
   const token = useSelector((state) => state.authen.token);
   const [tokenNotification,setTokenNotification] = useState('');
 
@@ -59,8 +61,10 @@ const HomeScreen=({navigation}) =>{
       await getNewestDeadline();
       //console.log(newDeadline);
 
+
       await connectToSocket();
       
+      await getRequestChatting();
       await getProfile();
       
     }
@@ -143,11 +147,19 @@ const HomeScreen=({navigation}) =>{
 
   //Connect to socket
   const connectToSocket = () => {
-    var socket=io("https://hcmusemu.herokuapp.com");
+    
     socket.emit("Start",token);
 
     dispatch(authActions.connectToSocket(socket));
   };
+
+  //get request to chatting
+  const getRequestChatting = () => {
+    socket.on("Request-Accept",(data)=>{
+      console.log(data);
+      dispatch(msgActions.FirstReadMessage(data));
+    });
+  }
   
   return (
 

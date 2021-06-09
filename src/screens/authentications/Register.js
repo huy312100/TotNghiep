@@ -181,7 +181,7 @@ const RegisterScreen = ({ navigation }) => {
         return Promise.all([statusCode, dataRes]);
     }).then(([statusCode, dataRes])=>{
       console.log(statusCode, dataRes);
-      if(statusCode === 500 || statusCode === 201){
+      if(statusCode === 201){
         dispatch(authActions.register());
         setLoading(false);
         navigation.navigate("Login");

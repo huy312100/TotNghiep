@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { GiftedChat,Bubble,Send,InputToolbar,LeftAction, ChatInput, SendButton } from 'react-native-gifted-chat';
-import { View }  from 'react-native';
+import { View,Alert }  from 'react-native';
 import { Ionicons,FontAwesome5 } from '@expo/vector-icons';
 import { useSelector ,} from 'react-redux';
-import io from 'socket.io-client';
+//import io from 'socket.io-client';
 
 
 
@@ -11,23 +11,27 @@ const ChatScreen = ({route}) => {
   const [messages, setMessages] = useState([]);
   const socket = useSelector((state) => state.authen.socket);
 
-  const [roomID,setRoomID] = useState('xxx');
+  const dataMsgFirstRead = useSelector((state) => state.message.firstReadMsg);
+
+  const [roomID,setRoomID] = useState(route.params.idChatRoom);
 
   useEffect(() => {
       //var socket=io("https://hcmusemu.herokuapp.com");
 
-      socket.emit('Create-Room',[route.params.token,route.params.email]);
+      //setRoomID(route.params.idChatRoom);
+      
+      // socket.emit('Create-Room',[route.params.token,route.params.email]);
 
-      //console.log(socket);
+      // //console.log(socket);
 
-      socket.on('Reply-Create-Room',(data)=>{
-        console.log(data);
-        setRoomID(data);
-        //console.log(roomID);
-      });
-
+      // socket.on('Reply-Create-Room',(data)=>{
+      //   console.log(data);
+      //   setRoomID(data);
+      //   console.log(roomID);
+      // });
       
 
+      
     //   setMessages([
     //     {
     //       _id: 1,
@@ -40,7 +44,10 @@ const ChatScreen = ({route}) => {
     //       },
     //     },
     // ])
-  }, []);
+    // return () => {
+    //   socket.close();
+    // }
+  },[roomID]);
 
   const renderBubble = (props) =>{
     return (
@@ -65,6 +72,7 @@ const ChatScreen = ({route}) => {
         }}
       />);
   };
+
 
   const renderSend = (props) =>{
     return (
@@ -91,22 +99,83 @@ const ChatScreen = ({route}) => {
   };
 
 
-  const onSend = useCallback((messages = []) => {
+  // const onSend = useCallback((messages = []) => {
+  //   console.log(roomID);
+  //   socket.emit('Private-Message',[roomID,route.params.email,messages[0].text]);
+  //   // socket.on('Private-Message',(user) => {
+  //   //   console.log(user[3]);
+  //   // });
+
+  //   // socket.on("Request-Accept",(data)=>{
+  //   //   console.log(data);
+  //   // });
+  //   console.log(dataMsgFirstRead);
+
+  //   if(dataMsgFirstRead === 'message_await'){
+  //     Alert.alert(
+  //       "Lỗi",
+  //       "Vui lòng chờ đợi chấp nhận tin nhắn",
+  //       [
+  //         { text: "OK", 
+  //           style: "cancel"
+  //         },
+  //       ]
+  //     );
+  //   }
+  //   else if (dataMsgFirstRead === 'error'){
+  //     Alert.alert(
+  //       "Lỗi",
+  //       "Đã xảy ra lỗi ",
+  //       [
+  //         { text: "OK", 
+  //           style: "cancel"
+  //         },
+  //       ]
+  //     );
+  //   }
+  //   else{
+  //     setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
+  //     console.log(messages);
+  //   }
+
+  // }, [roomID]);
+
+  const loadRoomID=useCallback(() => {
     //console.log(roomID);
-    socket.emit('Private-Message',['60b7be14e2cfac00228ccba8',route.params.email,messages[0].text]);
-    socket.on('Private-Message',(user) => {
-      console.log(user[3]);
-    });
+  },[roomID]);
 
-    // socket.on("Request-Accept",(data)=>{
-    //   console.log(data);
-    // });
+  const onSend =(messages = []) => {
+    console.log(roomID);
+    // socket.emit('Private-Message',[roomID,route.params.email,messages[0].text]);
+    
+    // console.log(dataMsgFirstRead);
 
-    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-  }, []);
-
-  const onReceive = () => {
-    socket.emit('Server-to-Client',)
+    // if(dataMsgFirstRead === 'message_await'){
+    //   Alert.alert(
+    //     "Lỗi",
+    //     "Vui lòng chờ đợi chấp nhận tin nhắn",
+    //     [
+    //       { text: "OK", 
+    //         style: "cancel"
+    //       },
+    //     ]
+    //   );
+    // }
+    // else if (dataMsgFirstRead === 'error'){
+    //   Alert.alert(
+    //     "Lỗi",
+    //     "Đã xảy ra lỗi ",
+    //     [
+    //       { text: "OK", 
+    //         style: "cancel"
+    //       },
+    //     ]
+    //   );
+    // }
+    // else{
+    //   setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
+    //   console.log(messages);
+    // }
   }
 
   return (

@@ -1,21 +1,26 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { GiftedChat,Bubble,Send,InputToolbar,LeftAction, ChatInput, SendButton } from 'react-native-gifted-chat';
-import { View,Alert }  from 'react-native';
-import { Ionicons,FontAwesome5 } from '@expo/vector-icons';
-import { useSelector ,} from 'react-redux';
+import { View,Alert,Text,TouchableOpacity }  from 'react-native';
+import { Ionicons,FontAwesome5,Entypo } from '@expo/vector-icons';
+import { useSelector,useDispatch } from 'react-redux';
+import { Header} from 'react-native-elements';
+
 //import io from 'socket.io-client';
 
 
 
-const ChatScreen = ({route}) => {
+const ChatScreen = ({route,navigation}) => {
   const [messages, setMessages] = useState([]);
   const socket = useSelector((state) => state.authen.socket);
   const profile = useSelector((state) => state.profile.profile);
+  const token = useSelector((state) => state.authen.token);
+
+  const dispatch = useDispatch();
 
   const dataMsgFirstRead = useSelector((state) => state.message.firstReadMsg);
 
   const [roomID,setRoomID] = useState(route.params.idChatRoom);
-  const token = useSelector((state) => state.authen.token);
+
 
   useEffect(() => {
       //var socket=io("https://hcmusemu.herokuapp.com");
@@ -33,7 +38,6 @@ const ChatScreen = ({route}) => {
       // });
 
       loadMessage();
-      
 
       
     //   setMessages([
@@ -69,7 +73,7 @@ const ChatScreen = ({route}) => {
     }
     formBody = formBody.join("&");
 
-    console.log(formBody);
+    //console.log(formBody);
 
     fetch("https://hcmusemu.herokuapp.com/chat/loadmessage", {
       method: "POST",
@@ -91,7 +95,8 @@ const ChatScreen = ({route}) => {
               {
                 _id: key,
                 text: dataRes[key].text,
-                createdAt: dataRes[key].time,
+                //createdAt: new Date(dataRes[key].time).toISOString(),
+                createdAt: new Date(parseInt(dataRes[key].time)).toISOString(),
                 user:{
                   _id:2,
                   name:dataRes[key].from,
@@ -103,7 +108,8 @@ const ChatScreen = ({route}) => {
               {
                 _id: key,
                 text: dataRes[key].text,
-                createdAt: dataRes[key].time,
+                //createdAt: new Date(dataRes[key].time).toISOString(),
+                createdAt: new Date(parseInt(dataRes[key].time)).toISOString(),
                 user:{
                   _id:1,
                   name:dataRes[key].from,
@@ -111,6 +117,7 @@ const ChatScreen = ({route}) => {
               });
           }  
         }
+        console.log(tmpAttrMsg);
         setMessages(tmpAttrMsg);
       }
     }).catch((err) => console.log(err, "error"));
@@ -176,6 +183,7 @@ const ChatScreen = ({route}) => {
 
   const onSend =(messages = []) => {
     console.log(roomID);
+    console.log(route.params.email);
     socket.emit('Private-Message',[roomID,route.params.email,messages[0].text]);
     
     console.log(dataMsgFirstRead);
@@ -209,18 +217,43 @@ const ChatScreen = ({route}) => {
   }
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={messages => onSend(messages)}
-      user={{
-        _id: 1,
-      }}
-      renderBubble={renderBubble}
-      renderSend={renderSend}
-      renderInputToolbar={renderInputToolbar}
-      scrollToBottom
-      scrollToBottomComponent={scrollToBottomComponent}
+
+    <View style={{flex: 1}}>
+       <Header
+            containerStyle={{
+                backgroundColor: 'white',
+                justifyContent: 'space-around',
+                borderBottomColor:'#DDDDDD'
+            }}
+            centerComponent={
+                <Text style={{fontSize:20,fontWeight:'500'}}>{route.params.name}</Text>
+            }
+            leftComponent={
+              <TouchableOpacity onPress={() =>{ 
+                socket.emit('Return-Chat',roomID);
+                navigation.goBack()
+                }}>
+                    <Entypo name="chevron-left" size={28} color="blue" />
+                </TouchableOpacity>
+
+            }/>
+
+
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: 1,
+        }}
+        renderBubble={renderBubble}
+        renderSend={renderSend}
+        renderInputToolbar={renderInputToolbar}
+        scrollToBottom
+        scrollToBottomComponent={scrollToBottomComponent}
     />
+    </View>
+    
+
   )
 };
 

@@ -2,6 +2,7 @@ import {FIRST_READ_MESSAGE} from "../actions/Message";
 
 const initialState = {
     firstReadMsg: '',
+    roomID: '',
 }
 
 export default (state=initialState,action) => {
@@ -10,6 +11,7 @@ export default (state=initialState,action) => {
             return {
                 firstReadMsg: action.firstReadMsg
             }
+        
         default:
             return state;
     }

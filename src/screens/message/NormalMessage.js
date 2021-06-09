@@ -217,7 +217,7 @@ const NormalMessageScreen = ({navigation}) => {
             <Text style={styles.userName}>{item.name}</Text>
             <Text style={styles.postTime}>{convertTimestamp(item.time/1000)}</Text>
             </View>
-            <Text style={[styles.messageText,{fontWeight : (item.state) ? "":"bold"}]}>{item.text}</Text>
+            <Text style={[styles.messageText,{fontWeight : (item.state) ? "normal":"bold"}]}>{item.text}</Text>
         </View>
         </View>
     </TouchableOpacity>

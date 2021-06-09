@@ -4,11 +4,13 @@ import {TouchableOpacity} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { createStackNavigator } from "@react-navigation/stack";
+import { MaterialCommunityIcons,Entypo } from '@expo/vector-icons';
+import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 
-import { useSelector,useDispatch } from "react-redux";
+// import { useSelector,useDispatch } from "react-redux";
 import * as calendarActions from '../../store/actions/Calendar';
+// import * as msgActions from "../../store/actions/Message";
+
 
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
@@ -42,7 +44,6 @@ import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
 const Stack = createStackNavigator();
 const bottomTab = createBottomTabNavigator();
 const topTab= createMaterialTopTabNavigator();
-
 
 //All Stack navigation of our app
 export function AuthenStackNavigation() {
@@ -196,6 +197,10 @@ function HomeStackNavigation({navigation}) {
 }
 
 function MessageStackNavigation({navigation}) { 
+  // const dispatch = useDispatch();
+  // const roomID = useSelector((state) => state.message.roomID);
+  // const socket = useSelector((state) => state.authen.socket);
+
   return(
     <Stack.Navigator initialRouteName="Message">
       <Stack.Screen
@@ -230,8 +235,16 @@ function MessageStackNavigation({navigation}) {
         options={({route}) =>({
           title:route.params.name,
           headerTitleAlign: 'center',
-          headerBackTitle:false,
-          headerTruncatedBackTitle:false,
+          headerShown:false
+          // headerLeft:()=>(
+          //   <TouchableOpacity onPress={() =>{ 
+          //     //console.log(roomID);
+          //     socket.emit('Return-Chat',roomID);
+          //     dispatch(msgActions.StoreRoomChat(''));
+          //     navigation.goBack('Message');}}>
+          //       <Entypo name="chevron-left" size={28} color="blue" />
+          //   </TouchableOpacity>
+          // ),
         })}
       />
 

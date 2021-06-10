@@ -22,6 +22,8 @@ const ChatScreen = ({route,navigation}) => {
   const [roomID,setRoomID] = useState(route.params.idChatRoom);
 
 
+  
+
   useEffect(() => {
       //var socket=io("https://hcmusemu.herokuapp.com");
 
@@ -39,6 +41,17 @@ const ChatScreen = ({route,navigation}) => {
 
       loadMessage();
 
+      socket.on('Private-Message-To-Client',(data)=>{
+        console.log(data);
+        setMessages(previousMessages => GiftedChat.append(previousMessages, {
+          text: data[2],
+          createdAt: new Date(data[3]),
+          user:{
+            _id:2,
+            name:data[1]
+          }
+        }));
+      });
       
     //   setMessages([
     //     {
@@ -58,6 +71,7 @@ const ChatScreen = ({route,navigation}) => {
   },[]);
 
 
+  //call api load all messages  
   const loadMessage =() => {
     let details = {
       IDRoom:roomID,
@@ -182,8 +196,8 @@ const ChatScreen = ({route,navigation}) => {
   },[roomID]);
 
   const onSend =(messages = []) => {
-    console.log(roomID);
-    console.log(route.params.email);
+    //console.log(roomID);
+    //console.log(route.params.email);
     socket.emit('Private-Message',[roomID,route.params.email,messages[0].text]);
     
     console.log(dataMsgFirstRead);
@@ -212,7 +226,7 @@ const ChatScreen = ({route,navigation}) => {
     // }
     // else{
       setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
-      console.log(messages);
+      //console.log(messages);
     // }
   }
 

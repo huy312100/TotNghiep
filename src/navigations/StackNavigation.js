@@ -473,19 +473,12 @@ function CourseInfoTopTab(){
 //Top tab of university info screen
 function UniversityInfoTopTab(){
   return (
-    <topTab.Navigator initialRouteName="University Info" 
+    <topTab.Navigator initialRouteName="University New" 
     tabBarOptions={{
       activeTintColor: 'blue',
       labelStyle: { fontSize: 11 },
       }}>
   
-      <topTab.Screen 
-        name="University Info" 
-        component={UniversityInfoScreen} 
-        options={{
-          tabBarLabel:'Thông tin '
-        }}/>
-
       <topTab.Screen 
         name="University New" 
         component={UniversityNewScreen}
@@ -499,6 +492,14 @@ function UniversityInfoTopTab(){
         component={FacultyNewScreen}
         options={{
           tabBarLabel:'Tin tức khoa'
+        }}
+        />
+
+      <topTab.Screen 
+        name="University Info" 
+        component={UniversityInfoScreen} 
+        options={{
+          tabBarLabel:'Thông tin '
         }}
         />
     </topTab.Navigator>

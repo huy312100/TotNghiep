@@ -120,6 +120,8 @@ const NormalMessageScreen = ({navigation}) => {
     const[dataMsg,setDataMsg] = useState([]);
 
     const token = useSelector((state) => state.authen.token);
+    const [refreshing, setRefreshing] = useState(false);
+
 
     function convertTimestamp(timestamp) {
       var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
@@ -195,8 +197,15 @@ const NormalMessageScreen = ({navigation}) => {
               console.log(statusCode)
           }
           // setLoadingFacultScreen(false);
+          setRefreshing(false);
       })
       .catch((err) => console.log(err, "error"));
+  };
+
+  //refresh control trigger
+  const onRefresh = () => {
+    setRefreshing(true);
+    getAllMessage();
   };
 
   
@@ -253,6 +262,11 @@ const NormalMessageScreen = ({navigation}) => {
           data={dataMsg}
           renderItem={renderItem}
           keyExtractor={(item,index) => index.toString()}
+          refreshControl={<RefreshControl
+            colors={["blue", "red"]}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />}
         />
       </View>
     );

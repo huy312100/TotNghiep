@@ -15,6 +15,7 @@ const FirstReadMessageScreen = ({navigation}) => {
     const socket = useSelector((state) => state.authen.socket);
 
     const [dataAwaitMsg,setDataAwaitMsg] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
 
     function convertTimestamp(timestamp) {
         var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
@@ -84,9 +85,16 @@ const FirstReadMessageScreen = ({navigation}) => {
                 console.log(statusCode)
             }
             // setLoadingFacultScreen(false);
+            setRefreshing(false);
         })
         .catch((err) => console.log(err, "error"));
-    }
+    };
+
+    //refresh control trigger
+    const onRefresh = () => {
+      setRefreshing(true);
+      getAwaitMessage();
+    };
 
     const renderItem =({ item })=>(
         <TouchableOpacity style={styles.card} onPress={() =>{
@@ -136,8 +144,8 @@ const FirstReadMessageScreen = ({navigation}) => {
                 keyExtractor={(item,index) => index.toString()}
                 refreshControl={<RefreshControl
                     colors={["#9Bd35A", "#689F38"]}
-                    // refreshing={this.props.refreshing}
-                    //onRefresh={getAwaitMessage()_}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
                     />}
             />
         </View>

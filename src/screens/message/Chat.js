@@ -263,7 +263,7 @@ const ChatScreen = ({route,navigation}) => {
             }
             leftComponent={
               <TouchableOpacity onPress={() =>{ 
-                socket.emit('Return-Chat',roomID);
+                socket.emit('Return-Chat',[roomID,route.params.email]);
                 navigation.goBack()
                 }}>
                     <Entypo name="chevron-left" size={28} color="blue" />

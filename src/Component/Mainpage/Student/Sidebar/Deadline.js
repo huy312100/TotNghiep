@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Navbar from '../Navbar';
 import Sidebar from '../Sidebar';
 import "../../../../style/Deadline.css";
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 class Deadline extends Component {
     constructor(props) {
@@ -12,8 +12,60 @@ class Deadline extends Component {
             month: 0,
             year: 0,
             empty: 0,
-            loadding: 1
+
+            loadding: 1,
+            loaddingnewsuni: 1,
+            loaddingnewsfac: 1,
+
+            newsuni: [],
+            newsfac: [],
+
+            tag: 0
         }
+    }
+
+    getNewsUniversity = () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/info/newsuniversity", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                this.setState({
+                    newsuni: result,
+                    loaddingnewsuni: 0
+                })
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    getNewsFaculty = () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/info/newsfaculty", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                this.setState({
+                    newsfac: result,
+                    loaddingnewsfac: 0
+                })
+            })
+            .catch(error => console.log('error', error));
     }
 
 
@@ -32,7 +84,7 @@ class Deadline extends Component {
             .then(response => response.json())
             .then(result => {
                 console.log(result);
-                if (result[0].nameCourese !== undefined) {
+                if (result.length > 0 && result[0].nameCourese !== undefined) {
                     this.setState({
                         deadline: result,
                         empty: 0,
@@ -146,7 +198,7 @@ class Deadline extends Component {
 
     LoaddingIcon = () => {
         if (this.state.loadding === 1) {
-            return <i class="loadding fa fa-circle-o-notch fa-spin fa-3x"></i>
+            return <i className="loadding fa fa-circle-o-notch fa-spin fa-3x"></i>
         }
     }
 
@@ -161,8 +213,8 @@ class Deadline extends Component {
         }
         else {
             return (
-                this.state.deadline.map((d) => (
-                    <div className="deadline">
+                this.state.deadline.map((d, index) => (
+                    <div key={index} className="deadline">
                         <div className="titlee">
                             {d.nameCourese}
                         </div>
@@ -173,12 +225,12 @@ class Deadline extends Component {
                             Hạn chót: {this.convertTime(d.duedate)}
                         </div>
                         <hr />
-                        <div type="button" class="direct">
+                        <div type="button" className="direct">
                             {/* <div className="link">
                                 <i className="fa fa-info fa-fw"></i>
                                 <span>Xem chi tiết môn</span>
                             </div> */}
-                            <a className="link" href={d.url} target="_blank">
+                            <a className="link" href={d.url} target="_blank" rel="noopener noreferrer">
                                 <i className="fa fa-sign-out fa-fw"></i><span>
                                     Chuyển đến trang môn học</span>
                             </a>
@@ -192,44 +244,106 @@ class Deadline extends Component {
         }
     }
 
-    render() {
-        return (
-            <div>
-                <div className="datepicker">
-                    {/* <select value={this.state.month} name="month" onChange={this.handleChange}>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
-                        <option>11</option>
-                        <option>12</option>
-                    </select>
-                    <select value={this.state.year} name="year" onChange={this.handleChange}>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
-                        <option>2022</option>
-                    </select> */}
-                    <div className="change-month" type="button" onClick={() => this.changeMonth(-1)}><i width="20vw" className="fa fa-angle-left fa-lg fa-fw" aria-hidden="true"></i>Tháng trước</div>
-                    <div className="month">{"Tháng " + this.convertMonth(this.state.month) + " " + this.state.year}</div>
-                    <div className="change-month" type="button" onClick={() => this.changeMonth(1)}>Tháng sau<i width="20vw" className="fa fa-angle-right fa-lg fa-fw" aria-hidden="true"></i></div>
+    clickTag = async (numtag) => {
+        await this.setState({
+            tag: numtag
+        })
+        if (this.state.tag===1 && this.state.loaddingnewsuni===1)
+        this.getNewsUniversity();
+        if (this.state.tag==2 && this.state.loaddingnewsfac===1)
+        this.getNewsFaculty();
 
-                </div>
-                <div className="deadline-page">
-                    <Navbar />
-                    <Sidebar />
+    }
 
-                    {/* <hr/>
-                 */}
-                    <div className="deadline-box">
-                        {this.renderDeadline()}
+    renderTag = () => {
+        if (this.state.tag === 0)
+            return (
+                <div>
+                    <div className="datepicker">
+                        <div className="change-month" type="button" onClick={() => this.changeMonth(-1)}><i width="20vw" className="fa fa-angle-left fa-lg fa-fw" aria-hidden="true"></i>Tháng trước</div>
+                        <div className="month">{"Tháng " + this.convertMonth(this.state.month) + " " + this.state.year}</div>
+                        <div className="change-month" type="button" onClick={() => this.changeMonth(1)}>Tháng sau<i width="20vw" className="fa fa-angle-right fa-lg fa-fw" aria-hidden="true"></i></div>
+
+                    </div>
+                    <div className="deadline-page">
+                        {/* <hr/>
+     */}
+                        <div className="deadline-box">
+                            {this.renderDeadline()}
+                        </div>
                     </div>
                 </div>
+            )
+        else if (this.state.tag === 1 && this.state.loaddingnewsuni === 0) {
+            return (
+                <div className="news-page">
+
+                    {
+                        this.state.newsuni.map((news) => {
+                            return (<a href={"https://www.hcmus.edu.vn/" + news.Link} target="_blank" rel="noopener noreferrer"><div className="news">
+                                <div className="title">
+                                    {news.Title}
+                                </div>
+                                <div className="time">
+                                    {news.Date}
+                                </div>
+
+                            </div>
+                                {/* <hr/> */}
+                            </a>
+                            )
+                        })
+                    }
+
+                </div>
+            )
+        }
+
+        else if (this.state.tag === 2 && this.state.loaddingnewsfac === 0) {
+            return (
+                <div className="news-page">
+
+                    {
+                        this.state.newsfac.map((news) => {
+                            return (<a href={"https://www.hcmus.edu.vn/" + news.Link} target="_blank" rel="noopener noreferrer"><div className="news">
+                                <div className="title">
+                                    {news.Title}
+                                </div>
+                                <div className="time">
+                                    {news.Date}
+                                </div>
+
+                            </div>
+                                {/* <hr/> */}
+                            </a>
+                            )
+                        })
+                    }
+
+                </div>
+            )
+        }
+    }
+
+    render() {
+        var assign = this.state.tag === 0 ? "assign" : "";
+        var university = this.state.tag === 1 ? "university" : "";
+        var faculty = this.state.tag === 2 ? "faculty" : "";
+        return (
+            <div>
+                <Navbar />
+                <Sidebar />
+                <div className="deadline-tag">
+                    <div className="tag">
+                        <div type="button" className={"btn-deadline " + assign} onClick={() => this.clickTag(0)}>Bài tập
+                        </div>
+                        <div type="button" className={"btn-deadline " + university} onClick={() => this.clickTag(1)}>Tin tức trường
+                        </div>
+                        <div type="button" className={"btn-deadline " + faculty} onClick={() => this.clickTag(2)}>Tin tức khoa
+                        </div>
+                    </div>
+                </div>
+                {this.renderTag()}
             </div>
         );
     }

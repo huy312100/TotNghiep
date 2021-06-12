@@ -1,55 +1,53 @@
-.deadline-page{
+.deadline-page {
     width: 75vw;
     margin: 0px 20vw;
     /* background: white; */
 }
 
-.deadline-box{
+.deadline-box {
     margin-top: 0px;
 }
 
-.deadline{
+.deadline {
     /* border: 1px solid black; */
     padding: 30px 30px 10px 30px;
     margin-top: 10px;
     background: white;
     border-radius: 10px;
     box-shadow: 0px 0.5px 1px grey;
-
 }
 
-.deadline .titlee{
+.deadline .titlee {
     font-size: 24px;
     font-weight: 500;
     /* border: 1px solid black; */
-    padding:5px;
+    padding: 5px;
     background: #18468b;
     border-radius: 10px;
     color: white;
 }
 
-.deadline .decription{
+.deadline .decription {
     font-size: 18px;
     font-weight: 400;
     padding: 5px;
     color: rgb(56, 56, 56);
 }
 
-.deadline .duedate{
+.deadline .duedate {
     font-size: 14px;
     /* font-weight: 500; */
     padding: 5px;
     color: grey;
-
 }
 
-.deadline .direct{
+.deadline .direct {
     display: flex;
     justify-content: space-around;
     /* padding: 5px; */
 }
 
-.deadline .link{
+.deadline .link {
     font-size: 16px;
     text-align: center;
     width: 70vw;
@@ -58,20 +56,20 @@
     /* background: grey; */
     border-radius: 10px;
     font-weight: 450;
-    
 }
-.deadline a{
+
+.deadline a {
     text-decoration: none;
     color: black;
 }
 
-.deadline .link:hover{
+.deadline .link:hover {
     background: rgb(243, 243, 243);
 }
 
-.datepicker{
+.datepicker {
     width: 85vw;
-    margin: 56px 0 0 15vw;
+    margin: 0 0 0 15vw;
     background: white;
     display: flex;
     justify-content: space-around;
@@ -80,37 +78,112 @@
     background: white;
     /* border-radius: 10px; */
     box-shadow: 0px 0.5px 1px grey;
-        /* position: fixed;
+    /* position: fixed;
         width: 50vw; */
-
 }
-
 
 /* .datepicker select{
     width: 30vw;
     height: 5vh;
 } */
-.datepicker .month{
+
+.datepicker .month {
     font-size: 24px;
 }
 
-.datepicker .change-month{
+.datepicker .change-month {
     /* background: rgb(189, 241, 172); */
     padding: 10px;
     border-radius: 10px;
     font-size: 14px;
     width: 10vw;
     text-align: center;
-    box-shadow: 0px 1px 2px grey;
-
+    background: rgb(114, 152, 235);
+    /* box-shadow: 0px 1px 2px grey; */
 }
 
-.datepicker .change-month:hover{
-    background: rgb(243, 243, 243);
-
+.datepicker .change-month:hover {
+    /* background: rgb(243, 243, 243); */
 }
 
-.deadline-page hr{
+.deadline-page hr {
     padding: 0px;
-    margin: 10px;    
-  }
+    margin: 10px;
+}
+
+.deadline-tag {
+    width: 85vw;
+    margin: 56px 0 0 15vw;
+    background: white;
+    /* padding: 10px; */
+}
+
+.deadline-tag .tag {
+    background: white;
+    /* border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px; */
+    box-shadow: 0px 0.5px 1px grey;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.deadline-tag .btn-deadline {
+    display: inline-block;
+    padding: 15px;
+    width: 50vw;
+    font-size: 16px;
+    font-weight: 500;
+    /* border-bottom: 2px solid black; */
+}
+
+.deadline-tag .tag .assign {
+    border-bottom: 2px solid rgb(125, 149, 255);
+    color: rgb(125, 149, 255);
+    /* border-bottom-left-radius: 10px; */
+}
+
+.deadline-tag .tag .university {
+    border-bottom: 2px solid rgb(125, 149, 255);
+    color: rgb(125, 149, 255);
+}
+
+.deadline-tag .tag .faculty {
+    border-bottom: 2px solid rgb(125, 149, 255);
+    color: rgb(125, 149, 255);
+}
+
+.news-page {
+    margin: 10px 0 0 16vw;
+    background: white;
+    width: 82vw;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+
+}
+
+.news-page a {
+    text-decoration: none;
+}
+
+.news-page .news {
+    /* background: white; */
+    padding: 20px 20px 0 20px;
+    /* margin-bottom: 10px; */
+    /* box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;} */
+}
+
+.news-page .news:hover .title {
+    color: #3e50b5;
+}
+
+.news-page .title {
+    /* margin: 10px    ; */
+    font-size: 18px;
+    font-weight: 500;
+    color: black;
+}
+
+.news-page .time {
+    color: gray;
+    font-size: 14px;
+}

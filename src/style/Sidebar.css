@@ -60,5 +60,7 @@ a.content-sidenav{
 }
 
 .selected, .selected:hover {
-    background: rgb(226, 226, 226);
+    background: rgb(243, 243, 243);
+    color: #18468b;
+    font-weight: 500;
 }

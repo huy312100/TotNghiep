@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
+import DatePicker from 'react-datepicker';
+import { registerLocale } from "react-datepicker";
+import vi from 'date-fns/locale/vi';
 import "../../../../style/Calendar.css";
 import Navbar from '../Navbar';
 import Sidebar from '../Sidebar';
+import "react-datepicker/dist/react-datepicker.css";
+import { CirclePicker,CircleSwatch } from 'react-color';
+
+registerLocale('vi', vi)
 
 class Calendar extends Component {
     constructor(props) {
@@ -19,9 +26,7 @@ class Calendar extends Component {
             loadcalendar: 1,
             loadevent: 1,
 
-
-            add_fulldate: "2021 6 1",
-            add_title: "Test 3",
+            add_title: "",
             add_year: 2021,
             add_month: 1,
             add_day: 1,
@@ -29,12 +34,18 @@ class Calendar extends Component {
             add_startUNIX: 1621407600,
             add_end: "24",
             add_endUNIX: 1621422000,
-            add_desc: "Nothing",
-            add_color: "#fff",
+            add_desc: "",
+            add_color: "rgb(244, 67, 54)",
             add_noti: 1621406700,
+            add_date: new Date(),
 
             popup: 0
+
+
         }
+
+        this.handleChange = this.handleChange.bind(this);
+        this.timeclock = Array.from(Array(24).keys());
     }
     convertTimestamp = (timestamp) => {
         var d = new Date(timestamp * 1000),	// Convert the passed timestamp to milliseconds
@@ -50,7 +61,7 @@ class Calendar extends Component {
         } else if (hh === 12) {
             h = 12;
             ampm = 'PM';
-        } else if (hh == 0) {
+        } else if (hh === 0) {
             h = 12;
         }
 
@@ -84,7 +95,7 @@ class Calendar extends Component {
                     time: this.convertTimestamp(value.duedate),
                     id: ""
                 }
-                temp[this.convertTime(value.duedate)] = "moodle";
+                temp[this.convertTime(value.duedate)] = "black";
                 if (listevent[this.convertTime(value.duedate)][0] === "") {
                     listevent[this.convertTime(value.duedate)][0] = newevent;
                 }
@@ -102,7 +113,7 @@ class Calendar extends Component {
                     time: this.convertTimestamp(value.StartHour),
                     id: value._id
                 }
-                temp[value.Date.day] = "custom";
+                temp[value.Date.day] = value.Color;
                 if (listevent[value.Date.day][0] === "") {
                     listevent[value.Date.day][0] = newevent;
                 }
@@ -125,7 +136,7 @@ class Calendar extends Component {
 
 
     convertAddingDate = () => {
-        var fullday = new Date(this.state.add_fulldate);
+        var fullday = new Date(this.state.add_date);
         this.setState({
             add_day: fullday.getDate(),
             add_month: fullday.getMonth() + 1,
@@ -143,7 +154,7 @@ class Calendar extends Component {
 
     removeEvent = (id) => {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer "+localStorage.getItem("token"));
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         // console.log("event key",event.target.key)
@@ -168,6 +179,8 @@ class Calendar extends Component {
             // console.log("test",this.state.listEvent[13].time)
             var listE = this.state.listEvent[this.state.selectedDay].map((item) => {
                 console.log(item);
+                if (item === "")
+                    return <></>
                 var remove = item.id === "" ? <></> : <i className="fa fa-trash" ></i>;
                 return <tr>
                     <td className="time">{item.time}</td>
@@ -279,19 +292,21 @@ class Calendar extends Component {
 
     renderCalendar = () => {
         if (this.state.loadcalendar === 0) {
-            let daysofmonth = new Date(2021, this.state.month, 0).getDate();
+            let daysofmonth = new Date(this.state.year, this.state.month, 0).getDate();
             let ascen = Array.from({ length: daysofmonth }, (_, i) => i + 1);
             let dow = this.getDayOfWeek()
             let temp = Array.from({ length: dow }, () => "");
             var numbers = temp.concat(ascen)
             const listItems = numbers.map((number) => {
-                if (this.state.event[number] === "moodle") {
-                    return <li type="button" value={number} onClick={(e) => this.setSelecteday(e.currentTarget.value)}><span className="moodle">{number}</span></li>
+                if (number === "")
+                    return <li></li>
+                else if (this.state.event[number] !== "") {
+                    return <li key={number} type="button" value={number} onClick={(e) => this.setSelecteday(e.currentTarget.value)}><div className="color-event" style={{ background: this.state.event[number], color: "white" }} >{number}</div></li>
                 }
-                if (this.state.event[number] === "custom") {
-                    return <li type="button" value={number} onClick={(e) => this.setSelecteday(e.currentTarget.value)}><span className="custom">{number}</span></li>
-                }
-                return <li type="button" value={number} onClick={(e) => this.setSelecteday(e.currentTarget.value)}>{number}</li>
+                // if (this.state.event[number] === "custom") {
+                //     return <li key={number} type="button" value={number} onClick={(e) => this.setSelecteday(e.currentTarget.value)}><span className="custom">{number}</span></li>
+                // }
+                return <li key={number} type="button" value={number} onClick={(e) => this.setSelecteday(e.currentTarget.value)}><span className="color-event">{number}</span></li>
             }
             );
             return listItems;
@@ -335,8 +350,15 @@ class Calendar extends Component {
                 <div className="date">{this.state.selectedDay + "/" + this.state.month + "/" + this.state.year}</div>
                 <div className="event" id="style-3">
                     <table>
-                        {this.selectedDay()}
-
+                        <colgroup>
+                            <col span="1" style={{ width: "9%" }} />
+                            <col span="1" style={{ width: "1%" }} />
+                            <col span="1" style={{ width: "85%" }} />
+                            <col span="1" style={{ width: "5%" }} />
+                        </colgroup>
+                        <tbody>
+                            {this.selectedDay()}
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -386,31 +408,84 @@ class Calendar extends Component {
         this.setState({ [event.target.name]: event.target.value })
     }
 
+    async handleChange(event) {
+        await this.setState({ [event.target.name]: event.target.value });
+        // console.log(this.state.uniselected)
+    }
+
+    renderClockPicker = () => {
+
+
+        var timepicker = this.timeclock.map((num) => {
+            // console.log(num)
+            if (num === 0) {
+                return <option value={num}>12 AM</option>
+            }
+            else if (num === 12) {
+                return <option value={num}>12 PM</option>
+            }
+            else if (num > 12) {
+                return <option value={num}>{num - 12} PM</option>
+            }
+
+            else return <option value={num}>{num} AM</option>
+        })
+        return timepicker;
+    }
+
+    renderDatepicker = (date) => {
+        this.setState({ add_date: date })
+    }
+
+    handleChangeComplete = (color, event) => {
+        console.log(color)
+        this.setState({ add_color: color.hex });
+    };
+
     popupAddEvent = () => {
         if (this.state.popup === 1) {
             return (
                 <div className="popup-event">
-                    <input placeholder="Thêm tiêu đề" onChange={this.setParams} name="add_title" value={this.state.add_title}></input>
-                    <div className="event">
+                    <input className="add-title" placeholder="Thêm tiêu đề" onChange={this.setParams} name="add_title" value={this.state.add_title}></input>
+                    {/* <div className="event"> */}
+
+                    {/* <label>Ngày</label> */}
+                    <DatePicker dateFormat="dd/MM/yyyy" locale="vi" selected={this.state.add_date} onChange={(date) => this.renderDatepicker(date)} />
+                    <div className="event-clock">
                         <label>Thời gian</label>
-                        <input onChange={this.setParams} name="add_fulldate" value={this.state.add_fulldate}></input>
-                        <input placeholder="Bắt đầu" onChange={this.setParams} name="add_start" value={this.state.add_start}></input>
-                        <input placeholder="Kết thúc" onChange={this.setParams} name="add_end" value={this.state.add_end}></input>
+                        <select className="clock" name="add_start" onChange={this.handleChange} value={this.state.add_start}>
+                            {this.renderClockPicker()}
+                        </select>
+                        <span>-</span>
+                        <select className="clock" name="add_end" onChange={this.handleChange} value={this.state.add_end}>
+                            {this.renderClockPicker()}
+                        </select>
                     </div>
                     <div>
-                        <label>Nội dung</label>
-                        <input onChange={this.setParams} name="add_desc" value={this.state.add_desc}></input>
+                        <input className="content" placeholder="Thêm nội dung" onChange={this.setParams} name="add_desc" value={this.state.add_desc}></input>
                     </div>
-                    <div>
+                    <div className="event">
+                        <label>Màu đánh dấu</label>
+                        <CirclePicker color={this.state.add_color} width="30vw" onChangeComplete={this.handleChangeComplete} circleSize={28}></CirclePicker>
+                    </div>
+
+                    {/* <input className="time" onChange={this.setParams} name="add_fulldate" value={this.state.add_fulldate} ></input> */}
+
+                    {/* <input placeholder="Kết thúc" onChange={this.setParams} name="add_end" value={this.state.add_end}></input> */}
+                    {/* </div> */}
+
+                    {/* <div className="color">
                         <label>Màu</label>
-                        <input onChange={this.setParams} name="add_color" value={this.state.add_color}></input>
-                    </div>
-                    <div>
+                        <input placeholder="Thêm màu" onChange={this.setParams} name="add_color" value={this.state.add_color}></input>
+                    </div> */}
+                    {/* <div>
                         <label>Thời gian thông báo</label>
                         <input onChange={this.setParams} name="add_noti" value={this.state.add_noti}></input>
+                    </div> */}
+                    <div className="btn-box">
+                        <div class="btn add" type="button" onClick={this.addEvent}>Thêm thông báo</div>
+                        <div class="btn cancel" type="button" onClick={this.closePopup}>Hủy</div>
                     </div>
-                    <div type="button" onClick={this.addEvent}>Thêm thông báo</div>
-                    <div type="button" onClick={this.closePopup}>Hủy</div>
                 </div>
             )
         }
@@ -443,19 +518,19 @@ class Calendar extends Component {
                     <div className="calendar">
                         <div className="title">LỊCH CÁ NHÂN</div>
                         <div className="picker">
-                            <div onClick={(i) => this.changeMonth(-1)}><i width="20vw" className="fa fa-angle-left fa-lg fa-fw" aria-hidden="true"></i></div>
+                            <div onClick={(i) => this.changeMonth(-1)}><i type="button" width="20vw" className="fa fa-angle-left fa-lg fa-fw" aria-hidden="true"></i></div>
                             <div>THÁNG {this.state.month}</div>
-                            <div onClick={(i) => this.changeMonth(1)}><i width="20vw" className="fa fa-angle-right fa-lg fa-fw" aria-hidden="true"></i></div>
+                            <div onClick={(i) => this.changeMonth(1)}><i type="button" width="20vw" className="fa fa-angle-right fa-lg fa-fw" aria-hidden="true"></i></div>
                         </div>
                         <hr />
                         <ul className="dayofweek">
-                            <li>H</li>
-                            <li>B</li>
-                            <li>T</li>
-                            <li>N</li>
-                            <li>S</li>
-                            <li>B</li>
-                            <li>C</li>
+                            <li key="H">H</li>
+                            <li key="BA">B</li>
+                            <li key="T">T</li>
+                            <li key="N">N</li>
+                            <li key="S">S</li>
+                            <li key="B">B</li>
+                            <li key="C">C</li>
                         </ul>
                         <ul className="days">
                             {this.renderCalendar()}
@@ -467,7 +542,7 @@ class Calendar extends Component {
                 </div>
                 <div>
                     <div className="calendar-button">
-                        <div type="button" className="btn" onClick={this.openPopup}>Thêm sự kiện</div><div type="button" className="btn">Xóa sự kiện</div>
+                        <div type="button" className="btn" onClick={this.openPopup}>Thêm sự kiện</div>
                     </div>
                 </div>
             </div>

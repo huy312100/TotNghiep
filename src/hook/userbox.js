@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link,useHistory } from 'react-router-dom';
+import {useHistory } from 'react-router-dom';
 
 export default function UserBox() {
     let history = useHistory();
@@ -10,6 +10,6 @@ export default function UserBox() {
     }
 
     return (
-        <Link className="user-link" style={{ textDecoration: 'none',fontWeight: 'bold' }} onClick={logout}>Đăng xuất</Link>
+        <div type="button" className="user-link" style={{ textDecoration: 'none',fontWeight: 'bold' }} onClick={logout}>Đăng xuất</div>
     )
 }

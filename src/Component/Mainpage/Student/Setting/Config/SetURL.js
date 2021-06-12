@@ -251,7 +251,7 @@ class SetURL extends Component {
                         </div>
                         <div type="button" className={"btn-seturl " + trellotag} onClick={(numtag) => this.clickTag(2)}>Trello {trellolink}
                         </div>
-                        <div type="button" className={"btn-seturl " + slacktag} onClick={(numtag) => this.clickTag(3)}>Slack {slacklink}
+                        <div type="button" className={"btn-seturl " + slacktag} style={{marginTop:"2px"}} onClick={(numtag) => this.clickTag(3)}>Slack {slacklink}
                         </div>
                     </div>
                 </div>

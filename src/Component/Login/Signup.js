@@ -103,7 +103,7 @@ class Signup extends Component {
         fetch("https://hcmusemu.herokuapp.com/account/signup", requestOptions)
             .then(response => response.json())
             .then(result => {
-                if (result.message == "account created") {
+                if (result.message === "account created") {
                     alert("Tạo thành công")
                 }
             })
@@ -118,9 +118,9 @@ class Signup extends Component {
     }
 
     render() {
-        console.log()
-        if (this.state.university == false) {
-            console.log(this.state.university)
+        // console.log(this.state.university.length === 0)
+        if (this.state.university.length === 0) {
+            // console.log(this.state.university.length === 0)
             return <></>
         }
         return (
@@ -148,7 +148,7 @@ class Signup extends Component {
                             {this.state.faculty}
                         </select>
                         <hr />
-                        <p>Bằng cách nhấp vào Đăng ký, bạn đồng ý với  <Link style={{ color: 'dodgerblue' }}>Điều khoản &amp; Chính sách</Link> của chúng tôi.</p>
+                        <p>Bằng cách nhấp vào Đăng ký, bạn đồng ý với  <a href="/#" style={{ color: 'dodgerblue' }}>Điều khoản &amp; Chính sách</a> của chúng tôi.</p>
                         <div className="clearfix">
                             <button type="button" className="signupbtn" onClick={() => this.checkPasswordRepeat()}>Đăng Kí</button>
                             <Link to="/" type="button" className="cancelbtn">Trở về</Link>

@@ -61,9 +61,9 @@
     margin-left: 10px;
 }
 
-input {
+/* input {
     padding: 5px;
-}
+} */
 
 .lb-input input[type=password] {
     /* font:small-caption; */
@@ -176,6 +176,9 @@ input {
     color: rgb(255, 116, 116);
     /* border-bottom: 2px solid grey; */
     /* padding-bottom: 1px; */
+    /* margin-top: 2px; */
+    /* font-size: 16px; */
+    /* padding-top:10px; */
 }
 
 .btnconnect-box .gr-btnconnect{

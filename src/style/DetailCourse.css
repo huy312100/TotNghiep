@@ -1,0 +1,33 @@
+.detail-course-page {
+    width: 80vw;
+    margin: 66px 17vw;
+    background: white;
+    padding:30px
+}
+
+.detail-course-page .name{
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background:#18468b;
+    border-radius: 1px;
+    padding: 5px;
+    color: white;
+    /* position: fixed; */
+}
+
+.detail-course-page .title{
+    font-size: 20px;
+    font-weight: 500;
+    color: #c75e57;
+}
+
+.detail-course-page .content{
+    margin: 10px;
+    color: rgb(78, 78, 78);
+}
+
+.detail-course-page hr{
+    padding: 0;
+    margin: 0;
+}

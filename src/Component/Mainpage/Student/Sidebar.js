@@ -17,29 +17,29 @@ class Sidebar extends Component {
                     </NavLink>
                     <NavLink to="/deadline" className="content-sidenav" activeClassName="selected">
                         <div className="nav-text">
-                            <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/calendar.png'} alt=""></img>
-                            <div className="side-text">Deadline</div>
+                            <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/event.png'} alt=""></img>
+                            <div className="side-text">Sự kiện</div>
                         </div>
                     </NavLink>
-                    <NavLink to="course" className="content-sidenav" activeClassName="selected">
+                    <NavLink to="/course" className="content-sidenav" activeClassName="selected">
                         <div className="nav-text">
                             <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/course.png'} alt=""></img>
                             <div className="side-text">Môn học</div>
                         </div>
                     </NavLink>
-                    <NavLink to="friend" className="content-sidenav" activeClassName="selected">
+                    <NavLink to="/friend" className="content-sidenav" activeClassName="selected">
                         <div className="nav-text">
                             <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/friend.png'} alt=""></img>
                             <div className="side-text">Bạn bè</div>
                         </div>
                     </NavLink>
-                    <NavLink to="forum" className="content-sidenav" activeClassName="selected">
+                    <NavLink to="/forum" className="content-sidenav" activeClassName="selected">
                         <div className="nav-text">
                             <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/forum.png'} alt=""></img>
                             <div className="side-text">Diễn đàn</div>
                         </div>
                     </NavLink>
-                    <NavLink to="calendar" className="content-sidenav" activeClassName="selected">
+                    <NavLink to="/calendar" className="content-sidenav" activeClassName="selected">
                         <div className="nav-text">
                             <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/calendar.png'} alt=""></img>
                             <div className="side-text">Lịch</div>

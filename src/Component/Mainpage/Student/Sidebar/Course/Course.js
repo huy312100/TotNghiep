@@ -121,20 +121,20 @@ class Course extends Component {
 
     LoaddingIcon = () => {
         if (this.state.loadding === 1) {
-            return <i class="loadding fa fa-circle-o-notch fa-spin fa-3x"></i>
+            return <i className="loadding fa fa-circle-o-notch fa-spin fa-3x"></i>
         }
     }
 
     checkPage = () => {
         if (this.state.tag === 0) {
             return (<div>
-                {this.state.course.map((c) => {
+                {this.state.course.map((c,index) => {
                     return (
-                        <div className="course">
+                        <div key={index} className="course">
                             <Link to={"/course/"+c.IDCourses} className="titlee direct">{c.name}</Link>
                             <div className="list-teacher">
-                                {c.teacher.map((tc) => (
-                                    <div className="content">
+                                {c.teacher.map((tc,tindex) => (
+                                    <div key={tindex} className="content">
                                         <span>Giáo viên: </span>
                                         <span>{tc}</span>
                                     </div>))}
@@ -154,13 +154,13 @@ class Course extends Component {
         }
         else {
             return (<div>
-                {this.state.allcourse.map((c) => {
+                {this.state.allcourse.map((c,index) => {
                     return (
-                        <div className="course">
+                        <div key={index} className="course">
                             <Link to={"/course/"+c.IDCourses} className="titlee direct">{c.name}</Link>
                             <div className="list-teacher">
-                                {c.teacher.map((tc) => (
-                                    <div className="content">
+                                {c.teacher.map((tc,tindex) => (
+                                    <div key={tindex} className="content">
                                         <span>Giáo viên: </span>
                                         <span>{tc}</span>
                                     </div>))}
@@ -201,8 +201,6 @@ class Course extends Component {
             })
             this.getAllCourseScroll();
             console.log("loadding:", this.state.loadding)
-        } else {
-            console.log("not bottom")
         }
     }
 

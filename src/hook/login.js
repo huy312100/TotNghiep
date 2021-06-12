@@ -64,7 +64,7 @@ export default function LoginButton() {
     function loaddingButton() {
         if (loadding===1){
         return (
-            <button type="button" className="btnSubmit"><i class="fa fa-circle-o-notch fa-spin"></i>Loading</button>
+            <button type="button" className="btnSubmit"><i className="fa fa-circle-o-notch fa-spin"></i>Loading</button>
 
         )}
         return (
@@ -83,10 +83,10 @@ export default function LoginButton() {
                     <form>
                         <h3>Đăng nhập</h3>
                         <div className="form-group">
-                            <input id="login-input" type="text" className="form-control" name="username" placeholder="Tài khoản" onChange={(e) => setEmail(e.target.value)}/>
+                            <input  type="text" className="form-control" name="username" placeholder="Tài khoản" onChange={(e) => setEmail(e.target.value)}/>
                         </div>
                         <div className="form-group">
-                            <input id="login-input" type="password" className="form-control" name="password" placeholder="Mật khẩu" onChange={(e) => setPassword(e.target.value)}/>
+                            <input  type="password" className="form-control" name="password" placeholder="Mật khẩu" onChange={(e) => setPassword(e.target.value)}/>
                         </div>
                         <div className="form-group">
                             {loaddingButton()}

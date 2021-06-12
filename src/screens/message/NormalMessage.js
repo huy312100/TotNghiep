@@ -214,12 +214,13 @@ const NormalMessageScreen = ({navigation}) => {
       navigation.navigate("Chat",{
         name:item.name,
         idChatRoom:item.idRoom,
-        email:item.Email
+        email:item.Email,
+        avatar:item.Anh
       });
     }}>
         <View style={styles.userInfo}>
         <View style={styles.userImgWrapper}>
-            <Image style={styles.userImg} source={require("../../../assets/user-icon.png")}/>
+            <Image style={styles.userImg} source={{uri: item.Anh === "" || item.Anh === null ? `https://ui-avatars.com/api/?background=random&color=fff&name=${item.name}`: item.Anh}}/>
         </View>
         <View style={styles.textSection}>
             <View style={styles.userInfoText}>

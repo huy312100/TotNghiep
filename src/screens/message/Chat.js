@@ -4,6 +4,7 @@ import { View,Alert,Text,TouchableOpacity }  from 'react-native';
 import { Ionicons,FontAwesome5,Entypo } from '@expo/vector-icons';
 import { useSelector,useDispatch } from 'react-redux';
 import { Header} from 'react-native-elements';
+import uuid from 'react-native-uuid';
 
 //import io from 'socket.io-client';
 
@@ -44,11 +45,12 @@ const ChatScreen = ({route,navigation}) => {
       socket.on('Private-Message-To-Client',(data)=>{
         console.log(data);
         setMessages(previousMessages => GiftedChat.append(previousMessages, {
+          _id:uuid.v4(),
           text: data[2],
           createdAt: new Date(data[3]),
           user:{
             _id:2,
-            name:data[1]
+            name:data[1], 
           }
         }));
       });
@@ -105,17 +107,34 @@ const ChatScreen = ({route,navigation}) => {
         const tmpAttrMsg =[];
         for (const key in dataRes) {
           if(dataRes[key].from !== profile[0].Email){
-            tmpAttrMsg.push(
-              {
-                _id: key,
-                text: dataRes[key].text,
-                //createdAt: new Date(dataRes[key].time).toISOString(),
-                createdAt: new Date(parseInt(dataRes[key].time)).toISOString(),
-                user:{
-                  _id:2,
-                  name:dataRes[key].from,
-                }
-              });
+            if(route.params.avatar === undefined || route.params.avatar === "" || route.params.avatar === null ){
+              tmpAttrMsg.push(
+                {
+                  _id: key,
+                  text: dataRes[key].text,
+                  //createdAt: new Date(dataRes[key].time).toISOString(),
+                  createdAt: new Date(parseInt(dataRes[key].time)).toISOString(),
+                  user:{
+                    _id:2,
+                    name:dataRes[key].from,
+                    avatar:`https://ui-avatars.com/api/?background=random&color=fff&name=${route.params.name}`
+                  }
+                });
+            }
+            else{
+              tmpAttrMsg.push(
+                {
+                  _id: key,
+                  text: dataRes[key].text,
+                  //createdAt: new Date(dataRes[key].time).toISOString(),
+                  createdAt: new Date(parseInt(dataRes[key].time)).toISOString(),
+                  user:{
+                    _id:2,
+                    name:dataRes[key].from,
+                    avatar: route.params.image,
+                  }
+                });
+            }
           }
           else{
             tmpAttrMsg.push(

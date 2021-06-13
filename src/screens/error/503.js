@@ -6,7 +6,7 @@ const Error503Screen = () => {
     return(
         <View style={styles.container}>
             <ImageBackground style={styles.img}
-             source={require('../../../assets/503_error.png')}
+             source={require('../../../assets/error/503.png')}
              resizeMode='contain'/>
 
         </View>

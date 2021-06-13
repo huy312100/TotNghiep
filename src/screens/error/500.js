@@ -6,7 +6,7 @@ const Error500Screen = () => {
     return(
         <View style={styles.container}>
             <ImageBackground style={styles.img}
-             source={require('../../../assets/500_error.png')}
+             source={require('../../../assets/error/500.png')}
              resizeMode='contain'/>
 
         </View>

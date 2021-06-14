@@ -210,9 +210,6 @@ const ChatScreen = ({route,navigation}) => {
 
   // }, [roomID]);
 
-  const loadRoomID=useCallback(() => {
-    //console.log(roomID);
-  },[roomID]);
 
   const onSend =(messages = []) => {
     //console.log(roomID);

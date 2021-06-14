@@ -39,6 +39,7 @@ import PortalConnectScreen from '../screens/profile/connect_app/Portal';
 import ClassroomConnectScreen from '../screens/profile/connect_app/Classroom';
 import SlackConnectScreen from '../screens/profile/connect_app/Slack';
 import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
+import { View } from "react-native";
 
 
 const Stack = createStackNavigator();
@@ -97,17 +98,25 @@ function HomeStackNavigation({navigation}) {
         name="Calendar"
         component={CalendarScreen}
         options={{ 
-          title: "Lịch hoạt động",
-          headerBackTitle:false,
-          headerTruncatedBackTitle:false,
-          headerRight:()=>(
-            <TouchableOpacity onPress={() =>navigation.navigate('Add Event')}>
-              <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
-            </TouchableOpacity>
-          ),
-          headerRightContainerStyle:{
-            paddingRight:10
-          },
+            headerShown: false
+          // title: "Lịch hoạt động",
+          // headerBackTitle:false,
+          // headerTruncatedBackTitle:false,
+          // headerRight:()=>(
+          //   <View style={{flexDirection:'row'}}>
+          //     <TouchableOpacity >
+          //       <MaterialCommunityIcons name="calendar-month-outline" size={30} color="blue" />
+          //     </TouchableOpacity>
+              
+          //     <TouchableOpacity onPress={() =>navigation.navigate('Add Event')}>
+          //       <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
+          //     </TouchableOpacity>
+          //   </View>
+           
+          // ),
+          // headerRightContainerStyle:{
+          //   paddingRight:10
+          // },
         }}
       />
 

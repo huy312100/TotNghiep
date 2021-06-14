@@ -54,14 +54,9 @@ const FindToChatScreen = ({navigation}) => {
     };
 
     const loadRoomID = useCallback(() => {
-      console.log('a');
       socket.once('Reply-Create-Room',(data)=>{
-        //console.log(data);
         setRoomID(data);
-        abc=data;
-        console.log(roomID)
       });
-      
     },[roomID]);
 
     const renderItem = ({ item }) => (

@@ -1,11 +1,13 @@
 import React, {useState,useEffect,useRef} from 'react';
-import {Platform, StyleSheet, View, Text, TouchableOpacity, Button,Alert,Linking,Dimensions} from 'react-native';
-import { Overlay } from 'react-native-elements';
+import { StyleSheet, View, Text, TouchableOpacity, Button,Alert,Linking,Dimensions} from 'react-native';
+import { Overlay,Header } from 'react-native-elements';
+import { Entypo,MaterialCommunityIcons,AntDesign } from '@expo/vector-icons';
 
 import {useDispatch,useSelector} from 'react-redux';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import * as calendarActions from '../../../../store/actions/Calendar';
 import LoadingScreen from '../../LoadingScreen';
-
 import TimelineCalendar from './timeline_calendar/TimelineCalendar';
 
 let { width } = Dimensions.get('window');
@@ -64,7 +66,7 @@ const CalendarScreen =({navigation})=> {
     }
   };
 
-    function convertTimestamp(timestamp) {
+  function convertTimestamp(timestamp) {
     var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
         yyyy = d.getFullYear(),
         mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
@@ -92,6 +94,8 @@ const CalendarScreen =({navigation})=> {
   const [monthChanged,setMonthChanged] = useState(getCurrentMonth());
   const [yearChanged,setYearChanged] = useState(getCurrentYear());
 
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
   const [idEvent,setIdEvent]=useState('');
   const [nameEvent,setNameEvent] = useState('');
   const [startTimeEvent,setStartTimeEvent] = useState('');
@@ -111,9 +115,22 @@ const CalendarScreen =({navigation})=> {
   const dispatch = useDispatch();
   const unmounted = useRef(false);
 
+  
+
   const toggleOverlay = () => {
     setVisibleOverlay(!visibleOverlay);
   };
+
+  const handleConfirm = (date) => {
+    //console.warn("A date has been picked: ", date);
+    //console.log(date);
+    setCurrentDate(date);
+    setDatePickerVisibility(false);
+  };
+
+  const handleCancel = () => {
+    setDatePickerVisibility(false);
+  }
 
   //   //Call getCalendarThis Month Calendar
   const getAllActivitiesInMonth = ()=>{
@@ -209,6 +226,40 @@ const CalendarScreen =({navigation})=> {
 
   return (
     <View style={{ flex: 1 }}>
+      <Header
+        containerStyle={{
+            backgroundColor: 'white',
+            justifyContent: 'space-around',
+            borderBottomColor:'#DDDDDD'
+        }}
+
+        centerComponent={
+            <Text style={{fontSize:20,fontWeight:'500'}}>Lịch hoạt động</Text>
+        }
+
+        leftComponent={
+          <TouchableOpacity onPress={() =>{ 
+            //socket.emit('Return-Chat',[roomID,route.params.email]);
+            navigation.goBack()
+            }}>
+                <Entypo name="chevron-left" size={28} color="blue" />
+            </TouchableOpacity>
+        }
+
+        rightComponent={
+          <View style={{flexDirection:'row'}}>
+              <TouchableOpacity style={{marginRight:5}} onPress={() =>{ setDatePickerVisibility(true); }}>
+                <AntDesign name="calendar" size={26} color="blue" />
+              </TouchableOpacity>
+              
+              <TouchableOpacity onPress={() => navigation.navigate('Add Event')}>
+                <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
+              </TouchableOpacity>
+          </View>
+        }
+        />
+
+
       <TimelineCalendar
         eventTapped={e => {
           toggleOverlay();
@@ -226,7 +277,7 @@ const CalendarScreen =({navigation})=> {
         }}
         events={allEvents}
         width={width}
-        initDate={'2021-06-13'}
+        initDate={currentDate}
         scrollToFirst
         upperCaseHeader
         uppercase
@@ -345,7 +396,20 @@ const CalendarScreen =({navigation})=> {
             {isLoading && LoadingScreen()}
            </Overlay>
 
-      
+           <DateTimePickerModal
+                    display="inline"
+                    isVisible={isDatePickerVisible }
+                    time="date"
+                    value={currentDate}
+                    headerTextIOS={"Lịch"}
+                    cancelTextIOS="Huỷ bỏ"
+                    confirmTextIOS="Xác nhận"
+                    onConfirm={handleConfirm}
+                    onCancel={handleCancel}
+                    // onHide={()=>{
+                    //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                    // }}
+                    />
          
     </View>
   );

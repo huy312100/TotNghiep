@@ -65,6 +65,7 @@ const HomeScreen=({navigation}) =>{
       await connectToSocket();
       
       await getRequestChatting();
+      
       await getProfile();
       
     }
@@ -137,7 +138,8 @@ const HomeScreen=({navigation}) =>{
     }).then((res)=>{
       setTokenNotification(res.data);
       dispatch(authActions.storeTokenNotification(res.data));
-      console.log(res);
+      //console.log(tokenNotification);
+      postTokenNotification(res.data);
     })
     .catch((err) => {
       console.log(err);
@@ -159,7 +161,36 @@ const HomeScreen=({navigation}) =>{
       console.log(data);
       dispatch(msgActions.FirstReadMessage(data));
     });
-  }
+  };
+
+  const postTokenNotification = (tokenNotification) => {
+    let details = {
+      TokenNotification: tokenNotification,
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    console.log(formBody);
+
+    fetch("https://hcmusemu.herokuapp.com/account/tokennotification", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `bearer ${token}`,
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+      }).catch((err) => console.log(err, "error"));
+  };
   
   return (
 

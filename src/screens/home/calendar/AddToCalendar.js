@@ -375,13 +375,13 @@ const AddToCalendarScreen = ({navigation}) => {
                     </TouchableOpacity>
                 </View>
                 
-                {/* <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={navigation.navigate('Add people to calendar')}>
+                <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={() =>{navigation.navigate('Add people to calendar')}}>
                     <View style={styles.date}>
                     <Ionicons name="people-outline" size={23} color="red" />
                         <Text style={styles.label}>Thêm người</Text>
                         <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                     </View>
-                </TouchableOpacity>  */}
+                </TouchableOpacity> 
 
                 <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddTypeEvent}>
                     <View style={styles.date}>

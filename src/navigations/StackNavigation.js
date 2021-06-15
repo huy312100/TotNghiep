@@ -120,13 +120,13 @@ function HomeStackNavigation({navigation}) {
         }}
       />
 
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Add people to calendar"
         component={AddPeopleToCalendarScreen}
         options={{ 
           headerShown: false
         }}
-      /> */}
+      />
 
       <Stack.Screen
         name="Course"
@@ -442,7 +442,7 @@ const getTabBarVisibility = (route) => {
   const arrHideBotTab=["Calendar",
   "Chat","Course","Change Profile","Connect application",
   "Content Course","Web Customed","Change Password","Add Event",
-  "Modify Event","Find to Chat","University Info"];
+  "Modify Event","Find to Chat","University Info","Add people to calendar"];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {

@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,Image } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
 
 import{useSelector} from 'react-redux';
@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const AddPeopleToCalendarScreen = ({navigation}) => {
 
-    const [nameUser,setNameUser] =useState('');
+    const [nameUser,setNameUser] = useState('');
     const [data,setData] = useState([]);
 
     const token = useSelector((state) => state.authen.token);
@@ -41,55 +41,39 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
               return Promise.all([statusCode, dataRes]);
           }).then(([statusCode, dataRes])=>{
                 console.log(dataRes);
-                setDataOfAllPeolple(dataRes);
+                setData(dataRes);
           }).catch(error => console.log('error', error));
     };
 
 
     const renderItem = ({ item }) => (
-        <View>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => {
-              navigation.navigate("Chat", {
-                token:token,
-                email: item.Email,
-                name:item.HoTen
-              });
-            }}
-          >
-            
-
-
-            <RoundedImage />
-            {/* <View style={styles.courseInfo}>
-              <View style={styles.textSection}>
-                <Text style={styles.courseName}>{item.name}</Text>
-    
-               
-              </View>
-            </View> */}
-            <View>
+        
+      <TouchableOpacity style={styles.card} >
+          <View style={styles.userInfo}>
+          <View style={styles.userImgWrapper}>
+              <Image style={styles.userImg} source={{uri: `https://ui-avatars.com/api/?background=888888&color=fff&name=${item.HoTen}`}}/>
+          </View>
+          <View style={styles.textSection}>
+              <View style={styles.userInfoText}>
                 <Text style={styles.name}>{item.HoTen}</Text>
-                <Text style={styles.name}>{item.TenKhoa}</Text>
-                <Text style={styles.nameUniversity}>{item.TenTruongDH}</Text>
-            </View>
-            
-
-          </TouchableOpacity>
-        </View>
+              </View>
+              <Text style={styles.email}>{item.Email}</Text>
+          </View>
+          </View>
+      </TouchableOpacity>
+        
       );
 
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-            <TouchableOpacity onPress={() =>{ navigation.navigate('Message')}}>
+            <TouchableOpacity onPress={() =>{ navigation.goBack(); }}>
             <Ionicons name="chevron-back" size={38} color="blue" />
             </TouchableOpacity>
  
             <View style={styles.input}>
-                <Ionicons name="search-outline" size={18} color="#888888" />
-                <TextInput keyboardType="default" placeholder="Tìm kiếm" style={{width: '100%'}}
+                <Text style={{marginTop:2.5,color:'#AAAAAA'}}>Mời : </Text>
+                <TextInput keyboardType="default" style={{width: '100%'}}
                 onChangeText={(name)=>{
                     console.log(name);
                     if(name.trim().length!==0) {
@@ -136,21 +120,53 @@ const styles = StyleSheet.create({
     },
 
     card: {
-        paddingHorizontal:10,
-        backgroundColor: "white",
-        borderWidth: 1,
-        borderColor: "#cccccc",
-        flexDirection: "row",
+      width: '100%',
+    },
+  
+    userInfo:{
+      flexDirection:"row",
+      justifyContent: "space-between",
+    },
 
+    
+    userImgWrapper:{
+      paddingTop: 15,
+      paddingBottom: 15,
+      marginHorizontal:15,
     },
+  
+    userImg:{
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+    },
+
+    textSection:{
+      flexDirection: "column",
+      justifyContent: "center",
+      padding: 15,
+      paddingLeft: 0,
+      marginLeft: 10,
+      width: 300,
+      borderBottomWidth: 1,
+      borderBottomColor: "#cccccc",
+    },
+  
+    userInfoText:{
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 5,
+    },
+  
     name:{
-        marginTop:10,
-        marginHorizontal:20
+      fontSize: 14,
+      fontWeight: "bold",
     },
-    nameUniversity:{
-        fontSize:12,
-        marginHorizontal:20
-    }
+
+    email:{
+      fontSize: 14,
+      color: "#333333",
+    },
 
 });
 

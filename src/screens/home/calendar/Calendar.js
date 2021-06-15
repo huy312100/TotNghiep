@@ -223,6 +223,43 @@ const CalendarScreen =({navigation})=> {
     };
   },[]);
 
+  //Call api delete event in calendar
+  const deleteEventInCalendar = () => {
+    setLoading(true);
+    let details = {
+      id:idEvent
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    fetch("https://hcmusemu.herokuapp.com/calendar/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `bearer ${token}`
+      },
+      body: formBody,
+    }).then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=>{
+      console.log(dataRes,statusCode); 
+      if(statusCode === 200){
+        getAllActivitiesInMonth();
+        toggleOverlay();
+        setLoading(false);
+      }
+    }).catch(error => console.log('error', error));
+  }
+
 
   return (
     <View style={{ flex: 1 }}>

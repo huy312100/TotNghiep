@@ -123,7 +123,10 @@ const CalendarScreen =({navigation})=> {
 
   const handleConfirm = (date) => {
     //console.warn("A date has been picked: ", date);
-    //console.log(date);
+    // console.log(date.getMonth()+1);
+    // console.log(date.getFullYear());
+    setMonthChanged(date.getMonth() + 1);
+    setYearChanged(date.getFullYear());
     setCurrentDate(date);
     setDatePickerVisibility(false);
   };
@@ -221,7 +224,7 @@ const CalendarScreen =({navigation})=> {
     return()=>{
       unmounted.current=true;
     };
-  },[]);
+  },[monthChanged,yearChanged]);
 
   //Call api delete event in calendar
   const deleteEventInCalendar = () => {

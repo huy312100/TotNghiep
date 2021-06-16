@@ -17,6 +17,14 @@ import LoadingScreen from '../LoadingScreen';
 
 const DeviceWidth = Dimensions.get('window').width;
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 const HomeScreen=({navigation}) =>{
 
   var socket=io("https://hcmusemu.herokuapp.com");
@@ -56,26 +64,51 @@ const HomeScreen=({navigation}) =>{
 };
 
   useEffect(() =>{
-    const getAllHomeInfo = async() =>{
-      await getPermissionNotifications();
-      await getNewestDeadline();
+      getPermissionNotifications();
+      getNewestDeadline();
       //console.log(newDeadline);
+      connectToSocket();
+      getRequestChatting();
+      getProfile();
 
-
-      await connectToSocket();
+      const backgroundSubscription= Notifications.addNotificationResponseReceivedListener(
+        (response)=>{
+        console.log(response);
+        if(response.notification.request.content.title === 'Tin Tức Trường'){
+          navigation.navigate('University Info');
+        }
+        else if(response.notification.request.content.title === 'Tin Tức Khoa'){
+          navigation.navigate('University Info',{
+            screen:'Faculty New'
+          });
+        }
+        else if(response.notification.request.content.title === 'Môn Học Mới'){
+          navigation.navigate('Course');
+        }
+        else if(response.notification.request.content.title === 'Deadline Mới' || response.notification.request.content.title === 'Nội dung Môn hoc'){
+          navigation.navigate('Content Course',{
+            idCourse: 1468,
+            name: '',
+          });
+        }
+        else{
+          
+        }
+      });
+  
+      const foregroundSubscription= Notifications.addNotificationsDroppedListener(
+        (notification)=>{
+        //console.log(notification);
+      });
       
-      await getRequestChatting();
-      
-      await getProfile();
-      
-    }
-    getAllHomeInfo();
     return()=>{
-      unmounted.current = true
+      unmounted.current = true;
+      backgroundSubscription.remove();
+      foregroundSubscription.remove();
     };
   },[]);
 
-  const getProfile = async() =>{
+  const getProfile = () =>{
     //console.log(token);
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `bearer ${token}`);
@@ -222,7 +255,9 @@ const HomeScreen=({navigation}) =>{
           </View>
 
           <View style={styles.gridItemShape} >
-            <TouchableOpacity style={styles.gridTouchable} >
+            <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
+              navigation.navigate("Forum");
+            }}>
             <Icon name="forum" type="material-community" color="red" size={40}/>
                 <Text style={styles.textItem}>Diễn đàn</Text>
             </TouchableOpacity> 

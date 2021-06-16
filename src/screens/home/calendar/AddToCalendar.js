@@ -13,15 +13,32 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const AddToCalendarScreen = ({navigation}) => {
 
-    const getCurrentTimestamp=()=>{
-        return Date.now();
-    };
-
     const token = useSelector((state) => state.authen.token);
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
     const [isLoading,setLoading] = useState(false);
 
+    const getCurrentTimestamp=()=>{
+        return Date.now();
+    };
+
+     //Get all Guest name add to this calendar
+     const getAllGuestName = () => {
+        const tmp =[];
+        for (const key in allUserChoose){
+            tmp.push(allUserChoose[key].HoTen);
+        }
+        return tmp;
+    };
+
+    //Get all Email name add to this calendar
+    const getAllGuestEmail = () => {
+        const tmp =[];
+        for (const key in allUserChoose){
+            tmp.push(allUserChoose[key].Email);
+        }
+        return tmp;
+    };
     
     const [title,setTitle]=useState('');
     
@@ -44,11 +61,8 @@ const AddToCalendarScreen = ({navigation}) => {
     const [decriptionEvent,setDecriptionEvent] =useState('');
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
 
-    const [listGuestEmail,setGuestEmail] = useState([]);
-    const [listGuestName,setGuestName] = useState([]);
-
-
-    const [dataOfAllPeolple,setDataOfAllPeolple] = useState([]);
+    const [listGuestEmail,setGuestEmail] = useState(getAllGuestEmail());
+    const [listGuestName,setGuestName] = useState(getAllGuestName());
 
 
     const [labelRemindNoti,setLabelRemindNoti] = useState('');
@@ -234,8 +248,8 @@ const AddToCalendarScreen = ({navigation}) => {
         "Italic": false,
         "Bold": false,
         "Color": colorEvent,
-        "listguestEmail": [],
-        "listguestName": [],
+        "listguestEmail": listGuestEmail,
+        "listguestName": listGuestName,
         "Notification": timestampRemindNoti
         });
 
@@ -255,13 +269,13 @@ const AddToCalendarScreen = ({navigation}) => {
             console.log(raw);
             console.log(dataRes);
             if(statusCode === 200){
-                getAllActivitiesInMonth();
+                //getAllActivitiesInMonth();
                 //dispatch(calendarActions.addNewEventToCalendar());
+                dispatch(calendarActions.addPeopleToCalendar([]));
                 setLoading(false);
                 navigation.navigate('Calendar');
             }  
-        })
-        .catch(error => console.log('error', error));
+        }).catch(error => console.log('error', error));
 
         
     
@@ -319,7 +333,6 @@ const AddToCalendarScreen = ({navigation}) => {
                         Thêm
                     </Text>
                 </TouchableOpacity>
-               
             }/>
 
 

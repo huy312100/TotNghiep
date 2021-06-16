@@ -37,6 +37,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     const [visibleOverlayRemindNoti, setVisibleOverlayRemindNoti] = useState(false);
 
 
+    const [allMembers,setAllMembers] = useState(route.params.listGuest);
     const [typeEvent,setTypeEvent]= useState(route.params.typeEvent);
     const [colorEvent,setColorEvent] =useState(route.params.colorEvent);
     const [urlEvent,setUrlEvent] =useState(route.params.urlEvent);
@@ -364,13 +365,14 @@ const ModifyCalendarScreen = ({navigation,route}) => {
                 </TouchableOpacity>
             </View>
                
-            {/* <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={toggleOverlayAddPeople}>
+            <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={toggleOverlayAddPeople}>
                 <View style={styles.date}>
                 <Ionicons name="people-outline" size={23} color="red" />
                     <Text style={styles.label}>Thêm người</Text>
                     <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
+                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{allMembers.length}</Text>
                 </View>
-            </TouchableOpacity>  */}
+            </TouchableOpacity> 
 
             <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddTypeEvent}>
                 <View style={styles.date}>

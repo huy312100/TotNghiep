@@ -38,36 +38,39 @@ const Notification =[
 
 ];
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: true,
+//     shouldSetBadge: false,
+//   }),
+// });
 
-const NotificationScreen=()=>{
+const NotificationScreen=({navigation})=>{
 
   const tokenNoti = useSelector((state) => state.authen.tokenNotification);
   const socket = useSelector((state) => state.authen.socket);
   //const dispatch =useDispatch();
 
-  useEffect(() => {
-    const backgroundSubscription= Notifications.addNotificationResponseReceivedListener(
-      (response)=>{
-      console.log(response);
-    });
+  // useEffect(() => {
+  //   const backgroundSubscription= Notifications.addNotificationResponseReceivedListener(
+  //     (response)=>{
+  //     console.log(response);
+  //     navigation.navigate('Profile',{
+  //       screen:"Change Profile"
+  //     });
+  //   });
 
-    const foregroundSubscription= Notifications.addNotificationsDroppedListener(
-      (notification)=>{
-      console.log(notification);
-    });
+  //   const foregroundSubscription= Notifications.addNotificationsDroppedListener(
+  //     (notification)=>{
+  //     console.log(notification);
+  //   });
 
-    return ()=>{
-      backgroundSubscription.remove();
-      foregroundSubscription.remove();
-    } 
-  },[]);
+  //   return ()=>{
+  //     backgroundSubscription.remove();
+  //     foregroundSubscription.remove();
+  //   } 
+  // },[]);
 
     //I wrote code below just for testing
 

@@ -39,6 +39,8 @@ import PortalConnectScreen from '../screens/profile/connect_app/Portal';
 import ClassroomConnectScreen from '../screens/profile/connect_app/Classroom';
 import SlackConnectScreen from '../screens/profile/connect_app/Slack';
 import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
+import ForumScreen from '../screens/home/forum/Forum';
+
 import { View } from "react-native";
 
 
@@ -197,6 +199,16 @@ function HomeStackNavigation({navigation}) {
         component={UniversityInfoTopTab}
         options={{ 
           title: "Thông tin trường",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Forum"
+        component={ForumScreen}
+        options={{ 
+          title: "Diễn đàn",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
         }}
@@ -439,10 +451,10 @@ function MyBottomTabs() {
 const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ;
 
-  const arrHideBotTab=["Calendar",
-  "Chat","Course","Change Profile","Connect application",
-  "Content Course","Web Customed","Change Password","Add Event",
-  "Modify Event","Find to Chat","University Info","Add people to calendar"];
+  const arrHideBotTab=["Calendar","Chat","Course","Change Profile",
+  "Connect application","Content Course","Web Customed","Change Password",
+  "Add Event","Modify Event","Find to Chat","University Info",
+  "Add people to calendar","Forum"];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {

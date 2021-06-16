@@ -105,6 +105,7 @@ const CalendarScreen =({navigation})=> {
   const [typeGuest,setTypeGuest] = useState('');
   const [urlEvent,setUrlEvent] = useState('');
   const [colorEvent,setColorEvent] = useState('');
+  const [allMembers,setAllMembers] = useState([]);
 
   const [startTimestamp,setStartTimestamp] = useState('');
   const [endTimestamp,setEndTimestamp] = useState('');
@@ -163,8 +164,8 @@ const CalendarScreen =({navigation})=> {
         const dataRes = response.json();
         return Promise.all([statusCode, dataRes]);
     }).then(([statusCode, dataRes])=>{
-        console.log(dataRes,statusCode); 
-        if(statusCode === 200){}
+      console.log(dataRes,statusCode); 
+      if(statusCode === 200){
         const dataCalendar = [];
         for (const key in dataRes) {
           if(dataRes[key].TypeCalendar !== undefined){
@@ -180,7 +181,8 @@ const CalendarScreen =({navigation})=> {
                 typeGuest:"Cá nhân",
                 color:dataRes[key].Color,
                 startTimestamp:dataRes[key].StartHour,
-                endTimestamp:dataRes[key].EndHour
+                endTimestamp:dataRes[key].EndHour,
+                ListGuest:dataRes[key].ListGuest,
             })}
             else{
               dataCalendar.push({
@@ -191,10 +193,11 @@ const CalendarScreen =({navigation})=> {
                 start:convertTimestamp(dataRes[key].StartHour),
                 end:convertTimestamp(dataRes[key].EndHour),
                 url:dataRes[key].Decription.url,
-                typeGuest:dataRes[key].ListGuest,
+                typeGuest:"Nhóm",
                 color:dataRes[key].Color,
                 startTimestamp:dataRes[key].StartHour,
-                endTimestamp:dataRes[key].EndHour
+                endTimestamp:dataRes[key].EndHour,
+                ListGuest:dataRes[key].ListGuest,
             })}
           }
           else{
@@ -210,11 +213,18 @@ const CalendarScreen =({navigation})=> {
               url:dataRes[key].url,
               typeGuest:"Cá nhân",
           })
+          }
         }
-      }
-        console.log(dataCalendar);
         setEvent(dataCalendar);
         dispatch(calendarActions.getCalendarOfMonth(dataRes));
+        console.log(dataCalendar);
+      }
+      else if (statusCode === 401){
+        console.log("Token het han");
+      }
+      else{
+        console.log(statusCode);
+      }
     }).catch(error => console.log('error', error));
   };
 
@@ -314,6 +324,7 @@ const CalendarScreen =({navigation})=> {
           setColorEvent(e.color); 
           setStartTimestamp(e.startTimestamp);
           setEndTimestamp(e.endTimestamp);
+          setAllMembers(e.ListGuest);
         }}
         events={allEvents}
         width={width}
@@ -421,9 +432,10 @@ const CalendarScreen =({navigation})=> {
                     decriptionEvent:decriptionEvent,
                     typeEvent:typeEvent,
                     urlEvent:urlEvent,
-                  colorEvent:colorEvent,
+                    colorEvent:colorEvent,
                     startTimestamp:startTimestamp,
                     endTimestamp:endTimestamp,
+                    listGuest:allMembers
                   });
                   }}>
                     <Text style={overlayStyle.textBtnConnect}>Cập nhật</Text>

@@ -18,6 +18,7 @@ const AddToCalendarScreen = ({navigation}) => {
     };
 
     const token = useSelector((state) => state.authen.token);
+    const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
     const [isLoading,setLoading] = useState(false);
 
@@ -379,6 +380,7 @@ const AddToCalendarScreen = ({navigation}) => {
                     <View style={styles.date}>
                     <Ionicons name="people-outline" size={23} color="red" />
                         <Text style={styles.label}>Thêm người</Text>
+                        <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{allUserChoose.length}</Text>
                         <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                     </View>
                 </TouchableOpacity> 

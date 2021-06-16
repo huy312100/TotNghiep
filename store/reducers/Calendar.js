@@ -1,10 +1,11 @@
-import { GET_CALENDAR_OF_MONTH,GET_STATUS_OF_TITLE,GET_STATUS_OF_DATE,ADD_NEW_EVENT_TO_CALENDAR } from '../actions/Calendar';
+import { GET_CALENDAR_OF_MONTH,GET_STATUS_OF_TITLE,GET_STATUS_OF_DATE,ADD_NEW_EVENT_TO_CALENDAR,ADD_PEOPLE_TO_CALENDAR } from '../actions/Calendar';
 
 
 const initialState = {
     activities: [],
     statusTitle:false,
-    statusDate:true
+    statusDate:true,
+    allUserChoose:[],
 }
 
 export default (state=initialState,action) => {
@@ -30,6 +31,12 @@ export default (state=initialState,action) => {
         case ADD_NEW_EVENT_TO_CALENDAR:
             return{
                 ...state,
+        }
+
+        case ADD_PEOPLE_TO_CALENDAR:
+            return{
+                ...state,
+                allUserChoose:action.allUserChoose
             }
 
         default:

@@ -116,7 +116,7 @@ const FindToChatScreen = ({navigation}) => {
  
             <View style={styles.input}>
                 <Ionicons name="search-outline" size={18} color="#888888" />
-                <TextInput keyboardType="default" placeholder="Tìm kiếm" style={{width: '100%'}}
+                <TextInput keyboardType="default" placeholder="Tìm kiếm" style={{width:'95%'}}
                 onChangeText={(name)=>{
                     console.log(name);
                     if(name.trim().length!==0) {

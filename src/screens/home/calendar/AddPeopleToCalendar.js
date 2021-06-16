@@ -1,18 +1,26 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,Image } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
 
-import{useSelector} from 'react-redux';
 
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons,FontAwesome} from '@expo/vector-icons';
+
+import { useDispatch,useSelector } from 'react-redux';
+
+import * as calendarActions from '../../../../store/actions/Calendar';
 
 
 const AddPeopleToCalendarScreen = ({navigation}) => {
 
-    const [nameUser,setNameUser] = useState('');
-    const [data,setData] = useState([]);
+    const dispatch= useDispatch();
+    const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
-    const token = useSelector((state) => state.authen.token);
+
+    const [userChoose,setUserChoose] = useState(allUserChoose);
+    const [data,setData] = useState([]);
+    const [txtSeach,setTxtSeach] = useState('');
+
+    
 
 
     const getInfoFromUsername =(name) => {
@@ -40,58 +48,120 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
               const dataRes = response.json();
               return Promise.all([statusCode, dataRes]);
           }).then(([statusCode, dataRes])=>{
-                console.log(dataRes);
-                setData(dataRes);
+                //console.log(dataRes);
+                const tmp= objDiff(dataRes,userChoose);
+                //setData(dataRes.filter(({Email})=>));
+                setData(tmp);
           }).catch(error => console.log('error', error));
     };
 
+    useEffect(() => {
+      //console.log(userChoose);
+       console.log(allUserChoose);
+    },[userChoose]);
+
 
     const renderItem = ({ item }) => (
-        
-      <TouchableOpacity style={styles.card} >
+      <TouchableOpacity style={styles.card} onPress={() =>{
+        //setNameUser([...nameUser,item.HoTen]);
+        setUserChoose([...userChoose,item]);
+        setData([]);
+        txtSeach.clear();
+      }}>
           <View style={styles.userInfo}>
-          <View style={styles.userImgWrapper}>
-              <Image style={styles.userImg} source={{uri: `https://ui-avatars.com/api/?background=888888&color=fff&name=${item.HoTen}`}}/>
-          </View>
-          <View style={styles.textSection}>
-              <View style={styles.userInfoText}>
-                <Text style={styles.name}>{item.HoTen}</Text>
-              </View>
-              <Text style={styles.email}>{item.Email}</Text>
-          </View>
+            <View style={styles.userImgWrapper}>
+                <Image style={styles.userImg} source={{uri: `https://ui-avatars.com/api/?background=888888&color=fff&name=${item.HoTen}`}}/>
+            </View>
+            <View style={styles.textSection}>
+                <View style={styles.userInfoText}>
+                  <Text style={styles.name}>{item.HoTen}</Text>
+                </View>
+                <Text style={styles.email}>{item.Email}</Text>
+            </View>
           </View>
       </TouchableOpacity>
-        
+    );
+
+    const renderEmailChipItem = ({item,index})=>(
+      <View style={styles.viewOneChip}>
+        <Text style={styles.labelInChip}>{item.Email}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            const tempUserChoose = [...userChoose];
+            tempUserChoose.splice(index,1);
+            setUserChoose(tempUserChoose);
+
+          }}>
+
+          <FontAwesome name="close" size={24} color="white" />
+        </TouchableOpacity>
+      </View> 
+    );
+
+    const checkEmptyPeopleInCalendar = () => {
+      if(allUserChoose.length === 0 && userChoose.length === 0){
+        return true;
+      }
+      return false;
+    };
+
+    //Remove all duplicate in view
+    const objDiff =(firstObj,secondObj)=>{
+      console.log(firstObj);
+      console.log(secondObj);
+      const newArr =firstObj.filter(obj=>!secondObj.find(sec=>sec.Email===obj.Email && sec.HoTen===obj.HoTen)
+      //this is formatted so that it is easily readable
       );
+
+      return newArr;
+    } 
 
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-            <TouchableOpacity onPress={() =>{ navigation.goBack(); }}>
-            <Ionicons name="chevron-back" size={38} color="blue" />
-            </TouchableOpacity>
- 
-            <View style={styles.input}>
-                <Text style={{marginTop:2.5,color:'#AAAAAA'}}>Mời : </Text>
-                <TextInput keyboardType="default" style={{width: '100%'}}
-                onChangeText={(name)=>{
-                    console.log(name);
-                    if(name.trim().length!==0) {
-                        getInfoFromUsername(name);
-                    }
-                    else{
-                        setData([]);
-                    }
-                }}>                
-                </TextInput>    
-            </View>
+          
+          <TouchableOpacity onPress={() =>{ navigation.goBack(); }}>
+            <Ionicons name="chevron-back" size={38} color="red" />
+            
+          </TouchableOpacity>
+
+          <View style={styles.input}>
+              <Text style={{marginTop:2.5,color:'#AAAAAA'}}>Mời : </Text>
+              <TextInput keyboardType="default" style={{width:'88%'}}
+              onChangeText={(name)=>{
+                  
+                  if(name.trim().length!==0) {
+                      getInfoFromUsername(name);
+                  }
+                  else{
+                      setData([]);
+                  }
+              }}
+              ref={input => { setTxtSeach(input); }}>               
+              </TextInput>    
+          </View>
+
+          <TouchableOpacity style={styles.confirm} disabled={checkEmptyPeopleInCalendar()} 
+            onPress={() =>{
+              dispatch(calendarActions.addPeopleToCalendar(userChoose));
+              navigation.navigate('Add Event');
+            }}>
+            <Text style={[styles.confirmLabel,{color: checkEmptyPeopleInCalendar() ? 'silver' : 'blue'}]}>Xong</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.viewAllChip}>
+          <FlatList
+            horizontal={true}
+            data={userChoose}
+            renderItem={renderEmailChipItem}
+            keyExtractor={(item,index) => index.toString()}/>
         </View>
 
         <FlatList
             data={data}
             renderItem={renderItem}
             keyExtractor={(item,index) => index.toString()}/>
-
 
       </SafeAreaView>
 
@@ -108,15 +178,16 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 15,
         borderBottomColor:'#DDDDDD',
-        borderBottomWidth:.2,
+        borderBottomWidth:.5,
     },
 
     input:{
         flexDirection:'row',
-        width:'88%',
+        width:'78%',
         backgroundColor:"#cccc",
         borderRadius:10,
         padding:10,
+
     },
 
     card: {
@@ -167,6 +238,39 @@ const styles = StyleSheet.create({
       fontSize: 14,
       color: "#333333",
     },
+
+    confirm:{
+      marginHorizontal:5,
+      marginVertical:12,
+    },
+
+    confirmLabel:{
+      fontSize:16,
+      fontWeight:'600'
+    },
+
+    viewAllChip:{
+      marginLeft:10,
+      marginVertical:10,
+      flexDirection:'row',
+      flexWrap: 'wrap',
+    },
+
+    viewOneChip:{
+      backgroundColor:"#0099FF",
+      borderRadius:25,
+      padding:7,
+      flexDirection:'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight:5,
+    },
+
+    labelInChip:{
+      color:'white',
+      marginRight:10
+    }
+
 
 });
 

@@ -2,6 +2,7 @@ export const GET_CALENDAR_OF_MONTH = "GET_CALENDAR_OF_MONTH";
 export const GET_STATUS_OF_TITLE = "GET_STATUS_OF_TITLE";
 export const GET_STATUS_OF_DATE = "GET_STATUS_OF_DATE";
 export const ADD_NEW_EVENT_TO_CALENDAR = "ADD_NEW_EVENT_TO_CALENDAR";
+export const ADD_PEOPLE_TO_CALENDAR = "ADD_PEOPLE_TO_CALENDAR";
 
 
 export const getCalendarOfMonth = (data) => {
@@ -38,3 +39,13 @@ export const addNewEventToCalendar = () => {
     })
   }
 };
+
+export const addPeopleToCalendar = (data) => {
+  return async dispatch =>{
+    dispatch({
+      type: ADD_PEOPLE_TO_CALENDAR,
+      allUserChoose:data
+    })
+  }
+};
+

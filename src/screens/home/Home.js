@@ -277,18 +277,20 @@ const HomeScreen=({navigation}) =>{
           </View>
 
           <View style={styles.gridItemShape}  >
-            <TouchableOpacity style={styles.gridTouchable}>
+            <TouchableOpacity style={styles.gridTouchable}
+              onPress={() => {Linking.openURL('https://portal.ctdb.hcmus.edu.vn/Login?returnurl=%2fdang-ky-hoc-phan%2fsinh-vien-clc')}}
+            >
             <Icon name="pencil-alt" type="font-awesome-5" color="red" size={40} />
                 <Text style={styles.textItem}>Điểm số</Text>
             </TouchableOpacity> 
           </View>
 
-          <View style={styles.gridItemShape}  >
+          {/* <View style={styles.gridItemShape}  >
             <TouchableOpacity style={styles.gridTouchable}>
             <Icon name="envelope-open-text" type="font-awesome-5" color="red" size={40} />
                 <Text style={styles.textItem}>Mail</Text>
             </TouchableOpacity> 
-          </View>
+          </View> */}
 
         </View>
               

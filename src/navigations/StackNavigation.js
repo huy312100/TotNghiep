@@ -40,6 +40,7 @@ import ClassroomConnectScreen from '../screens/profile/connect_app/Classroom';
 import SlackConnectScreen from '../screens/profile/connect_app/Slack';
 import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
 import ForumScreen from '../screens/home/forum/Forum';
+import ForumOfCourseScreen from '../screens/home/forum/ForumCourse';
 
 import { View } from "react-native";
 
@@ -211,6 +212,14 @@ function HomeStackNavigation({navigation}) {
           title: "Diễn đàn",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Forum Of A Course"
+        component={ForumOfCourseScreen}
+        options={{ 
+          headerShown: false
         }}
       />
     </Stack.Navigator>
@@ -416,7 +425,7 @@ function MyBottomTabs() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
           ),
-          tabBarBadge:4,         
+          tabBarBadge:2,         
         }}
       />
 
@@ -429,7 +438,7 @@ function MyBottomTabs() {
             <MaterialCommunityIcons name="message-processing" color={color} size={size} />
           ),
           tabBarVisible: getTabBarVisibility(route),
-          tabBarBadge:13,
+          tabBarBadge:9,
         })}
       />
  
@@ -454,7 +463,7 @@ const getTabBarVisibility = (route) => {
   const arrHideBotTab=["Calendar","Chat","Course","Change Profile",
   "Connect application","Content Course","Web Customed","Change Password",
   "Add Event","Modify Event","Find to Chat","University Info",
-  "Add people to calendar","Forum"];
+  "Add people to calendar","Forum","Forum Of A Course"];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {

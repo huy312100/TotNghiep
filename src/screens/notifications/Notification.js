@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React,{useState,useEffect} from 'react';
 import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image ,Button } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
@@ -48,11 +48,39 @@ const Notification =[
 
 const NotificationScreen=({navigation})=>{
 
+  const token = useSelector((state) => state.authen.token);
   const tokenNoti = useSelector((state) => state.authen.tokenNotification);
   const socket = useSelector((state) => state.authen.socket);
-  //const dispatch =useDispatch();
 
-  // useEffect(() => {
+  const [data, setData] = useState([]);
+
+  function convertTimestamp(timestamp) {
+    var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
+        yyyy = d.getFullYear(),
+        mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+        dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+        hh = d.getHours(),
+        h = hh,
+        min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+        ampm = 'AM',
+        time;
+    if (hh > 12) {
+        h = hh - 12;
+        ampm = 'PM';
+    } else if (hh === 12) {
+        h = 12;
+        ampm = 'PM';
+    } else if (hh == 0) {
+        h = 12;
+    }
+    // ie: 24-04-2014, 3:00 PM
+    time = dd + '-' + mm + '-' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
+    return time;
+  };
+
+  useEffect(() => {
+    getAllNotifications();
+
   //   const backgroundSubscription= Notifications.addNotificationResponseReceivedListener(
   //     (response)=>{
   //     console.log(response);
@@ -70,7 +98,7 @@ const NotificationScreen=({navigation})=>{
   //     backgroundSubscription.remove();
   //     foregroundSubscription.remove();
   //   } 
-  // },[]);
+  },[]);
 
     //I wrote code below just for testing
 
@@ -92,9 +120,61 @@ const NotificationScreen=({navigation})=>{
           seconds:10
         }
       })
+    };
 
+    const getAllNotifications = () => {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `bearer ${token}`);
 
-    }
+      var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+      };
+
+      fetch("https://hcmusemu.herokuapp.com/notification",requestOptions)
+        .then((response) => response.json())
+        .then((json) => {
+          console.log(json);
+          setData(json);
+          //console.log(dataUniversity);
+        }).catch((err) => console.log(err, "error"));
+    };
+
+    const renderItem = ({ item }) => (
+      <TouchableOpacity style={styles.card} onPress={() =>{
+        if(item.Title ==='Tin Tức Trường'){
+          navigation.navigate('University Info');
+        }
+        else if(item.Title === 'Tin Tức Khoa'){
+          navigation.navigate('University Info',{
+            screen:'Faculty New'
+          });
+        }
+        else{
+          
+        }
+      }}>
+        <View style={styles.userInfo}>
+          <View style={styles.userImgWrapper}>
+              <View >
+                  <Image style={styles.userImg} source={require("../../../assets/notification-flat.png")} />
+                  {!item.State && <Badge
+                      status="error"
+                      containerStyle={{ position: 'absolute', top: -4, right: -4 }}
+                  />}
+              </View>
+          </View>
+          <View style={styles.textSection}>
+            <View style={styles.userInfoText}>
+              <Text style={styles.userName}>{item.Title}</Text>
+              <Text style={styles.postTime}>{convertTimestamp(parseInt(item.Date)/1000)}</Text>
+            </View>
+            <Text style={styles.messageText}>{item.Data}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
 
 
     //   fetch("https://exp.host/--/api/v2/push/send",{
@@ -115,37 +195,16 @@ const NotificationScreen=({navigation})=>{
     return(
         <SafeAreaView style={styles.container}>
 
-          <Button
+          {/* <Button
             title="Trigger Notifications"
             onPress={() => {
               triggerNotifications();
             }}
-          />
+          /> */}
             <FlatList
-            data={Notification}
-            keyExtractor={item =>item.id}
-            renderItem={({item})=>(
-                <TouchableOpacity style={styles.card}>
-              <View style={styles.userInfo}>
-                <View style={styles.userImgWrapper}>
-                    <View >
-                        <Image style={styles.userImg} source={item.userImg} />
-                        <Badge
-                            status="error"
-                            containerStyle={{ position: 'absolute', top: -4, right: -4 }}
-                        />
-                    </View>
-                </View>
-                <View style={styles.textSection}>
-                  <View style={styles.userInfoText}>
-                    <Text style={styles.userName}>{item.titleNotification}</Text>
-                    <Text style={styles.postTime}>{item.timeNotification}</Text>
-                  </View>
-                  <Text style={styles.messageText}>{item.contentNotification}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-            )}
+              data={data}
+              keyExtractor={item =>item._id}
+              renderItem={renderItem}
             />
         </SafeAreaView>   
     )

@@ -78,7 +78,6 @@ const FacultyNewScreen = () =>{
             
             <View tyle={[styles.info,{marginBottom:20}]}>
                 <Text style={styles.date}>{item.date}</Text>
-                <Entypo style={styles.onTheRight} name="dots-three-horizontal" size={18} color="grey" />
             </View>
                 
         </TouchableOpacity>

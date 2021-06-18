@@ -80,7 +80,6 @@ const UniversityNewScreen = () =>{
             
             <View tyle={[styles.info,{marginBottom:20}]}>
                 <Text style={styles.date}>{item.date}</Text>
-                <Entypo style={styles.onTheRight} name="dots-three-horizontal" size={18} color="grey" />
             </View>
                 
         </TouchableOpacity>
@@ -94,7 +93,6 @@ const UniversityNewScreen = () =>{
                     <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.date]}/>
-                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightThreeDot]}/>
                 </View>
                 
                 <View >
@@ -102,7 +100,6 @@ const UniversityNewScreen = () =>{
                     <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.date]}/>
-                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightThreeDot]}/>
                 </View>
 
                 <View >
@@ -110,7 +107,6 @@ const UniversityNewScreen = () =>{
                     <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.date]}/>
-                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightThreeDot]}/>
                 </View>
 
                 <View >
@@ -118,7 +114,6 @@ const UniversityNewScreen = () =>{
                     <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.date]}/>
-                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightThreeDot]}/>
                 </View>
 
                 <View >
@@ -126,7 +121,6 @@ const UniversityNewScreen = () =>{
                     <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.date]}/>
-                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightThreeDot]}/>
                 </View>
 
                 <View style={skeletonLoading.card}>
@@ -134,7 +128,6 @@ const UniversityNewScreen = () =>{
                     <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.date]}/>
-                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightThreeDot]}/>
                 </View>
 
                 <View style={skeletonLoading.card}>
@@ -142,7 +135,6 @@ const UniversityNewScreen = () =>{
                     <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
                     <View style={[skeletonLoading.info,skeletonLoading.date]}/>
-                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightThreeDot]}/>
                 </View>
             </SkeletonPlaceholder>
         )
@@ -226,13 +218,6 @@ const skeletonLoading = StyleSheet.create({
         height:14
     },
 
-    onTheRightThreeDot:{
-        width:'6%',
-        height:14,
-        alignSelf: 'flex-end',
-        marginTop:-25,
-        marginRight:5
-    },
 });
 
 export default UniversityNewScreen;

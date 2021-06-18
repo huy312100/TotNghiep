@@ -15,13 +15,9 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
     const dispatch= useDispatch();
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
-
     const [userChoose,setUserChoose] = useState(allUserChoose);
     const [data,setData] = useState([]);
     const [txtSeach,setTxtSeach] = useState('');
-
-    
-
 
     const getInfoFromUsername =(name) => {
         let details = {

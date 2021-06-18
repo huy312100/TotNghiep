@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert } from 'react-native';
+import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView } from 'react-native';
 import { Icon } from "react-native-elements";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import io from 'socket.io-client';
@@ -224,13 +224,43 @@ const HomeScreen=({navigation}) =>{
         console.log(json);
       }).catch((err) => console.log(err, "error"));
   };
+
+  const renderNewestDeadlineItem = ({item}) => (
+    <TouchableOpacity style={styles.card} onPress={() =>{
+      Alert.alert(
+        "Chuyển tiếp",
+        "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
+        [
+          { text: "Từ chối", 
+            style: "cancel"
+          },
+          {
+            text: "Cho phép",
+            onPress: () => Linking.openURL(item.url),
+          },
+        ]
+      );
+      
+    }}>
+      <View style={styles.deadlineInfo}>
+        <View style={styles.deadlineImgWrapper}>
+          <Image style={styles.deadlineImg} source={require("../../../assets/moodle-deadline.png")} />
+        </View>
+        <View style={styles.textSection}>
+          <View style={styles.courseInfoText}>
+            <Text style={styles.courseName}>{item.nameCourese}</Text>
+            <Text style={styles.timeDeadline}>{convertTimestamp(item.duedate)}</Text>
+          </View>
+          <Text style={styles.contentDeadline}>{item.decription}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
   
   return (
-
-    
     <SafeAreaView style={styles.container}>
-      
       {isLoading && LoadingScreen()}
+      <ScrollView>
       {!isLoading && <View>
         <Text style={styles.label}>Khám phá ngay</Text>
       <View >
@@ -302,40 +332,14 @@ const HomeScreen=({navigation}) =>{
       {newDeadline.length > 0 &&
         <FlatList 
         data={newDeadline}
+        horizontal={true}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => (
-          <TouchableOpacity style={styles.card} onPress={() =>{
-            Alert.alert(
-              "Chuyển tiếp",
-              "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
-              [
-                { text: "Từ chối", 
-                  style: "cancel"
-                },
-                {
-                  text: "Cho phép",
-                  onPress: () => Linking.openURL(item.url),
-                },
-              ]
-            );
-            
-          }}>
-            <View style={styles.deadlineInfo}>
-              <View style={styles.deadlineImgWrapper}>
-                <Image style={styles.deadlineImg} source={require("../../../assets/moodle-deadline.png")} />
-              </View>
-              <View style={styles.textSection}>
-                <View style={styles.courseInfoText}>
-                  <Text style={styles.courseName}>{item.nameCourese}</Text>
-                  <Text style={styles.timeDeadline}>{convertTimestamp(item.duedate)}</Text>
-                </View>
-                <Text style={styles.contentDeadline}>{item.decription}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>)}/>
+        renderItem={renderNewestDeadlineItem}/>
       }
 
     </View>}
+    </ScrollView>
+
     </SafeAreaView>
   )
 

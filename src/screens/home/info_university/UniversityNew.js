@@ -185,9 +185,13 @@ const UniversityNewScreen = ({navigation}) =>{
 
                     <TouchableOpacity style={blurStyle.card}
                         onPress={() =>{
-                            navigation.navigate("Add Event");
+                            navigation.navigate("Add Event",{
+                                nameEvent: 'Sự kiện mới',
+                                decriptionEvent:titleOverlay,
+                                urlEvent:urlOverlay
+                            });
                         }}>
-                            
+
                         <View style={{flexDirection:'row'}}>
                             <FontAwesome name="calendar" size={20} color="#777777" />     
                             <Text style={{marginLeft : 30, marginTop :2}}>Tạo lịch cho sự kiện này</Text>    

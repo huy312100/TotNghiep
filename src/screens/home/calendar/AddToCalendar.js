@@ -11,7 +11,7 @@ import LoadingScreen from '../../LoadingScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-const AddToCalendarScreen = ({navigation}) => {
+const AddToCalendarScreen = ({navigation,route}) => {
 
     const token = useSelector((state) => state.authen.token);
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
@@ -40,7 +40,7 @@ const AddToCalendarScreen = ({navigation}) => {
         return tmp;
     };
     
-    const [title,setTitle]=useState('');
+    const [title,setTitle]=useState(route.params.nameEvent);
     
 
     const [startTimestamp,setStartTimestamp]=useState(getCurrentTimestamp());
@@ -49,7 +49,6 @@ const AddToCalendarScreen = ({navigation}) => {
 
     const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
     const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
-    const [visibleOverlayAddPeople, setVisibleOverlayAddPeople] = useState(false);
     const [visibleOverlayAddTypeEvent, setVisibleOverlayAddTypeEvent] = useState(false);
     const [visibleOverlayAddColor, setVisibleOverlayAddColor] = useState(false);
     const [visibleOverlayRemindNoti, setVisibleOverlayRemindNoti] = useState(false);
@@ -57,8 +56,8 @@ const AddToCalendarScreen = ({navigation}) => {
 
     const [typeEvent,setTypeEvent]= useState('');
     const [colorEvent,setColorEvent] =useState('');
-    const [urlEvent,setUrlEvent] =useState('');
-    const [decriptionEvent,setDecriptionEvent] =useState('');
+    const [urlEvent,setUrlEvent] =useState(route.params.urlEvent);
+    const [decriptionEvent,setDecriptionEvent] =useState(route.params.decriptionEvent);
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
 
     const [listGuestEmail,setGuestEmail] = useState(getAllGuestEmail());
@@ -69,12 +68,6 @@ const AddToCalendarScreen = ({navigation}) => {
 
     const dispatch=useDispatch();
 
-    const statusTitle = useSelector((state) => state.calendar.statusTitle);
-    const statusDate = useSelector((state) => state.calendar.statusDate);
-
-    const toggleOverlayAddPeople = () => {
-        setVisibleOverlayAddPeople(!visibleOverlayAddPeople);
-    };
 
     const toggleOverlayAddTypeEvent = () => {
         setVisibleOverlayAddTypeEvent(!visibleOverlayAddTypeEvent);
@@ -131,15 +124,15 @@ const AddToCalendarScreen = ({navigation}) => {
     };
 
     const getCurrentMonth =(timestamp)=> {
-    var today = new Date(timestamp);
-    var month = today.getMonth() + 1;
-    return month; 
+        var today = new Date(timestamp);
+        var month = today.getMonth() + 1;
+        return month; 
     };
 
     const getCurrentYear = (timestamp) => {
-    var today = new Date(timestamp); 
-    var year= today.getFullYear();
-    return year;
+        var today = new Date(timestamp); 
+        var year= today.getFullYear();
+        return year;
     }
     
     const addZero=(i) =>{
@@ -150,10 +143,10 @@ const AddToCalendarScreen = ({navigation}) => {
     }
     
     const getCurrentTime = (timestamp) => {
-    var d = new Date(timestamp);
-    var h = addZero(d.getHours());
-    var m = addZero(d.getMinutes());
-    return h + ":" + m;
+        var d = new Date(timestamp);
+        var h = addZero(d.getHours());
+        var m = addZero(d.getMinutes());
+        return h + ":" + m;
     }
 
     //Handle Start and End Date
@@ -176,16 +169,13 @@ const AddToCalendarScreen = ({navigation}) => {
     //Back button handler
     const backButtonHandler = ()=>{
 
-        dispatch(calendarActions.getStatusOfTitle(false));
-        dispatch(calendarActions.getStatusOfDate(true));
         navigation.goBack();
     }
 
     //Handle for clickable add button
     const checkDisableAddButton =() =>{
-        console.log(statusTitle,statusDate);
-        if(statusTitle && statusDate){
-        return false;
+        if(checkTitle(title) && checkValidDate()){
+            return false;
         }
         return true;
     }
@@ -235,22 +225,22 @@ const AddToCalendarScreen = ({navigation}) => {
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
-        "Title": title,
-        "TypeEvent": typeEvent,
-        "year": getCurrentYear(startTimestamp).toString(),
-        "month": getCurrentMonth(startTimestamp).toString(),
-        "day": getCurrenDay(startTimestamp).toString(),
-        "StartHour": Math.floor(startTimestamp/1000),
-        "EndHour": Math.floor(endTimestamp/1000),
-        "desciptionText": decriptionEvent,
-        "url": urlEvent,
-        "UnderLine": false,
-        "Italic": false,
-        "Bold": false,
-        "Color": colorEvent,
-        "listguestEmail": listGuestEmail,
-        "listguestName": listGuestName,
-        "Notification": timestampRemindNoti
+            "Title": title,
+            "TypeEvent": typeEvent,
+            "year": getCurrentYear(startTimestamp).toString(),
+            "month": getCurrentMonth(startTimestamp).toString(),
+            "day": getCurrenDay(startTimestamp).toString(),
+            "StartHour": Math.floor(startTimestamp/1000),
+            "EndHour": Math.floor(endTimestamp/1000),
+            "desciptionText": decriptionEvent,
+            "url": urlEvent,
+            "UnderLine": false,
+            "Italic": false,
+            "Bold": false,
+            "Color": colorEvent,
+            "listguestEmail": listGuestEmail,
+            "listguestName": listGuestName,
+            "Notification": timestampRemindNoti
         });
 
         var requestOptions = {
@@ -343,8 +333,7 @@ const AddToCalendarScreen = ({navigation}) => {
                     onChangeText={(title)=>{
                         //console.log(checkTitle(title));
                         setTitle(title);
-                        dispatch(calendarActions.getStatusOfTitle(checkTitle(title)))
-                        }}/>
+                        }}>{title}</TextInput>
                 </View> 
 
                 <View style={[styles.card,{marginBottom:0}]}>
@@ -428,15 +417,15 @@ const AddToCalendarScreen = ({navigation}) => {
                 <View style={[styles.card,{marginBottom:0}]}>
                     <View style={styles.date}>
                     <SimpleLineIcons name="link" size={20} color="red" />
-                    <TextInput style={[styles.label,{width:"100%"}]} placeholder="URL"
-                    onChangeText={(url) => setUrlEvent(url)}/>
+                    <TextInput style={[styles.label,{width:"100%",color:"blue",textDecorationLine:'underline'}]} placeholder="URL"
+                    onChangeText={(url) => setUrlEvent(url)}>{urlEvent}</TextInput>
                     </View>
                 </View> 
                 <View style={[styles.card,{marginTop:0,height:"25%"}]}>
                     <View style={styles.date}>
                         <SimpleLineIcons name="note" size={20} color="red" />
                         <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}
-                        onChangeText={(decription) => setDecriptionEvent(decription)}/>
+                        onChangeText={(decription) => setDecriptionEvent(decription)}>{decriptionEvent}</TextInput>
                     </View>
                 </View> 
 
@@ -452,7 +441,7 @@ const AddToCalendarScreen = ({navigation}) => {
                     onConfirm={handleStartConfirm}
                     onCancel={hideStartDatePicker}
                     onHide={()=>{
-                        dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                        checkValidDate();
                     }}/>
 
                 <DateTimePickerModal
@@ -465,7 +454,7 @@ const AddToCalendarScreen = ({navigation}) => {
                     onConfirm={handleEndConfirm}
                     onCancel={hideEndDatePicker}
                     onHide={()=>{
-                        dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                        checkValidDate();
                     }}/>
 
                 <DateTimePickerModal
@@ -491,13 +480,6 @@ const AddToCalendarScreen = ({navigation}) => {
 
                 {isLoading && LoadingScreen()}
 
-
-                <Overlay isVisible={visibleOverlayAddPeople} onBackdropPress={toggleOverlayAddPeople}>
-                    
-        
-                
-                        
-                </Overlay>
 
                 <Overlay isVisible={visibleOverlayAddTypeEvent} onBackdropPress={toggleOverlayAddTypeEvent}>
                     <TouchableOpacity style={[styles.card,{marginBottom:0,marginTop:0,borderBottomWidth:0}]} 

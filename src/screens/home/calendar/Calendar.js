@@ -302,7 +302,15 @@ const CalendarScreen =({navigation})=> {
                 <AntDesign name="calendar" size={26} color="blue" />
               </TouchableOpacity>
               
-              <TouchableOpacity onPress={() => navigation.navigate('Add Event')}>
+              <TouchableOpacity 
+                onPress={() => 
+                  navigation.navigate('Add Event',{
+                    nameEvent: '',
+                    decriptionEvent:'',
+                    urlEvent:''
+                  })
+              
+              }>
                 <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
               </TouchableOpacity>
           </View>

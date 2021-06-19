@@ -1,18 +1,24 @@
 import React,{useState,useEffect,useRef} from "react";
-import { StyleSheet, Text, View , FlatList,TouchableOpacity,Linking} from "react-native";
-import { Entypo } from '@expo/vector-icons';
+import { StyleSheet, Text, View , FlatList,TouchableOpacity,Linking,TouchableWithoutFeedback} from "react-native";
+import { Entypo,FontAwesome } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { useSelector } from 'react-redux';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import Error500Screen from "../../error/500";
 import Error503Screen from "../../error/503";
 
 
-const FacultyNewScreen = () =>{
+const FacultyNewScreen = ({navigation}) =>{
 
     const token = useSelector((state) => state.authen.token);
     const [dataFacultNew,setDataFacultNew] = useState([]);
     const [statusCode,setStatusCode] = useState(200);
     const [isLoadingFacultScreen,setLoadingFacultScreen]=useState(false);
+    const [visibleBlur, setVisibleBlur] = useState(false);
+
+    const [titleOverlay,setTitleOverlay] = useState('');
+    const [urlOverlay,setUrlOverlay] = useState('');
+    
     const unmounted = useRef(false);
 
     useEffect(() => {
@@ -69,7 +75,12 @@ const FacultyNewScreen = () =>{
 
     const renderItemForFacultNew = ({item})=>(
         <TouchableOpacity style={styles.card}
-            onPress={() => {Linking.openURL(item.link)}}>
+            onPress={() => {Linking.openURL(item.link)}}
+            onLongPress={() => { 
+                setTitleOverlay(item.title);
+                setUrlOverlay("https://www.hcmus.edu.vn/"+item.link);
+                setVisibleBlur(true);
+            }}>
 
             <View style={styles.info}>
                 <Text style={styles.title}>{item.title}</Text>
@@ -150,11 +161,44 @@ const FacultyNewScreen = () =>{
             {isLoadingFacultScreen && loadingSkeletonForFacultNewScreen()}
             {statusCode === 500 && !isLoadingFacultScreen && Error500Screen()}
             {statusCode === 503 && !isLoadingFacultScreen && Error503Screen()}
+           
            <FlatList
-            data={dataFacultNew}
-            renderItem={renderItemForFacultNew}
-            keyExtractor={(item,index) => index.toString()}
+                data={dataFacultNew}
+                renderItem={renderItemForFacultNew}
+                keyExtractor={(item,index) => index.toString()}
            />
+
+
+            {visibleBlur &&<TouchableWithoutFeedback onPress={() =>{
+                setVisibleBlur(false);
+            }}>
+                <BlurView intensity={98} style={[StyleSheet.absoluteFill, styles.nonBlurredContent,blurStyle.container]}>
+                    <TouchableOpacity style={blurStyle.card} 
+                        onPress={() =>{
+                            Linking.openURL(urlOverlay);
+                        }}
+                    >
+                        <Text style={blurStyle.title}>{titleOverlay}</Text>        
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={blurStyle.card}
+                        onPress={() =>{
+                            navigation.navigate("Add Event",{
+                                nameEvent: 'Sự kiện mới',
+                                decriptionEvent:titleOverlay,
+                                urlEvent:urlOverlay
+                            });
+                        }}>
+
+                        <View style={{flexDirection:'row'}}>
+                            <FontAwesome name="calendar" size={20} color="#777777" />     
+                            <Text style={{marginLeft : 30, marginTop :2}}>Tạo lịch cho sự kiện này</Text>    
+                            <Entypo style={blurStyle.onTheRight} name="chevron-thin-right" size={18} color="#999999" />
+                        </View>
+                            
+                    </TouchableOpacity>
+                </BlurView>
+            </TouchableWithoutFeedback>}
 
         </View>
     )
@@ -221,14 +265,32 @@ const skeletonLoading = StyleSheet.create({
         width:'20%',
         height:14
     },
+});
 
-    onTheRightThreeDot:{
-        width:'6%',
-        height:14,
-        alignSelf: 'flex-end',
-        marginTop:-25,
-        marginRight:5
+const blurStyle = StyleSheet.create({
+    container: {
+        justifyContent:'center',
+        paddingHorizontal:10
     },
-})
+
+    card: {
+        width: '100%',
+        backgroundColor:'white',
+        borderRadius:15,
+        paddingVertical:15,
+        paddingHorizontal:10,
+        marginBottom:10
+    },
+
+    title: {
+        fontWeight:'bold',
+    },
+
+    onTheRight: {
+        position: 'absolute',
+        right: 5
+    },
+
+});
 
 export default FacultyNewScreen;

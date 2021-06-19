@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from "react";
-import { StyleSheet, Text, View , FlatList,TouchableOpacity,Linking,Image,TouchableWithoutFeedback} from "react-native";
+import { StyleSheet, Text, View , FlatList,TouchableOpacity,Linking,TouchableWithoutFeedback} from "react-native";
 import { Entypo,FontAwesome } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useSelector } from 'react-redux';

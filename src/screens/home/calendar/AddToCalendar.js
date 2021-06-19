@@ -178,7 +178,7 @@ const AddToCalendarScreen = ({navigation}) => {
 
         dispatch(calendarActions.getStatusOfTitle(false));
         dispatch(calendarActions.getStatusOfDate(true));
-        navigation.navigate("Calendar")
+        navigation.goBack();
     }
 
     //Handle for clickable add button

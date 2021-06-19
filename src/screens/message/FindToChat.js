@@ -110,7 +110,7 @@ const FindToChatScreen = ({navigation}) => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-            <TouchableOpacity onPress={() =>{ navigation.navigate('Message')}}>
+            <TouchableOpacity onPress={() =>{ navigation.goBack()}}>
             <Ionicons name="chevron-back" size={38} color="blue" />
             </TouchableOpacity>
  

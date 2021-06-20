@@ -43,14 +43,11 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     const [urlEvent,setUrlEvent] =useState(route.params.urlEvent);
     const [decriptionEvent,setDecriptionEvent] =useState(route.params.decriptionEvent);
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
-
-
     const [labelRemindNoti,setLabelRemindNoti] = useState('');
 
-    const dispatch=useDispatch();
+    const [defaultTitle,setDefaultTitle] = useState(route.params.nameEvent);
 
-    const statusTitle = useSelector((state) => state.calendar.statusTitle);
-    const statusDate = useSelector((state) => state.calendar.statusDate);
+    const dispatch=useDispatch();
 
     const toggleOverlayAddPeople = () => {
         setVisibleOverlayAddPeople(!visibleOverlayAddPeople);
@@ -111,15 +108,15 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     };
 
     const getCurrentMonth =(timestamp)=> {
-    var today = new Date(timestamp);
-    var month = today.getMonth() + 1;
-    return month; 
+        var today = new Date(timestamp);
+        var month = today.getMonth() + 1;
+        return month; 
     };
 
     const getCurrentYear = (timestamp) => {
-    var today = new Date(timestamp); 
-    var year= today.getFullYear();
-    return year;
+        var today = new Date(timestamp); 
+        var year= today.getFullYear();
+        return year;
     }
     
     const addZero=(i) =>{
@@ -130,10 +127,10 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     }
     
     const getCurrentTime = (timestamp) => {
-    var d = new Date(timestamp);
-    var h = addZero(d.getHours());
-    var m = addZero(d.getMinutes());
-    return h + ":" + m;
+        var d = new Date(timestamp);
+        var h = addZero(d.getHours());
+        var m = addZero(d.getMinutes());
+        return h + ":" + m;
     }
 
     //Handle Start and End Date
@@ -141,67 +138,34 @@ const ModifyCalendarScreen = ({navigation,route}) => {
         //console.log(startTimestamp,endTimestamp);
         
         if(startTimestamp >= endTimestamp){
-        return false;
+            return false;
         }
         return true;
     };
 
     const checkTitle = (value) =>{
         if(value.trim().length === 0){
-        return false;
+            return false;
         }
         return true;
     };
 
     //Back button handler
     const backButtonHandler = ()=>{
-
-        dispatch(calendarActions.getStatusOfTitle(false));
-        dispatch(calendarActions.getStatusOfDate(true));
+        dispatch(calendarActions.addPeopleToCalendar([]));
         navigation.goBack();
     }
 
     //Handle for clickable add button
     const checkDisableAddButton =() =>{
-        console.log(statusTitle,statusDate);
-        if(statusTitle && statusDate){
-        return false;
+        if(checkTitle(title) && checkValidDate() && title !== defaultTitle){
+            return false;
         }
         return true;
     }
 
 
-    //Call getCalendarThis Month Calendar
-  const getAllActivitiesInMonth = ()=>{
-    let details = {
-      year: getCurrentMonth(),
-      month: getCurrentYear(),
-    };
-
-    let formBody = [];
-
-    for (let property in details) {
-      let encodedKey = encodeURIComponent(property);
-      let encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    fetch("https://hcmusemu.herokuapp.com/calendar/getthismonth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": `bearer ${token}`
-      },
-      body: formBody,
-    }).then((response) => {})
-    .then(([statusCode, dataRes])=>{
-        //console.log(dataRes,statusCode); 
-        dispatch(calendarActions.getCalendarOfMonth(dataRes));
-    }).catch(error => console.log('error', error));
-  };
-
-    //call Api post calendar
+    //call Api edit calendar
     const modifyEvent = async ()=>{
         setLoading(true);
 
@@ -210,30 +174,30 @@ const ModifyCalendarScreen = ({navigation,route}) => {
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
-        "id":idEvent,
-        "Title": title,
-        "TypeEvent": typeEvent,
-        "year": getCurrentYear(startTimestamp).toString(),
-        "month": getCurrentMonth(startTimestamp).toString(),
-        "day": getCurrenDay(startTimestamp).toString(),
-        "StartHour": Math.floor(startTimestamp/1000),
-        "EndHour": Math.floor(endTimestamp/1000),
-        "desciptionText": decriptionEvent,
-        "url": urlEvent,
-        "UnderLine": false,
-        "Italic": false,
-        "Bold": false,
-        "Color": colorEvent,
-        "listguestEmail": [],
-        "listguestName": [],
-        "Notification": timestampRemindNoti
+            "id":idEvent,
+            "Title": title,
+            "TypeEvent": typeEvent,
+            "year": getCurrentYear(startTimestamp).toString(),
+            "month": getCurrentMonth(startTimestamp).toString(),
+            "day": getCurrenDay(startTimestamp).toString(),
+            "StartHour": Math.floor(startTimestamp/1000),
+            "EndHour": Math.floor(endTimestamp/1000),
+            "desciptionText": decriptionEvent,
+            "url": urlEvent,
+            "UnderLine": false,
+            "Italic": false,
+            "Bold": false,
+            "Color": colorEvent,
+            "listguestEmail": [],
+            "listguestName": [],
+            "Notification": timestampRemindNoti
         });
 
         var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
         };
 
         fetch("https://hcmusemu.herokuapp.com/calendar/edit", requestOptions)
@@ -245,38 +209,14 @@ const ModifyCalendarScreen = ({navigation,route}) => {
             console.log(raw);
             console.log(dataRes);
             if(statusCode === 200){
-                getAllActivitiesInMonth();
+                //getAllActivitiesInMonth();
                 //dispatch(calendarActions.addNewEventToCalendar());
                 setLoading(false);
                 navigation.navigate('Calendar');
             }  
         })
         .catch(error => console.log('error', error));
-
-        
-    
-        // fetch("https://hcmusemu.herokuapp.com/calendar/post", {
-        //     method: "POST",
-        //     headers: {
-        //     "Content-Type": "application/x-www-form-urlencoded",
-        //     "Authorization": `bearer ${token}`
-        //     },
-        //     body: formBody,
-        // }).then((response) => {
-        //     const statusCode = response.status;
-        //     const dataRes = response.json();
-        //     return Promise.all([statusCode, dataRes]);
-        // }).then(([statusCode, dataRes])=>{
-        //     if(statusCode === 200){
-        //         dispatch(calendarActions.addNewEventToCalendar());
-        //         setLoading(false);
-        //     }  
-        // }).done();
-    
-        
     }
-
-      
 
     return(
         <KeyboardAvoidingView
@@ -319,7 +259,6 @@ const ModifyCalendarScreen = ({navigation,route}) => {
                 onChangeText={(title)=>{
                     //console.log(checkTitle(title));
                     setTitle(title);
-                    dispatch(calendarActions.getStatusOfTitle(checkTitle(title)))
                     }}>{title}</TextInput>
             </View> 
 
@@ -428,7 +367,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
                 onConfirm={handleStartConfirm}
                 onCancel={hideStartDatePicker}
                 onHide={()=>{
-                    dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                    checkValidDate();
                 }}/>
 
             <DateTimePickerModal
@@ -441,7 +380,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
                 onConfirm={handleEndConfirm}
                 onCancel={hideEndDatePicker}
                 onHide={()=>{
-                    dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+                    checkValidDate();
                 }}/>
 
             <DateTimePickerModal

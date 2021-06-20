@@ -167,7 +167,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
     //Back button handler
     const backButtonHandler = ()=>{
-
+        dispatch(calendarActions.addPeopleToCalendar([]));
         navigation.goBack();
     }
 
@@ -178,42 +178,6 @@ const AddToCalendarScreen = ({navigation,route}) => {
         }
         return true;
     }
-
-    //Handle for Add Button
-    const addButtonHandler = async() => {
-        await addNewEvent();
-    };
-
-
-    //Call getCalendarThis Month Calendar
-  const getAllActivitiesInMonth = ()=>{
-    let details = {
-      year: getCurrentMonth(),
-      month: getCurrentYear(),
-    };
-
-    let formBody = [];
-
-    for (let property in details) {
-      let encodedKey = encodeURIComponent(property);
-      let encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    fetch("https://hcmusemu.herokuapp.com/calendar/getthismonth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": `bearer ${token}`
-      },
-      body: formBody,
-    }).then((response) => {})
-    .then(([statusCode, dataRes])=>{
-        //console.log(dataRes,statusCode); 
-        dispatch(calendarActions.getCalendarOfMonth(dataRes));
-    }).catch(error => console.log('error', error));
-  };
 
     //call Api post calendar
     const addNewEvent = async ()=>{
@@ -243,10 +207,10 @@ const AddToCalendarScreen = ({navigation,route}) => {
         });
 
         var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
         };
 
         fetch("https://hcmusemu.herokuapp.com/calendar/post", requestOptions)
@@ -265,30 +229,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
                 navigation.navigate('Calendar');
             }  
         }).catch(error => console.log('error', error));
-
-        
-    
-        // fetch("https://hcmusemu.herokuapp.com/calendar/post", {
-        //     method: "POST",
-        //     headers: {
-        //     "Content-Type": "application/x-www-form-urlencoded",
-        //     "Authorization": `bearer ${token}`
-        //     },
-        //     body: formBody,
-        // }).then((response) => {
-        //     const statusCode = response.status;
-        //     const dataRes = response.json();
-        //     return Promise.all([statusCode, dataRes]);
-        // }).then(([statusCode, dataRes])=>{
-        //     if(statusCode === 200){
-        //         dispatch(calendarActions.addNewEventToCalendar());
-        //         setLoading(false);
-        //     }  
-        // }).done();
     };
-
-    
-      
 
     return(
         <KeyboardAvoidingView
@@ -739,43 +680,5 @@ const headerStyle = StyleSheet.create({
         marginTop:2
     }
 });
-
-const addPeopleStyle = StyleSheet.create({
-    
-
-    input:{
-        flexDirection:'row',
-        width:'95%',
-        backgroundColor:"#cccc",
-        borderRadius:10,
-        padding:10,
-    },
-
-    card: {
-        paddingHorizontal:10,
-        backgroundColor: "white",
-        borderWidth: 1,
-        borderColor: "#cccccc",
-        flexDirection: "row",
-
-    },
-    name:{
-        marginTop:10,
-        marginHorizontal:20
-    },
-    nameUniversity:{
-        fontSize:12,
-        marginHorizontal:20
-    },
-
-    header: {
-        flexDirection:'row',
-        paddingTop: 10,
-        paddingBottom: 15,
-        borderBottomColor:'#DDDDDD',
-        borderBottomWidth:.2,
-    },
-})
-
 
 export default AddToCalendarScreen;

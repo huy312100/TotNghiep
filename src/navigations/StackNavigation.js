@@ -74,20 +74,7 @@ export function AuthenStackNavigation() {
 };
 
 function HomeStackNavigation({navigation}) { 
-  // const statusTitle = useSelector((state) => state.calendar.statusTitle);
-  // const statusDate = useSelector((state) => state.calendar.statusDate);
-  // const dispatch = useDispatch();
-
-  // const checkDisableAddButton =() =>{
-  //   console.log(statusTitle,statusDate);
-  //   if(statusTitle && statusDate){
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  // dispatch(calendarActions.getStatusOfTitle(true));
-
+  
   return(
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen

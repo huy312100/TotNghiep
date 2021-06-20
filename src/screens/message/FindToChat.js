@@ -22,7 +22,6 @@ const FindToChatScreen = ({navigation}) => {
 
     var abc='xxx';
 
-
     const getInfoFromName =(name) => {
         let details = {
             HoTen:name
@@ -41,6 +40,7 @@ const FindToChatScreen = ({navigation}) => {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`
             },
             body: formBody,
           }).then((response) => {
@@ -48,16 +48,16 @@ const FindToChatScreen = ({navigation}) => {
               const dataRes = response.json();
               return Promise.all([statusCode, dataRes]);
           }).then(([statusCode, dataRes])=>{
-                console.log(dataRes);
+                console.log(statusCode,dataRes);
                 setData(dataRes);
           }).catch(error => console.log('error', error));
     };
 
-    const loadRoomID = useCallback(() => {
-      socket.once('Reply-Create-Room',(data)=>{
-        setRoomID(data);
-      });
-    },[roomID]);
+    // const loadRoomID = useCallback(() => {
+    //   socket.once('Reply-Create-Room',(data)=>{
+    //     setRoomID(data);
+    //   });
+    // },[roomID]);
 
     const renderItem = ({ item }) => (
         <View>

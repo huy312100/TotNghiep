@@ -233,8 +233,20 @@ const CalendarScreen =({navigation})=> {
     getAllActivitiesInMonth();
     return()=>{
       unmounted.current=true;
+      //unsubscribe();
     };
   },[monthChanged,yearChanged]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setCurrentDate(getCurrentDate());
+      getAllActivitiesInMonth();
+    });
+    return()=>{
+      unmounted.current=true;
+      unsubscribe();
+    };
+  },[]);
 
   //Call api delete event in calendar
   const deleteEventInCalendar = () => {

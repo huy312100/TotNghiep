@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   teacherName: {
-    marginVertical:30,
+    marginVertical:15,
     marginHorizontal:20,
   }
 });

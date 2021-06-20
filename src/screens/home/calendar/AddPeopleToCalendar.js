@@ -15,6 +15,9 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
     const dispatch= useDispatch();
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
+    const token = useSelector((state) => state.authen.token);
+
+
     const [userChoose,setUserChoose] = useState(allUserChoose);
     const [data,setData] = useState([]);
     const [txtSeach,setTxtSeach] = useState('');
@@ -37,6 +40,7 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`
             },
             body: formBody,
           }).then((response) => {
@@ -44,7 +48,7 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
               const dataRes = response.json();
               return Promise.all([statusCode, dataRes]);
           }).then(([statusCode, dataRes])=>{
-                //console.log(dataRes);
+                console.log(statusCode,dataRes);
                 const tmp= objDiff(dataRes,userChoose);
                 //setData(dataRes.filter(({Email})=>));
                 setData(tmp);

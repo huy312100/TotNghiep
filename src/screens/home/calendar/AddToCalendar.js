@@ -8,7 +8,6 @@ import { useDispatch,useSelector } from 'react-redux';
 import * as calendarActions from '../../../../store/actions/Calendar';
 
 import LoadingScreen from '../../LoadingScreen';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const AddToCalendarScreen = ({navigation,route}) => {

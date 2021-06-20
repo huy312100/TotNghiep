@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
 
   teacherName: {
-    marginVertical: 30,
+    marginVertical: 15,
     marginHorizontal: 20,
   },
 

@@ -1,5 +1,5 @@
-import React,{useState,useEffect} from 'react';
-import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image ,Button } from 'react-native';
+import React,{useState,useEffect,useRef} from 'react';
+import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
 import { Icon,Badge } from 'react-native-elements';
@@ -53,6 +53,9 @@ const NotificationScreen=({navigation})=>{
   const socket = useSelector((state) => state.authen.socket);
 
   const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const unmounted = useRef(false);
+
 
   function convertTimestamp(timestamp) {
     var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
@@ -79,7 +82,15 @@ const NotificationScreen=({navigation})=>{
   };
 
   useEffect(() => {
-    getAllNotifications();
+    const unsubscribe = navigation.addListener('focus', () => {
+      getAllNotifications();
+    });
+
+    return()=>{
+      unmounted.current=true;
+      unsubscribe();
+    };
+ 
 
   //   const backgroundSubscription= Notifications.addNotificationResponseReceivedListener(
   //     (response)=>{
@@ -122,6 +133,7 @@ const NotificationScreen=({navigation})=>{
       })
     };
 
+    //call api get all notifications
     const getAllNotifications = () => {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `bearer ${token}`);
@@ -137,9 +149,48 @@ const NotificationScreen=({navigation})=>{
         .then((json) => {
           console.log(json);
           setData(json);
+          setRefreshing(false);
+
           //console.log(dataUniversity);
         }).catch((err) => console.log(err, "error"));
     };
+
+    //call api change state notifications
+    const changeStateNoti = (idNoti) => {
+      let details = {
+        IDNotification: idNoti,
+      };
+  
+      let formBody = [];
+  
+      for (let property in details) {
+        let encodedKey = encodeURIComponent(property);
+        let encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+  
+      console.log(formBody);
+  
+      fetch("https://hcmusemu.herokuapp.com/notification/changestate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `bearer ${token}`,
+        },
+        body: formBody,
+      }).then((response) => response.json())
+        .then((json) => {
+          console.log(json);
+      }).catch((err) => console.log(err, "error"));
+    };
+
+    //refresh page
+    const onRefresh = () => {
+      setRefreshing(true);
+      getAllNotifications();
+    };
+  
 
     const renderItem = ({ item }) => (
       <TouchableOpacity style={styles.card} onPress={() =>{
@@ -154,24 +205,31 @@ const NotificationScreen=({navigation})=>{
         else{
           
         }
+        changeStateNoti(item._id);
+
       }}>
-        <View style={styles.userInfo}>
-          <View style={styles.userImgWrapper}>
+        <View style={styles.info}>
+          <View style={styles.imgWrapper}>
               <View >
-                  <Image style={styles.userImg} source={require("../../../assets/notification-flat.png")} />
+                  <Image style={styles.img} source={require("../../../assets/notification-flat.png")} />
                   {!item.State && <Badge
                       status="error"
                       containerStyle={{ position: 'absolute', top: -4, right: -4 }}
                   />}
               </View>
           </View>
+
           <View style={styles.textSection}>
-            <View style={styles.userInfoText}>
-              <Text style={styles.userName}>{item.Title}</Text>
-              <Text style={styles.postTime}>{convertTimestamp(parseInt(item.Date)/1000)}</Text>
+            <View style={styles.infoText}>
+              <Text style={styles.titleName}>{item.Title}</Text>
+              <Text style={[styles.postTime,!item.State && styles.boldWhenNotRead]}>{convertTimestamp(parseInt(item.Date)/1000)}</Text>
             </View>
-            <Text style={styles.messageText}>{item.Data}</Text>
+            <Text style={[styles.contentText,!item.State && styles.boldWhenNotRead]}>{item.Data}</Text>
           </View>
+          
+
+          
+
         </View>
       </TouchableOpacity>
     );
@@ -205,6 +263,11 @@ const NotificationScreen=({navigation})=>{
               data={data}
               keyExtractor={item =>item._id}
               renderItem={renderItem}
+              refreshControl={<RefreshControl
+                colors={["blue", "red"]}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />}
             />
         </SafeAreaView>   
     )
@@ -220,17 +283,17 @@ const styles = StyleSheet.create({
         width: '100%',
     },
 
-    userInfo:{
+    info:{
         flexDirection:"row",
         justifyContent: "space-between",
       },
     
-      userImgWrapper:{
+      imgWrapper:{
         paddingTop: 15,
         paddingBottom: 15,
       },
     
-      userImg:{
+      img:{
         width: 50,
         height: 50,
         borderRadius: 25,
@@ -247,13 +310,13 @@ const styles = StyleSheet.create({
         borderBottomColor: "#cccccc",
       },
     
-      userInfoText:{
+      infoText:{
         flexDirection: "row",
         justifyContent: "space-between",
         marginBottom: 5,
       },
     
-      userName:{
+      titleName:{
         fontSize: 14,
         fontWeight: "bold",
       },
@@ -263,9 +326,13 @@ const styles = StyleSheet.create({
         color:"#666",
       },
     
-      messageText:{
+      contentText:{
         fontSize: 14,
         color: "#333333",
+      },
+
+      boldWhenNotRead: {
+        fontWeight: "bold",
       }
 })
 

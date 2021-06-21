@@ -387,7 +387,14 @@ function ProfileStackNavigation({navigation}) {
 //Bottom tab 
 function MyBottomTabs() {
   const visibleBotTab = useSelector((state) => state.home.visibleBotTab);
-  console.log(visibleBotTab);
+  const notiNotRead = useSelector((state) => state.home.notiNotRead);
+
+  const visibleBadge =() =>{
+    if(notiNotRead>0){
+      return true;
+    }
+    return false;
+  }
 
   return (
     <bottomTab.Navigator
@@ -417,7 +424,9 @@ function MyBottomTabs() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
           ),
-          tabBarBadge:2,         
+  
+          tabBarBadge: visibleBadge() ? notiNotRead :null,
+          
         }}
       />
 

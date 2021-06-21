@@ -2,8 +2,11 @@ import React,{useState,useEffect,useRef} from 'react';
 import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl } from 'react-native';
 import{SafeAreaView} from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
-import { Icon,Badge } from 'react-native-elements';
+import { Badge } from 'react-native-elements';
 import {useDispatch,useSelector} from "react-redux";
+
+import * as homeActions from "../../../store/actions/Home";
+
 
 
 const Notification =[
@@ -51,6 +54,8 @@ const NotificationScreen=({navigation})=>{
   const token = useSelector((state) => state.authen.token);
   const tokenNoti = useSelector((state) => state.authen.tokenNotification);
   const socket = useSelector((state) => state.authen.socket);
+
+  const dispatch = useDispatch();
 
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -145,12 +150,22 @@ const NotificationScreen=({navigation})=>{
       };
 
       fetch("https://hcmusemu.herokuapp.com/notification",requestOptions)
-        .then((response) => response.json())
-        .then((json) => {
-          console.log(json);
-          setData(json);
-          setRefreshing(false);
-
+        .then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+          if (statusCode === 200) {
+            let countNotRead = 0;
+            for (const key in dataRes) {
+              if(!dataRes[key].State){
+                countNotRead++;
+              };
+            };
+            dispatch(homeActions.NotiNotRead(countNotRead));
+            setData(dataRes);
+            setRefreshing(false);
+          }        
           //console.log(dataUniversity);
         }).catch((err) => console.log(err, "error"));
     };
@@ -226,9 +241,6 @@ const NotificationScreen=({navigation})=>{
             </View>
             <Text style={[styles.contentText,!item.State && styles.boldWhenNotRead]}>{item.Data}</Text>
           </View>
-          
-
-          
 
         </View>
       </TouchableOpacity>

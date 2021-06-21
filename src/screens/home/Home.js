@@ -69,6 +69,7 @@ const HomeScreen=({navigation}) =>{
       //console.log(newDeadline);
       connectToSocket();
       getRequestChatting();
+      getNotReadNotifications();
       getProfile();
 
       const backgroundSubscription= Notifications.addNotificationResponseReceivedListener(
@@ -107,8 +108,9 @@ const HomeScreen=({navigation}) =>{
     };
   },[]);
 
-  const getProfile = () =>{
-    //console.log(token);
+   
+  //call api get not read notifications
+  const getNotReadNotifications = () => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `bearer ${token}`);
 
@@ -116,6 +118,36 @@ const HomeScreen=({navigation}) =>{
     method: 'GET',
     headers: myHeaders,
     redirect: 'follow'
+    };
+
+    fetch("https://hcmusemu.herokuapp.com/notification",requestOptions)
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
+      if (statusCode === 200) {
+        let countNotRead = 0;
+        for (const key in dataRes) {
+          if(!dataRes[key].State){
+            countNotRead++;
+          };
+        };
+        dispatch(homeActions.NotiNotRead(countNotRead));
+      }        
+    }).catch((err) => console.log(err, "error"));
+  };
+
+  //call api get profile
+  const getProfile = () =>{
+    //console.log(token);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
     };
 
     fetch("https://hcmusemu.herokuapp.com/profile/view",requestOptions)
@@ -130,6 +162,7 @@ const HomeScreen=({navigation}) =>{
       }).catch((err) => console.log(err, "error"));
   };
 
+  //call api get newest deadline
   const getNewestDeadline = () =>{
     setLoading(true);
     //console.log(token);

@@ -51,9 +51,9 @@ const FirstReadMessageScreen = ({navigation}) => {
         myHeaders.append("Authorization", `bearer ${token}`);
 
         var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
         };
 
         

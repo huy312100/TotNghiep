@@ -10,6 +10,7 @@ import RoundedImage from "../../components/profile/main/RoundedImage";
 import {useDispatch,useSelector} from "react-redux";
 
 import * as authenActions from "../../../store/actions/Authen";
+import * as homeActions from "../../../store/actions/Home";
 
 const categoryProfile = [
   {
@@ -81,6 +82,7 @@ export function ProfileScreen({navigation}) {
       <TouchableOpacity style={styles.signoutBtn}
           onPress={() => {
             dispatch(authenActions.logout);
+            dispatch(homeActions.VisibleBotTab(false));
             navigation.navigate("Login");
           }}>        
             <Text style={styles.signoutTextBtn}>Đăng xuất</Text>

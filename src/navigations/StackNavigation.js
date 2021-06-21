@@ -7,7 +7,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { MaterialCommunityIcons,Entypo } from '@expo/vector-icons';
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 
-// import { useSelector,useDispatch } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import * as calendarActions from '../../store/actions/Calendar';
 // import * as msgActions from "../../store/actions/Message";
 
@@ -358,7 +358,7 @@ function ProfileStackNavigation({navigation}) {
           // headerRight:()=>(
           //   <TouchableOpacity onPress={navigation.navigate("")}>
           //     <MaterialCommunityIcons name="playlist-check" size={28} color={"#FFFFFF"} />
-          //   </TouchableOpacity>
+        //   </TouchableOpacity>
           // ),
           // headerRightContainerStyle:{
           //   paddingRight:10
@@ -386,6 +386,9 @@ function ProfileStackNavigation({navigation}) {
 
 //Bottom tab 
 function MyBottomTabs() {
+  const visibleBotTab = useSelector((state) => state.home.visibleBotTab);
+  console.log(visibleBotTab);
+
   return (
     <bottomTab.Navigator
       initialRouteName="Home"
@@ -401,7 +404,9 @@ function MyBottomTabs() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
-          tabBarVisible: getTabBarVisibility(route),
+          tabBarVisible: getTabBarVisibility(route) && visibleBotTab,
+          //tabBarVisible: false,
+
         })}
       />
       <bottomTab.Screen
@@ -445,6 +450,7 @@ function MyBottomTabs() {
 }
 
 const getTabBarVisibility = (route) => {
+
   const routeName = getFocusedRouteNameFromRoute(route) ;
 
   const arrHideBotTab=["Calendar","Chat","Course","Change Profile",

@@ -100,7 +100,6 @@ const HomeScreen=({navigation}) =>{
         (notification)=>{
         //console.log(notification);
       });
-      
     return()=>{
       unmounted.current = true;
       backgroundSubscription.remove();
@@ -126,6 +125,7 @@ const HomeScreen=({navigation}) =>{
 
         //console.log(dataUniversity);
         dispatch(profileActions.getProfile(json));
+        dispatch(homeActions.VisibleBotTab(true));
         setLoading(false);
       }).catch((err) => console.log(err, "error"));
   };

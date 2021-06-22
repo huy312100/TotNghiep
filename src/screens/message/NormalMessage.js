@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl } from 'react-native';
 
 import { useSelector,useDispatch } from 'react-redux';
@@ -121,7 +121,7 @@ const NormalMessageScreen = ({navigation}) => {
 
     const token = useSelector((state) => state.authen.token);
     const [refreshing, setRefreshing] = useState(false);
-
+    const unmounted = useRef(false);
 
     function convertTimestamp(timestamp) {
       var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
@@ -149,6 +149,9 @@ const NormalMessageScreen = ({navigation}) => {
 
   useEffect(() => {
     getAllMessage();
+    return()=>{
+      unmounted.current = true;
+    };
   },[])
 
     //call api get all message screen
@@ -157,9 +160,9 @@ const NormalMessageScreen = ({navigation}) => {
       myHeaders.append("Authorization", `bearer ${token}`);
 
       var requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow'
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
       };
 
       

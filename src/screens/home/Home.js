@@ -39,6 +39,8 @@ const HomeScreen=({navigation}) =>{
 
   const dispatch = useDispatch();
 
+  var countMsgNotRead = 0;
+
   function convertTimestamp(timestamp) {
     var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
         yyyy = d.getFullYear(),
@@ -70,6 +72,8 @@ const HomeScreen=({navigation}) =>{
       connectToSocket();
       getRequestChatting();
       getNotReadNotifications();
+      getAwaitMsgNotRead();
+      getMsgNotRead();
       getProfile();
 
       const backgroundSubscription= Notifications.addNotificationResponseReceivedListener(
@@ -137,6 +141,76 @@ const HomeScreen=({navigation}) =>{
       }        
     }).catch((err) => console.log(err, "error"));
   };
+
+  //call api get not read await message
+  const getAwaitMsgNotRead = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    fetch("https://hcmusemu.herokuapp.com/chat/findchatawait",requestOptions)
+    .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=> {
+      console.log(statusCode,dataRes);
+      if (statusCode === 200) {
+        for (const key in dataRes.awaittext) {
+          if(!dataRes.awaittext[key].state){
+            countMsgNotRead++;
+          }
+        }
+      }        
+      else{
+          console.log(statusCode)
+      }
+    }).catch((err) => console.log(err, "error"));
+  };
+
+  //call api get not read message
+  const getMsgNotRead = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    
+    fetch("https://hcmusemu.herokuapp.com/chat/findchat",requestOptions)
+    .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=> {
+        console.log(statusCode,dataRes);
+        if (statusCode === 200) {
+          if(dataRes.message==='Message is Empty'){
+            return;
+          }
+          else{
+            for (const key in dataRes) {
+              if(!dataRes[key].state){
+                countMsgNotRead++;
+              }
+            }
+          }
+        }
+        else{
+          console.log(statusCode)
+        }
+        // setLoadingFacultScreen(false);
+        dispatch(homeActions.MessageNotRead(countMsgNotRead));
+    }).catch((err) => console.log(err, "error"));
+  };
+
 
   //call api get profile
   const getProfile = () =>{

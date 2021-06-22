@@ -388,13 +388,7 @@ function ProfileStackNavigation({navigation}) {
 function MyBottomTabs() {
   const visibleBotTab = useSelector((state) => state.home.visibleBotTab);
   const notiNotRead = useSelector((state) => state.home.notiNotRead);
-
-  const visibleBadge =() =>{
-    if(notiNotRead>0){
-      return true;
-    }
-    return false;
-  }
+  const msgNotRead = useSelector((state) => state.home.messNotRead);
 
   return (
     <bottomTab.Navigator
@@ -425,7 +419,7 @@ function MyBottomTabs() {
             <MaterialCommunityIcons name="bell" color={color} size={size} />
           ),
   
-          tabBarBadge: visibleBadge() ? notiNotRead :null,
+          tabBarBadge: notiNotRead > 0 ? notiNotRead :null,
           
         }}
       />
@@ -439,7 +433,7 @@ function MyBottomTabs() {
             <MaterialCommunityIcons name="message-processing" color={color} size={size} />
           ),
           tabBarVisible: getTabBarVisibility(route),
-          tabBarBadge:9,
+          tabBarBadge: msgNotRead >0 ? msgNotRead :null,
         })}
       />
  

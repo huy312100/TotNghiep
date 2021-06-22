@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView } from 'react-native';
+import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView,ImageBackground } from 'react-native';
 import { Icon } from "react-native-elements";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import io from 'socket.io-client';
@@ -427,7 +427,7 @@ const HomeScreen=({navigation}) =>{
   };
 
   const renderNewestDeadlineItem = ({item}) => (
-    <TouchableOpacity onPress={() =>{
+    <TouchableOpacity style={styles.card} onPress={() =>{
       Alert.alert(
         "Chuyển tiếp",
         "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
@@ -449,7 +449,7 @@ const HomeScreen=({navigation}) =>{
         </View>
         <View style={styles.textSection}>
           <View style={styles.courseInfoText}>
-            <Text style={styles.courseName}>{item.nameCourese}</Text>
+            <Text style={styles.courseName}>{item.nameCourese}</Text> */
             <Text style={styles.timeDeadline}>{convertTimestamp(item.duedate)}</Text>
           </View>
           <Text style={styles.contentDeadline}>{item.decription}</Text>
@@ -458,20 +458,15 @@ const HomeScreen=({navigation}) =>{
     </TouchableOpacity>
   );
 
+  const renderEmptyNewsetDeadline = (
+    <View style={{marginLeft:50}}> 
+      <Text>Không có deadline nào trong tháng này</Text>
+    </View>
+    
+  );
+
   const renderCalendarInMonth = ({item}) =>(
     <TouchableOpacity style={calendarStyle.card}>
-      {/* <View style={styles.deadlineInfo}>
-        <View style={styles.deadlineImgWrapper}>
-          <Image style={styles.deadlineImg}  />
-        </View>
-        <View style={styles.textSection}>
-          <View >
-            <Text style={styles.courseName}>{item.title}</Text>
-            <Text style={styles.timeDeadline}>{item.end}</Text>
-          </View>
-          <Text style={styles.contentDeadline}>{item.decription}</Text>
-        </View>
-      </View> */}
       <View style={{flexDirection:'row'}}>
 
         {item.color === '' ? 
@@ -585,13 +580,13 @@ const HomeScreen=({navigation}) =>{
 
       <Text style={styles.label}>Deadline trong tháng</Text>
       
-      {newDeadline.length > 0 &&
-        <FlatList 
+      <FlatList 
         data={newDeadline}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={renderNewestDeadlineItem}/>
-      }
+        renderItem={renderNewestDeadlineItem}
+        ListEmptyComponent={renderEmptyNewsetDeadline}/>
+      
 
       <Text style={styles.label}>Lịch trong tháng</Text>
 
@@ -652,7 +647,6 @@ const styles = StyleSheet.create({
   textSection:{
     flexDirection: "column",
     justifyContent: "center",
-    width: '100%',
     marginHorizontal: 5,
   },
 
@@ -685,8 +679,15 @@ const styles = StyleSheet.create({
   deadlineImg:{
     width: 50,
     height: 50,
-    backgroundColor: "yellow",
     marginLeft:5
+  },
+
+  card:{
+    marginHorizontal: 8,
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#cccccc",
+    borderRadius: 10,
   },
 
 });
@@ -706,10 +707,11 @@ const calendarStyle = StyleSheet.create({
   },
 
   colorCalendar: {
-      height:'100%',
-      width:8,
-      backgroundColor:'#EEEEEE',
-      marginRight:8}
+    height:'100%',
+    width:8,
+    backgroundColor:'#EEEEEE',
+    marginRight:8
+  }
   
 })
 

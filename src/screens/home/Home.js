@@ -12,6 +12,7 @@ import * as homeActions from "../../../store/actions/Home";
 import * as profileActions from "../../../store/actions/Profile";
 import * as authActions from "../../../store/actions/Authen";
 import * as msgActions from "../../../store/actions/Message";
+import * as calendarActions from "../../../store/actions/Calendar";
 
 import LoadingScreen from '../LoadingScreen';
 
@@ -34,6 +35,7 @@ const HomeScreen=({navigation}) =>{
   const unmounted = useRef(false);
   const [isLoading,setLoading]=useState(false);
   const [newDeadline,setNewDeadline]=useState([]);
+  const [calendar,setCalendar] = useState([]);
 
   //const newDeadline = useSelector((state) => state.home.newDeadline);
 
@@ -68,6 +70,9 @@ const HomeScreen=({navigation}) =>{
   useEffect(() =>{
       getPermissionNotifications();
       getNewestDeadline();
+      const unsubscribe = navigation.addListener('focus', () => {
+        getAllActivitiesInMonth();
+      });
       //console.log(newDeadline);
       connectToSocket();
       getRequestChatting();
@@ -107,6 +112,7 @@ const HomeScreen=({navigation}) =>{
       });
     return()=>{
       unmounted.current = true;
+      unsubscribe();
       backgroundSubscription.remove();
       foregroundSubscription.remove();
     };
@@ -119,9 +125,9 @@ const HomeScreen=({navigation}) =>{
     myHeaders.append("Authorization", `bearer ${token}`);
 
     var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow'
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
     };
 
     fetch("https://hcmusemu.herokuapp.com/notification",requestOptions)
@@ -211,6 +217,96 @@ const HomeScreen=({navigation}) =>{
     }).catch((err) => console.log(err, "error"));
   };
 
+  //Call getCalendarThis Month Calendar
+  const getAllActivitiesInMonth = ()=>{
+    let details = {
+      year: new Date().getFullYear(),
+      month: new Date().getMonth()+1,
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    fetch("https://hcmusemu.herokuapp.com/calendar/getthismonth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `bearer ${token}`
+      },
+      body: formBody,
+    }).then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=>{
+      if(statusCode === 200){
+        const dataCalendar = [];
+        for (const key in dataRes) {
+          if(dataRes[key].TypeCalendar !== undefined){
+            if(dataRes[key].ListGuest.length===0){
+              dataCalendar.push({
+                id:dataRes[key]._id,
+                type:dataRes[key].TypeEvent,
+                title:dataRes[key].Title,
+                summary:"",
+                start:convertTimestamp(dataRes[key].StartHour),
+                end:convertTimestamp(dataRes[key].EndHour),
+                url:dataRes[key].Decription.url,
+                typeGuest:"Cá nhân",
+                color:dataRes[key].Color,
+                startTimestamp:dataRes[key].StartHour,
+                endTimestamp:dataRes[key].EndHour,
+                ListGuest:dataRes[key].ListGuest,
+            })}
+            else{
+              dataCalendar.push({
+                id:dataRes[key]._id,
+                type:dataRes[key].TypeCalendar,
+                title:dataRes[key].Title,
+                //summary:"",
+                start:convertTimestamp(dataRes[key].StartHour),
+                end:convertTimestamp(dataRes[key].EndHour),
+                //url:dataRes[key].Decription.url,
+                typeGuest:"Nhóm",
+                color:dataRes[key].Color,
+                // startTimestamp:dataRes[key].StartHour,
+                // endTimestamp:dataRes[key].EndHour,
+                //ListGuest:dataRes[key].ListGuest,
+            })}
+          }
+          else{
+            dataCalendar.push({
+              id:"",
+              //type:dataRes[0].TypeCalendar,
+              title:dataRes[key].nameCourese,
+              summary:dataRes[key].decription,
+              start:convertTimestamp(dataRes[key].duedate-3600),
+              end:convertTimestamp(dataRes[key].duedate),
+              type:"Deadline",
+              color: '#99FF99',
+              url:dataRes[key].url,
+              typeGuest:"Cá nhân",
+          })
+          }
+        }
+        console.log(dataCalendar);
+        dispatch(calendarActions.getCalendarOfMonth(dataCalendar));
+        setCalendar(dataCalendar)
+      }
+      else if (statusCode === 401){
+        console.log("Token het han");
+      }
+      else{
+        console.log(statusCode);
+      }
+    }).catch(error => console.log('error', error));
+  };
 
   //call api get profile
   const getProfile = () =>{
@@ -317,8 +413,6 @@ const HomeScreen=({navigation}) =>{
     }
     formBody = formBody.join("&");
 
-    console.log(formBody);
-
     fetch("https://hcmusemu.herokuapp.com/account/tokennotification", {
       method: "POST",
       headers: {
@@ -328,12 +422,12 @@ const HomeScreen=({navigation}) =>{
       body: formBody,
     }).then((response) => response.json())
       .then((json) => {
-        console.log(json);
+
       }).catch((err) => console.log(err, "error"));
   };
 
   const renderNewestDeadlineItem = ({item}) => (
-    <TouchableOpacity style={styles.card} onPress={() =>{
+    <TouchableOpacity onPress={() =>{
       Alert.alert(
         "Chuyển tiếp",
         "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
@@ -363,6 +457,61 @@ const HomeScreen=({navigation}) =>{
       </View>
     </TouchableOpacity>
   );
+
+  const renderCalendarInMonth = ({item}) =>(
+    <TouchableOpacity style={calendarStyle.card}>
+      {/* <View style={styles.deadlineInfo}>
+        <View style={styles.deadlineImgWrapper}>
+          <Image style={styles.deadlineImg}  />
+        </View>
+        <View style={styles.textSection}>
+          <View >
+            <Text style={styles.courseName}>{item.title}</Text>
+            <Text style={styles.timeDeadline}>{item.end}</Text>
+          </View>
+          <Text style={styles.contentDeadline}>{item.decription}</Text>
+        </View>
+      </View> */}
+      <View style={{flexDirection:'row'}}>
+
+        {item.color === '' ? 
+          <View style={[calendarStyle.colorCalendar]}/>
+          :
+          <View style={[calendarStyle.colorCalendar,{backgroundColor:item.color}]}/>
+        }
+
+        <View>
+          <View style={{flexDirection:'row'}}> 
+            <Text style={calendarStyle.label}>Tên : </Text>
+            <Text>{item.title}</Text>
+          </View>
+
+          <View style={{flexDirection:'row'}}> 
+            <Text style={calendarStyle.label}>Loại : </Text>
+            <Text>{item.type}</Text>
+          </View>
+
+          <View style={{flexDirection:'row'}}> 
+            <Text style={calendarStyle.label}>Bắt đầu : </Text>
+            <Text>{item.start}</Text>
+          </View>
+
+          <View style={{flexDirection:'row'}}> 
+            <Text style={calendarStyle.label}>Kết thúc : </Text>
+            <Text>{item.end}</Text>
+          </View>
+
+          <View style={{flexDirection:'row'}}> 
+            <Text style={calendarStyle.label}>Sự kiện : </Text>
+            <Text>{item.typeGuest}</Text>
+          </View>
+
+        </View>
+        
+      </View>
+      
+    </TouchableOpacity>
+  )
   
   return (
     <SafeAreaView style={styles.container}>
@@ -444,6 +593,14 @@ const HomeScreen=({navigation}) =>{
         renderItem={renderNewestDeadlineItem}/>
       }
 
+      <Text style={styles.label}>Lịch trong tháng</Text>
+
+      <FlatList 
+        data={calendar}
+        horizontal={true}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderCalendarInMonth}/>
+
     </View>}
     </ScrollView>
 
@@ -497,8 +654,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: '100%',
     marginHorizontal: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
   },
 
   courseInfoText:{
@@ -530,13 +685,32 @@ const styles = StyleSheet.create({
   deadlineImg:{
     width: 50,
     height: 50,
-    backgroundColor: "transparent",
+    backgroundColor: "yellow",
     marginLeft:5
   },
 
-  card: {
-    width: '100%',
+});
+
+const calendarStyle = StyleSheet.create({
+  card:{
+    marginHorizontal: 8,
+    padding:15,
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#cccccc",
+    borderRadius: 10,
   },
+
+  label:{
+    fontWeight:'bold',
+  },
+
+  colorCalendar: {
+      height:'100%',
+      width:8,
+      backgroundColor:'#EEEEEE',
+      marginRight:8}
+  
 })
 
 export default HomeScreen;

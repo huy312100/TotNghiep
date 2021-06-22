@@ -136,7 +136,7 @@ const CalendarScreen =({navigation})=> {
     setDatePickerVisibility(false);
   }
 
-  //   //Call getCalendarThis Month Calendar
+  //Call getCalendarThis Month Calendar
   const getAllActivitiesInMonth = ()=>{
     let details = {
       year: yearChanged,
@@ -216,7 +216,7 @@ const CalendarScreen =({navigation})=> {
           }
         }
         setEvent(dataCalendar);
-        dispatch(calendarActions.getCalendarOfMonth(dataRes));
+        dispatch(calendarActions.getCalendarOfMonth(dataCalendar));
         console.log(dataCalendar);
       }
       else if (statusCode === 401){

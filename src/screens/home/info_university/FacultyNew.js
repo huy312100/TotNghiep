@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useRef} from "react";
+import React,{useState} from "react";
 import { StyleSheet, Text, View , FlatList,TouchableOpacity,Linking,TouchableWithoutFeedback} from "react-native";
 import { Entypo,FontAwesome } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -11,7 +11,7 @@ import Error503Screen from "../../error/503";
 const FacultyNewScreen = ({navigation}) =>{
 
     const token = useSelector((state) => state.authen.token);
-    const [dataFacultNew,setDataFacultNew] = useState([]);
+    const facultNews = useSelector((state) => state.news.facultNews);
     const [statusCode,setStatusCode] = useState(200);
     const [isLoadingFacultScreen,setLoadingFacultScreen]=useState(false);
     const [visibleBlur, setVisibleBlur] = useState(false);
@@ -19,59 +19,6 @@ const FacultyNewScreen = ({navigation}) =>{
     const [titleOverlay,setTitleOverlay] = useState('');
     const [urlOverlay,setUrlOverlay] = useState('');
     
-    const unmounted = useRef(false);
-
-    useEffect(() => {
-        getFacultyNew();
-        return()=>{
-            unmounted.current = true
-        };
-    },[]);
-
-    //call api
-    const getFacultyNew = () =>{
-        setLoadingFacultScreen(true);
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `bearer ${token}`);
-
-        var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-        };
-
-        fetch("https://hcmusemu.herokuapp.com/info/newsfaculty",requestOptions)
-        .then((response) => {
-            const statusCode = response.status;
-            const dataRes = response.json();
-            return Promise.all([statusCode, dataRes]);
-        }).then(([statusCode, dataRes])=> {
-            console.log(statusCode,dataRes);
-            if (statusCode === 200) {
-                const tmpFacultyNew =[];
-                for (const key in dataRes) {
-                    tmpFacultyNew.push(
-                    {
-                        title: dataRes[key].Title,
-                        link:dataRes[key].Link,
-                        date:dataRes[key].Date,
-                    });
-                }
-                setDataFacultNew(tmpFacultyNew);
-            }
-            else if (statusCode === 500){
-                setStatusCode(statusCode);
-            }
-            else if (statusCode === 503){
-                setStatusCode(statusCode)
-            }
-            else{
-                setStatusCode(statusCode);
-            }
-            setLoadingFacultScreen(false);
-        })
-        .catch((err) => console.log(err, "error"));
-    };
 
     const renderItemForFacultNew = ({item})=>(
         <TouchableOpacity style={styles.card}
@@ -163,7 +110,7 @@ const FacultyNewScreen = ({navigation}) =>{
             {statusCode === 503 && !isLoadingFacultScreen && Error503Screen()}
            
            <FlatList
-                data={dataFacultNew}
+                data={facultNews}
                 renderItem={renderItemForFacultNew}
                 keyExtractor={(item,index) => index.toString()}
            />

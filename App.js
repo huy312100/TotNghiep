@@ -13,6 +13,7 @@ import homeReducer from './store/reducers/Home';
 import courseReducer from './store/reducers/Course';
 import calendarReducer from './store/reducers/Calendar';
 import messageReducer from './store/reducers/Message';
+import newsReducer from './store/reducers/News';
 
 const rootReducer = combineReducers({
   authen:authenReducer,
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   course:courseReducer,
   calendar:calendarReducer,
   message:messageReducer,
+  news:newsReducer,
 });
 
 const store = createStore(rootReducer,applyMiddleware(ReduxThunk));

@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useRef} from "react";
+import React,{useState} from "react";
 import { StyleSheet, Text, View , FlatList,TouchableOpacity,Linking,TouchableWithoutFeedback} from "react-native";
 import { Entypo,FontAwesome } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -10,7 +10,7 @@ import Error503Screen from "../../error/503";
 
 const UniversityNewScreen = ({navigation}) =>{
     const token = useSelector((state) => state.authen.token);
-    const [dataUniNew,setDataUniNew] = useState([]);
+    const uniNews = useSelector((state) => state.news.uniNews);
     const [statusCode,setStatusCode] = useState(200);
     const [isLoadingUniScreen,setLoadingUniScreen]=useState(false);
     const [visibleBlur, setVisibleBlur] = useState(false);
@@ -18,61 +18,6 @@ const UniversityNewScreen = ({navigation}) =>{
     const [titleOverlay,setTitleOverlay] = useState('');
     const [urlOverlay,setUrlOverlay] = useState('');
 
-    const unmounted = useRef(false);
-
-    useEffect(() => {
-        getUniversityNew();
-        return()=>{
-            unmounted.current = true
-        };
-    },[]);
-
-    //call api
-    const getUniversityNew = () =>{
-        setLoadingUniScreen(true);
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `bearer ${token}`);
-
-        var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-        };
-
-        fetch("https://hcmusemu.herokuapp.com/info/newsuniversity",requestOptions)
-        .then((responseNewUni) => {
-            const statusCodeNewUni = responseNewUni.status;
-            const dataResNewUni = responseNewUni.json();
-            return Promise.all([statusCodeNewUni, dataResNewUni]);
-        }).then(([statusCodeNewUni, dataResNewUni]) => {
-            console.log(statusCodeNewUni, dataResNewUni);
-            if(statusCodeNewUni === 200){
-                const tmpNew =[];
-                for (const key in dataResNewUni) {
-                    tmpNew.push(
-                    {
-                        title: dataResNewUni[key].Title,
-                        link:dataResNewUni[key].Link,
-                        date:dataResNewUni[key].Date,
-                    });
-                };
-                setDataUniNew(tmpNew);
-            }
-
-            else if (statusCodeNewUni === 500){
-                setStatusCode(statusCodeNewUni);
-            }
-            else if (statusCodeNewUni === 503){
-                setStatusCode(statusCodeNewUni);
-            }
-            else{
-                setStatusCode(statusCodeNewUni);
-            }
-            
-            setLoadingUniScreen(false);
-        })
-        .catch((err) => console.log(err, "error"));
-    };
 
     const renderItemForUniNew = ({item})=>(
         <TouchableOpacity style={styles.card}
@@ -158,7 +103,7 @@ const UniversityNewScreen = ({navigation}) =>{
 
             
             <FlatList
-                data={dataUniNew}
+                data={uniNews}
                 renderItem={renderItemForUniNew}
                 keyExtractor={(item,index) => index.toString()}
             /> 

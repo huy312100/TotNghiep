@@ -1,7 +1,6 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView,ImageBackground } from 'react-native';
+import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView,ImageBackground,SafeAreaView } from 'react-native';
 import { Icon } from "react-native-elements";
-import { SafeAreaView } from 'react-native-safe-area-context';
 import io from 'socket.io-client';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
@@ -13,6 +12,7 @@ import * as profileActions from "../../../store/actions/Profile";
 import * as authActions from "../../../store/actions/Authen";
 import * as msgActions from "../../../store/actions/Message";
 import * as calendarActions from "../../../store/actions/Calendar";
+import * as newsActions from "../../../store/actions/News";
 
 import LoadingScreen from '../LoadingScreen';
 
@@ -36,6 +36,8 @@ const HomeScreen=({navigation}) =>{
   const [isLoading,setLoading]=useState(false);
   const [newDeadline,setNewDeadline]=useState([]);
   const [calendar,setCalendar] = useState([]);
+  const [uniNews,setUniNews] = useState([]);
+  const [facultNews,setFacultNews] = useState([]);
 
   //const newDeadline = useSelector((state) => state.home.newDeadline);
 
@@ -73,6 +75,8 @@ const HomeScreen=({navigation}) =>{
       const unsubscribe = navigation.addListener('focus', () => {
         getAllActivitiesInMonth();
       });
+      getUniversityNew();
+      getFacultyNew();
       //console.log(newDeadline);
       connectToSocket();
       getRequestChatting();
@@ -188,7 +192,6 @@ const HomeScreen=({navigation}) =>{
       headers: myHeaders,
       redirect: 'follow'
     };
-
     
     fetch("https://hcmusemu.herokuapp.com/chat/findchat",requestOptions)
     .then((response) => {
@@ -269,21 +272,21 @@ const HomeScreen=({navigation}) =>{
                 id:dataRes[key]._id,
                 type:dataRes[key].TypeCalendar,
                 title:dataRes[key].Title,
-                //summary:"",
+                summary:"",
                 start:convertTimestamp(dataRes[key].StartHour),
                 end:convertTimestamp(dataRes[key].EndHour),
-                //url:dataRes[key].Decription.url,
+                url:dataRes[key].Decription.url,
                 typeGuest:"Nhóm",
                 color:dataRes[key].Color,
-                // startTimestamp:dataRes[key].StartHour,
-                // endTimestamp:dataRes[key].EndHour,
-                //ListGuest:dataRes[key].ListGuest,
+                startTimestamp:dataRes[key].StartHour,
+                endTimestamp:dataRes[key].EndHour,
+                ListGuest:dataRes[key].ListGuest,
             })}
           }
           else{
             dataCalendar.push({
               id:"",
-              //type:dataRes[0].TypeCalendar,
+              type:dataRes[0].TypeCalendar,
               title:dataRes[key].nameCourese,
               summary:dataRes[key].decription,
               start:convertTimestamp(dataRes[key].duedate-3600),
@@ -292,7 +295,7 @@ const HomeScreen=({navigation}) =>{
               color: '#99FF99',
               url:dataRes[key].url,
               typeGuest:"Cá nhân",
-          })
+            })
           }
         }
         console.log(dataCalendar);
@@ -306,6 +309,95 @@ const HomeScreen=({navigation}) =>{
         console.log(statusCode);
       }
     }).catch(error => console.log('error', error));
+  };
+
+  //call api get all university news
+  const getUniversityNew = () =>{
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    fetch("https://hcmusemu.herokuapp.com/info/newsuniversity",requestOptions)
+    .then((responseNewUni) => {
+        const statusCodeNewUni = responseNewUni.status;
+        const dataResNewUni = responseNewUni.json();
+        return Promise.all([statusCodeNewUni, dataResNewUni]);
+    }).then(([statusCodeNewUni, dataResNewUni]) => {
+        if(statusCodeNewUni === 200){
+            const tmpNew =[];
+            for (const key in dataResNewUni) {
+                tmpNew.push(
+                {
+                  title: dataResNewUni[key].Title,
+                  link:dataResNewUni[key].Link,
+                  date:dataResNewUni[key].Date,
+                });
+            };
+            setUniNews(tmpNew);
+            dispatch(newsActions.getUniNews(tmpNew));
+        }
+
+        else if (statusCodeNewUni === 500){
+            setStatusCode(statusCodeNewUni);
+        }
+        else if (statusCodeNewUni === 503){
+            setStatusCode(statusCodeNewUni);
+        }
+        else{
+            setStatusCode(statusCodeNewUni);
+        }
+        
+    }).catch((err) => console.log(err, "error"));
+  };
+
+  //call api get all faculty news
+  const getFacultyNew = () =>{
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+    };
+
+    fetch("https://hcmusemu.herokuapp.com/info/newsfaculty",requestOptions)
+    .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=> {
+        console.log(statusCode,dataRes);
+        if (statusCode === 200) {
+            const tmpNew =[];
+            for (const key in dataRes) {
+                tmpNew.push(
+                {
+                    title: dataRes[key].Title,
+                    link:dataRes[key].Link,
+                    date:dataRes[key].Date,
+                });
+            }
+            setFacultNews(tmpNew);
+            dispatch(newsActions.getFacultNews(tmpNew));
+        }
+        else if (statusCode === 500){
+            setStatusCode(statusCode);
+        }
+        else if (statusCode === 503){
+            setStatusCode(statusCode)
+        }
+        else{
+            setStatusCode(statusCode);
+        }
+    })
+    .catch((err) => console.log(err, "error"));
   };
 
   //call api get profile
@@ -340,9 +432,9 @@ const HomeScreen=({navigation}) =>{
     myHeaders.append("Authorization", `bearer ${token}`);
 
     var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow'
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
     };
 
     fetch("https://hcmusemu.herokuapp.com/deadlinemoodle/month",requestOptions)
@@ -462,7 +554,12 @@ const HomeScreen=({navigation}) =>{
     <View style={{marginLeft:50}}> 
       <Text>Không có deadline nào trong tháng này</Text>
     </View>
-    
+  );
+
+  const renderEmptyCalendarInMonth = (
+    <View style={{marginLeft:50}}> 
+      <Text>Không có sự kiện nào trong tháng này</Text>
+    </View>
   );
 
   const renderCalendarInMonth = ({item}) =>(
@@ -478,7 +575,7 @@ const HomeScreen=({navigation}) =>{
         <View>
           <View style={{flexDirection:'row'}}> 
             <Text style={calendarStyle.label}>Tên : </Text>
-            <Text>{item.title}</Text>
+            <Text numberOfLines={1}>{item.title}</Text>
           </View>
 
           <View style={{flexDirection:'row'}}> 
@@ -506,13 +603,20 @@ const HomeScreen=({navigation}) =>{
       </View>
       
     </TouchableOpacity>
+  );
+
+  const renderNewsItem = ({item}) => (
+    <TouchableOpacity style={newsStyle.card}>
+      <Text numberOfLines={2} style={newsStyle.title}>{item.title}</Text>
+      <Text>{item.date}</Text>
+    </TouchableOpacity>
   )
   
   return (
     <SafeAreaView style={styles.container}>
       {isLoading && LoadingScreen()}
-      <ScrollView>
-      {!isLoading && <View>
+      
+      {!isLoading &&<ScrollView>
         <Text style={styles.label}>Khám phá ngay</Text>
       <View >
         <View style={styles.gridMainFunctions} >
@@ -590,14 +694,33 @@ const HomeScreen=({navigation}) =>{
 
       <Text style={styles.label}>Lịch trong tháng</Text>
 
-      <FlatList 
+      <FlatList
         data={calendar}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={renderCalendarInMonth}/>
+        renderItem={renderCalendarInMonth}
+        ListEmptyComponent={renderEmptyCalendarInMonth}/>
 
-    </View>}
-    </ScrollView>
+
+      <Text style={styles.label}> Top 5 tin tức trường mới nhất</Text>
+
+      <FlatList
+        data={uniNews.slice(0,5)}
+        horizontal={true}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderNewsItem}/>
+
+      <Text style={styles.label}> Top 5 tin tức khoa mới nhất</Text>
+
+      <FlatList
+        data={facultNews.slice(0,5)}
+        horizontal={true}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderNewsItem}/>
+
+      </ScrollView>
+    }
+    
 
     </SafeAreaView>
   )
@@ -623,7 +746,8 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    margin:10,
+    marginVertical:15,
+    marginHorizontal:10,
     fontSize:16,
     fontWeight: "bold",
   },
@@ -689,7 +813,6 @@ const styles = StyleSheet.create({
     borderColor: "#cccccc",
     borderRadius: 10,
   },
-
 });
 
 const calendarStyle = StyleSheet.create({
@@ -712,7 +835,22 @@ const calendarStyle = StyleSheet.create({
     backgroundColor:'#EEEEEE',
     marginRight:8
   }
-  
+});
+
+const newsStyle = StyleSheet.create({
+  card:{
+    marginHorizontal: 8,
+    padding:15,
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#cccccc",
+    borderRadius: 10,
+    width:300,
+  },
+
+  title: {
+    fontWeight:'bold',
+    marginBottom:10}
 })
 
 export default HomeScreen;

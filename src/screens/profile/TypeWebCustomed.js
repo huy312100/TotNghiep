@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,ActivityIndicator } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View,StyleSheet,Text,TouchableOpacity, } from 'react-native';
+import { MaterialCommunityIcons,FontAwesome5 } from '@expo/vector-icons';
+import {Header} from 'react-native-elements';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useSelector,useDispatch } from "react-redux";
 
@@ -9,10 +10,9 @@ import * as profileActions from '../../../store/actions/Profile';
 import LoadingScreen from '../LoadingScreen';
 
 
-const WebCustomedScreen = () =>{
+const WebCustomedScreen = ({navigation}) =>{
 
     const token = useSelector((state) => state.authen.token);
-    const webCustomed=useSelector((state) => state.profile.allWebCustomed);
     const [data,setData] = useState([]);
     const [isLoading,setLoading] = useState(false);
 
@@ -20,7 +20,6 @@ const WebCustomedScreen = () =>{
 
     useEffect(() =>{
         getWebCustomed();
-        console.log('a');
     },[data.length]);
 
     //call api get web customed
@@ -32,26 +31,44 @@ const WebCustomedScreen = () =>{
         myHeaders.append("Authorization", `bearer ${token}`);
 
         var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
         };
 
         fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
-        .then((response) => response.json())
-        .then((json) => {
-            //console.log(json);
-            setData(json);
-            dispatch(profileActions.getAllWebCustomed(json));
+        .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            const tmp =[];
+            if (statusCode === 200){
+                for (const key in dataRes) {
+                    tmp.push(
+                    {
+                        Type: dataRes[key].Type,
+                        Url:dataRes[key].Url,
+                    });
+                };
+                setData(tmp);
+            }
+            //setData(json);
+            dispatch(profileActions.getAllWebCustomed(tmp));
             setLoading(false);
         })
         .catch((err) => console.log(err, "error"));
-    }
+    };
 
     const renderItem = (data,rowMap) => {
         return (
             <View style={styles.card}>
-                <Text style={styles.connectionName}>{data.item}</Text>
+                <Text style={styles.connectionName}>{data.item.Type}</Text>
+                <View style={styles.secondLine}>
+                    <Text style={styles.linkLabel}>Link : </Text>
+                    <Text numberOfLines={1} style={styles.url}>{data.item.Url}</Text>
+                </View>
+                
             </View> 
         );
     };
@@ -59,7 +76,7 @@ const WebCustomedScreen = () =>{
     const HiddenItemWithAction = props =>{
         return(
             <View style={styles.rowBack}>
-                <TouchableOpacity style={[styles.backRightBtn, styles.backRightBtnRight]} onPress={() =>onDelete(props.data.item)}>
+                <TouchableOpacity style={[styles.backRightBtn, styles.backRightBtnRight]} onPress={() =>onDelete(props.data.item.Type)}>
                     <MaterialCommunityIcons name="trash-can" size={30} color={"#FFFFFF"} />
                 </TouchableOpacity>
             </View>
@@ -101,9 +118,9 @@ const WebCustomedScreen = () =>{
     const renderHiddenItem =(data,rowMap) =>{
         return (
             <HiddenItemWithAction
-            data={data}
-            rowMap={rowMap}
-            onDelete ={() => deleteRow(rowMap,data.item.userName)}
+                data={data}
+                rowMap={rowMap}
+                onDelete ={() => deleteRow(rowMap,data.item.userName)}
             />
 
             // <View style={styles.rowBack}>
@@ -124,15 +141,34 @@ const WebCustomedScreen = () =>{
 
     return(
         <View style={styles.container}>
+
+            <Header containerStyle={{
+                    backgroundColor: '#33CCFF',
+                    justifyContent: 'space-around',
+                }}
+                leftComponent={
+                    <TouchableOpacity style={{flexDirection:'row'}} 
+                        onPress={() => {
+                            getWebCustomed();
+                            navigation.goBack();
+                    }}>
+                        <FontAwesome5 name="chevron-left" size={24} color="white" />
+                    </TouchableOpacity>
+                }
+                centerComponent={
+                    <Text style={{color:'white',fontWeight:'600',fontSize:16,marginTop:3}}>Ứng dụng đã kết nối</Text>
+                }/>
+
+
             <View style={{height:10}}/>
-            { data.length === 0 && !isLoading ? renderEmpty() :
+
              <SwipeListView
                 data={data}
                 keyExtractor={(item,index) => index.toString()}
                 renderItem={renderItem}
                 renderHiddenItem={renderHiddenItem}
-                rightOpenValue={-85}/>
-             }
+                rightOpenValue={-75}/>
+             
 
         {isLoading && LoadingScreen()}
 
@@ -153,19 +189,19 @@ const styles = StyleSheet.create({
     },
 
     connectionName:{
-        marginLeft: 40,
-        marginVertical:20,
+        marginLeft: 20,
+        marginVertical:12,
         fontSize:15
     },
 
     rowBack: {
         alignItems: 'center',
-        backgroundColor: 'red',
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingLeft: 15,
     },
+    
     backRightBtn: {
         alignItems: 'center',
         bottom: 0,
@@ -197,13 +233,32 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'rgba(52, 52, 52, 0.5)'
-      },
-    
-      txtIndicator: {
+    },
+
+    txtIndicator: {
         fontSize:15,
         fontWeight: "bold",
         color:"#EEEEEE"
-      }
+    },
+
+    
+
+    linkLabel: {
+        marginLeft:20,
+        fontWeight:'bold',
+    },
+
+    secondLine :{
+        flexDirection:'row',
+        marginTop:-5,
+        marginBottom:5
+    },
+
+    url:{
+        textDecorationLine:'underline',
+        color:'blue',
+    }
+    
 });
 
 export default WebCustomedScreen;

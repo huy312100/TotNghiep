@@ -74,7 +74,41 @@ const PortalConnectScreen = ({navigation})=>{
                 alert("Lỗi.Xin vui lòng thử lại !!!");
             }
         }).catch(error => console.log('error', error));
-    }
+    };
+
+    const getWebCustomed = () =>{
+        //console.log(token);
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `bearer ${token}`);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
+        .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            const tmp =[];
+            if (statusCode === 200){
+                for (const key in dataRes) {
+                    tmp.push(
+                    {
+                        Type: dataRes[key].Type,
+                        Url:dataRes[key].Url,
+                    });
+                };
+            }
+            //setData(json);
+            dispatch(profileActions.getAllWebCustomed(tmp));
+        })
+        .catch((err) => console.log(err, "error"));
+    };
 
     return (
         <TouchableWithoutFeedback onPress={() =>{
@@ -113,7 +147,10 @@ const PortalConnectScreen = ({navigation})=>{
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => {ConnectAppHandler()}}>
+                onPress={() => {
+                    ConnectAppHandler();
+                    getWebCustomed();
+                }}>
                 <Text style={styles.textBtnConnect}>Kết nối</Text>
             </TouchableOpacity>
         </View>

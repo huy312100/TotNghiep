@@ -1,6 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,Image } from 'react-native';
-import{SafeAreaView} from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,Image,SafeAreaView } from 'react-native';
 
 
 import { Ionicons,FontAwesome} from '@expo/vector-icons';

@@ -2,7 +2,6 @@ import React,{useState,useEffect,useRef} from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl,Alert } from 'react-native';
 import { useSelector,useDispatch } from 'react-redux';
 
-// import{SafeAreaView} from 'react-native-safe-area-context';
 // import {Header,SearchBar} from 'react-native-elements';
 // import { MaterialCommunityIcons} from '@expo/vector-icons';
 

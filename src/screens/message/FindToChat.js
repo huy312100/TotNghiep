@@ -1,6 +1,5 @@
 import React,{useState,useCallback} from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,ImageBackground } from 'react-native';
-import{SafeAreaView} from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,ImageBackground,SafeAreaView } from 'react-native';
 
 import{useSelector} from 'react-redux';
 

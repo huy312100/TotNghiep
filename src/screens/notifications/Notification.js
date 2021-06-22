@@ -1,6 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl } from 'react-native';
-import{SafeAreaView} from 'react-native-safe-area-context';
+import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { Badge } from 'react-native-elements';
 import {useDispatch,useSelector} from "react-redux";

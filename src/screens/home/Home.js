@@ -38,6 +38,7 @@ const HomeScreen=({navigation}) =>{
   const [calendar,setCalendar] = useState([]);
   const [uniNews,setUniNews] = useState([]);
   const [facultNews,setFacultNews] = useState([]);
+  const [webCustomed,setWebCustomed] = useState([]);
 
   //const newDeadline = useSelector((state) => state.home.newDeadline);
 
@@ -74,6 +75,7 @@ const HomeScreen=({navigation}) =>{
       getNewestDeadline();
       const unsubscribe = navigation.addListener('focus', () => {
         getAllActivitiesInMonth();
+        getWebCustomed();
       });
       getUniversityNew();
       getFacultyNew();
@@ -400,6 +402,42 @@ const HomeScreen=({navigation}) =>{
     .catch((err) => console.log(err, "error"));
   };
 
+
+  //call api get web customed
+  const getWebCustomed = () =>{
+    //console.log(token);
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
+    .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
+        const tmp =[];
+        if (statusCode === 200){
+          for (const key in dataRes) {
+              tmp.push(
+              {
+                  Type: dataRes[key].Type,
+                  Url:dataRes[key].Url,
+              });
+          };
+          setWebCustomed(tmp)
+          dispatch(profileActions.getAllWebCustomed(tmp));
+        }  
+    })
+    .catch((err) => console.log(err, "error"));
+  };
+
   //call api get profile
   const getProfile = () =>{
     //console.log(token);
@@ -517,6 +555,10 @@ const HomeScreen=({navigation}) =>{
 
       }).catch((err) => console.log(err, "error"));
   };
+
+
+
+  //Render
 
   const renderNewestDeadlineItem = ({item}) => (
     <TouchableOpacity style={styles.card} onPress={() =>{
@@ -663,7 +705,24 @@ const HomeScreen=({navigation}) =>{
 
           <View style={styles.gridItemShape}  >
             <TouchableOpacity style={styles.gridTouchable}
-              onPress={() => {Linking.openURL('https://portal.ctdb.hcmus.edu.vn/Login?returnurl=%2fdang-ky-hoc-phan%2fsinh-vien-clc')}}
+              onPress={() => {
+                var obj = webCustomed.find(item => item.Type === 'Portal');
+                console.log(obj);
+                if(obj !== undefined){
+                  Linking.openURL(obj.Url)
+                }
+                else{
+                  Alert.alert(
+                    "Chưa kết nối",
+                    " Vui lòng vô phần cài đặt để thiết lập kết nối đến portal",
+                    [
+                      { text: "OK", 
+                        style: "cancel"
+                      },
+                    ]
+                  );
+                }
+              }}
             >
             <Icon name="pencil-alt" type="font-awesome-5" color="red" size={40} />
                 <Text style={styles.textItem}>Điểm số</Text>

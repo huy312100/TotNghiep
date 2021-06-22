@@ -347,22 +347,17 @@ function ProfileStackNavigation({navigation}) {
         name="Web Customed"
         component={WebCustomedScreen}
         options={{ 
-          title: "Ứng dụng đã được kết nối",
-          headerTitleAlign: 'center',
-          headerBackTitle:false,
-          headerTruncatedBackTitle:false,
-          headerTintColor:"#FFFFFF",
-          headerStyle:{
-            backgroundColor:"#33CCFF"
-          },
-          // headerRight:()=>(
-          //   <TouchableOpacity onPress={navigation.navigate("")}>
-          //     <MaterialCommunityIcons name="playlist-check" size={28} color={"#FFFFFF"} />
-        //   </TouchableOpacity>
-          // ),
-          // headerRightContainerStyle:{
-          //   paddingRight:10
-          // }
+          // title: "Ứng dụng đã được kết nối",
+          // headerTitleAlign: 'center',
+          // headerBackTitle:false,
+          // headerTruncatedBackTitle:false,
+          // headerTintColor:"#FFFFFF",
+          // headerStyle:{
+          //   backgroundColor:"#33CCFF"
+          // },
+
+          headerShown:false,
+          
         }}
       />
 

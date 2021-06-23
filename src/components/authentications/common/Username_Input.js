@@ -3,7 +3,7 @@ import { TextInput,StyleSheet } from 'react-native';
 
 export function UsernameInput(props) {
     return(
-        <TextInput {...props} style={styles.input} keyboardType="default">
+        <TextInput testID="Form.UsernameInput" {...props} style={styles.input} keyboardType="default">
             {props.children}
         </TextInput>
     );

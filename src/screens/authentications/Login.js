@@ -11,7 +11,7 @@ import * as authActions from '../../../store/actions/Authen';
 import LoadingScreen from '../LoadingScreen';
 
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
 
   const [username,setUsername]=useState('');
   const [password,setPassword]=useState('');
@@ -62,9 +62,6 @@ const LoginScreen = ({ navigation }) => {
       alert("Xin vui lòng điển đầy đủ thông tin");
     }
  }
-
-  
-
   return (
     <TouchableWithoutFeedback onPress={()=>{
       Keyboard.dismiss();
@@ -79,7 +76,7 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={(password)=>setPassword(password)}/>
 
 
-        <TouchableOpacity style={styles.buttonLoginContainer}
+        <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
           onPress={() => {
             loginAPI();
             }}>

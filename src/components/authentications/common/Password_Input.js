@@ -7,8 +7,8 @@ export function PasswordInput(props) {
     const [visible,setVisible]=React.useState(true);
 
     return (
-      <View style={styles.passInput}>
-        <TextInput {...props} secureTextEntry={visible} style={styles.inputText}>
+      <View style={styles.passInput} >
+        <TextInput testID = "Form.PasswordInput" {...props} secureTextEntry={visible} style={styles.inputText}>
           {props.children}
       </TextInput>
       <TouchableOpacity style={styles.eyeBtn}  onPress={()=>{

@@ -8,3 +8,9 @@ test('it render as i expect',()=>{
 
   expect(toJSON()).toMatchSnapshot();
 })
+
+// test('display error message if all field not completed',()=>{
+//     const {getByTestId} =render(<LoginScreen/>);
+
+//     console.log(getByTestId("Button.Login").props);
+// })

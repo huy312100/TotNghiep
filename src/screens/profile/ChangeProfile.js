@@ -21,7 +21,7 @@ function ChangeProfileScreen({navigation}) {
   const [fullname,setFullname] = useState(profile[0].HoTen);
   const [idUni,setIdUni] = useState(profile[0].MaTruong);
   const [idFaculty,setIdFaculty] = useState(profile[0].MaKhoa);  
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState({uri:profile[0].AnhSV});
 
 
   const [itemNameUniversity,setItemNameUniversity] = useState([]);
@@ -46,6 +46,7 @@ function ChangeProfileScreen({navigation}) {
     getAllUniNames();
   },[])
 
+  //image picker
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -56,8 +57,8 @@ function ChangeProfileScreen({navigation}) {
     let pickerResult = await ImagePicker.launchImageLibraryAsync();
 
     if(!pickerResult.cancelled){
-      setImage(pickerResult.uri);
       console.log(pickerResult);
+      setImage(pickerResult);
     }
   }
 
@@ -153,13 +154,12 @@ function ChangeProfileScreen({navigation}) {
       }).then(([statusCode, dataRes])=>{
         console.log(dataRes);
         if(statusCode === 200){
-          dispatch(profileActions.editProfile());
           getProfile();
+          dispatch(profileActions.editProfile());
           navigation.navigate("Profile");
         }
       }).done();
-
-  }
+  };
 
   const getProfile = async() =>{
     //console.log(token);
@@ -167,9 +167,9 @@ function ChangeProfileScreen({navigation}) {
     myHeaders.append("Authorization", `bearer ${token}`);
 
     var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow'
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
     };
 
     await fetch("https://hcmusemu.herokuapp.com/profile/view",requestOptions)
@@ -180,11 +180,53 @@ function ChangeProfileScreen({navigation}) {
         //console.log(dataUniversity);
         dispatch(profileActions.getProfile(json));
       }).catch((err) => console.log(err, "error"));
+  };
+
+  //upload image api
+  const uploadImageAndEditProfile = () =>{
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+  
+    let localUri = image.uri;
+    let filename = localUri.split('/').pop();
+
+    // Infer the type of the image
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    var formdata = new FormData();
+    formdata.append("image", {uri:localUri,name:filename,type});
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: formdata,
+      redirect: 'follow'
+    };
+
+    fetch("https://hcmusemu.herokuapp.com/profile/uploadimg",requestOptions)
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
+      if(statusCode === 200){
+        console.log(dataRes);
+        //editProfile();
+        getProfile();
+        navigation.navigate("Profile");
+      }
+      else{
+        console.log("loi");
+      }
+
+      //console.log(dataUniversity);
+    }).catch((err) => console.log(err, "error"));
   }
 
 
   const checkInfo = () => {
-    if(fullname === profile[0].HoTen && idUni=== profile[0].MaTruong && idFaculty===profile[0].MaKhoa){
+    if(fullname === profile[0].HoTen && idUni=== profile[0].MaTruong && idFaculty===profile[0].MaKhoa && image.uri === profile[0].AnhSV){
       return false;
     }
     return true;
@@ -200,7 +242,8 @@ function ChangeProfileScreen({navigation}) {
         <View style={styles.infoView}>
           <TouchableOpacity onPress={openImagePickerAsync}>
             <RoundedImage
-              source={{uri: image !=="" ? image :undefined}}>
+              source={{uri: image.uri}}
+              >
               <View
                 style={styles.backgroundOpacity}>
                   <Icon name="camera-plus" 
@@ -257,14 +300,21 @@ function ChangeProfileScreen({navigation}) {
        { checkInfo() ? <TouchableOpacity
                 //disabled={true}
                 style={[styles.button,{backgroundColor:'green'}]}
-                onPress={() => {editProfile()}}>
+                onPress={() => {
+                  console.log(image);
+                  if(image.uri !== profile[0].AnhSV){
+                    uploadImageAndEditProfile();
+                  }
+                  else{
+                    editProfile();
+                  }  
+                }}>
                 <Text style={styles.textBtnConnect}>Chỉnh sửa</Text>
         </TouchableOpacity>
         : 
         <TouchableOpacity
                 disabled={true}
-                style={[styles.button,{backgroundColor:'grey'}]}
-                onPress={() => {editProfile()}}>
+                style={[styles.button,{backgroundColor:'grey'}]}>                 
                 <Text style={styles.textBtnConnect}>Chỉnh sửa</Text>
         </TouchableOpacity>}
       </ScrollView>

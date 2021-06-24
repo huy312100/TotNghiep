@@ -453,7 +453,7 @@ const HomeScreen=({navigation}) =>{
     fetch("https://hcmusemu.herokuapp.com/profile/view",requestOptions)
       .then((response) => response.json())
       .then((json) => {
-        //console.log(json);
+        console.log(json);
 
         //console.log(dataUniversity);
         dispatch(profileActions.getProfile(json));

@@ -45,7 +45,7 @@ export function ProfileScreen({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.infoView}>
-        <RoundedImage source={{uri: profile[0].AnhSV}}></RoundedImage>
+        <RoundedImage source={{uri: profile[0].AnhSV ==="" ? undefined : profile[0].AnhSV}}></RoundedImage>
         <Text style={styles.nameText}>{profile[0].HoTen}</Text>
       </View>
       

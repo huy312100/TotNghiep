@@ -181,6 +181,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
     //call Api post calendar
     const addNewEvent = async ()=>{
+        console.log(getAllGuestEmail());        
         setLoading(true);
 
         var myHeaders = new Headers();
@@ -201,8 +202,8 @@ const AddToCalendarScreen = ({navigation,route}) => {
             "Italic": false,
             "Bold": false,
             "Color": colorEvent,
-            "listguestEmail": listGuestEmail,
-            "listguestName": listGuestName,
+            "listguestEmail": getAllGuestEmail(),
+            "listguestName": getAllGuestName(),
             "Notification": timestampRemindNoti
         });
 
@@ -226,7 +227,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
                 //dispatch(calendarActions.addNewEventToCalendar());
                 dispatch(calendarActions.addPeopleToCalendar([]));
                 setLoading(false);
-                navigation.navigate('Calendar');
+                navigation.goBack();
             }  
         }).catch(error => console.log('error', error));
     };

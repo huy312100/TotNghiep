@@ -41,6 +41,7 @@ import SlackConnectScreen from '../screens/profile/connect_app/Slack';
 import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
 import ForumScreen from '../screens/home/forum/Forum';
 import ForumOfCourseScreen from '../screens/home/forum/ForumCourse';
+import ContentForumScreen from '../screens/home/forum/ContentForum';
 
 import { View } from "react-native";
 
@@ -209,6 +210,15 @@ function HomeStackNavigation({navigation}) {
           headerShown: false
         }}
       />
+
+      <Stack.Screen
+        name="Content Forum"
+        component={ContentForumScreen}
+        options={{ 
+          headerShown: false
+        }}
+      />
+
     </Stack.Navigator>
   )
 }
@@ -454,7 +464,7 @@ const getTabBarVisibility = (route) => {
   const arrHideBotTab=["Calendar","Chat","Course","Change Profile",
   "Connect application","Content Course","Web Customed","Change Password",
   "Add Event","Modify Event","Find to Chat","University Info",
-  "Add people to calendar","Forum","Forum Of A Course"];
+  "Add people to calendar","Forum","Forum Of A Course","Content Forum"];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {

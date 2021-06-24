@@ -98,10 +98,10 @@ const HomeScreen=({navigation}) =>{
             screen:'Faculty New'
           });
         }
-        else if(response.notification.request.content.title === 'Môn Học Mới'){
-          navigation.navigate('Course');
+        else if(response.notification.request.content.title === 'Môn học mới'){
+          navigation.navigate("Course")
         }
-        else if(response.notification.request.content.title === 'Deadline Mới' || response.notification.request.content.title === 'Nội dung Môn hoc'){
+        else if(response.notification.request.content.title === 'Deadline môn học' || response.notification.request.content.title === 'Nội dung môn học'){
           navigation.navigate('Content Course',{
             idCourse: 1468,
             name: '',
@@ -908,8 +908,9 @@ const newsStyle = StyleSheet.create({
   },
 
   title: {
-    fontWeight:'bold',
-    marginBottom:10}
+    marginBottom:10
+  }
+
 })
 
 export default HomeScreen;

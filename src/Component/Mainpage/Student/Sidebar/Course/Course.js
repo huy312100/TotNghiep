@@ -208,6 +208,7 @@ class Course extends Component {
     render() {
         var curtag = this.state.tag === 0 ? "current" : "";
         var alltag = this.state.tag === 0 ? "" : "all";
+        if(this.state.loadding===0)
         return (
             <div onScroll={this.handleScroll}>
                 <Navbar />
@@ -225,6 +226,7 @@ class Course extends Component {
                 </div>
             </div>
         );
+        else return null;
     }
 }
 

@@ -1,56 +1,179 @@
 .wrap {
     display: flex;
+    width: 82vw;
+    margin: 66px 0 0 16vw;
+    justify-content: space-between;
+    /* background: white; */
+    /* padding: 10px; */
 }
 
 .listfriend-box {
- background: black;
+    /* display: inline-block; */
+    width: 28vw;
+    height: 85vh;
+    background: rgb(255, 255, 255);
+    margin-right: 5px;
 }
 
-.box-input{
-    margin: 1vw;
-    width: 28vw;
+.box-input {
+    display: block;
+    margin: 1vw auto;
+    width: 25vw;
     height: 40px;
 }
 
 .listfriend {
-    height: 79vh;
-    width: 30vw;
+    /* width: 2vw; */
     /* background-color: blue; */
     overflow: auto;
 }
 
-.message-box {
-    height: 79vh;
-    width: 50vw;
+.wrap .message-box {
+    /* display: inline-block; */
+    height: 85vh;
+    width: 53vw;
     /* background-color: blue; */
-    overflow: auto;
+    background: white;
+    padding: 0 10px;
 }
 
-.message-box .box-friend{
+.message-box .message {
+    overflow: auto;
+    height: 65vh;
+}
+
+.message-box .message .box-friend {
     margin: 5px;
+    margin-left: 15px;
+    /* padding: 2px; */
 }
 
-.message-box .box-user{
+.message-box .message .box-user {
     display: flex;
     margin: 5px;
+    margin-right: 15px;
+
+    /* padding: 2px; */
     justify-content: flex-end;
 }
 
-.friend{
+.message-box .friend {
     display: inline-block;
-    background: white;
-    border: 1px solid black;
+    background: rgb(214, 214, 214);
+    /* border: 1px solid black; */
     border-radius: 5px;
-    font-size: 10px;
+    font-size: 14px;
     padding: 5px;
 }
 
-.user{
+.message-box .user {
     display: inline-block;
-    background: black;
-    border: 1px solid white;
+    background: #18468b;
+    /* border: 1px solid white; */
     border-radius: 5px;
-    font-size: 10px;
+    font-size: 14px;
     padding: 5px;
     color: white;
+}
+
+.message-box .textbox-message {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+.message-box .box-chat {
+    border-radius: 20px;
+    border: none;
+    background: wheat;
+    padding: 10px;
+    width: 47vw;
+    font-size: 14px;
+}
+
+.message-box .box-chat:focus {
+    outline: none;
+}
+
+.message-box .enter {
+    color: white;
+    height: 3vw;
+    background:rgb(230, 155, 85);
+    width: 3vw;
+    line-height: 3vw;
+    /* height: 7vw; */
+    /* padding: 10px; */
+    /* background: #1abc9c; */
+    border-radius: 50%;
+    text-align: center;
+    margin: auto 0;
+    font-size: 16px;
+}
+
+.message-box .selected-user {
+    margin: 10px;
+    display: flex;
+    width: 20vh;
+}
+
+.message-box hr {
+    margin: 10px 0 0 0;
+}
+
+.message-box .selected-user .infouser {
+    padding: 0 10px;
+}
+
+.message-box .selected-user .infouser .name {
+    white-space: nowrap;
+}
+
+.message-box .selected-user .infouser .email {
+    font-size: 10px;
+    color: grey;
+}
+
+
+.listfriend-box .message-content {
+    padding: 5px 0 0px 5px;
+    margin: 5px 5px 10px 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.listfriend-box .message-content:hover {
+    background: rgb(243, 243, 243);
+    border-radius: 10px;
+}
+
+.listfriend-box .message-content-text {
+    margin-top: 0;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: text-top;
+}
+
+.listfriend-box .message-content-text .name {
+    /* font-weight: 100; */
+    /* font-size: 11px; */
+}
+
+.listfriend-box .message-content-text .time {
+    font-weight: 100;
+    font-size: 11px;
+}
+
+.listfriend-box .message-content-text .text {
+    padding-top: 0;
+    width: 18vw;
+    overflow: hidden;
+    font-size: 13px;
+    color: rgb(92, 92, 92);
+    font-weight: 400;
+
+
+    /* text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; */
 }

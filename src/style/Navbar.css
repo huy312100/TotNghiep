@@ -46,31 +46,31 @@ li.nav-item {
     /* box-shadow: 1px 1px black; */
 }
 
-.message-content {
+.action-box .message-content {
     padding: 5px 0 0px 5px;
     margin: 5px 5px 10px 5px;
     display: flex;
     align-items: flex-start;
 }
 
-.message-content:hover {
+.action-box .message-content:hover {
     background: rgb(196, 196, 196);
     border-radius: 10px;
 }
 
-.message-content-text {
+.action-box .message-content-text {
     margin-top: 0;
     margin-left: 10px;
     display: inline-block;
     vertical-align: text-top;
 }
 
-.message-content-text .time {
+.action-box .message-content-text .time {
     font-weight: 100;
     font-size: 11px;
 }
 
-.message-content-text .text {
+.action-box .message-content-text .text {
     padding-top: 0;
     width: 18vw;
     overflow: hidden;

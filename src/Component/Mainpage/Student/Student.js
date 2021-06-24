@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ConnectSocket from '../../../hook/socket';
 import "../../../style/Student.css";
 // import Footer from '../../Footer';
 import Navbar from './Navbar';
@@ -17,9 +18,8 @@ class Student extends Component {
         return (
             <div>
                 <Navbar />
-               <Sidebar/>
-               {/* <img src="https://studenthcmusedu-my.sharepoint.com/personal/1753041_student_hcmus_edu_vn/Documents/73691.jpg"/> */}
-                {/* <Footer /> */}
+                <Sidebar />
+                <ConnectSocket />
             </div>
 
         );

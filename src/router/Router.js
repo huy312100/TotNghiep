@@ -7,7 +7,7 @@ import {
 import Login from "../Component/Login/Login";
 import Signup from "../Component/Login/Signup";
 import Student from "../Component/Mainpage/Student/Student";
-import Message from "../Component/Mainpage/Student/Message/Message";
+import Message from "../Component/Mainpage/Student/Message/Mess";
 import Profile from '../Component/Mainpage/Student/Setting/EditProfile/Profile';
 import SetURL from '../Component/Mainpage/Student/Setting/Config/SetURL';
 import ChangePW from '../Component/Mainpage/Student/Setting/Config/ChangePW';
@@ -15,6 +15,8 @@ import Deadline from '../Component/Mainpage/Student/Sidebar/Deadline';
 import Course from '../Component/Mainpage/Student/Sidebar/Course/Course';
 import DetailCourse from '../Component/Mainpage/Student/Sidebar/Course/DetailCourse';
 import Calendar from '../Component/Mainpage/Student/Sidebar/Calendar';
+import ConnectSocket from '../hook/socket';
+
 
 
 class RouterMD extends Component {
@@ -22,19 +24,6 @@ class RouterMD extends Component {
         return (
             <Router>
                 <div>
-                    {/* <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/home">About</Link>
-                        </li>
-                        <li>
-                            <Link to="/dashboard">Dashboard</Link>
-                        </li>
-                    </ul> */}
-
-
                     <Switch>
                         <Route path="/calendar">
                             <Calendar />
@@ -65,6 +54,9 @@ class RouterMD extends Component {
                             <ChangePW />
                         </Route>
                         <Route exect path="/" render={() => {
+                            console.log(0)
+                            if (localStorage.getItem("token"))
+                                <ConnectSocket />
                             return localStorage.getItem("token") ? <Student /> : <Login />
                         }}>
                         </Route>

@@ -1,6 +1,6 @@
 .course-page {
-    width: 75vw;
-    margin: 0px 20vw;
+    width: 82vw;
+    margin: 0px 0 0 16vw;
     /* background: white; */
 }
 
@@ -15,7 +15,7 @@
     background: white;
     /* border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px; */
-    box-shadow: 0px 0.5px 1px grey;
+    /* box-shadow: 0px 0.5px 1px grey; */
     display: flex;
     justify-content: space-around;
     text-align: center;
@@ -25,15 +25,15 @@
     /* border: 1px solid rgb(214, 214, 214); */
     margin-top: 10px;
     padding: 30px 30px 5px 30px;
-    border-radius: 10px;
-    box-shadow: 0px 0.5px 1px grey;
+    /* border-radius: 10px; */
+    /* box-shadow: 0px 0.5px 1px grey; */
     /* padding: 5px; */
     background: white;
 }
 
 .course .titlee {
     /* display: inline; */
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
     /* border: 1px solid black; */
     padding:5px;
@@ -45,7 +45,7 @@
 .list-teacher {
     /* border: 1px solid rgb(214, 214, 214);
      */
-    box-shadow: 0px 0.5px 1px grey;
+    /* box-shadow: 0px 0.5px 1px grey; */
     margin: 10px 0;
     border-radius: 10px;
 }

@@ -6,12 +6,14 @@ export default function LoginButton() {
     const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loadding, setLoadding] = useState(0);
+    const [success, setSuccess] = useState(0);
+
     let history = useHistory();
     useEffect(() => {
-        if (localStorage.getItem("token")) {
+        if (localStorage.getItem("token") && success===1) {
             history.replace("/");
         }
-    })
+    },[success])
 
 
     async function AcctionLogin() {
@@ -46,9 +48,10 @@ export default function LoginButton() {
                 if (result.token !== undefined) {
                     localStorage.setItem("token", result.token)
                     // localStorage.setItem("username", this.state.username)
-                    console.log(result.token)
-                    // console.log(this.state.username)
-                    history.replace("/");
+                    // console.log(result.token)
+                    
+                    // console.log(username)
+                    setSuccess(1)
                 }
                 // alert("Thanh cong")
             })

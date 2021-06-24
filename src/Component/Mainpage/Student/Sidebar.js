@@ -27,10 +27,10 @@ class Sidebar extends Component {
                             <div className="side-text">Môn học</div>
                         </div>
                     </NavLink>
-                    <NavLink to="/friend" className="content-sidenav" activeClassName="selected">
+                    <NavLink to="/message" className="content-sidenav" activeClassName="selected">
                         <div className="nav-text">
                             <img width="30vw" src={process.env.PUBLIC_URL + 'Icon/friend.png'} alt=""></img>
-                            <div className="side-text">Bạn bè</div>
+                            <div className="side-text">Tin nhắn</div>
                         </div>
                     </NavLink>
                     <NavLink to="/forum" className="content-sidenav" activeClassName="selected">

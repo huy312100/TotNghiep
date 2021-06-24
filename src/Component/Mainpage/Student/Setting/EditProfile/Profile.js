@@ -266,7 +266,7 @@ class Profile extends Component {
 
     popupBox = () => {
         return (
-            <div className="popup-box">
+            <div className="popup-box-image">
                 <div className="header">
                     <div className="title">Chọn ảnh hồ sơ</div>
                     {/* <div className="tag">Tải ảnh lên</div>

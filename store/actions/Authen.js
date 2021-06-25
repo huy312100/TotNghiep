@@ -1,18 +1,8 @@
-export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const REGISTER = 'REGISTER';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 export const TOKEN_NOTIFICATION = 'TOKEN_NOTIFICATION';
 export const CONNECT_TO_SOCKET = 'CONNECT_TO_SOCKET';
-
-export const login = (token) => {
-  return async dispatch => {
-    dispatch({
-      type: LOGIN,
-      token: token,
-    })
-  }
-};
 
 export const register = () => {
   return async dispatch =>{

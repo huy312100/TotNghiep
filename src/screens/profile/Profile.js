@@ -9,6 +9,8 @@ import { ListItem, Header, Icon } from "react-native-elements";
 import RoundedImage from "../../components/profile/main/RoundedImage";
 import {useDispatch,useSelector} from "react-redux";
 
+import SyncStorage from 'sync-storage';
+
 import * as authenActions from "../../../store/actions/Authen";
 import * as homeActions from "../../../store/actions/Home";
 
@@ -83,6 +85,7 @@ export function ProfileScreen({navigation}) {
           onPress={() => {
             dispatch(authenActions.logout);
             dispatch(homeActions.VisibleBotTab(false));
+            SyncStorage.remove('TokenValue');
             navigation.navigate("Login");
           }}>        
             <Text style={styles.signoutTextBtn}>Đăng xuất</Text>

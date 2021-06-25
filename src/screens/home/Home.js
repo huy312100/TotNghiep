@@ -5,7 +5,9 @@ import io from 'socket.io-client';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 
-import {useDispatch,useSelector} from "react-redux";
+import SyncStorage from 'sync-storage';
+
+import {useDispatch} from "react-redux";
 
 import * as homeActions from "../../../store/actions/Home";
 import * as profileActions from "../../../store/actions/Profile";
@@ -26,10 +28,10 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const HomeScreen=({navigation}) =>{
+const HomeScreen= ({navigation}) =>{
 
+  const token = SyncStorage.get('tokenValue');
   var socket=io("https://hcmusemu.herokuapp.com");
-  const token = useSelector((state) => state.authen.token);
   const [tokenNotification,setTokenNotification] = useState('');
 
   const unmounted = useRef(false);
@@ -71,6 +73,7 @@ const HomeScreen=({navigation}) =>{
 };
 
   useEffect(() =>{
+    console.log(token);
       getPermissionNotifications();
       getNewestDeadline();
       const unsubscribe = navigation.addListener('focus', () => {
@@ -346,13 +349,10 @@ const HomeScreen=({navigation}) =>{
         }
 
         else if (statusCodeNewUni === 500){
-            setStatusCode(statusCodeNewUni);
         }
         else if (statusCodeNewUni === 503){
-            setStatusCode(statusCodeNewUni);
         }
         else{
-            setStatusCode(statusCodeNewUni);
         }
         
     }).catch((err) => console.log(err, "error"));

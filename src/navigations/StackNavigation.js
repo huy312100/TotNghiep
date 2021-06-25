@@ -548,7 +548,7 @@ function ConnectApplicationTopTab(){
         backgroundColor: 'green',
       },
 
-      labelStyle: { fontSize: 10 },
+      labelStyle: { fontSize: 16, },
       }}>
   
       <topTab.Screen 

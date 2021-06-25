@@ -1,13 +1,13 @@
 import React,{ useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,ActivityIndicator,Keyboard,TouchableWithoutFeedback} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback} from "react-native";
 import {
   Heading,
   UsernameInput,
   PasswordInput,
 } from "../../components/authentications/common/Index";
 
-import { useDispatch } from 'react-redux';
-import * as authActions from '../../../store/actions/Authen';
+import SyncStorage from 'sync-storage';
+
 import LoadingScreen from '../LoadingScreen';
 
 
@@ -16,7 +16,14 @@ const LoginScreen = ({navigation}) => {
   const [username,setUsername]=useState('');
   const [password,setPassword]=useState('');
   const [isLoading,setLoading]=useState(false);
-  const dispatch = useDispatch();
+
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('token', value)
+    } catch (e) {
+      console.log('Store token in local is fail')
+    }
+  };
 
   const loginAPI=async()=>{
     if(username!="" && password!=""){
@@ -45,13 +52,21 @@ const LoginScreen = ({navigation}) => {
         const data = response.json();
         return Promise.all([statusCode, data]);
       })
-        .then( ([statusCode, data]) => {
+        .then(([statusCode, data]) => {
             console.log(statusCode,data);
             setLoading(false);
-            if(statusCode===200){
-              dispatch(authActions.login(data.token));
+            if(statusCode===200 && data.role==="1"){
+              const token = data.token+'sT';
+              
+              // await AsyncStorage.setItem('token',token);
+              // console.log('aaa');
+              SyncStorage.set('tokenValue', token);
+              
               navigation.navigate("Main");
               setLoading(false);
+                
+
+
             }else{
               setLoading(false);
               alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")

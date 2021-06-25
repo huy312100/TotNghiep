@@ -85,7 +85,7 @@ export function ProfileScreen({navigation}) {
           onPress={() => {
             dispatch(authenActions.logout);
             dispatch(homeActions.VisibleBotTab(false));
-            SyncStorage.remove('TokenValue');
+            SyncStorage.remove('tokenValue');
             navigation.navigate("Login");
           }}>        
             <Text style={styles.signoutTextBtn}>Đăng xuất</Text>

@@ -7,7 +7,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 import RoundedImage from '../../components/profile/main/RoundedImage';
 
-import SyncStorage from 'sync-storage';
 
 
 const FindToChatScreen = ({navigation}) => {
@@ -19,7 +18,7 @@ const FindToChatScreen = ({navigation}) => {
 
     const [roomID,setRoomID] = useState('x');
 
-    const token = SyncStorage.get('tokenValue');
+    const token = useSelector((state) => state.authen.token);
 
     var abc='xxx';
 

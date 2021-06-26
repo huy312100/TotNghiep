@@ -6,7 +6,6 @@ import {useDispatch,useSelector} from "react-redux";
 
 import * as homeActions from "../../../store/actions/Home";
 
-import SyncStorage from 'sync-storage';
 
 
 
@@ -52,7 +51,7 @@ const Notification =[
 
 const NotificationScreen=({navigation})=>{
 
-  const token = SyncStorage.get('tokenValue');
+  const token = useSelector((state) => state.authen.token);
   const tokenNoti = useSelector((state) => state.authen.tokenNotification);
   const socket = useSelector((state) => state.authen.socket);
 

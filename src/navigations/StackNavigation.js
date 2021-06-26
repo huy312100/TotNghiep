@@ -11,7 +11,7 @@ import { useSelector,useDispatch } from "react-redux";
 import * as calendarActions from '../../store/actions/Calendar';
 // import * as msgActions from "../../store/actions/Message";
 
-
+import StartupScreen from "../screens/authentications/Startup";
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
 import HomeScreen from "../screens/home/Home";
@@ -53,7 +53,12 @@ const topTab= createMaterialTopTabNavigator();
 //All Stack navigation of our app
 export function AuthenStackNavigation() {
   return (
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator initialRouteName="Start up">
+      <Stack.Screen
+        name="Start up"
+        component={StartupScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -549,13 +554,20 @@ function ConnectApplicationTopTab(){
   return (
     <topTab.Navigator initialRouteName="Moodle" 
     tabBarOptions={{
+      scrollEnabled:true,
+  
       activeTintColor: 'green',
       inactiveTintColor:'#CCCCCC',
       indicatorStyle:{
         backgroundColor: 'green',
       },
-
-      labelStyle: { fontSize: 16, },
+      tabStyle: {
+          width:110,
+      },
+      labelStyle: { 
+        fontSize: 15,
+        textTransform:'none'
+      },
       }}>
   
       <topTab.Screen 

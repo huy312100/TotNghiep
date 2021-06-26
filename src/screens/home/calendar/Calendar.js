@@ -6,7 +6,6 @@ import { Entypo,MaterialCommunityIcons,AntDesign } from '@expo/vector-icons';
 import {useDispatch,useSelector} from 'react-redux';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-import SyncStorage from 'sync-storage';
 
 import * as calendarActions from '../../../../store/actions/Calendar';
 import LoadingScreen from '../../LoadingScreen';
@@ -89,7 +88,7 @@ const CalendarScreen =({navigation})=> {
   };
 
 
-  const token = SyncStorage.get('tokenValue');
+  const token = useSelector((state) => state.authen.token);
 
   const [visibleOverlay, setVisibleOverlay] = useState(false);
   const [currentDate,setCurrentDate] = useState(getCurrentDate());

@@ -2,7 +2,6 @@ import React,{useEffect,useRef,useState} from 'react';
 import { View, Text,TouchableOpacity,StyleSheet,FlatList,RefreshControl} from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
 
-import SyncStorage from 'sync-storage';
 
 import LoadingWithSkeletonScreen from "./LoadingSkeleton";
 
@@ -17,7 +16,7 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
 
 
   const currCourses = useSelector((state) => state.course.currCourses);
-  const token = SyncStorage.get('tokenValue');
+  const token = useSelector((state) => state.authen.token);
   const tmp=[];
 
   useEffect(() => {

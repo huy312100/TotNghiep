@@ -9,12 +9,11 @@ import * as profileActions from '../../../store/actions/Profile';
 
 import LoadingScreen from '../LoadingScreen';
 
-import SyncStorage from 'sync-storage';
 
 
 const WebCustomedScreen = ({navigation}) =>{
 
-    const token = SyncStorage.get('tokenValue');
+    const token = useSelector((state) => state.authen.token);
     const [data,setData] = useState([]);
     const [isLoading,setLoading] = useState(false);
 

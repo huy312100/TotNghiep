@@ -6,12 +6,18 @@ import {
   PasswordInput,
 } from "../../components/authentications/common/Index";
 
-import SyncStorage from 'sync-storage';
+import { useDispatch } from 'react-redux';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import * as authActions from '../../../store/actions/Authen';
 
 import LoadingScreen from '../LoadingScreen';
 
 
 const LoginScreen = ({navigation}) => {
+
+  const dispatch =useDispatch();
 
   const [username,setUsername]=useState('');
   const [password,setPassword]=useState('');
@@ -44,21 +50,15 @@ const LoginScreen = ({navigation}) => {
         const data = response.json();
         return Promise.all([statusCode, data]);
       })
-        .then(([statusCode, data]) => {
+        .then(async ([statusCode, data]) => {
             console.log(statusCode,data);
             setLoading(false);
             if(statusCode===200 && data.role==="1"){
-              const token = data.token+'sT';
-              
-              // await AsyncStorage.setItem('token',token);
-              // console.log('aaa');
-              SyncStorage.set('tokenValue', token);
-              
+              const token = data.token + 'sT';
+              await AsyncStorage.setItem('tokenValue',token);
+              dispatch(authActions.login(token));
               navigation.navigate("Main");
               setLoading(false);
-                
-
-
             }else{
               setLoading(false);
               alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")

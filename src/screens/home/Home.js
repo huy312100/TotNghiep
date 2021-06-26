@@ -5,9 +5,8 @@ import io from 'socket.io-client';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 
-import SyncStorage from 'sync-storage';
 
-import {useDispatch} from "react-redux";
+import {useDispatch,useSelector} from "react-redux";
 
 import * as homeActions from "../../../store/actions/Home";
 import * as profileActions from "../../../store/actions/Profile";
@@ -30,7 +29,7 @@ Notifications.setNotificationHandler({
 
 const HomeScreen= ({navigation}) =>{
 
-  const token = SyncStorage.get('tokenValue');
+  const token = useSelector((state) => state.authen.token);
   var socket=io("https://hcmusemu.herokuapp.com");
   const [tokenNotification,setTokenNotification] = useState('');
 
@@ -73,12 +72,12 @@ const HomeScreen= ({navigation}) =>{
 };
 
   useEffect(() =>{
-    console.log(token);
+      console.log(token);
       getPermissionNotifications();
-      connectToSocket();
+      //connectToSocket();
       getNewestDeadline();
       const unsubscribe = navigation.addListener('focus', () => {
-        //getAllActivitiesInMonth();
+        getAllActivitiesInMonth();
         getWebCustomed();
       });
       getUniversityNew();

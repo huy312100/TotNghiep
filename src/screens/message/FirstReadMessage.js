@@ -2,14 +2,13 @@ import React,{useState,useEffect,useRef} from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl,Alert } from 'react-native';
 import { useSelector,useDispatch } from 'react-redux';
 
-import SyncStorage from 'sync-storage';
 
 // import {Header,SearchBar} from 'react-native-elements';
 // import { MaterialCommunityIcons} from '@expo/vector-icons';
 
 const FirstReadMessageScreen = ({navigation}) => {
 
-    const token = SyncStorage.get('tokenValue');
+    const token = useSelector((state) => state.authen.token);
 
     const dataMsgFirstRead = useSelector((state) => state.message.firstReadMsg);
 

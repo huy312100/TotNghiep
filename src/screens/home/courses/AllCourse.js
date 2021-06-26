@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet,FlatList,ActivityIndicator  } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
+import SyncStorage from 'sync-storage';
+
 import * as courseActions from "../../../../store/actions/Course";
 
 const AllCourseInfoScreen = ({navigation}) => {
@@ -12,7 +14,7 @@ const AllCourseInfoScreen = ({navigation}) => {
   // const allCourses = useSelector((state) => state.course.allCourses);
 
   const [data, setData] = useState([]);
-  const token = useSelector((state) => state.authen.token);
+  const token = SyncStorage.get('tokenValue');
   var tmp = [];
 
 

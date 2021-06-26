@@ -6,6 +6,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import { Header} from 'react-native-elements';
 import uuid from 'react-native-uuid';
 
+import SyncStorage from 'sync-storage';
 //import io from 'socket.io-client';
 
 
@@ -14,7 +15,7 @@ const ChatScreen = ({route,navigation}) => {
   const [messages, setMessages] = useState([]);
   const socket = useSelector((state) => state.authen.socket);
   const profile = useSelector((state) => state.profile.profile);
-  const token = useSelector((state) => state.authen.token);
+  const token = SyncStorage.get('tokenValue');
 
   const dispatch = useDispatch();
 

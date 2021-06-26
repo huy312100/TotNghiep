@@ -2,9 +2,11 @@ import React,{useState,useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ActivityIndicator } from 'react-native';
 import { useDispatch,useSelector } from 'react-redux';
 
+import SyncStorage from 'sync-storage';
+
 
 const ForumScreen = ({navigation}) =>{
-    const token = useSelector((state) => state.authen.token);
+    const token = SyncStorage.get('tokenValue');
     const dispatch = useDispatch();
 
     const unmounted = useRef(false);

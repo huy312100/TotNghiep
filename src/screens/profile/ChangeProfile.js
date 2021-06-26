@@ -10,9 +10,11 @@ import * as profileActions from "../../../store/actions/Profile";
 
 import RoundedImage from "../../components/profile/main/RoundedImage";
 
+import SyncStorage from 'sync-storage';
+
 
 function ChangeProfileScreen({navigation}) {
-  const token = useSelector((state) => state.authen.token);
+  const token = SyncStorage.get('tokenValue');
   const dispatch = useDispatch();
 
   const uniName = useSelector((state) => state.university.universityInfo);

@@ -4,11 +4,11 @@ import {Entypo,MaterialCommunityIcons,FontAwesome5,Fontisto,Feather } from '@exp
 import { useSelector } from 'react-redux';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
-
+import SyncStorage from 'sync-storage';
 
 const UniversityInfoScreen = () =>{
 
-    const token = useSelector((state) => state.authen.token);
+    const token = SyncStorage.get('tokenValue');
     const [dataUniversity,setDataUniversity] = useState([]);
     const [isLoading,setLoading]=useState(false);
 

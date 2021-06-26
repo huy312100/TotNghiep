@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,Image,SafeAreaView } from 'react-native';
 
+import SyncStorage from 'sync-storage';
 
 import { Ionicons,FontAwesome} from '@expo/vector-icons';
 
@@ -14,7 +15,7 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
     const dispatch= useDispatch();
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
-    const token = useSelector((state) => state.authen.token);
+    const token = SyncStorage.get('tokenValue');
 
 
     const [userChoose,setUserChoose] = useState(allUserChoose);

@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-import {TouchableOpacity} from "react-native"
+import {TouchableOpacity,Image} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -228,6 +228,8 @@ function MessageStackNavigation({navigation}) {
   // const roomID = useSelector((state) => state.message.roomID);
   // const socket = useSelector((state) => state.authen.socket);
 
+  const profile =useSelector((state) => state.profile.profile);
+
   return(
     <Stack.Navigator initialRouteName="Message">
       <Stack.Screen
@@ -245,14 +247,19 @@ function MessageStackNavigation({navigation}) {
           },
           headerRight:()=>(
             <TouchableOpacity onPress={() =>{ navigation.navigate('Find to Chat')}}>
-                <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
+              <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
             </TouchableOpacity>
           ),
           headerRightContainerStyle:{
             paddingRight:10
           },
-          headerLeft:()=>{
-            return null;
+          headerLeft:()=>(
+            
+            <Image style={{width:27,height:27,borderRadius:25}} source={{uri:profile[0].AnhSV === "" || profile[0].AnhSV === null ? `https://ui-avatars.com/api/?background=random&color=fff&name=${profile[0].HoTen}`: profile[0].AnhSV}}/>
+          ),
+
+          headerLeftContainerStyle:{
+            paddingLeft: 10,
           }
         }}
       />

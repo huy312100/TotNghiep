@@ -17,14 +17,6 @@ const LoginScreen = ({navigation}) => {
   const [password,setPassword]=useState('');
   const [isLoading,setLoading]=useState(false);
 
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem('token', value)
-    } catch (e) {
-      console.log('Store token in local is fail')
-    }
-  };
-
   const loginAPI=async()=>{
     if(username!="" && password!=""){
       setLoading(true);

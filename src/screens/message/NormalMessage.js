@@ -1,6 +1,8 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl } from 'react-native';
 
+import SyncStorage from 'sync-storage';
+
 import { useSelector,useDispatch } from 'react-redux';
 
 import {Header,SearchBar} from 'react-native-elements';
@@ -118,7 +120,7 @@ const NormalMessageScreen = ({navigation}) => {
 
     const[dataMsg,setDataMsg] = useState([]);
 
-    const token = useSelector((state) => state.authen.token);
+    const token = SyncStorage.get('tokenValue');
     const [refreshing, setRefreshing] = useState(false);
     const unmounted = useRef(false);
 

@@ -3,6 +3,7 @@ import { View, Text,TouchableOpacity,Keyboard,TouchableWithoutFeedback,StyleShee
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useDispatch,useSelector } from 'react-redux';
+import SyncStorage from 'sync-storage';
 
 import * as authActions from '../../../store/actions/Authen';
 import LoadingScreen from '../LoadingScreen';
@@ -25,7 +26,7 @@ const ChangePasswordScreen = ({navigation}) => {
     const [confirmPassword,setConfirmPassword]=useState('');
 
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.authen.token);
+    const token = SyncStorage.get('tokenValue');
 
     const checkCurrentPass = () =>{
         if(password === ""){

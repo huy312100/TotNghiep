@@ -75,15 +75,14 @@ const HomeScreen= ({navigation}) =>{
   useEffect(() =>{
     console.log(token);
       getPermissionNotifications();
+      connectToSocket();
       getNewestDeadline();
       const unsubscribe = navigation.addListener('focus', () => {
-        getAllActivitiesInMonth();
+        //getAllActivitiesInMonth();
         getWebCustomed();
       });
       getUniversityNew();
       getFacultyNew();
-      //console.log(newDeadline);
-      connectToSocket();
       getRequestChatting();
       getNotReadNotifications();
       getAwaitMsgNotRead();

@@ -7,6 +7,8 @@ import * as profileActions from '../../../../store/actions/Profile';
 
 import LoadingScreen from '../../LoadingScreen';
 
+import SyncStorage from 'sync-storage';
+
 
 const TrelloConnectScreen = ({navigation})=>{
 
@@ -18,7 +20,7 @@ const TrelloConnectScreen = ({navigation})=>{
     const [isLoading,setLoading] = useState(false);
 
     const dispatch=useDispatch();
-    const token = useSelector((state) => state.authen.token);
+    const token = SyncStorage.get('tokenValue');
 
     const ConnectAppHandler =()=>{
         setLoading(true);

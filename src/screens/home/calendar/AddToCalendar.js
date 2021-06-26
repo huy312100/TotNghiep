@@ -5,6 +5,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Overlay,Header } from 'react-native-elements';
 import { useDispatch,useSelector } from 'react-redux';
 
+import SyncStorage from 'sync-storage';
+
 import * as calendarActions from '../../../../store/actions/Calendar';
 
 import LoadingScreen from '../../LoadingScreen';
@@ -12,7 +14,7 @@ import LoadingScreen from '../../LoadingScreen';
 
 const AddToCalendarScreen = ({navigation,route}) => {
 
-    const token = useSelector((state) => state.authen.token);
+    const token = SyncStorage.get('tokenValue');
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
     const [isLoading,setLoading] = useState(false);

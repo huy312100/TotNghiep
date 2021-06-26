@@ -3,10 +3,12 @@ import { View, TouchableOpacity, StyleSheet,Text,SectionList,Linking,Alert } fro
 import { useSelector } from "react-redux";
 import LoadingScreen from '../../LoadingScreen';
 
+import SyncStorage from 'sync-storage';
+
 
 const ContentCourseInfoScreen = ({route}) => {
   const idCourse  = route.params.idCourse;
-  const token = useSelector((state) => state.authen.token);
+  const token = SyncStorage.get('tokenValue');
 
   const [dataAssign,setDataAssign] = useState([]);
   const [dataDoc,setDataDoc]=useState([]);

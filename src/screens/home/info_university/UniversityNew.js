@@ -7,9 +7,11 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import Error500Screen from "../../error/500";
 import Error503Screen from "../../error/503";
 
+import SyncStorage from 'sync-storage';
+
 
 const UniversityNewScreen = ({navigation}) =>{
-    const token = useSelector((state) => state.authen.token);
+    const token = SyncStorage.get('tokenValue');
     const uniNews = useSelector((state) => state.news.uniNews);
     const [statusCode,setStatusCode] = useState(200);
     const [isLoadingUniScreen,setLoadingUniScreen]=useState(false);

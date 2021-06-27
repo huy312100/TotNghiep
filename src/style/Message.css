@@ -177,3 +177,21 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical; */
 }
+
+.search-user {
+    padding: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.search-user:hover{
+    background: #f1f2f4;
+}
+
+.search-user .name{
+    font-size: 14px;
+}
+
+.search-user .email{
+    font-size: 12px;
+}

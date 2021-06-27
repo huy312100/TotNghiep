@@ -46,7 +46,7 @@ export default function LoginButton() {
             .then(result => {
                 console.log(result.token)
                 if (result.token !== undefined) {
-                    localStorage.setItem("token", result.token)
+                    localStorage.setItem("token", result.token+"sT")
                     // localStorage.setItem("username", this.state.username)
                     // console.log(result.token)
                     

@@ -11,7 +11,8 @@ import { useSelector } from 'react-redux';
 function Message() {
 
     const [search, setSearch] = useState("");
-    const [loadingSearch,setLoadingSearch] = useState(0)
+    const [loadingSearch, setLoadingSearch] = useState(0)
+    const [foundedUser, setFoundedUser] = useState(null)
 
     const [usermessage, setUsermessage] = useState([""]);
     const [selected, setSelected] = useState({ email: "", room: "", name: "" });
@@ -48,6 +49,11 @@ function Message() {
             socket.off('Private-Message-To-Client');
         }
     }, []);
+
+    useEffect(() => {
+        if (search === "")
+            setLoadingSearch(0)
+    }, [search])
 
     useEffect(() => {
         if (usermessage !== [""]) {
@@ -99,15 +105,15 @@ function Message() {
         }
 
         else if (elapsed < msPerMonth) {
-            return 'approximately ' + Math.round(elapsed / msPerDay) + ' ngày trước';
+            return Math.round(elapsed / msPerDay) + ' ngày trước';
         }
 
         else if (elapsed < msPerYear) {
-            return 'approximately ' + Math.round(elapsed / msPerMonth) + ' tháng trước';
+            return Math.round(elapsed / msPerMonth) + ' tháng trước';
         }
 
         else {
-            return 'approximately ' + Math.round(elapsed / msPerYear) + ' năm trước';
+            return Math.round(elapsed / msPerYear) + ' năm trước';
         }
     }
 
@@ -118,8 +124,8 @@ function Message() {
 
     const selectUser = (room, email, name) => {
         // console.log(email)
-        socket.emit('Return-Chat',[selected.room,selected.email]);
-        socket.emit('Return-Chat',[room,email]);
+        socket.emit('Return-Chat', [selected.room, selected.email]);
+        socket.emit('Return-Chat', [room, email]);
         setSelected({ email: email, room: room, name: name })
     }
 
@@ -228,7 +234,11 @@ function Message() {
 
         fetch("https://hcmusemu.herokuapp.com/profile/findname", requestOptions)
             .then(response => response.json())
-            .then(result => console.log(result))
+            .then(result => {
+                console.log(result)
+                setFoundedUser(result);
+                setLoadingSearch(1);
+            })
             .catch(error => console.log('error', error));
     }
 
@@ -297,6 +307,24 @@ function Message() {
         }
     }
 
+    const renderFoundedUser = () => {
+        if (loadingSearch === 1) {
+            const list = foundedUser.map((user) => {
+                return <div className="search-user">
+                    <div className="name">{user.HoTen}</div>
+                    <div className="email">({user.Email})</div>
+                </div>
+            })
+            return list;
+        }
+        return <div className="listfriend">
+            <div>
+                {Messages()}
+            </div>
+        </div>;
+    }
+
+
     return (
         <div>
             <Navbar />
@@ -306,11 +334,12 @@ function Message() {
                     <div>
                         <input className="box-input" type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => setSearch(e.target.value)} onKeyDown={handleSearch} />
                     </div>
-                    <div className="listfriend">
+                    {/* <div className="listfriend">
                         <div>
                             {Messages()}
                         </div>
-                    </div>
+                    </div> */}
+                    {renderFoundedUser()}
                 </div>
                 <div className="message-box">
                     <div className="selected-user">

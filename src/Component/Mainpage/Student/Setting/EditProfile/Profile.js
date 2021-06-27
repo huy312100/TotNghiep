@@ -10,13 +10,14 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            avatar:"",
             name: "",
             email: "",
             university: "",
             fac: "",
-            
-            listuniversity:[],
-            listfaculty:[],
+
+            listuniversity: [],
+            listfaculty: [],
 
             uniselected: "",
             facselected: "",
@@ -24,7 +25,7 @@ class Profile extends Component {
             editname: 0,
             editimg: 0,
             edituni: 0,
-            editfac:0,
+            editfac: 0,
 
             loading: 0,
 
@@ -42,7 +43,8 @@ class Profile extends Component {
         var requestOptions = {
             method: 'GET',
             headers: myHeaders,
-            redirect: 'follow'
+            redirect: 'follow',
+            mode: 'cors'
         };
 
         fetch("https://hcmusemu.herokuapp.com/profile/view", requestOptions)
@@ -54,9 +56,10 @@ class Profile extends Component {
                     email: result[0].Email,
                     university: result[0].TenTruongDH,
                     fac: result[0].TenKhoa,
+                    avatar:result[0].AnhSV,
                     loading: 1,
-                    facselected:result[0].MaKhoa,
-                    uniselected:result[0].MaTruong
+                    facselected: result[0].MaKhoa,
+                    uniselected: result[0].MaTruong
                 })
                 console.log(this.state.name)
             })
@@ -84,7 +87,7 @@ class Profile extends Component {
     }
 
     CancelEdit = () => {
-        this.setState({ editname: 0,edituni:0,editfac:0 })
+        this.setState({ editname: 0, edituni: 0, editfac: 0 })
     }
 
     updateProfile = async () => {
@@ -264,6 +267,51 @@ class Profile extends Component {
         }
     }
 
+    deleteImage_API = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        await fetch("https://hcmusemu.herokuapp.com/profile/deleteimg", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+
+    updateImage_API = async() => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer "+localStorage.getItem("token"));
+
+        var formdata = new FormData();
+        formdata.append("image",this.state.picture);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow'
+        };
+
+        await fetch("https://hcmusemu.herokuapp.com/profile/uploadimg", requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                console.log(result)
+                this.setState({editimg:0})
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    updateImage = async () => {
+        await this.deleteImage_API();
+        await this.updateImage_API();
+        window.location.reload();
+    }
+
     popupBox = () => {
         return (
             <div className="popup-box-image">
@@ -279,7 +327,7 @@ class Profile extends Component {
                     </label>
                 </div>
                 <div className="footer">
-                    <div className="btnchange" type="button">Đặt ảnh đại diện</div>
+                    <div className="btnchange" type="button" onClick={this.updateImage}>Đặt ảnh đại diện</div>
                     <div className="btncancel" type="button" onClick={this.changeIMG}>Hủy</div>
                 </div>
             </div>
@@ -311,7 +359,7 @@ class Profile extends Component {
                             <tr className="tb-row" onClick={this.changeIMG}>
                                 <td className="firstcol">Ảnh</td>
                                 <td style={{ color: "grey" }}>Thêm hình ảnh để cá nhân hóa tài khoản</td>
-                                <td><img className="image" width="50vw" height="50vh" src="https://i.pinimg.com/originals/a4/f8/f9/a4f8f91b31d2c63a015ed34ae8c13bbd.jpg" alt=""></img></td>
+                                <td><img className="image" width="50vw" height="50vh" src={this.state.avatar} alt=""></img></td>
                             </tr>
 
                             {this.changeName()}

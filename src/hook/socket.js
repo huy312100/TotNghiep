@@ -37,12 +37,12 @@ function ConnectSocket() {
             .then(result => {
                 console.log("ok")
                 var socket = io("https://hcmusemu.herokuapp.com", { transports: ['websocket'] });
-                socket.emit("Start", localStorage.getItem("token"));
+                // socket.emit("Start", localStorage.getItem("token"));
 
-                console.log("Connect socket");
+                // console.log("Connect socket");
 
-                const action = connectSocket(socket)
-                dispatch(action);
+                // const action = connectSocket(socket)
+                // dispatch(action);
             })
             .catch(error => {
                 console.log('error', error)

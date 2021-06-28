@@ -175,7 +175,7 @@ const CalendarScreen =({navigation})=> {
                 id:dataRes[key]._id,
                 type:dataRes[key].TypeEvent,
                 title:dataRes[key].Title,
-                summary:"",
+                summary:dataRes[key].Decription.text,
                 start:convertTimestamp(dataRes[key].StartHour),
                 end:convertTimestamp(dataRes[key].EndHour),
                 url:dataRes[key].Decription.url,
@@ -184,13 +184,14 @@ const CalendarScreen =({navigation})=> {
                 startTimestamp:dataRes[key].StartHour,
                 endTimestamp:dataRes[key].EndHour,
                 ListGuest:dataRes[key].ListGuest,
+                Notification:dataRes[key].Notification
             })}
             else{
               dataCalendar.push({
                 id:dataRes[key]._id,
                 type:dataRes[key].TypeCalendar,
                 title:dataRes[key].Title,
-                summary:"",
+                summary:dataRes[key].Decription.text,
                 start:convertTimestamp(dataRes[key].StartHour),
                 end:convertTimestamp(dataRes[key].EndHour),
                 url:dataRes[key].Decription.url,
@@ -199,6 +200,7 @@ const CalendarScreen =({navigation})=> {
                 startTimestamp:dataRes[key].StartHour,
                 endTimestamp:dataRes[key].EndHour,
                 ListGuest:dataRes[key].ListGuest,
+                Notification:dataRes[key].Notification
             })}
           }
           else{
@@ -206,13 +208,14 @@ const CalendarScreen =({navigation})=> {
               id:"",
               //type:dataRes[0].TypeCalendar,
               title:dataRes[key].nameCourese,
-              summary:dataRes[key].decription,
+              summary:dataRes[key].Decription.text,
               start:convertTimestamp(dataRes[key].duedate-3600),
               end:convertTimestamp(dataRes[key].duedate),
               type:"Deadline",
               color: '#99FF99',
               url:dataRes[key].url,
               typeGuest:"Cá nhân",
+              Notification:dataRes[key].duedate-1800
           })
           }
         }

@@ -11,6 +11,7 @@ import {useDispatch,useSelector} from "react-redux";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import * as Notifications from 'expo-notifications';
 
 import * as authenActions from "../../../store/actions/Authen";
 import * as homeActions from "../../../store/actions/Home";
@@ -87,6 +88,7 @@ export function ProfileScreen({navigation}) {
             AsyncStorage.removeItem('tokenValue').then(() => {
               dispatch(authenActions.logout);
               dispatch(homeActions.VisibleBotTab(false));
+              Notifications.cancelAllScheduledNotificationsAsync();
               navigation.navigate("Login");
             })
           }}>        

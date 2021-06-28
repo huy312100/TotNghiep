@@ -81,7 +81,6 @@ function ChangeProfileScreen({navigation}) {
     }
   };
 
-
   const getAllFacultyName = (idUni) => {
     let details = {
       MaTruong: idUni,
@@ -125,7 +124,7 @@ function ChangeProfileScreen({navigation}) {
       }).done();
   };
 
-  const editProfile = async() =>{
+  const editProfile = async () =>{
     let details = {
       HoTen: fullname,
       MaTruong: idUni,
@@ -155,11 +154,9 @@ function ChangeProfileScreen({navigation}) {
       }).then(([statusCode, dataRes])=>{
         console.log(dataRes);
         if(statusCode === 200){
-          getProfile();
           dispatch(profileActions.editProfile());
-          navigation.navigate("Profile");
         }
-      }).done();
+      }).catch((err)=> console.log(err, "error"));
   };
 
   const getProfile = async() =>{
@@ -176,15 +173,16 @@ function ChangeProfileScreen({navigation}) {
     await fetch("https://hcmusemu.herokuapp.com/profile/view",requestOptions)
       .then((response) => response.json())
       .then((json) => {
-        //console.log(json);
+        console.log(json);
 
         //console.log(dataUniversity);
         dispatch(profileActions.getProfile(json));
+        navigation.navigate("Profile");
       }).catch((err) => console.log(err, "error"));
   };
 
   //upload image api
-  const uploadImageAndEditProfile = () =>{
+  const uploadImage = async () =>{
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `bearer ${token}`);
   
@@ -205,7 +203,7 @@ function ChangeProfileScreen({navigation}) {
       redirect: 'follow'
     };
 
-    fetch("https://hcmusemu.herokuapp.com/profile/uploadimg",requestOptions)
+    await fetch("https://hcmusemu.herokuapp.com/profile/uploadimg",requestOptions)
     .then((response) => {
       const statusCode = response.status;
       const dataRes = response.json();
@@ -214,8 +212,6 @@ function ChangeProfileScreen({navigation}) {
       if(statusCode === 200){
         console.log(dataRes);
         //editProfile();
-        getProfile();
-        navigation.navigate("Profile");
       }
       else{
         console.log("loi");
@@ -223,7 +219,29 @@ function ChangeProfileScreen({navigation}) {
 
       //console.log(dataUniversity);
     }).catch((err) => console.log(err, "error"));
-  }
+  };
+
+  const deleteImage = async () =>{
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    await fetch("https://hcmusemu.herokuapp.com/profile/deleteimg", requestOptions)
+      .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+      }).then((statusCode,dataRes) => {
+        if(statusCode === 200 ) {
+
+        }
+      }).catch(error => console.log('error', error));
+  };
 
 
   const checkInfo = () => {
@@ -301,13 +319,17 @@ function ChangeProfileScreen({navigation}) {
        { checkInfo() ? <TouchableOpacity
                 //disabled={true}
                 style={[styles.button,{backgroundColor:'green'}]}
-                onPress={() => {
+                onPress={ async () => {
                   console.log(image);
                   if(image.uri !== profile[0].AnhSV){
-                    uploadImageAndEditProfile();
+                    await deleteImage();
+                    await uploadImage();
+                    await editProfile();
+                    await getProfile();
                   }
                   else{
-                    editProfile();
+                    await editProfile();
+                    await getProfile();
                   }  
                 }}>
                 <Text style={styles.textBtnConnect}>Chỉnh sửa</Text>

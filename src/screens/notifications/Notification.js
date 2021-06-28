@@ -118,25 +118,35 @@ const NotificationScreen=({navigation})=>{
 
     //I wrote code below just for testing
 
-    const triggerNotifications = () => {
+    const triggerNotifications = async () => {
+
+      var s = new Date(1624872240000);
+
+      console.log(s.getDate(),s.getMonth()+1,s.getFullYear(),s.getHours(),s.getMinutes());
 
       // socket.on("Request-Accept",(data)=>{
       //   console.log(data);
       // });
 
       // socket.emit('Private-Message',['a','nguyenngocduchuy','abc']);
-      
   
-      Notifications.scheduleNotificationAsync({
+      const id=await Notifications.scheduleNotificationAsync({
         content:{
           title:'Test',
           body:'We are testing new feature'
         },
-        trigger:{
-          seconds:10
+        trigger: {
+          //date:new Date(new Date(1331209044000).toISOString()).getTime(),
+          day:s.getDate(),
+          month:s.getMonth()+1,
+          year:s.getFullYear(),
+          hour:s.getHours(),
+          minute:s.getMinutes()
         }
-      })
+      });
+      console.log(id);
     };
+
 
     //call api get all notifications
     const getAllNotifications = () => {
@@ -265,12 +275,12 @@ const NotificationScreen=({navigation})=>{
     return(
         <SafeAreaView style={styles.container}>
 
-          {/* <Button
+          <Button
             title="Trigger Notifications"
             onPress={() => {
               triggerNotifications();
             }}
-          /> */}
+          />
             <FlatList
               data={data}
               keyExtractor={item =>item._id}

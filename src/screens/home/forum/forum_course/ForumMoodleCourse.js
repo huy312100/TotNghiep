@@ -6,7 +6,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import { Ionicons,FontAwesome5,Entypo } from '@expo/vector-icons';
 
 
-const ForumOfCourseScreen = ({navigation,route}) =>{
+const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
 
     const [data, setData] = useState([]);
     const [idForum,setIDForum] = useState('');
@@ -52,7 +52,7 @@ const ForumOfCourseScreen = ({navigation,route}) =>{
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card} onPress={() =>{
-            navigation.navigate("Content Forum",{
+            navigation.navigate("Content Forum Of A Moodle Course",{
                 nameForum: item.name,
                 userPost:item.userfullname,
                 content: item.message,
@@ -124,4 +124,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default ForumOfCourseScreen;
+export default ForumOfCourseMoodleScreen;

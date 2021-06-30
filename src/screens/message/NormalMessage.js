@@ -345,9 +345,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const headerStyle = StyleSheet.create({
-  centerText:{
-    fontSize: 18,
-    fontWeight: "bold"
-  }
-})

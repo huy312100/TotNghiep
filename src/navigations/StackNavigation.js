@@ -4,7 +4,7 @@ import {TouchableOpacity,Image} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { MaterialCommunityIcons,Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons,MaterialIcons } from '@expo/vector-icons';
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 
 import { useSelector,useDispatch } from "react-redux";
@@ -39,9 +39,13 @@ import PortalConnectScreen from '../screens/profile/connect_app/Portal';
 import ClassroomConnectScreen from '../screens/profile/connect_app/Classroom';
 import SlackConnectScreen from '../screens/profile/connect_app/Slack';
 import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
-import ForumScreen from '../screens/home/forum/Forum';
-import ForumOfCourseScreen from '../screens/home/forum/ForumCourse';
-import ContentForumScreen from '../screens/home/forum/ContentForum';
+import ForumCourseScreen from '../screens/home/forum/forum_course/ForumCourse';
+import ForumOfCourseMoodleScreen from '../screens/home/forum/forum_course/ForumMoodleCourse';
+import ContentForumMoodleScreen from '../screens/home/forum/ContentForumMoodle';
+import CreatePostScreen from '../screens/home/forum/CreatePost';
+import ForumFacultyScreen from "../screens/home/forum/forum_faculty/ForumFaculty";
+import ForumUniversityScreen from "../screens/home/forum/forum_university/ForumUniversity";
+import ContentForumFacultyAndUniversityScreen from "../screens/home/forum/ContentForum";
 
 import { View } from "react-native";
 
@@ -200,29 +204,52 @@ function HomeStackNavigation({navigation}) {
 
       <Stack.Screen
         name="Forum"
-        component={ForumScreen}
+        component={ForumTopTab}
         options={{ 
           title: "Diễn đàn",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
+
+          headerRight:()=>(
+            <TouchableOpacity style={{marginRight:5}} onPress={() =>{
+              navigation.navigate('Create Post Of Forum');
+            }}>
+              <MaterialIcons name="library-add" size={25} color="#444444"/>
+            </TouchableOpacity>
+          )
         }}
+
       />
 
       <Stack.Screen
-        name="Forum Of A Course"
-        component={ForumOfCourseScreen}
+        name="Forum Of A Moodle Course"
+        component={ForumOfCourseMoodleScreen}
         options={{ 
           headerShown: false
         }}
       />
+
+      <Stack.Screen
+        name="Content Forum Of A Moodle Course"
+        component={ContentForumMoodleScreen}
+        options={{ 
+          headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name="Create Post Of Forum"
+        component={CreatePostScreen}
+        options={{ 
+          headerShown: false
+        }} />
 
       <Stack.Screen
         name="Content Forum"
-        component={ContentForumScreen}
+        component={ContentForumFacultyAndUniversityScreen}
         options={{ 
           headerShown: false
-        }}
-      />
+        }}/>
 
     </Stack.Navigator>
   )
@@ -476,7 +503,8 @@ const getTabBarVisibility = (route) => {
   const arrHideBotTab=["Calendar","Chat","Course","Change Profile",
   "Connect application","Content Course","Web Customed","Change Password",
   "Add Event","Modify Event","Find to Chat","University Info",
-  "Add people to calendar","Forum","Forum Of A Course","Content Forum"];
+  "Add people to calendar","Forum","Forum Of A Moodle Course","Content Forum",
+  "Create Post Of Forum","Content Forum Of A Moodle Course"];
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {
@@ -542,7 +570,7 @@ function UniversityInfoTopTab(){
         name="University Info" 
         component={UniversityInfoScreen} 
         options={{
-          tabBarLabel:'Thông tin '
+          tabBarLabel:'Thông tin'
         }}
         />
     </topTab.Navigator>
@@ -612,7 +640,7 @@ function ConnectApplicationTopTab(){
   )
 }
 
-//Top tab of connect application screen 
+//Top tab of message screen 
 function MessageTopTab(){
   return (
     <topTab.Navigator initialRouteName="Normal Message" 
@@ -641,6 +669,45 @@ function MessageTopTab(){
         }}
         />
 
+     
+    </topTab.Navigator>
+  )
+};
+
+//Top tab of forum screen 
+function ForumTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="Forum Course" 
+    tabBarOptions={{
+      activeTintColor: 'green',
+      inactiveTintColor:'#CCCCCC',
+      indicatorStyle:{
+        backgroundColor: 'green',
+      },
+
+      labelStyle: { fontSize: 10 },
+      }}>
+  
+      <topTab.Screen 
+        name="Forum Course" 
+        component={ForumCourseScreen} 
+        options={{
+          tabBarLabel:'Môn học'
+        }}/>
+
+      <topTab.Screen 
+        name="Forum Faculty" 
+        component={ForumFacultyScreen}
+        options={{
+          tabBarLabel:'Khoa'
+        }}/>
+
+      <topTab.Screen 
+        name="Forum University" 
+        component={ForumUniversityScreen}
+        options={{
+          tabBarLabel:'Trường'
+        }}/>
      
     </topTab.Navigator>
   )

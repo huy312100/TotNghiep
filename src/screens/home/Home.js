@@ -74,7 +74,7 @@ const HomeScreen= ({navigation}) =>{
   useEffect(() =>{
       console.log(token);
       getPermissionNotifications();
-      //connectToSocket();
+      connectToSocket();
       getNewestDeadline();
       const unsubscribe = navigation.addListener('focus', () => {
         getAllActivitiesInMonth();

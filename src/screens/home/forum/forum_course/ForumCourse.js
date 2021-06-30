@@ -4,7 +4,7 @@ import { useDispatch,useSelector } from 'react-redux';
 
 
 
-const ForumScreen = ({navigation}) =>{
+const ForumCourseScreen = ({navigation}) =>{
     const token = useSelector((state) => state.authen.token);
     const dispatch = useDispatch();
 
@@ -58,7 +58,7 @@ const ForumScreen = ({navigation}) =>{
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card} 
-            onPress={() =>{navigation.navigate('Forum Of A Course',{
+            onPress={() =>{navigation.navigate('Forum Of A Moodle Course',{
                 idCourse: item.IDCourses,
                 name: item.name,
             })
@@ -142,4 +142,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default ForumScreen;
+export default ForumCourseScreen;

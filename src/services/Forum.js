@@ -20,6 +20,65 @@ export const getForum = async (token) => {
     }).catch(error => console.log('error', error));
 };
 
+export const createPost = async (token,title,image,scope)=>{
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var convertScope ;
+
+    if(scope === 'Trường'){
+        convertScope = 'u'
+    }
+    
+    if(scope === 'Khoa'){
+        convertScope = 'f'
+    }
+
+    var formdata = new FormData();
+    
+    if(image.uri !==""){
+        let localUri = image.uri;
+        let filename = localUri.split('/').pop();
+
+        // Infer the type of the image
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+
+        formdata.append("title", title);
+        formdata.append("image", {uri:localUri,name:filename,type});
+        formdata.append("scope", convertScope);
+    }
+
+    else{
+        formdata.append("title", title);
+        formdata.append("scope", convertScope);
+    }
+    
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow'
+        };
+
+    await fetch("https://hcmusemu.herokuapp.com/forum/post",requestOptions)
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
+      if(statusCode === 200){
+        console.log(dataRes);
+        //editProfile();
+      }
+      else{
+        console.log("loi");
+      }
+
+      //console.log(dataUniversity);
+    }).catch((err) => console.log(err, "error"));
+};
+
 export const deletePost = async(token,idPost) => {
     let details = {
         IDPost: idPost,

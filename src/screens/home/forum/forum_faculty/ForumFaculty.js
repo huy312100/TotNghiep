@@ -70,7 +70,7 @@ const ForumFacultyScreen =({navigation})=>{
     const renderItem = ({item})=>(
         <TouchableOpacity style={styles.card}
                 onPress={() =>{
-                    navigation.navigate('Content Forum Of Faculty',{
+                    navigation.navigate('Content Forum',{
                         dataOfForum:item
                     });
                 }}>

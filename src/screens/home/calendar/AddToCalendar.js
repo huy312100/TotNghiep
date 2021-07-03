@@ -77,7 +77,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     const [startTime,setStartTime] = useState(getCurrentTime(getCurrentTimestamp()));
     const [endTime,setEndTime] =useState(getCurrentTime(getCurrentTimestamp()+3600*1000));
 
-    const [day,setDay] = useState(getCurrentYear(getCurrentTimestamp())+'-'+addZero(getCurrentMonth(getCurrentTimestamp()))+'-'+getCurrentDay(getCurrentTimestamp()));
+    const [day,setDay] = useState(getCurrentYear(getCurrentTimestamp())+'-'+addZero(getCurrentMonth(getCurrentTimestamp()))+'-'+addZero(getCurrentDay(getCurrentTimestamp())));
     const [startTimeConvert,setStartTimeConvert] = useState(day+'T'+startTime);
     const [endTimeConvert,setEndTimeConvert] = useState(day+'T'+endTime);
     // const [startTimeConvert,setStartTimeConvert] = useState(day+'T'+startTime);
@@ -98,7 +98,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     const [visibleOverlayRemindNoti, setVisibleOverlayRemindNoti] = useState(false);
 
 
-    const [typeEvent,setTypeEvent]= useState('');
+    const [typeEvent,setTypeEvent]= useState('Công việc');
     const [colorEvent,setColorEvent] =useState('');
     const [urlEvent,setUrlEvent] =useState(route.params.urlEvent);
     const [decriptionEvent,setDecriptionEvent] =useState(route.params.decriptionEvent);
@@ -128,6 +128,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     const toggleSwitch = () => {
         setIsEnabled(previousState => !previousState);
         if(!isEnabled){
+            console.log(day);
             setStartTimeConvert(day+'T'+'00:00:00');
             setEndTimeConvert(day+'T'+'23:59:00');
             setStartTimestamp(new Date(day+'T'+'00:00:00').getTime());
@@ -317,8 +318,8 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
     return(
         <KeyboardAvoidingView
-        //keyboardVerticalOffset = {Header.HEIGHT + 20} // adjust the value here if you need more padding
-         behavior="position"
+        keyboardVerticalOffset = {20} // adjust the value here if you need more padding
+
          style={styles.container}>
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();

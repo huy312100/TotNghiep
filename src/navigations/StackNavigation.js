@@ -41,7 +41,7 @@ import SlackConnectScreen from '../screens/profile/connect_app/Slack';
 import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
 import ForumCourseScreen from '../screens/home/forum/forum_course/ForumCourse';
 import ForumOfCourseMoodleScreen from '../screens/home/forum/forum_course/ForumMoodleCourse';
-import ContentForumMoodleScreen from '../screens/home/forum/ContentForumMoodle';
+import ContentForumMoodleScreen from '../screens/home/forum/forum_course/ContentForumMoodle';
 import CreatePostScreen from '../screens/home/forum/CreatePost';
 import ForumFacultyScreen from "../screens/home/forum/forum_faculty/ForumFaculty";
 import ForumUniversityScreen from "../screens/home/forum/forum_university/ForumUniversity";

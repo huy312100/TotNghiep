@@ -2,6 +2,7 @@ import React,{useState,useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView,ImageBackground,SafeAreaView } from 'react-native';
 import { Icon } from "react-native-elements";
 import io from 'socket.io-client';
+import { FontAwesome , Ionicons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 
@@ -640,30 +641,22 @@ const HomeScreen= ({navigation}) =>{
           <View style={[calendarStyle.colorCalendar,{backgroundColor:item.color}]}/>
         }
 
-        <View>
-          <View style={{flexDirection:'row'}}> 
-            <Text style={calendarStyle.label}>Tên : </Text>
-            <Text numberOfLines={1}>{item.title}</Text>
+        <View style={{width:300}}>
+          <View style={{flexDirection:'row',marginBottom:10}}> 
+            <Text style={calendarStyle.label} numberOfLines={1}>{item.title}</Text>
+            <Text style={{position:'absolute',right:0}}>{item.start.slice(0,10)} </Text>
+          </View>
+
+          
+
+          <View style={{flexDirection:'row',marginBottom:10}}> 
+            <Text>{item.start.slice(12)} - </Text>
+            <Text>{item.end.slice(12)}</Text>
           </View>
 
           <View style={{flexDirection:'row'}}> 
-            <Text style={calendarStyle.label}>Loại : </Text>
-            <Text>{item.type}</Text>
-          </View>
-
-          <View style={{flexDirection:'row'}}> 
-            <Text style={calendarStyle.label}>Bắt đầu : </Text>
-            <Text>{item.start}</Text>
-          </View>
-
-          <View style={{flexDirection:'row'}}> 
-            <Text style={calendarStyle.label}>Kết thúc : </Text>
-            <Text>{item.end}</Text>
-          </View>
-
-          <View style={{flexDirection:'row'}}> 
-            <Text style={calendarStyle.label}>Sự kiện : </Text>
-            <Text>{item.typeGuest}</Text>
+            {item.typeGuest === 'Nhóm' ? <FontAwesome name="group" size={22} color="black" /> : <Ionicons name="person" size={24} color="black" />}
+            <Text style={{position:'absolute',right:0}}>{item.type}</Text>
           </View>
 
         </View>
@@ -912,6 +905,7 @@ const calendarStyle = StyleSheet.create({
 
   label:{
     fontWeight:'bold',
+    fontSize:15
   },
 
   colorCalendar: {

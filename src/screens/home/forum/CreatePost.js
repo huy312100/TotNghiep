@@ -15,7 +15,7 @@ const CreatePostScreen = ({navigation}) => {
 
     const [title,setTitle] = useState('');
     const [typeForum,setTypeForum] = useState('');
-    const [imageSelected,setImageSelected] = useState({uri:""});
+    const [imageSelected,setImageSelected] = useState({uri:null});
 
     const [visibleOverlay,setVisibleOverlay] = useState(false);
 
@@ -84,7 +84,7 @@ const CreatePostScreen = ({navigation}) => {
                         toggleOverlay();
                     }}>
                     <View style={styles.rowView}>
-                        <Text style={styles.label}>Diễn đàn cho</Text>
+                        <Text style={styles.label}>Diễn đàn </Text>
                        
                         <Text style={[styles.onTheRight,{marginRight:20,fontSize:15,color:'silver'}]}>{typeForum}</Text>
                         <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
@@ -104,7 +104,7 @@ const CreatePostScreen = ({navigation}) => {
                             }}
                         >
                         <ImageBackground style={{width:200,height:200,borderStyle:'dashed',borderColor:'silver',borderWidth:2,justifyContent:'center',alignItems:'center'}}
-                             source={{uri: imageSelected.uri}}
+                             source={{uri: imageSelected.uri !=='' ? imageSelected.uri : null}}
                         >
                             <MaterialCommunityIcons name="image-plus" size={40} color="#0099CC" />
                         </ImageBackground>
@@ -114,7 +114,7 @@ const CreatePostScreen = ({navigation}) => {
                 </View> 
 
                 <Overlay isVisible={visibleOverlay} onBackdropPress={toggleOverlay}>
-                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:1,width:100}]} 
+                    <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:1,width:100,height:25}]} 
                     onPress={() => {
                         toggleOverlay();
                         setTypeForum('Trường');    
@@ -129,7 +129,7 @@ const CreatePostScreen = ({navigation}) => {
 
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.card,{marginTop:10,marginBottom:0,borderBottomWidth:1,width:100}]} 
+                    <TouchableOpacity style={[styles.card,{marginTop:10,marginBottom:0,borderBottomWidth:1,width:100,height:25}]} 
                     onPress={() => {
                         toggleOverlay();
                         setTypeForum('Khoa');

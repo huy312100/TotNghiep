@@ -36,7 +36,7 @@ export const createPost = async (token,title,image,scope)=>{
 
     var formdata = new FormData();
     
-    if(image.uri !==""){
+    if(image.uri !=="" && image.uri !== null){
         let localUri = image.uri;
         let filename = localUri.split('/').pop();
 

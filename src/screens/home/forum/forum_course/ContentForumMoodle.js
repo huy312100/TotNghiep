@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ActivityIndicator,ScrollView } from 'react-native';
+import { StyleSheet, View, Text,TouchableOpacity,ScrollView,Linking } from 'react-native';
 import { Header} from 'react-native-elements';
 
 import { Ionicons,FontAwesome5,Entypo } from '@expo/vector-icons';
@@ -8,26 +8,7 @@ import HTML from "react-native-render-html";
 
 const ContentForumScreen = ({navigation,route}) =>{
 
-    // const [data, setData] = useState([]);
-    // const [idForum,setIDForum] = useState('');
-
-    // useEffect(() => {
-    //     getForumByCourse();
-    //     getDiscusstionInForum();
-    //     console.log(data);
-    // },[idForum]);
-    
-   
-
-    // const renderItem = ({ item }) => (
-    //     <TouchableOpacity style={styles.card} >
-
-    //          <View style={styles.info}>
-    //             <Text style={styles.title}>{item.name}</Text>
-    //             <Text style={{marginLeft:15,marginTop:10}}>Người đăng : {item.userfullname}</Text>
-    //         </View>
-    //     </TouchableOpacity>
-    // )
+    const contentForumMoodle = route.params.content;
 
     return(
         <View style={styles.container}>
@@ -38,7 +19,7 @@ const ContentForumScreen = ({navigation,route}) =>{
                 borderBottomColor:'#DDDDDD'
             }}
             centerComponent={
-                <Text style={{fontSize:17,fontWeight:'500'}} numberOfLines={1}>{route.params.nameForum}</Text>
+                <Text style={{fontSize:17,fontWeight:'500'}} numberOfLines={1}>{contentForumMoodle.name}</Text>
             }
             leftComponent={
               <TouchableOpacity onPress={() =>{
@@ -49,20 +30,29 @@ const ContentForumScreen = ({navigation,route}) =>{
               
             }/>
 
-            {/* <FlatList
-                data={data}
-                renderItem={renderItem}
-                keyExtractor={(item,index) => index.toString()}
-            /> */}
             <ScrollView style={styles.card} >
 
              <View style={styles.info}>
-                <Text style={styles.title}>Người đăng : {route.params.userPost}</Text>
+                <Text style={styles.title}>Người đăng : {contentForumMoodle.fullname}</Text>
                 <View style={{marginHorizontal:10}}>
-                    <HTML source={{ html: route.params.content }}></HTML>
+                    <HTML source={{ html: contentForumMoodle.message }}></HTML>
+
+                    <View style={{flexDirection:'row',marginTop:80}}>
+                        <Text style={{fontWeight:'bold'}}>Nguồn : </Text>
+                        {/* <TouchableOpacity 
+                            onPress={() =>{
+                                Linking.openURL(contentForumMoodle.url)
+                            }}
+                        >
+                            <Text style={{textDecorationLine:'underline',color:'blue'}}>{contentForumMoodle.url}</Text>
+
+                        </TouchableOpacity> */}
+                    </View>
+                    
                 </View>
+
+               
                 
-                {/* <Text style={{marginLeft:15,marginTop:10}}> {item.userfullname}</Text> */}
             </View>
         </ScrollView>
 

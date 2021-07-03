@@ -154,9 +154,9 @@ const NotificationScreen=({navigation})=>{
       myHeaders.append("Authorization", `bearer ${token}`);
 
       var requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow'
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
       };
 
       fetch("https://hcmusemu.herokuapp.com/notification",requestOptions)
@@ -275,12 +275,12 @@ const NotificationScreen=({navigation})=>{
     return(
         <SafeAreaView style={styles.container}>
 
-          <Button
+          {/* <Button
             title="Trigger Notifications"
             onPress={() => {
               triggerNotifications();
             }}
-          />
+          /> */}
             <FlatList
               data={data}
               keyExtractor={item =>item._id}

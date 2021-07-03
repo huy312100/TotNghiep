@@ -22,10 +22,10 @@ const UniversityNewScreen = ({navigation}) =>{
 
     const renderItemForUniNew = ({item})=>(
         <TouchableOpacity style={styles.card}
-            onPress={() => {Linking.openURL("https://www.hcmus.edu.vn/"+item.link)}}
+            onPress={() => {Linking.openURL(item.link)}}
             onLongPress={() => { 
                 setTitleOverlay(item.title);
-                setUrlOverlay("https://www.hcmus.edu.vn/"+item.link);
+                setUrlOverlay(item.link);
                 setVisibleBlur(true);
             }}>
 
@@ -132,7 +132,7 @@ const UniversityNewScreen = ({navigation}) =>{
                     <TouchableOpacity style={blurStyle.card}
                         onPress={() =>{
                             navigation.navigate("Add Event",{
-                                nameEvent: 'Sự kiện mới',
+                                nameEvent: '',
                                 decriptionEvent:titleOverlay,
                                 urlEvent:urlOverlay
                             });

@@ -26,7 +26,7 @@ const FacultyNewScreen = ({navigation}) =>{
             onPress={() => {Linking.openURL(item.link)}}
             onLongPress={() => { 
                 setTitleOverlay(item.title);
-                setUrlOverlay("https://www.hcmus.edu.vn/"+item.link);
+                setUrlOverlay(item.link);
                 setVisibleBlur(true);
             }}>
 
@@ -132,7 +132,7 @@ const FacultyNewScreen = ({navigation}) =>{
                     <TouchableOpacity style={blurStyle.card}
                         onPress={() =>{
                             navigation.navigate("Add Event",{
-                                nameEvent: 'Sự kiện mới',
+                                nameEvent: '',
                                 decriptionEvent:titleOverlay,
                                 urlEvent:urlOverlay
                             });

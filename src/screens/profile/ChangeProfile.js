@@ -8,6 +8,11 @@ import { useDispatch, useSelector  } from "react-redux";
 import * as universityActions from "../../../store/actions/University";
 import * as profileActions from "../../../store/actions/Profile";
 
+import * as arrUtils from "../../utils/Array";
+import * as imagePicker from "../../utils/ImagePicker";
+
+import * as profileServices from "../../services/Profile";
+
 import RoundedImage from "../../components/profile/main/RoundedImage";
 
 
@@ -33,53 +38,24 @@ function ChangeProfileScreen({navigation}) {
     const getAllUniNames = () => {
       dispatch(universityActions.getAllInfoUniversity());
       //console.log(uniName);   
-        
+      
+      getAllFacultyName(idUni);
       const temp=[];
       for (const key in uniName) {
         temp.push({
           label: uniName[key].name,
           value: uniName[key].id,
         });
-      }
-      removeUniDuplicateName(temp);
+      };
+
+      //console.log(temp);
+
+      arrUtils.removeDuplicateName(temp,profile[0].MaTruong);
       setItemNameUniversity(temp);
     };
     getAllUniNames();
-  },[])
+  },[]);
 
-  //image picker
-  let openImagePickerAsync = async () => {
-    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("Permission to access camera roll is required!");
-      return;
-    }
-    let pickerResult = await ImagePicker.launchImageLibraryAsync();
-
-    if(!pickerResult.cancelled){
-      console.log(pickerResult);
-      setImage(pickerResult);
-    }
-  }
-
-  const removeUniDuplicateName = (arr) =>{
-    for(const item in arr){
-      if(arr[item].value === profile[0].MaTruong){
-        arr.splice(item,1);
-        return;
-      }
-    }
-  };
-
-  const removeFaculDuplicateName = (arr) =>{
-    for(const item in arr){
-      if(arr[item].value === profile[0].MaKhoa){
-        arr.splice(item,1);
-        return;
-      }
-    }
-  };
 
   const getAllFacultyName = (idUni) => {
     let details = {
@@ -115,48 +91,12 @@ function ChangeProfileScreen({navigation}) {
             value: dataRes[key].MaKhoa,
           });
         }
-
-        removeFaculDuplicateName(temp);
+        arrUtils.removeDuplicateName(temp,profile[0].MaKhoa);
 
         console.log(temp);
         setItemFacultyName(temp);
 
       }).done();
-  };
-
-  const editProfile = async () =>{
-    let details = {
-      HoTen: fullname,
-      MaTruong: idUni,
-      MaKhoa:idFaculty,   
-    };
-
-    let formBody = [];
-
-    for (let property in details) {
-      let encodedKey = encodeURIComponent(property);
-      let encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    await fetch("https://hcmusemu.herokuapp.com/profile/edit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": `bearer ${token}`
-        },
-        body: formBody,
-      }).then((response) => {
-          const statusCode = response.status;
-          const dataRes = response.json();
-          return Promise.all([statusCode, dataRes]);
-      }).then(([statusCode, dataRes])=>{
-        console.log(dataRes);
-        if(statusCode === 200){
-          dispatch(profileActions.editProfile());
-        }
-      }).catch((err)=> console.log(err, "error"));
   };
 
   const getProfile = async() =>{
@@ -181,69 +121,6 @@ function ChangeProfileScreen({navigation}) {
       }).catch((err) => console.log(err, "error"));
   };
 
-  //upload image api
-  const uploadImage = async () =>{
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `bearer ${token}`);
-  
-    let localUri = image.uri;
-    let filename = localUri.split('/').pop();
-
-    // Infer the type of the image
-    let match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
-
-    var formdata = new FormData();
-    formdata.append("image", {uri:localUri,name:filename,type});
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: formdata,
-      redirect: 'follow'
-    };
-
-    await fetch("https://hcmusemu.herokuapp.com/profile/uploadimg",requestOptions)
-    .then((response) => {
-      const statusCode = response.status;
-      const dataRes = response.json();
-      return Promise.all([statusCode, dataRes]);
-    }).then(([statusCode, dataRes]) => {
-      if(statusCode === 200){
-        console.log(dataRes);
-        //editProfile();
-      }
-      else{
-        console.log("loi");
-      }
-
-      //console.log(dataUniversity);
-    }).catch((err) => console.log(err, "error"));
-  };
-
-  const deleteImage = async () =>{
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `bearer ${token}`);
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      redirect: 'follow'
-    };
-
-    await fetch("https://hcmusemu.herokuapp.com/profile/deleteimg", requestOptions)
-      .then((response) => {
-        const statusCode = response.status;
-        const dataRes = response.json();
-        return Promise.all([statusCode, dataRes]);
-      }).then((statusCode,dataRes) => {
-        if(statusCode === 200 ) {
-
-        }
-      }).catch(error => console.log('error', error));
-  };
-
-
   const checkInfo = () => {
     if(fullname === profile[0].HoTen && idUni=== profile[0].MaTruong && idFaculty===profile[0].MaKhoa && image.uri === profile[0].AnhSV){
       return false;
@@ -259,9 +136,17 @@ function ChangeProfileScreen({navigation}) {
       <ScrollView style={styles.container}>
 
         <View style={styles.infoView}>
-          <TouchableOpacity onPress={openImagePickerAsync}>
+          <TouchableOpacity onPress={async ()=>{
+            let imageChoose=await imagePicker.openImagePickerAsync();
+
+            if(imageChoose.uri === ""){
+              imageChoose = image;
+              console.log(imageChoose);
+            }
+            setImage(imageChoose);
+          }}>
             <RoundedImage
-              source={{uri: image.uri}}
+              source={{uri: image.uri !== '' ? image.uri : null}}
               >
               <View
                 style={styles.backgroundOpacity}>
@@ -321,14 +206,14 @@ function ChangeProfileScreen({navigation}) {
                 style={[styles.button,{backgroundColor:'green'}]}
                 onPress={ async () => {
                   console.log(image);
-                  if(image.uri !== profile[0].AnhSV){
-                    await deleteImage();
-                    await uploadImage();
-                    await editProfile();
+                  if(image.uri !== profile[0].AnhSV && image.uri !==""){
+                    await profileServices.deleteImage(token);
+                    await profileServices.uploadImage(token,image);
+                    await profileServices.editProfile(token,fullname,idUni,idFaculty);
                     await getProfile();
                   }
                   else{
-                    await editProfile();
+                    await profileServices.editProfile(token,fullname,idUni,idFaculty);
                     await getProfile();
                   }  
                 }}>

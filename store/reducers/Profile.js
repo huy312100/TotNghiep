@@ -1,4 +1,4 @@
-import {CONNECT_APPLICATION, DELETE_URL,GET_ALL_WEB_CUSTOMED,GET_PROFILE,EDIT_PROFILE} from "./../actions/Profile";
+import {CONNECT_APPLICATION, DELETE_URL,GET_ALL_WEB_CUSTOMED,GET_PROFILE} from "./../actions/Profile";
 
 
 const initialState = {
@@ -25,8 +25,6 @@ export default (state = initialState, action)=>{
                 ...state,
                 profile: action.profile,
             };
-        case EDIT_PROFILE:
-            return {...state}
         default:
             return state;
     }

@@ -4,6 +4,8 @@ import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl 
 
 import { useSelector,useDispatch } from 'react-redux';
 
+import * as dateUtils from '../../utils/Date';
+
 import {Header,SearchBar} from 'react-native-elements';
 import { MaterialCommunityIcons} from '@expo/vector-icons';
 
@@ -117,35 +119,11 @@ const Messages = [
 
 const NormalMessageScreen = ({navigation}) => {
 
-    const[dataMsg,setDataMsg] = useState([]);
+  const[dataMsg,setDataMsg] = useState([]);
 
-    const token = useSelector((state) => state.authen.token);
-    const [refreshing, setRefreshing] = useState(false);
-    const unmounted = useRef(false);
-
-    function convertTimestamp(timestamp) {
-      var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
-          yyyy = d.getFullYear(),
-          mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
-          dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
-          hh = d.getHours(),
-          h = hh,
-          min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
-          ampm = 'AM',
-          time;
-      if (hh > 12) {
-          h = hh - 12;
-          ampm = 'PM';
-      } else if (hh === 12) {
-          h = 12;
-          ampm = 'PM';
-      } else if (hh == 0) {
-          h = 12;
-      }
-      // ie: 2014-03-24, 3:00 PM
-      time = dd + '-' + mm + '-' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
-      return time;
-  };
+  const token = useSelector((state) => state.authen.token);
+  const [refreshing, setRefreshing] = useState(false);
+  const unmounted = useRef(false);
 
   useEffect(() => {
     getAllMessage();
@@ -228,7 +206,7 @@ const NormalMessageScreen = ({navigation}) => {
         <View style={styles.textSection}>
             <View style={styles.userInfoText}>
             <Text style={styles.userName}>{item.name}</Text>
-            <Text style={styles.postTime}>{convertTimestamp(item.time/1000)}</Text>
+            <Text style={styles.postTime}>{dateUtils.ConvertTimestamp(item.time/1000)}</Text>
             </View>
             <Text style={[styles.messageText,{fontWeight : (item.state) ? "normal":"bold"}]}>{item.text}</Text>
         </View>

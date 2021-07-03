@@ -11,6 +11,8 @@ import * as calendarActions from '../../../../store/actions/Calendar';
 import LoadingScreen from '../../LoadingScreen';
 import TimelineCalendar from './timeline_calendar/TimelineCalendar';
 
+import * as dateUtils from '../../../utils/Date';
+
 let { width } = Dimensions.get('window');
 
 
@@ -65,26 +67,6 @@ const CalendarScreen =({navigation})=> {
       let date =year+'-'+month+'-'+day;
       return date;
     }
-  };
-
-  function convertTimestamp(timestamp) {
-    var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
-        yyyy = d.getFullYear(),
-        mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
-        dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
-        hh = d.getHours(),
-        h = hh,
-        min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
-        time;
-    if (hh < 10) {
-        h = '0'+hh ;
-    } else  {
-        h = hh;
-    }
-
-    // ie: 2014-03-24, 3:00 PM
-    time = yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + min ;
-    return time;
   };
 
 
@@ -176,8 +158,8 @@ const CalendarScreen =({navigation})=> {
                 type:dataRes[key].TypeEvent,
                 title:dataRes[key].Title,
                 summary:dataRes[key].Decription.text,
-                start:convertTimestamp(dataRes[key].StartHour),
-                end:convertTimestamp(dataRes[key].EndHour),
+                start:dateUtils.ConvertTimestamp(dataRes[key].StartHour),
+                end:dateUtils.ConvertTimestamp(dataRes[key].EndHour),
                 url:dataRes[key].Decription.url,
                 typeGuest:"Cá nhân",
                 color:dataRes[key].Color,
@@ -192,8 +174,8 @@ const CalendarScreen =({navigation})=> {
                 type:dataRes[key].TypeCalendar,
                 title:dataRes[key].Title,
                 summary:dataRes[key].Decription.text,
-                start:convertTimestamp(dataRes[key].StartHour),
-                end:convertTimestamp(dataRes[key].EndHour),
+                start:dateUtils.ConvertTimestamp(dataRes[key].StartHour),
+                end:dateUtils.ConvertTimestamp(dataRes[key].EndHour),
                 url:dataRes[key].Decription.url,
                 typeGuest:"Nhóm",
                 color:dataRes[key].Color,
@@ -209,8 +191,8 @@ const CalendarScreen =({navigation})=> {
               //type:dataRes[0].TypeCalendar,
               title:dataRes[key].nameCourese,
               summary:dataRes[key].Decription.text,
-              start:convertTimestamp(dataRes[key].duedate-3600),
-              end:convertTimestamp(dataRes[key].duedate),
+              start:dateUtils.ConvertTimestamp(dataRes[key].duedate-3600),
+              end:dateUtils.ConvertTimestamp(dataRes[key].duedate),
               type:"Deadline",
               color: '#99FF99',
               url:dataRes[key].url,

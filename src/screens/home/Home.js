@@ -16,6 +16,8 @@ import * as msgActions from "../../../store/actions/Message";
 import * as calendarActions from "../../../store/actions/Calendar";
 import * as newsActions from "../../../store/actions/News";
 
+import * as dateUtils from "../../utils/Date";
+
 import LoadingScreen from '../LoadingScreen';
 
 const DeviceWidth = Dimensions.get('window').width;
@@ -47,30 +49,6 @@ const HomeScreen= ({navigation}) =>{
   const dispatch = useDispatch();
 
   var countMsgNotRead = 0;
-
-  function convertTimestamp(timestamp) {
-    var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
-        yyyy = d.getFullYear(),
-        mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
-        dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
-        hh = d.getHours(),
-        h = hh,
-        min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
-        ampm = 'AM',
-        time;
-    if (hh > 12) {
-        h = hh - 12;
-        ampm = 'PM';
-    } else if (hh === 12) {
-        h = 12;
-        ampm = 'PM';
-    } else if (hh == 0) {
-        h = 12;
-    }
-    // ie: 2014-03-24, 3:00 PM
-    time = dd + '-' + mm + '-' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
-    return time;
-};
 
   useEffect(() =>{
       console.log(token);
@@ -263,8 +241,8 @@ const HomeScreen= ({navigation}) =>{
                 type:dataRes[key].TypeEvent,
                 title:dataRes[key].Title,
                 summary:dataRes[key].Decription.text,
-                start:convertTimestamp(dataRes[key].StartHour),
-                end:convertTimestamp(dataRes[key].EndHour),
+                start:dateUtils.ConvertTimestamp(dataRes[key].StartHour),
+                end:dateUtils.ConvertTimestamp(dataRes[key].EndHour),
                 url:dataRes[key].Decription.url,
                 typeGuest:"Cá nhân",
                 color:dataRes[key].Color,
@@ -279,8 +257,8 @@ const HomeScreen= ({navigation}) =>{
                 type:dataRes[key].TypeCalendar,
                 title:dataRes[key].Title,
                 summary:dataRes[key].Decription.text,
-                start:convertTimestamp(dataRes[key].StartHour),
-                end:convertTimestamp(dataRes[key].EndHour),
+                start:dateUtils.ConvertTimestamp(dataRes[key].StartHour),
+                end:dateUtils.ConvertTimestamp(dataRes[key].StartHour),
                 url:dataRes[key].Decription.url,
                 typeGuest:"Nhóm",
                 color:dataRes[key].Color,
@@ -296,8 +274,8 @@ const HomeScreen= ({navigation}) =>{
               type:dataRes[0].TypeCalendar,
               title:dataRes[key].nameCourese,
               summary:dataRes[key].Decription.text,
-              start:convertTimestamp(dataRes[key].duedate-3600),
-              end:convertTimestamp(dataRes[key].duedate),
+              start:dateUtils.ConvertTimestamp(dataRes[key].duedate-3600),
+              end:dateUtils.ConvertTimestamp(dataRes[key].duedate),
               type:"Deadline",
               color: '#99FF99',
               url:dataRes[key].url,
@@ -518,9 +496,7 @@ const HomeScreen= ({navigation}) =>{
 
   //Connect to socket
   const connectToSocket = () => {
-    
     socket.emit("Start",token);
-
     dispatch(authActions.connectToSocket(socket));
   };
 
@@ -611,7 +587,7 @@ const HomeScreen= ({navigation}) =>{
         <View style={styles.textSection}>
           <View style={styles.courseInfoText}>
             <Text style={styles.courseName}>{item.nameCourese}</Text> */
-            <Text style={styles.timeDeadline}>{convertTimestamp(item.duedate)}</Text>
+            <Text style={styles.timeDeadline}>{dateUtils.ConvertTimestamp(item.duedate)}</Text>
           </View>
           <Text style={styles.contentDeadline}>{item.decription}</Text>
         </View>

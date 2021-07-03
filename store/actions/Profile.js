@@ -2,7 +2,7 @@ export const CONNECT_APPLICATION = 'CONNECT_APPLICATION';
 export const DELETE_URL = 'DELETE_URL';
 export const GET_ALL_WEB_CUSTOMED = 'GET_ALL_WEB_CUSTOMED';
 export const GET_PROFILE = 'GET_PROFILE';
-export const EDIT_PROFILE = 'EDIT_PROFILE';
+
 
 
 export const connectApplication = () =>{
@@ -41,11 +41,3 @@ export const getProfile = (data) => {
     })
   }
 };
-
-export const editProfile = () =>{
-  return async dispatch =>{
-    dispatch({
-      type: EDIT_PROFILE,
-    })
-  }
-}

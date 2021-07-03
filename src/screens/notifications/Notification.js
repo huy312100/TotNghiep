@@ -6,40 +6,7 @@ import {useDispatch,useSelector} from "react-redux";
 
 import * as homeActions from "../../../store/actions/Home";
 
-
-
-
-const Notification =[
-    {
-        id: '1',
-        titleNotification: 'Title Notification',
-        userImg: require("../../../assets/notification-flat.png"),
-        contentNotification: 'This is an example notification',
-        timeNotification:'10 mins ago',
-    },
-    {
-        id: '2',
-        titleNotification: 'Title Notification 2',
-        userImg: require("../../../assets/notification-flat.png"),
-        contentNotification: 'This is an example notification',
-        timeNotification:'31/01/2021',
-    },
-    {
-        id: '3',
-        titleNotification: 'Title Notification 3',
-        userImg: require("../../../assets/notification-flat.png"),
-        contentNotification: 'This is an example notification',
-        timeNotification:'25/01/2021',
-    },
-    {
-        id: '4',
-        titleNotification: 'Title Notification 4',
-        userImg: require("../../../assets/notification-flat.png"),
-        contentNotification: 'This is an example notification',
-        timeNotification:'31/12/2020',
-    },
-
-];
+import * as dateUtils from "../../utils/Date";
 
 // Notifications.setNotificationHandler({
 //   handleNotification: async () => ({
@@ -60,31 +27,6 @@ const NotificationScreen=({navigation})=>{
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const unmounted = useRef(false);
-
-
-  function convertTimestamp(timestamp) {
-    var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
-        yyyy = d.getFullYear(),
-        mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
-        dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
-        hh = d.getHours(),
-        h = hh,
-        min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
-        ampm = 'AM',
-        time;
-    if (hh > 12) {
-        h = hh - 12;
-        ampm = 'PM';
-    } else if (hh === 12) {
-        h = 12;
-        ampm = 'PM';
-    } else if (hh == 0) {
-        h = 12;
-    }
-    // ie: 24-04-2014, 3:00 PM
-    time = dd + '-' + mm + '-' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
-    return time;
-  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -247,7 +189,7 @@ const NotificationScreen=({navigation})=>{
           <View style={styles.textSection}>
             <View style={styles.infoText}>
               <Text style={styles.titleName}>{item.Title}</Text>
-              <Text style={[styles.postTime,!item.State && styles.boldWhenNotRead]}>{convertTimestamp(parseInt(item.Date)/1000)}</Text>
+              <Text style={[styles.postTime,!item.State && styles.boldWhenNotRead]}>{dateUtils.ConvertTimestamp(parseInt(item.Date)/1000)}</Text>
             </View>
             <Text style={[styles.contentText,!item.State && styles.boldWhenNotRead]}>{item.Data}</Text>
           </View>

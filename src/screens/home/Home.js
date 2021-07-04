@@ -620,14 +620,14 @@ const HomeScreen= ({navigation}) =>{
         <View style={{width:300}}>
           <View style={{flexDirection:'row',marginBottom:10}}> 
             <Text style={calendarStyle.label} numberOfLines={1}>{item.title}</Text>
-            <Text style={{position:'absolute',right:0}}>{item.start.slice(0,10)} </Text>
+            <Text style={{position:'absolute',right:0}}>{dateUtils.ConvertDateDDMMYY(item.start.slice(0,10))} </Text>
           </View>
 
           
 
           <View style={{flexDirection:'row',marginBottom:10}}> 
-            <Text>{item.start.slice(12)} - </Text>
-            <Text>{item.end.slice(12)}</Text>
+            <Text>{item.start.slice(11)} - </Text>
+            <Text>{item.end.slice(11)}</Text>
           </View>
 
           <View style={{flexDirection:'row'}}> 

@@ -206,7 +206,7 @@ const NormalMessageScreen = ({navigation}) => {
         <View style={styles.textSection}>
             <View style={styles.userInfoText}>
             <Text style={styles.userName}>{item.name}</Text>
-            <Text style={styles.postTime}>{dateUtils.ConvertTimestamp(item.time/1000)}</Text>
+            <Text style={styles.postTime}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
             </View>
             <Text style={[styles.messageText,{fontWeight : (item.state) ? "normal":"bold"}]}>{item.text}</Text>
         </View>

@@ -189,7 +189,7 @@ const NotificationScreen=({navigation})=>{
           <View style={styles.textSection}>
             <View style={styles.infoText}>
               <Text style={styles.titleName}>{item.Title}</Text>
-              <Text style={[styles.postTime,!item.State && styles.boldWhenNotRead]}>{dateUtils.ConvertTimestamp(parseInt(item.Date)/1000)}</Text>
+              <Text style={[styles.postTime,!item.State && styles.boldWhenNotRead]}>{dateUtils.ConvertToTimeAgoGeneral(parseInt(item.Date))}</Text>
             </View>
             <Text style={[styles.contentText,!item.State && styles.boldWhenNotRead]}>{item.Data}</Text>
           </View>

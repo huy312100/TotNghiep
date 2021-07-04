@@ -22,7 +22,7 @@ export const ConvertToTimeAgo = (timestamp) => {
   }
 };
 
-export const ConvertToTimeAgoInComment = (timestamp) => {
+export const ConvertToTimeAgoGeneral = (timestamp) => {
   var msPerMinute = 60 * 1000;
   var msPerHour = msPerMinute * 60;
   var msPerDay = msPerHour * 24;
@@ -48,24 +48,31 @@ export const ConvertToTimeAgoInComment = (timestamp) => {
 
 export const ConvertTimestamp = (timestamp) => {
   var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
-      yyyy = d.getFullYear(),
-      mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
-      dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
-      hh = d.getHours(),
-      h = hh,
-      min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
-      ampm = 'AM',
-      time;
-  if (hh > 12) {
-      h = hh - 12;
-      ampm = 'PM';
-  } else if (hh === 12) {
-      h = 12;
-      ampm = 'PM';
-  } else if (hh == 0) {
-      h = 12;
+  yyyy = d.getFullYear(),
+  mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
+  dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
+  hh = d.getHours(),
+  h = hh,
+  min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
+  time;
+  if (hh < 10) {
+    h = '0'+hh ;
+  } else  {
+    h = hh;
   }
-  // ie: 2014-03-24, 3:00 PM
-  time = dd + '-' + mm + '-' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
+
+  // ie: 2014-03-24, 15:00
+  time = yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + min ;
   return time;
 };
+
+export const ConvertDateDDMMYY =(str) => {
+  let yy = str.slice(0,4);
+  let mm = str.slice(5,7);
+  let dd = str.slice(8,10);
+
+  console.log(dd,mm,yy);
+  
+  const date = dd + '-' + mm + '-' + yy;
+  return date;
+}

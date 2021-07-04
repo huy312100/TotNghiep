@@ -122,7 +122,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 <View style={{flexDirection:'row'}}>
                     <Text style={[styles.nameAndDate,{marginRight:5},cmtStyles.nameAndDate]}>{item.NameOwn}</Text>
                     <Entypo name="dot-single" size={18} color="silver" />
-                    <Text style={[styles.nameAndDate,{fontWeight:'300',marginLeft:5},cmtStyles.nameAndDate]}>{dateUtils.ConvertToTimeAgoInComment(item.time)}</Text>
+                    <Text style={[styles.nameAndDate,{fontWeight:'300',marginLeft:5},cmtStyles.nameAndDate]}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
                     
                 </View>
                 {item.EmailOwn === profile[0].Email && 

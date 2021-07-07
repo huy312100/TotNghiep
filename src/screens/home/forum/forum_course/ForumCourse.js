@@ -2,7 +2,7 @@ import React,{useState,useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ActivityIndicator } from 'react-native';
 import { useDispatch,useSelector } from 'react-redux';
 
-
+import * as courseActions from '../../../../../store/actions/Course';
 
 const ForumCourseScreen = ({navigation}) =>{
     const token = useSelector((state) => state.authen.token);
@@ -12,6 +12,11 @@ const ForumCourseScreen = ({navigation}) =>{
     const [pageCurrent,setPageCurrent] = useState(0);
     const [isLoading,setIsLoading] = useState(false);
 
+    var infoCourseChoose = {
+        idCourse : "",
+        nameCourse : ""
+    };
+
   // const allCourses = useSelector((state) => state.course.allCourses);
 
   const [data, setData] = useState([]);
@@ -19,6 +24,9 @@ const ForumCourseScreen = ({navigation}) =>{
   useEffect(() => {
     setIsLoading(true);
     getAllCourses();
+    return()=>{
+        unmounted.current = true;
+    }
   }, [pageCurrent]);
 
   const getAllCourses = () => {
@@ -47,7 +55,7 @@ const ForumCourseScreen = ({navigation}) =>{
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
+        //console.log(json);
         //tmp.concat(json)
         setData(data.concat(json));
         //dispatch(courseActions.getAllCourses(data.concat(json)));
@@ -58,10 +66,11 @@ const ForumCourseScreen = ({navigation}) =>{
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card} 
-            onPress={() =>{navigation.navigate('Forum Of A Moodle Course',{
-                idCourse: item.IDCourses,
-                name: item.name,
-            })
+            onPress={() =>{
+                infoCourseChoose.idCourse=item.IDCourses;
+                infoCourseChoose.nameCourse=item.name;
+                dispatch(courseActions.getInfoCourseChoose(infoCourseChoose));
+                navigation.navigate('Forum Of A Course');
         }}>
 
             <View style={styles.info}>

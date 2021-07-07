@@ -1,8 +1,7 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView,ImageBackground,SafeAreaView } from 'react-native';
-import { Icon } from "react-native-elements";
 import io from 'socket.io-client';
-import { FontAwesome , Ionicons } from '@expo/vector-icons';
+import { FontAwesome , Ionicons , FontAwesome5,MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 
@@ -662,7 +661,7 @@ const HomeScreen= ({navigation}) =>{
             <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
               navigation.navigate("Calendar");
             }}>
-                <Icon name="calendar-alt" type="font-awesome-5" color="red" size={40}/>
+                <FontAwesome5 name="calendar-alt" size={40} color="red" />
                 <Text style={styles.textItem}>Lịch hoạt động</Text>
               </TouchableOpacity>
           </View>
@@ -671,7 +670,7 @@ const HomeScreen= ({navigation}) =>{
             <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
               navigation.navigate("Course")
             }}>
-            <Icon name="graduation-cap" type="font-awesome-5" color="red" size={40} />
+            <FontAwesome5 name="graduation-cap" size={40} color="red" />
                 <Text style={styles.textItem}> Khóa học</Text>
             </TouchableOpacity> 
           </View>
@@ -680,7 +679,7 @@ const HomeScreen= ({navigation}) =>{
             <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
               navigation.navigate("Forum");
             }}>
-            <Icon name="forum" type="material-community" color="red" size={40}/>
+            <MaterialCommunityIcons name="forum" size={40} color="red" />
                 <Text style={styles.textItem}>Diễn đàn</Text>
             </TouchableOpacity> 
           </View> 
@@ -693,7 +692,7 @@ const HomeScreen= ({navigation}) =>{
             <TouchableOpacity style={styles.gridTouchable} onPress={() =>{
               navigation.navigate("University Info")
             }}>
-            <Icon name="info-circle" type="font-awesome-5" color="red" size={40} />
+            <FontAwesome5 name="info-circle" size={40} color="red" />
                 <Text style={styles.textItem}>Thông tin trường</Text>
             </TouchableOpacity> 
           </View>
@@ -719,15 +718,15 @@ const HomeScreen= ({navigation}) =>{
                 }
               }}
             >
-            <Icon name="pencil-alt" type="font-awesome-5" color="red" size={40} />
+            <FontAwesome5 name="pencil-alt" size={40} color="red" />
                 <Text style={styles.textItem}>Điểm số</Text>
             </TouchableOpacity> 
           </View>
 
           {/* <View style={styles.gridItemShape}  >
             <TouchableOpacity style={styles.gridTouchable}>
-            <Icon name="envelope-open-text" type="font-awesome-5" color="red" size={40} />
-                <Text style={styles.textItem}>Mail</Text>
+            <FontAwesome name="question-circle" size={40} color="red" />
+                <Text style={styles.textItem}>Hỏi đáp môn học</Text>
             </TouchableOpacity> 
           </View> */}
 

@@ -43,7 +43,7 @@ const ForumFacultyScreen =({navigation})=>{
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-            console.log(dataRes);
+            //console.log(dataRes);
             if(statusCode === 200){
                 const dataTmp = [];  
                 for (const key in dataRes) {
@@ -71,7 +71,8 @@ const ForumFacultyScreen =({navigation})=>{
         <TouchableOpacity style={styles.card}
                 onPress={() =>{
                     navigation.navigate('Content Forum',{
-                        dataOfForum:item
+                        dataOfForum:item,
+                        typeForum:'faculty'
                     });
                 }}>
                 <View style={styles.info}>

@@ -14,6 +14,9 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
     const token = useSelector((state) => state.authen.token);
     const profile=useSelector((state) => state.profile.profile);
 
+    const dataOfForum = route.params.dataOfForum;
+    const typeForum=route.params.typeForum;
+
     const unmounted = useRef(false);
 
     const [refresh,setRefresh] = useState(false);
@@ -21,7 +24,6 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
     const [dataComment,setDataComment] = useState([]);
     const [imageSelected,setImageSelected] = useState({uri:""});
     const [comment,setComment] = useState('');
-    const dataOfForum = route.params.dataOfForum;
 
     useEffect(() => {
         getAllComment();
@@ -31,6 +33,18 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
     },[refresh]);
 
     const getAllComment =()=>{
+        console.log(typeForum);
+        if(typeForum === 'faculty' || typeForum === 'university'){
+            //console.log('a');
+            getAllCommentOfFacultyOrUniversity();
+        }
+        else if(typeForum === 'course'){
+            //console.log('b');
+            getAllCommentCourse();
+        }
+    };
+
+    const getAllCommentOfFacultyOrUniversity =() => {
         let details = {
             IDPost: dataOfForum.ID,
         };
@@ -61,7 +75,40 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 setDataComment(dataRes);
             }
         }).catch(error => console.log('error', error));
-    }
+    };
+
+    const getAllCommentCourse =() => {
+        let details = {
+            IDPost: dataOfForum.ID,
+        };
+      
+        let formBody = [];
+    
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
+        fetch("https://hcmusemu.herokuapp.com/forum/viewcmt", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+            body: formBody,
+        }) .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if(statusCode === 200){
+                setDataComment(dataRes);
+            }
+        }).catch(error => console.log('error', error));
+    }; 
 
     const headerComponent = (
         <View>
@@ -75,8 +122,15 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 {dataOfForum.EmailOwn === profile[0].Email && 
                 <TouchableOpacity style={{ position: 'absolute',right:0,top:0}}
                     onPress={async() =>{
-                        await forumServices.deletePost(token,dataOfForum.ID);
-                        navigation.goBack();
+                        if(typeForum === 'faculty' || typeForum === 'university'){
+                            await forumServices.deletePost(token,dataOfForum.ID);
+                            navigation.goBack();
+                        }
+                        else if(typeForum === 'course'){
+                            await forumServices.deleteCoursePost(token,dataOfForum.ID);
+                            navigation.goBack();
+                        }
+                        
                     }}>
 
                     <AntDesign  name="delete" size={18} color="red" />
@@ -92,7 +146,12 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
             <View style={styles.footerCard}>
                 <TouchableOpacity style={styles.buttonFooter}
                     onPress={async()=>{
-                        await forumServices.likePost(token,dataOfForum.ID);
+                        if(typeForum === 'faculty' || typeForum === 'university'){
+                            await forumServices.likePost(token,dataOfForum.ID);
+                        }
+                        else if(typeForum === 'course'){
+                            await forumServices.likeCoursePost(token,dataOfForum.ID);
+                        }
                         setRefresh(!refresh);
                     }}
                 >
@@ -139,7 +198,12 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                       {
                                         text: "Cho phép",
                                         onPress: async () => {
-                                            await forumServices.deleteCmt(token,item.ID);
+                                            if(typeForum === 'faculty' || typeForum === 'university'){
+                                                await forumServices.deleteCmt(token,item.ID);
+                                            }
+                                            else if(typeForum === 'course'){
+                                                await forumServices.deleteCourseCmt(token,item.ID);
+                                            }
                                             setRefresh(!refresh);
                                         },
                                       },
@@ -225,10 +289,16 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                     {comment.trim().length !== 0 &&
                     <TouchableOpacity 
                         onPress={async() =>{
-                            await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);
-                            setComment('');
-                            setImageSelected({uri:""});
-                            setRefresh(!refresh);
+                            if(typeForum === 'faculty' || typeForum === 'university'){
+                                await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);                                
+                            }
+                            else if(typeForum === 'course'){
+                                console.log(token,dataOfForum.ID,comment,imageSelected);
+                                await forumServices.commentCoursePost(token,dataOfForum.ID,comment,imageSelected);
+                            }
+                                setComment('');
+                                setImageSelected({uri:""});
+                                setRefresh(!refresh);
                         }}
                     >
                         <MaterialCommunityIcons style={cmtStyles.btnSubmitCmt} name="send-circle" size={30} color="blue" />

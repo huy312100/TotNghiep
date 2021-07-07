@@ -1,10 +1,10 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-import {TouchableOpacity,Image} from "react-native"
+import {TouchableOpacity,Image,Dimensions,Text,View} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { MaterialCommunityIcons,MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons,MaterialIcons,Ionicons } from '@expo/vector-icons';
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 
 import { useSelector,useDispatch } from "react-redux";
@@ -39,6 +39,8 @@ import PortalConnectScreen from '../screens/profile/connect_app/Portal';
 import ClassroomConnectScreen from '../screens/profile/connect_app/Classroom';
 import SlackConnectScreen from '../screens/profile/connect_app/Slack';
 import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
+
+//import forum
 import ForumCourseScreen from '../screens/home/forum/forum_course/ForumCourse';
 import ForumOfCourseMoodleScreen from '../screens/home/forum/forum_course/ForumMoodleCourse';
 import ContentForumMoodleScreen from '../screens/home/forum/forum_course/ContentForumMoodle';
@@ -46,8 +48,8 @@ import CreatePostScreen from '../screens/home/forum/CreatePost';
 import ForumFacultyScreen from "../screens/home/forum/forum_faculty/ForumFaculty";
 import ForumUniversityScreen from "../screens/home/forum/forum_university/ForumUniversity";
 import ContentForumFacultyAndUniversityScreen from "../screens/home/forum/ContentForum";
-
-import { View } from "react-native";
+import ForumAllCourseScreen from "../screens/home/forum/forum_course/ForumAllCourse";
+import ForumCourseOfAppScreen from "../screens/home/forum/forum_course/ForumCourseOfApp";
 
 
 const Stack = createStackNavigator();
@@ -84,7 +86,7 @@ export function AuthenStackNavigation() {
 };
 
 function HomeStackNavigation({navigation}) { 
-  
+  const infoCourseChoose = useSelector((state) => state.course.infoCourseChoose);
   return(
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
@@ -222,10 +224,12 @@ function HomeStackNavigation({navigation}) {
       />
 
       <Stack.Screen
-        name="Forum Of A Moodle Course"
-        component={ForumOfCourseMoodleScreen}
+        name="Forum Of A Course"
+        component={ForumACourseTopTab}
         options={{ 
-          headerShown: false
+          title:infoCourseChoose.nameCourse,
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false
         }}
       />
 
@@ -440,15 +444,35 @@ function MyBottomTabs() {
       tabBarOptions={{
         activeTintColor: '#6666FF',
       }}
+
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'home-sharp' : 'home-outline';
+          } 
+          else if (route.name === 'Notifications') {
+            iconName = focused ? 'notifications-sharp' : 'notifications-outline';
+          }
+          else if (route.name === 'Message') {
+            iconName = focused ? 'chatbubble-ellipses-sharp' : 'chatbubble-ellipses-outline';
+          }
+          else if(route.name === 'Profile'){
+            iconName = focused ? 'person-sharp' : 'person-outline';
+          
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
     >
       <bottomTab.Screen
         name="Home"
         component={HomeStackNavigation}
         options={({route})=>({
           tabBarLabel: 'Trang chủ',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} />
-          ),
           tabBarVisible: getTabBarVisibility(route) && visibleBotTab,
           //tabBarVisible: false,
 
@@ -459,12 +483,7 @@ function MyBottomTabs() {
         component={NotificationScreen}
         options={{
           tabBarLabel: 'Thông báo',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={size} />
-          ),
-  
           tabBarBadge: notiNotRead > 0 ? notiNotRead :null,
-          
         }}
       />
 
@@ -473,9 +492,6 @@ function MyBottomTabs() {
         component={MessageStackNavigation}
         options={({route})=>({
           tabBarLabel: 'Tin nhắn',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="message-processing" color={color} size={size} />
-          ),
           tabBarVisible: getTabBarVisibility(route),
           tabBarBadge: msgNotRead >0 ? msgNotRead :null,
         })}
@@ -486,9 +502,6 @@ function MyBottomTabs() {
         component={ProfileStackNavigation}
         options={({route})=>({
           tabBarLabel: 'Tài khoản',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={size} />
-          ),
           tabBarVisible: getTabBarVisibility(route),
         })}
       />
@@ -676,8 +689,75 @@ function MessageTopTab(){
 
 //Top tab of forum screen 
 function ForumTopTab(){
+  const DeviceWidth = Dimensions.get('window').width;
   return (
-    <topTab.Navigator initialRouteName="Forum Course" 
+    <topTab.Navigator initialRouteName="Forum Total Course" 
+    tabBarOptions={{
+      scrollEnabled:true,
+      activeTintColor: 'green',
+      inactiveTintColor:'#CCCCCC',
+      tabStyle:{
+        width:'auto',
+      },
+      indicatorStyle:{
+        backgroundColor: 'green',
+      },
+
+      }}>
+
+      <topTab.Screen 
+        name="Forum Total Course" 
+        component={ForumAllCourseScreen} 
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:90}}>
+              Tất cả khoá học
+            </Text>
+          )
+        }}/>
+  
+      <topTab.Screen 
+        name="Forum Course" 
+        style={{color: 'white'}}
+        component={ForumCourseScreen} 
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:(DeviceWidth-90)/4}}>
+              Môn học
+            </Text>
+          )
+        }}/>
+
+      <topTab.Screen 
+        name="Forum Faculty" 
+        component={ForumFacultyScreen}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:(DeviceWidth-90)/4}}>
+              Khoa
+            </Text>
+          )
+        }}/>
+
+      <topTab.Screen 
+        name="Forum University" 
+        component={ForumUniversityScreen}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:(DeviceWidth-90)/4}}>
+              Trường
+            </Text>
+          )
+        }}/>
+     
+    </topTab.Navigator>
+  )
+}
+
+//Top tab of forum course 
+function ForumACourseTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="Forum Of A Course By App" 
     tabBarOptions={{
       activeTintColor: 'green',
       inactiveTintColor:'#CCCCCC',
@@ -687,31 +767,25 @@ function ForumTopTab(){
 
       labelStyle: { fontSize: 10 },
       }}>
+
+      <topTab.Screen 
+        name="Forum Of A Course By App" 
+        component={ForumCourseOfAppScreen}
+        options={{
+          tabBarLabel:'Ứng dụng'
+        }}
+        />
   
       <topTab.Screen 
-        name="Forum Course" 
-        component={ForumCourseScreen} 
+        name="Forum Of A Moodle Course" 
+        component={ForumOfCourseMoodleScreen} 
         options={{
-          tabBarLabel:'Môn học'
+          tabBarLabel:'Trang môn học'
         }}/>
 
-      <topTab.Screen 
-        name="Forum Faculty" 
-        component={ForumFacultyScreen}
-        options={{
-          tabBarLabel:'Khoa'
-        }}/>
-
-      <topTab.Screen 
-        name="Forum University" 
-        component={ForumUniversityScreen}
-        options={{
-          tabBarLabel:'Trường'
-        }}/>
-     
     </topTab.Navigator>
   )
-}
+};
 
 
 

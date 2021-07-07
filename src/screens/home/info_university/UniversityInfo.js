@@ -95,7 +95,7 @@ const UniversityInfoScreen = () =>{
 
     const renderItem = ({ item }) => (
         <View >
-            <ImageBackground style={styles.card} source={{ uri: "https://www.hcmus.edu.vn/images/2020/04/07/bn2.jpg"}}/>
+            <ImageBackground style={styles.card} source={{ uri: item.Images}}/>
 
             <View style={[styles.rowInfo,{marginTop:30}]}>
                 <View style={styles.squareShapeView}>

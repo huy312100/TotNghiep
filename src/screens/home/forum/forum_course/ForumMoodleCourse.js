@@ -10,10 +10,13 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
 
     const token = useSelector((state) => state.authen.token);
 
+    const infoCourseChoose = useSelector((state) => state.course.infoCourseChoose);
+
     const [data, setData] = useState([]);
     const [idForum,setIDForum] = useState('');
 
     useEffect(() => {
+        console.log(infoCourseChoose);
         getForumCourseOfMoodle();
     },[]);
     
@@ -21,7 +24,7 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
 
     const getForumCourseOfMoodle = () => {
         let details = {
-            IDCourses: route.params.idCourse,
+            IDCourses: infoCourseChoose.idCourse,
         };
       
         let formBody = [];
@@ -67,14 +70,14 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
 
     return(
         <View style={styles.container}>
-            <Header
+            {/* <Header
             containerStyle={{
                 backgroundColor: 'white',
                 justifyContent: 'space-around',
                 borderBottomColor:'#DDDDDD'
             }}
             centerComponent={
-                <Text style={{fontSize:17,fontWeight:'500'}} numberOfLines={1}>{route.params.name}</Text>
+                <Text style={{fontSize:17,fontWeight:'500'}} numberOfLines={1}>{infoCourseChoose.nameCourse}</Text>
             }
             leftComponent={
               <TouchableOpacity onPress={() =>{
@@ -83,7 +86,7 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
                   <Ionicons name="chevron-back-sharp" size={24} color="blue" />
               </TouchableOpacity>
               
-            }/>
+            }/> */}
 
             <FlatList
                 data={data}

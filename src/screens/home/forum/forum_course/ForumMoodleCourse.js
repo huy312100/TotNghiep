@@ -66,7 +66,7 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
                 <Text style={{marginLeft:15,marginTop:10}}>Người đăng : {item.fullname}</Text>
             </View>
         </TouchableOpacity>
-    )
+    );
 
     return(
         <View style={styles.container}>
@@ -87,6 +87,14 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
               </TouchableOpacity>
               
             }/> */}
+
+            {data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                
+                <Text style={{color:'#BBBBBB'}}>
+                    Không có diễn đàn nào từ trang môn học
+                </Text>
+             </View>}
+
 
             <FlatList
                 data={data}

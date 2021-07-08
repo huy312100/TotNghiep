@@ -517,7 +517,9 @@ const getTabBarVisibility = (route) => {
   "Connect application","Content Course","Web Customed","Change Password",
   "Add Event","Modify Event","Find to Chat","University Info",
   "Add people to calendar","Forum","Forum Of A Moodle Course","Content Forum",
-  "Create Post Of Forum","Content Forum Of A Moodle Course"];
+  "Create Post Of Forum","Content Forum Of A Moodle Course","Forum Of A Course"];
+
+  console.log(routeName);
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {

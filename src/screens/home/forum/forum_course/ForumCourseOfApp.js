@@ -107,6 +107,13 @@ const ForumCourseOfAppScreen =({navigation})=>{
     return (
         <View style={styles.container}>
 
+            {dataForum.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                
+                <Text style={{color:'#BBBBBB'}}>
+                    Không có diễn đàn nào được đăng lên
+                </Text>
+             </View>}
+
             <FlatList
                 data={dataForum}
                 renderItem={renderItem}

@@ -231,6 +231,55 @@ export const commentPost = async (token,idPost,comment,image ) => {
 
 
 //course services
+export const createCoursePost = async (token,IDCourses,title,image)=>{
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var formdata = new FormData();
+    
+    if(image.uri !=="" && image.uri !== null){
+        let localUri = image.uri;
+        let filename = localUri.split('/').pop();
+
+        // Infer the type of the image
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
+
+        formdata.append("IDCourses", IDCourses);
+        formdata.append("title", title);
+        formdata.append("image", {uri:localUri,name:filename,type});
+    }
+
+    else{
+        formdata.append("IDCourses", IDCourses);
+        formdata.append("title", title);
+    }
+    
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow'
+        };
+
+    await fetch("https://hcmusemu.herokuapp.com/forum/courses/post",requestOptions)
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
+      if(statusCode === 200){
+        console.log(dataRes);
+        //editProfile();
+      }
+      else{
+        console.log("loi");
+      }
+
+      //console.log(dataUniversity);
+    }).catch((err) => console.log(err, "error"));
+};
+
 export const deleteCoursePost = async(token,idPost) => {
     let details = {
         IDPost: idPost,
@@ -379,3 +428,4 @@ export const likeCoursePost = async (token,idPost) =>{
         }
     }).catch(error => console.log('error', error));
 };
+

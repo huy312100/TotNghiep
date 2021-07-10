@@ -1,5 +1,5 @@
 import React, {useState,useEffect,useRef} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Button,Alert,Linking,Dimensions} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Platform ,Alert,Linking,Dimensions} from 'react-native';
 import { Overlay,Header } from 'react-native-elements';
 import { Entypo,MaterialCommunityIcons,AntDesign } from '@expo/vector-icons';
 
@@ -47,26 +47,21 @@ const CalendarScreen =({navigation})=> {
     return year;
   };
 
-    const getCurrentDate = () =>{
-    var day= getCurrenDay();
-    var year= getCurrentYear();
-    let month= getCurrentMonth();
-    if(month < 10 && day > 10){
-      let date =year+'-'+'0'+month+'-'+day;
-      return date;
+  const getCurrentDate = () =>{
+    var day = '' + getCurrenDay();
+    var year = getCurrentYear();
+    var month = '' + getCurrentMonth();
+
+    console.log(month.length);
+
+    if (month.length < 2) {
+      month = '0' + month;
     }
-    else if(month < 10 && day < 10){
-      let date = year+'-'+'0'+month+'-'+'0'+day;
-      return date;
+    if (day.length < 2) {
+      day = '0' + day;
     }
-    else if(month > 10 && day < 10){
-      let date = year+'-'+month+'-'+'0'+day;
-      return date;
-    }
-    else{
-      let date =year+'-'+month+'-'+day;
-      return date;
-    }
+
+    return [year, month, day].join('-');
   };
 
 
@@ -190,14 +185,14 @@ const CalendarScreen =({navigation})=> {
               id:"",
               //type:dataRes[0].TypeCalendar,
               title:dataRes[key].nameCourese,
-              summary:dataRes[key].Decription.text,
+              summary:dataRes[key].decription,
               start:dateUtils.ConvertTimestamp(dataRes[key].duedate-3600),
               end:dateUtils.ConvertTimestamp(dataRes[key].duedate),
               type:"Deadline",
               color: '#99FF99',
               url:dataRes[key].url,
               typeGuest:"Cá nhân",
-              Notification:dataRes[key].duedate-1800
+              Notification:dataRes[key].duedate
           })
           }
         }
@@ -215,6 +210,7 @@ const CalendarScreen =({navigation})=> {
   };
 
     useEffect(() => {
+      console.log(getCurrentDate());
         //console.log(token);
     getAllActivitiesInMonth();
     return()=>{
@@ -341,7 +337,8 @@ const CalendarScreen =({navigation})=> {
         scrollToFirst={false}
       />
 
-      <Overlay isVisible={visibleOverlay} onBackdropPress={toggleOverlay} >
+    <Overlay isVisible={visibleOverlay} onBackdropPress={toggleOverlay} >
+      <View style={overlayStyle.overlay}>
         <Text style={overlayStyle.headerStyle}>Chi tiết sự kiện</Text>
           <View style={overlayStyle.bottomRow} >
             <View style={overlayStyle.row}>
@@ -452,10 +449,12 @@ const CalendarScreen =({navigation})=> {
             </View>}
 
             {isLoading && LoadingScreen()}
-           </Overlay>
+          </View>
+        </Overlay>
 
-           <DateTimePickerModal
-                    display="inline"
+           { Platform.OS === 'ios' ? <DateTimePickerModal
+                   // display="inline"
+                    display = "inline"
                     isVisible={isDatePickerVisible }
                     time="date"
                     value={currentDate}
@@ -468,6 +467,22 @@ const CalendarScreen =({navigation})=> {
                     //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
                     // }}
                     />
+            :
+            <DateTimePickerModal
+                   // display="inline"
+              isVisible={isDatePickerVisible }
+              time="date"
+              value={currentDate}
+              headerTextIOS={"Lịch"}
+              cancelTextIOS="Huỷ bỏ"
+              confirmTextIOS="Xác nhận"
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+              // onHide={()=>{
+              //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+              // }}
+              />
+          }
          
     </View>
   );
@@ -476,13 +491,17 @@ const CalendarScreen =({navigation})=> {
 
 const overlayStyle = StyleSheet.create({
 
+  overlay:{
+    width:350
+  },
+
   bottomRow:{
-    marginBottom:0
+    marginBottom:35
   },
  
   headerStyle: {
+    textAlign: 'center',
     fontSize:20,
-    marginHorizontal:120,
     fontWeight: "bold",
   },
 
@@ -494,6 +513,7 @@ const overlayStyle = StyleSheet.create({
   },
 
   onTheRight: {
+    width:200,
     position: 'absolute',
     right: 0
   },

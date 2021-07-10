@@ -135,7 +135,7 @@ const FindToChatScreen = ({navigation}) => {
              source={require('../../../assets/finding.png')}
              resizeMode='contain'/>
           <Text style={{color:'#cccccc'}}>
-            Nhập tên để tìm kiếm bạn bè ngay
+            Tìm kiếm bạn bè và nhắn tin ngay
           </Text>
              </View>}
 

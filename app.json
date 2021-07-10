@@ -6,8 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     
-    "splash": {
-      "image": "./assets/splash.png",
+    "splash": {     
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,7 +22,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#6699FF"
       },
       "softwareKeyboardLayoutMode": "pan",
       "useNextNotificationsApi":true

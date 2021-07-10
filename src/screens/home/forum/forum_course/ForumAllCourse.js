@@ -72,7 +72,7 @@ const ForumAllCourseScreen =({navigation})=>{
                     <Image style={styles.imageUserPost} source={ item.AvartaOwn === "" || item.AvartaOwn === null ? require("../../../../../assets/user-icon.png") : {uri : item.AvartaOwn}}/>
                     <View>
                         
-                        <View style={[styles.nameAndDate,{flexDirection:'row',flexWrap:1}]}>
+                        <View style={[styles.nameAndDate,{flexDirection:'row',flexWrap:'wrap'}]}>
                             <Text style={{fontSize:12,fontWeight:'bold'}}>{item.NameOwn}</Text>
                             <MaterialIcons style={{marginTop:2}} name="play-arrow" size={10} color="grey" />
                             <Text style={[{fontWeight:'300',fontSize:10,marginTop:2}]}>{item.NameCourses}</Text>

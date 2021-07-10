@@ -1,5 +1,5 @@
 import React,{ useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback,Image} from "react-native";
 import {
   Heading,
   UsernameInput,
@@ -75,12 +75,20 @@ const LoginScreen = ({navigation}) => {
     }}>
       <View style={styles.container}>
 
-        <Heading>Đăng nhập</Heading>
-        <UsernameInput placeholder={"Tên đăng nhập"}
+        <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
+        <Heading>E M U</Heading>
+        <UsernameInput placeholder={"Địa chỉ E-mail"}
           onChangeText={(username)=>setUsername(username)}/>
 
         <PasswordInput placeholder={"Mật khẩu"}
           onChangeText={(password)=>setPassword(password)}/>
+
+        <View style={styles.viewForgetPassword}>
+          <TouchableOpacity >
+            <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
+          </TouchableOpacity>
+        </View>
+
 
 
         <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
@@ -88,10 +96,6 @@ const LoginScreen = ({navigation}) => {
             loginAPI();
             }}>
           <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
         </TouchableOpacity>
 
         <View style={styles.bottomText}>
@@ -118,7 +122,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     padding: 10,
-    paddingTop: 120,
+    paddingTop: 80,
+  },
+
+  imageLogo: {
+    width:175,
+    height:125,
   },
 
   passInput: {
@@ -126,9 +135,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
+  viewForgetPassword: {
+    width:'100%',
+    alignItems: 'flex-end',
+    paddingRight:5,
+    marginTop:20
+  },
+
   forgetPassText: {
     fontWeight: "bold",
-    color: "blue",
+    color: "#336633",
     fontSize: 16,
   },
 
@@ -149,7 +165,7 @@ const styles = StyleSheet.create({
   },
 
   buttonLoginContainer: {
-    backgroundColor: "green",
+    backgroundColor: "#0066FF",
     width: "100%",
     alignItems: "center",
     justifyContent: "center",

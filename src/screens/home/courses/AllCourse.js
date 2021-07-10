@@ -41,12 +41,18 @@ const AllCourseInfoScreen = ({navigation}) => {
       },
       body: formBody,
     })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    })
+      .then(([statusCode, dataRes]) => {
+        if(statusCode === 200){
+          setData(data.concat(dataRes));
+          dispatch(courseActions.getAllCourses(data.concat(dataRes)));
+        }
         //tmp.concat(json)
-        setData(data.concat(json));
-        dispatch(courseActions.getAllCourses(data.concat(json)));
+
         setIsLoading(false);
       })
       .catch((err) => console.log(err, "error"));

@@ -53,12 +53,19 @@ const ForumCourseScreen = ({navigation}) =>{
       },
       body: formBody,
     })
-      .then((response) => response.json())
-      .then((json) => {
-        //console.log(json);
+    .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+      })
+      .then(([statusCode, dataRes]) => {
         //tmp.concat(json)
-        setData(data.concat(json));
-        //dispatch(courseActions.getAllCourses(data.concat(json)));
+        if(statusCode === 200) {
+            if(dataRes.message !== 'Page not Found'){
+                setData(data.concat(dataRes));
+                dispatch(courseActions.getAllCourses(data.concat(dataRes)));
+            }
+        }
         setIsLoading(false);
       })
       .catch((err) => console.log(err, "error"));
@@ -76,13 +83,13 @@ const ForumCourseScreen = ({navigation}) =>{
             <View style={styles.info}>
                 <Text style={styles.title}>{item.name}</Text>
             </View>
-            
-            <View tyle={[styles.info,{marginBottom:20,marginLeft:20}]}>
+
+            {typeof(item.teacher.map) !== 'undefined' && <View tyle={[styles.info,{marginBottom:20,marginLeft:20}]}>
                 {item.teacher.map((item, index) => (
                 <Text key={index} style={styles.date}>Giáo viên : {item}</Text>
               ))
               }
-            </View>
+            </View>}
             
         </TouchableOpacity>
     );
@@ -148,7 +155,6 @@ const styles = StyleSheet.create({
         marginTop : 10,
         alignItems: "center",
     }
-
 });
 
 export default ForumCourseScreen;

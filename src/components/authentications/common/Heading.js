@@ -12,6 +12,8 @@ export function Heading({children,style,...props}) {
 const styles = StyleSheet.create({
     text: {
         fontSize:32,
-        marginBottom:36
+        marginBottom:36,
+        color:'blue',
+        fontWeight:'bold'
     }
 })

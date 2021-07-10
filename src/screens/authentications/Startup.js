@@ -1,5 +1,7 @@
 import React,{useEffect} from 'react';
-import { View,StyleSheet, } from 'react-native';
+import { View,StyleSheet, Image} from 'react-native';
+
+import { Heading } from '../../components/authentications/common/Heading';
 
 import { useDispatch } from 'react-redux';
 
@@ -13,7 +15,12 @@ const StartupScreen = ({navigation}) =>{
     const dispatch = useDispatch();
 
     useEffect(() => {
-        tryLogin();
+        const unsubscribe = navigation.addListener('focus', () => {
+            tryLogin();
+        });
+        return()=>{
+            unsubscribe();
+        };
     },[]);
 
     const tryLogin = async () =>{
@@ -63,6 +70,9 @@ const StartupScreen = ({navigation}) =>{
 
     return (
         <View style={styles.container}>
+            <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
+            <Heading>E M U</Heading>
+
 
         </View>
     )
@@ -71,7 +81,14 @@ const StartupScreen = ({navigation}) =>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    }
+        justifyContent:'center',
+        alignItems: 'center',
+    },
+
+    imageLogo: {
+        width:175,
+        height:125,
+    },
 });
 
 export default StartupScreen;

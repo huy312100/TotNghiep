@@ -38,29 +38,20 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
     };
 
     fetch("https://hcmusemu.herokuapp.com/studycourses/currentcourses",requestOptions)
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-        //console.log(dataUniversity);
-        
-          for (const key in json) {
-            tmp.push({
-              idCourse: json[key].IDCourses,
-              category:json[key].category,
-              name:json[key].name,
-              startDate:json[key].startDate,
-              teacherName:json[key].teacher
-            });
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    })
+      .then(([statusCode, dataRes]) => {
+          if(statusCode === 200){
+            setData(dataRes);
+            dispatch(courseActions.getCurrentCourses(dataRes));
           }
-        
-          setData(tmp) ;
-          dispatch(courseActions.getCurrentCourses(json));
           setLoading(false);
 
       }).catch((err) => console.log(err, "error"));
-            //console.log(currCourses.length); 
-    //dispatch(courseActions.getCurrentCourses());
-    //setData(currCourses);
+
   };
 
   const renderItem = ({ item }) => (
@@ -76,11 +67,11 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
           
           <Text style={styles.courseName}>{item.name}</Text>
           
-            <View style={styles.teacherName}>
-              {item.teacherName.map((item,index)=>(
+           <View style={styles.teacherName}>
+              {item.teacher.map((item,index)=>(
                 <Text key={index}>Giáo viên :{item}</Text>
               ))}
-            </View>    
+            </View>
         </View>
       </View>
     </TouchableOpacity>

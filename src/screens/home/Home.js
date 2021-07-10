@@ -53,14 +53,14 @@ const HomeScreen= ({navigation}) =>{
       console.log(token);
       getPermissionNotifications();
       connectToSocket();
-      getNewestDeadline();
       const unsubscribe = navigation.addListener('focus', () => {
+        getNewestDeadline();
         getAllActivitiesInMonth();
         getWebCustomed();
         localNotification();
+        getUniversityNew();
+        getFacultyNew();
       });
-      getUniversityNew();
-      getFacultyNew();
       getRequestChatting();
       getNotReadNotifications();
       getAwaitMsgNotRead();
@@ -231,6 +231,7 @@ const HomeScreen= ({navigation}) =>{
         return Promise.all([statusCode, dataRes]);
     }).then(([statusCode, dataRes])=>{
       if(statusCode === 200){
+        console.log(dataRes);
         const dataCalendar = [];
         for (const key in dataRes) {
           if(dataRes[key].TypeCalendar !== undefined){
@@ -270,16 +271,15 @@ const HomeScreen= ({navigation}) =>{
           else{
             dataCalendar.push({
               id:"",
-              type:dataRes[0].TypeCalendar,
               title:dataRes[key].nameCourese,
-              summary:dataRes[key].Decription.text,
+              summary:dataRes[key].decription,
               start:dateUtils.ConvertTimestamp(dataRes[key].duedate-3600),
               end:dateUtils.ConvertTimestamp(dataRes[key].duedate),
               type:"Deadline",
               color: '#99FF99',
               url:dataRes[key].url,
               typeGuest:"Cá nhân",
-              Notification:dataRes[key].duedate-1800
+              Notification:dataRes[key].duedate
             })
           }
         }
@@ -444,7 +444,6 @@ const HomeScreen= ({navigation}) =>{
 
   //call api get newest deadline
   const getNewestDeadline = () =>{
-    setLoading(true);
     //console.log(token);
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `bearer ${token}`);
@@ -456,19 +455,24 @@ const HomeScreen= ({navigation}) =>{
     };
 
     fetch("https://hcmusemu.herokuapp.com/deadlinemoodle/month",requestOptions)
-      .then((response) => response.json())
-      .then((json) => {
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
         //console.log(json);
-
-        dispatch(homeActions.NewestDeadline(json));
-        //console.log(dataUniversity);
-        setNewDeadline(json);
+        if(statusCode === 200){
+          dispatch(homeActions.NewestDeadline(dataRes));
+          console.log(dataRes);
+          setNewDeadline(dataRes);
+        }
         
       }).catch((err) => console.log(err, "error"));
   };
 
   //Get permission to notifications on iOS 
   const getPermissionNotifications = () =>{
+    setLoading(true);
     Permissions.getAsync(Permissions.NOTIFICATIONS)
     .then((statusObj) =>{
       if(statusObj.status !== 'granted'){
@@ -558,8 +562,6 @@ const HomeScreen= ({navigation}) =>{
     }
   };
 
-
-
   //Render
 
   const renderNewestDeadlineItem = ({item}) => (
@@ -585,7 +587,7 @@ const HomeScreen= ({navigation}) =>{
         </View>
         <View style={styles.textSection}>
           <View style={styles.courseInfoText}>
-            <Text style={styles.courseName}>{item.nameCourese}</Text> */
+            <Text numberOfLines={1} style={[styles.courseName,]}>{item.nameCourese}</Text> 
             <Text style={styles.timeDeadline}>{dateUtils.ConvertTimestamp(item.duedate)}</Text>
           </View>
           <Text style={styles.contentDeadline}>{item.decription}</Text>
@@ -772,9 +774,7 @@ const HomeScreen= ({navigation}) =>{
         renderItem={renderNewsItem}/>
 
       </ScrollView>
-    }
-    
-
+    }   
     </SafeAreaView>
   )
 
@@ -817,6 +817,7 @@ const styles = StyleSheet.create({
   },
 
   deadlineInfo:{
+    width:300,
     flexDirection:"row",
     justifyContent: "space-between",
   },
@@ -833,6 +834,7 @@ const styles = StyleSheet.create({
   },
 
   courseName:{
+    width:115,
     fontSize: 13,
     fontWeight: "bold",
   },
@@ -844,6 +846,7 @@ const styles = StyleSheet.create({
   },
 
   contentDeadline:{
+    width:240,
     fontSize: 15,
     color: "#333333",
   },
@@ -879,6 +882,7 @@ const calendarStyle = StyleSheet.create({
   },
 
   label:{
+    width:200,
     fontWeight:'bold',
     fontSize:15
   },

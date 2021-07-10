@@ -1,0 +1,13 @@
+ <Notifications
+                   icon = {NotificationsIcon}
+                   data={data}
+                   width = '300px' 
+                   height = '400px'
+                   headerBackgroundColor	= "orange"
+                   header={
+                    {
+                      title: 'Thông báo',
+                      option: { text: 'Xem tất cả', onClick: () => {history.push("/notifications")} }
+                    }
+                  }
+                    />

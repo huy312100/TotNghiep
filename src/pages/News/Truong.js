@@ -1,5 +1,7 @@
 import React , {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import FiberNewIcon from '@material-ui/icons/FiberNew';
+import TimelapseIcon from '@material-ui/icons/Timelapse';
 const useStyles = makeStyles((theme) => ({
     news_page: {
       margin: "10px 0 0 16vw", 
@@ -17,13 +19,13 @@ const useStyles = makeStyles((theme) => ({
       color: "#3e50b5"
     },
     news_page__title: {
-      fontSize: "18px", 
-      fontWeight: "500", 
+      fontSize: "20px", 
+      fontWeight: "300", 
       color: "black"
     },
     news_page__time: {
-      color: "gray", 
-      fontSize: "14px"
+      color: "orange", 
+      fontSize: "18px"
     },
   }));
 
@@ -53,20 +55,29 @@ export default function Truong()
     useEffect(() => {
         getNewsUniversity();
      },[]);
+     if (newsuni.length != undefined)
+     {
         return newsuni.map((item, index) => {
             return (
               <div key={index}>
-                 <a classes={classes.news_page_a} href={'//www.hcmus.edu.vn' + item.Link} target="_blank" rel="noopener noreferrer"> 
+                 <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer"> 
             <div className={classes.news_page__news}>
-              <div className={classes.news_page__title}>
+              <FiberNewIcon/>
+              <span className={classes.news_page__title}>
                   {item.Title}
-              </div>
-              <div className={classes.news_page__time}>
+              </span>
+              <div></div>
+              <TimelapseIcon/>
+              <span className={classes.news_page__time}>
                   {item.Date}
-              </div>
+              </span>
       
             </div>{}
             </a>
               </div>
             )
-})}
+      })}
+      else return (
+        <div></div>
+      )
+}

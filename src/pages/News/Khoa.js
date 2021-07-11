@@ -1,11 +1,13 @@
 import React , {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Grid} from "@material-ui/core"
+import FiberNewIcon from '@material-ui/icons/FiberNew';
+import TimelapseIcon from '@material-ui/icons/Timelapse';
 const useStyles = makeStyles((theme) => ({
     news_page: {
       margin: "10px 0 0 16vw", 
       background: "white", 
-      width: "82vw", 
+      width: "80vw", 
       boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 3px"
     },
     news_page_a: {
@@ -18,13 +20,13 @@ const useStyles = makeStyles((theme) => ({
       color: "#3e50b5"
     },
     news_page__title: {
-      fontSize: "18px", 
-      fontWeight: "500", 
+      fontSize: "20px", 
+      fontWeight: "300", 
       color: "black"
     },
     news_page__time: {
-      color: "gray", 
-      fontSize: "14px"
+      color: "orange", 
+      fontSize: "18px"
     },
   }));
 
@@ -53,22 +55,35 @@ export default function Khoa()
     useEffect(() => {
         getNewsFaculty();
      },[]);
+     if (newsfac.length != undefined)
+     {
         return newsfac.map((item, index) => {
             return (
-              <Grid>
+              <Grid container
+              justifyContent="center"
+              alignItems="left"
+              background="dark">
+
               <div key={index}>
-                 <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer"> 
-            <div className={classes.news_page__news}>
-              <div className={classes.news_page__title}>
+                <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer">
+              <div className={classes.news_page__news}>
+              <FiberNewIcon/>
+              <span className={classes.news_page__title}>
                   {item.Title}
-              </div>
-              <div className={classes.news_page__time}>
+              </span>
+              <br/>
+              <TimelapseIcon/>
+              <span TimelapseIcon className={classes.news_page__time}>
                   {item.Date}
-              </div>
-      
-            </div>{}
+              </span>
+            </div>
             </a>
               </div>
               </Grid>
             )
-})}
+      })}
+      else return(
+        <div>
+        </div>
+      )
+}

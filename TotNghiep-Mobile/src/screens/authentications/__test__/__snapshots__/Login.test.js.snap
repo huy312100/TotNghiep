@@ -1,0 +1,216 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it render as i expect 1`] = `
+<View
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#fff",
+      "flex": 1,
+      "padding": 10,
+      "paddingTop": 120,
+    }
+  }
+>
+  <Text
+    style={
+      Array [
+        undefined,
+        Object {
+          "fontSize": 32,
+          "marginBottom": 36,
+        },
+      ]
+    }
+    testID="Form.Heading"
+  >
+    Đăng nhập
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    keyboardType="default"
+    onChangeText={[Function]}
+    placeholder="Tên đăng nhập"
+    rejectResponderTermination={true}
+    style={
+      Object {
+        "backgroundColor": "#ccc",
+        "borderRadius": 10,
+        "marginVertical": 20,
+        "padding": 20,
+        "width": "100%",
+      }
+    }
+    testID="Form.UsernameInput"
+    underlineColorAndroid="transparent"
+  />
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flexDirection": "row",
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      onChangeText={[Function]}
+      placeholder="Mật khẩu"
+      rejectResponderTermination={true}
+      secureTextEntry={true}
+      style={
+        Object {
+          "backgroundColor": "#ccc",
+          "borderRadius": 10,
+          "marginVertical": 20,
+          "padding": 20,
+          "width": "100%",
+        }
+      }
+      testID="Form.PasswordInput"
+      underlineColorAndroid="transparent"
+    />
+    <View
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "opacity": 1,
+          "paddingRight": 10,
+          "position": "absolute",
+          "right": 0,
+        }
+      }
+    >
+      <Text />
+    </View>
+  </View>
+  <View
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "green",
+        "borderRadius": 10,
+        "justifyContent": "center",
+        "marginVertical": 20,
+        "opacity": 1,
+        "paddingBottom": 20,
+        "paddingTop": 20,
+        "width": "100%",
+      }
+    }
+    testID="Button.Login"
+  >
+    <Text
+      style={
+        Object {
+          "color": "white",
+          "fontSize": 20,
+          "fontWeight": "bold",
+          "textAlign": "center",
+        }
+      }
+    >
+      Đăng nhập
+    </Text>
+  </View>
+  <View
+    accessible={true}
+    focusable={false}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "color": "blue",
+          "fontSize": 16,
+          "fontWeight": "bold",
+        }
+      }
+    >
+      Quên mật khẩu?
+    </Text>
+  </View>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "bottom": 0,
+        "flex": 1,
+        "flexDirection": "row",
+        "fontSize": 14,
+        "marginBottom": 20,
+        "position": "absolute",
+      }
+    }
+  >
+    <Text>
+      Chưa có tài khoản?
+    </Text>
+    <View
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "opacity": 1,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "red",
+            "fontWeight": "bold",
+            "marginLeft": 5,
+          }
+        }
+      >
+        Đăng ký ngay
+      </Text>
+    </View>
+  </View>
+</View>
+`;

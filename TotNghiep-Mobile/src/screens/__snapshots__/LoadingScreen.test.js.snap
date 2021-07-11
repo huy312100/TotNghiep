@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it render as i expect 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "rgba(52, 52, 52, 0.5)",
+      "bottom": 0,
+      "justifyContent": "center",
+      "left": 0,
+      "position": "absolute",
+      "right": 0,
+      "top": 0,
+    }
+  }
+>
+  <ActivityIndicator
+    animating={true}
+    color="#EEEEEE"
+    hidesWhenStopped={true}
+    size="large"
+  />
+  <Text
+    style={
+      Object {
+        "color": "#EEEEEE",
+        "fontSize": 15,
+        "fontWeight": "bold",
+      }
+    }
+  >
+    Đang xử lí ...
+  </Text>
+</View>
+`;

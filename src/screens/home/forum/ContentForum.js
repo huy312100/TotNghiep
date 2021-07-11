@@ -255,6 +255,8 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 // ListFooterComponent={footerComponent}
             />
 
+<TextInput></TextInput>
+
             <View style={{ marginBottom:66}}>
 
             </View>
@@ -278,7 +280,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                             setImageSelected(image)
                         }}
                     >
-                        <Ionicons style={{marginTop:2}} name="md-image-outline" size={28} color="#CCCCCC" />
+                        <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
                     </TouchableOpacity>
 
                     <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... " 

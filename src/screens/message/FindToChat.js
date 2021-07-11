@@ -115,7 +115,7 @@ const FindToChatScreen = ({navigation}) => {
             </TouchableOpacity>
  
             <View style={styles.input}>
-                <Ionicons name="search-outline" size={18} color="#888888" />
+                <Ionicons style={{marginTop:3}} name="search-outline" size={18} color="#888888" />
                 <TextInput keyboardType="default" placeholder="Tìm kiếm" style={{width:'95%'}}
                 onChangeText={(name)=>{
                     console.log(name);
@@ -153,6 +153,7 @@ const FindToChatScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: Platform.OS === 'android' ? 25 : 0
     },
 
     header: {

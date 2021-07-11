@@ -241,9 +241,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        paddingTop: Platform.OS === 'android' ? 25 : 0
     },
 
     card: {
+        marginLeft:10,
         width: '100%',
     },
 

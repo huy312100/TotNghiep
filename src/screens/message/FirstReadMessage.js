@@ -20,9 +20,12 @@ const FirstReadMessageScreen = ({navigation}) => {
     const unmounted = useRef(false);
 
     useEffect(() => {
-        getAwaitMessage();
+        const unsubscribe = navigation.addListener('focus', () => {
+          getAwaitMessage();
+        });
         return()=>{
           unmounted.current = true;
+          unsubscribe();
         };
     },[dataMsgFirstRead]);
 

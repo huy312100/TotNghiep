@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { ListItem, Header, Icon } from "react-native-elements";
+import { ListItem, Icon } from "react-native-elements";
 
 import RoundedImage from "../../components/profile/main/RoundedImage";
 
@@ -14,6 +14,8 @@ import {useDispatch,useSelector} from "react-redux";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as Notifications from 'expo-notifications';
+
+import * as authenServices from '../../services/Authen';
 
 import * as authenActions from "../../../store/actions/Authen";
 import * as homeActions from "../../../store/actions/Home";
@@ -39,11 +41,18 @@ const categoryProfile = [
     icon: "lock-reset",
     type_icon: "material-community",
   },
+  {
+    name: "Đăng xuất",
+    icon: "exit-to-app",
+    type_icon: "material-community",
+  }
   // more items
 ];
 
 export function ProfileScreen({navigation}) {
   const dispatch = useDispatch();
+
+  const token = useSelector((state) => state.authen.token);
 
   const profile=useSelector((state) => state.profile.profile);
 
@@ -68,11 +77,17 @@ export function ProfileScreen({navigation}) {
               else if(index === 3){
                 navigation.navigate("Change Password");
               }
-              else{
-
+              else if(index === 4){
+                AsyncStorage.removeItem('tokenValue').then(async () => {
+                  await authenServices.SignOut(token);
+                  dispatch(authenActions.logout);
+                  dispatch(homeActions.VisibleBotTab(false));
+                  Notifications.cancelAllScheduledNotificationsAsync();
+                  navigation.navigate("Login");
+                })
               }
             }}>
-              <Icon name={item.icon} type={item.type_icon} color='black'/>
+              <Icon name={item.icon} type={item.type_icon} color='#333333'/>
               <ListItem.Content>
                 <ListItem.Title style={styles.itemName}>
                   {item.name}
@@ -82,20 +97,6 @@ export function ProfileScreen({navigation}) {
             </TouchableOpacity>
           </ListItem>
         ))}
-      </View>
-
-      <View style={styles.signoutBtnTouchable}>
-      <TouchableOpacity style={styles.signoutBtn}
-          onPress={() => {
-            AsyncStorage.removeItem('tokenValue').then(() => {
-              dispatch(authenActions.logout);
-              dispatch(homeActions.VisibleBotTab(false));
-              Notifications.cancelAllScheduledNotificationsAsync();
-              navigation.navigate("Login");
-            })
-          }}>        
-            <Text style={styles.signoutTextBtn}>Đăng xuất</Text>
-      </TouchableOpacity>
       </View>
     </View>
   );

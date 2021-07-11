@@ -10,113 +10,6 @@ import {Header,SearchBar} from 'react-native-elements';
 import { MaterialCommunityIcons} from '@expo/vector-icons';
 
 
-const Messages = [
-  // {
-  //   id: '1',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '2',
-  //   userName: 'Hoang Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '2 hours ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '3',
-  //   userName: 'Vien Du',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '1 hours ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '4',
-  //   userName: 'Trong Dat',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '1 day ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '5',
-  //   userName: 'Quoc Duy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '2 days ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '6',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '7',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '8',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '9',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '10',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '11',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '12',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-  // {
-  //   id: '13',
-  //   userName: 'Duc Huy',
-  //   userImg: require("../../../assets/user-icon.png"),
-  //   messageTime: '4 mins ago',
-  //   messageText:
-  //     'Hey there, this is my test for a post of my social app in React Native.',
-  // },
-];
-
 const NormalMessageScreen = ({navigation}) => {
 
   const[dataMsg,setDataMsg] = useState([]);
@@ -126,9 +19,12 @@ const NormalMessageScreen = ({navigation}) => {
   const unmounted = useRef(false);
 
   useEffect(() => {
-    getAllMessage();
+    const unsubscribe = navigation.addListener('focus', () => {
+      getAllMessage();
+    });
     return()=>{
       unmounted.current = true;
+      unsubscribe();
     };
   },[])
 

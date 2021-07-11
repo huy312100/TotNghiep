@@ -74,7 +74,7 @@ const ForumAllCourseScreen =({navigation})=>{
                         
                         <View style={[styles.nameAndDate,{flexDirection:'row',flexWrap:'wrap'}]}>
                             <Text style={{fontSize:12,fontWeight:'bold'}}>{item.NameOwn}</Text>
-                            <MaterialIcons style={{marginTop:2}} name="play-arrow" size={10} color="grey" />
+                            <MaterialIcons style={{marginTop:3}} name="play-arrow" size={10} color="grey" />
                             <Text style={[{fontWeight:'300',fontSize:10,marginTop:2}]}>{item.NameCourses}</Text>
                         </View>
                         <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(item.time)}</Text>
@@ -126,12 +126,14 @@ const styles = StyleSheet.create({
     },
 
     card: {
+        flex:1,
         marginTop:10,
         width: '100%',
         backgroundColor:'white',
         borderBottomWidth:1,
         borderBottomColor: "#cccccc",
         paddingBottom:5,
+        paddingRight:10
     },
 
     imageUserPost:{
@@ -141,6 +143,7 @@ const styles = StyleSheet.create({
     },
 
     nameAndDate: {
+        flex:1,
         marginRight:10,
         marginLeft:15
     },

@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert} from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform} from 'react-native';
 import { Fontisto,FontAwesome,Entypo,MaterialCommunityIcons,AntDesign,Ionicons } from '@expo/vector-icons';
 import { Header } from 'react-native-elements';
 
@@ -255,62 +255,106 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 // ListFooterComponent={footerComponent}
             />
 
-<TextInput></TextInput>
-
             <View style={{ marginBottom:66}}>
 
             </View>
 
-        <KeyboardAvoidingView behavior={"position"}>
-            <View style={cmtStyles.bottomCmtView} >
-            {imageSelected.uri !== "" &&
-                <ImageBackground source={{uri: imageSelected.uri}} style={cmtStyles.imgSelected}>
-                    <TouchableOpacity onPress={() =>{
-                        setImageSelected({uri:""});
-                    }}>
-                        <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
-                    </TouchableOpacity>   
-                </ImageBackground>
-            }
-                <View style={cmtStyles.bottomCmtComponent}>
-                    <TouchableOpacity style={{bottom:0}}
-                        onPress={async() =>{
-                            let image = await imagePickerUtils.openImagePickerAsync();
-                            console.log(image);
-                            setImageSelected(image)
-                        }}
-                    >
-                        <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
-                    </TouchableOpacity>
+            {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='position'>
+                <View style={cmtStyles.bottomCmtView} >
+                {imageSelected.uri !== "" &&
+                    <ImageBackground source={{uri: imageSelected.uri}} style={cmtStyles.imgSelected}>
+                        <TouchableOpacity onPress={() =>{
+                            setImageSelected({uri:""});
+                        }}>
+                            <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
+                        </TouchableOpacity>   
+                    </ImageBackground>}
+                    <View style={cmtStyles.bottomCmtComponent}>
+                        <TouchableOpacity style={{bottom:0}}
+                            onPress={async() =>{
+                                let image = await imagePickerUtils.openImagePickerAsync();
+                                console.log(image);
+                                setImageSelected(image)
+                            }}
+                        >
+                            <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
+                        </TouchableOpacity>
 
-                    <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... " 
-                        onChangeText={(value) => setComment(value)}
-                        clearButtonMode="always"
-                    />
+                        <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... " 
+                            onChangeText={(value) => setComment(value)}
+                            clearButtonMode="always"
+                        />
 
-                    {comment.trim().length !== 0 &&
-                    <TouchableOpacity 
-                        onPress={async() =>{
-                            if(typeForum === 'faculty' || typeForum === 'university'){
-                                await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);                                
-                            }
-                            else if(typeForum === 'course'){
-                                console.log(token,dataOfForum.ID,comment,imageSelected);
-                                await forumServices.commentCoursePost(token,dataOfForum.ID,comment,imageSelected);
-                            }
-                                setComment('');
-                                setImageSelected({uri:""});
-                                setRefresh(!refresh);
-                        }}
-                    >
-                        <MaterialCommunityIcons style={cmtStyles.btnSubmitCmt} name="send-circle" size={30} color="blue" />
-                    </TouchableOpacity>
-                    }   
+                        {comment.trim().length !== 0 &&
+                        <TouchableOpacity 
+                            onPress={async() =>{
+                                if(typeForum === 'faculty' || typeForum === 'university'){
+                                    await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);                                
+                                }
+                                else if(typeForum === 'course'){
+                                    console.log(token,dataOfForum.ID,comment,imageSelected);
+                                    await forumServices.commentCoursePost(token,dataOfForum.ID,comment,imageSelected);
+                                }
+                                    setComment('');
+                                    setImageSelected({uri:""});
+                                    setRefresh(!refresh);
+                            }}
+                        >
+                            <MaterialCommunityIcons style={cmtStyles.btnSubmitCmt} name="send-circle" size={30} color="blue" />
+                        </TouchableOpacity>
+                        }   
+                    </View>
                 </View>
-            </View>
-            
-        
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+
+                :
+
+                <View style={cmtStyles.bottomCmtView} >
+                    {imageSelected.uri !== "" &&
+                        <ImageBackground source={{uri: imageSelected.uri}} style={cmtStyles.imgSelected}>
+                            <TouchableOpacity onPress={() =>{
+                                setImageSelected({uri:""});
+                            }}>
+                                <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
+                            </TouchableOpacity>   
+                        </ImageBackground>}
+                        <View style={cmtStyles.bottomCmtComponent}>
+                            <TouchableOpacity style={{bottom:0}}
+                                onPress={async() =>{
+                                    let image = await imagePickerUtils.openImagePickerAsync();
+                                    console.log(image);
+                                    setImageSelected(image)
+                                }}
+                            >
+                                <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
+                            </TouchableOpacity>
+
+                            <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... " 
+                                onChangeText={(value) => setComment(value)}
+                                clearButtonMode="always"
+                            />
+
+                            {comment.trim().length !== 0 &&
+                            <TouchableOpacity 
+                                onPress={async() =>{
+                                    if(typeForum === 'faculty' || typeForum === 'university'){
+                                        await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);                                
+                                    }
+                                    else if(typeForum === 'course'){
+                                        console.log(token,dataOfForum.ID,comment,imageSelected);
+                                        await forumServices.commentCoursePost(token,dataOfForum.ID,comment,imageSelected);
+                                    }
+                                        setComment('');
+                                        setImageSelected({uri:""});
+                                        setRefresh(!refresh);
+                                }}
+                            >
+                                <MaterialCommunityIcons style={cmtStyles.btnSubmitCmt} name="send-circle" size={30} color="blue" />
+                            </TouchableOpacity>
+                        }   
+                    </View>
+                </View>
+            }
         </View>
         
     )

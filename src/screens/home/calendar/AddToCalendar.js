@@ -93,6 +93,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
     const [isEndTimePickerVisible, setEndTimePickerVisibility] = useState(false);
+
     const [visibleOverlayAddTypeEvent, setVisibleOverlayAddTypeEvent] = useState(false);
     const [visibleOverlayAddColor, setVisibleOverlayAddColor] = useState(false);
     const [visibleOverlayRemindNoti, setVisibleOverlayRemindNoti] = useState(false);
@@ -103,12 +104,11 @@ const AddToCalendarScreen = ({navigation,route}) => {
     const [urlEvent,setUrlEvent] =useState(route.params.urlEvent);
     const [decriptionEvent,setDecriptionEvent] =useState(route.params.decriptionEvent);
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
+    const [labelRemindNoti,setLabelRemindNoti] = useState('');
 
     const [listGuestEmail,setGuestEmail] = useState(getAllGuestEmail());
     const [listGuestName,setGuestName] = useState(getAllGuestName());
 
-
-    const [labelRemindNoti,setLabelRemindNoti] = useState('');
 
     const dispatch=useDispatch();
 
@@ -416,7 +416,11 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
                 </View>
                 
-                <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={() =>{navigation.navigate('Add people to calendar')}}>
+                <TouchableOpacity style={[styles.card,{marginBottom:0}]} 
+                onPress={() =>{
+                    navigation.navigate('Add people to calendar',{
+                        typeAction: 'Add Event',
+                    })}}>
                     <View style={styles.date}>
                     <Ionicons name="people-outline" size={23} color="red" />
                         <Text style={styles.label}>Thêm người</Text>

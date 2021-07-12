@@ -146,6 +146,7 @@ const CalendarScreen =({navigation})=> {
       if(statusCode === 200){
         const dataCalendar = [];
         for (const key in dataRes) {
+        
           if(dataRes[key].TypeCalendar !== undefined){
             if(dataRes[key].ListGuest.length===0){
               dataCalendar.push({
@@ -160,10 +161,17 @@ const CalendarScreen =({navigation})=> {
                 color:dataRes[key].Color,
                 startTimestamp:dataRes[key].StartHour,
                 endTimestamp:dataRes[key].EndHour,
-                ListGuest:dataRes[key].ListGuest,
+                ListGuest:[],
                 Notification:dataRes[key].Notification
             })}
-            else{
+            else{               
+              const listAllPeopleChoose = [];
+              for(const pos in dataRes[key].ListGuest){
+                listAllPeopleChoose.push({
+                  Email:dataRes[key].ListGuest[pos].Email,
+                  HoTen:dataRes[key].ListGuest[pos].name,
+                })
+              };
               dataCalendar.push({
                 id:dataRes[key]._id,
                 type:dataRes[key].TypeEvent,
@@ -176,7 +184,7 @@ const CalendarScreen =({navigation})=> {
                 color:dataRes[key].Color,
                 startTimestamp:dataRes[key].StartHour,
                 endTimestamp:dataRes[key].EndHour,
-                ListGuest:dataRes[key].ListGuest,
+                ListGuest:listAllPeopleChoose,
                 Notification:dataRes[key].Notification
             })}
           }
@@ -395,7 +403,7 @@ const CalendarScreen =({navigation})=> {
                     <TouchableOpacity style={overlayStyle.onTheRight} onPress={() =>{ 
                       Alert.alert(
                         "Chuyển tiếp",
-                        "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
+                        "Ứng dụng muốn chuyển tiếp đến link này",
                         [
                           { text: "Từ chối", 
                             style: "cancel"
@@ -427,6 +435,7 @@ const CalendarScreen =({navigation})=> {
                 <TouchableOpacity style={[overlayStyle.button,{backgroundColor:'#3366FF'}]}
                 onPress={() => {
                   toggleOverlay();
+                  dispatch(calendarActions.addPeopleToCalendar(allMembers));
                   navigation.navigate('Modify Event',{
                     idEvent:idEvent,
                     nameEvent: nameEvent,

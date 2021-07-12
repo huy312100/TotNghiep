@@ -644,7 +644,8 @@ const HomeScreen= ({navigation}) =>{
       {isLoading && LoadingScreen()}
       
       {!isLoading &&
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}>
       <View >
         <View style={styles.gridMainFunctions} >
           
@@ -694,6 +695,8 @@ const HomeScreen= ({navigation}) =>{
       <Text style={styles.label}>Lịch trong tháng</Text>
 
       <FlatList
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         data={calendar}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}
@@ -704,6 +707,8 @@ const HomeScreen= ({navigation}) =>{
       <Text style={styles.label}> Top 5 tin tức trường mới nhất</Text>
 
       <FlatList
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         data={uniNews.slice(0,5)}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}
@@ -712,6 +717,8 @@ const HomeScreen= ({navigation}) =>{
       <Text style={styles.label}> Top 5 tin tức khoa mới nhất</Text>
 
       <FlatList
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         data={facultNews.slice(0,5)}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}

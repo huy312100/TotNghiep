@@ -90,6 +90,12 @@ const ForumCourseScreen = ({navigation}) =>{
         </View>:null
     );
 
+    const renderEmptyForum = (
+        <View style={{alignItems: "center"}}> 
+          <Text>Bạn chưa tham gia diễn đàn</Text>
+        </View>
+      );
+
     return(
         <View style={styles.container}>
             <FlatList
@@ -99,6 +105,7 @@ const ForumCourseScreen = ({navigation}) =>{
             onEndReached={handleMore}
             onEndReachedThreshold={0}
             ListFooterComponent={renderFooter}
+            ListEmptyComponent={renderEmptyForum}
             />
         </View>
         

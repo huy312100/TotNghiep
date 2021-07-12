@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-import {TouchableOpacity,Image} from "react-native"
+import {TouchableOpacity,Image, Text} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -46,6 +46,7 @@ import CreatePostScreen from '../screens/home/forum/CreatePost';
 import ForumFacultyScreen from "../screens/home/forum/forum_faculty/ForumFaculty";
 import ForumUniversityScreen from "../screens/home/forum/forum_university/ForumUniversity";
 import ContentForumFacultyAndUniversityScreen from "../screens/home/forum/ContentForum";
+import ForumAllCourseScreen from "../screens/home/forum/forum_course/ForumAllCourse";
 
 import { View } from "react-native";
 
@@ -84,7 +85,7 @@ export function AuthenStackNavigation() {
 };
 
 function HomeStackNavigation({navigation}) { 
-  
+  const infoCourseChoose = useSelector((state) => state.course.infoCourseChoose);
   return(
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
@@ -170,33 +171,6 @@ function HomeStackNavigation({navigation}) {
         component={AddToCalendarScreen}
         options={{ 
           headerShown: false
-        //   title: 'Sự kiện mới',
-        //   headerTitleStyle: {
-        //     color: 'black'
-        //   },
-        //   headerRight:()=>(
-        //       <TouchableOpacity disabled={checkDisableAddButton()} onPress={() =>{
-        //          var x= new AddToCalendarScreen();
-        //          x.Test();
-        //       }}>
-        //         <Text style={{fontSize:17,color: checkDisableAddButton() ? 'silver' : 'blue'}}>
-        //           Thêm
-        //         </Text>
-        //       </TouchableOpacity>
-        //   ),
-        //   headerLeft:()=>(
-        //     <HeaderBackButton 
-        //     label='Huỷ'
-        //     tintColor='red'
-        //     onPress={()=>{
-        //       dispatch(calendarActions.getStatusOfTitle(false));
-        //       dispatch(calendarActions.getStatusOfDate(true));
-        //       navigation.navigate("Calendar")
-        //     }}/>
-        //   ),
-        //   headerRightContainerStyle:{
-        //     paddingRight:10
-        //   },
         }}
       />
 
@@ -236,14 +210,6 @@ function HomeStackNavigation({navigation}) {
       <Stack.Screen
         name="Forum Of A Moodle Course"
         component={ForumOfCourseMoodleScreen}
-        options={{ 
-          headerShown: false
-        }}
-      />
-
-      <Stack.Screen
-        name="Content Forum Of A Moodle Course"
-        component={ContentForumMoodleScreen}
         options={{ 
           headerShown: false
         }}
@@ -692,7 +658,7 @@ function MessageTopTab(){
 //Top tab of forum screen 
 function ForumTopTab(){
   return (
-    <topTab.Navigator initialRouteName="Forum Faculty" 
+    <topTab.Navigator initialRouteName="Forum Total Course" 
     tabBarOptions={{
       activeTintColor: 'blue',
       inactiveTintColor:'#CCCCCC',
@@ -702,6 +668,17 @@ function ForumTopTab(){
 
       labelStyle: { fontSize: 11 },
       }}>
+
+      <topTab.Screen 
+        name="Forum Total Course" 
+        component={ForumAllCourseScreen} 
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:90}}>
+              Tất cả khoá học
+            </Text>
+          )
+        }}/>
 
       <topTab.Screen 
         name="Forum Faculty" 
@@ -720,6 +697,38 @@ function ForumTopTab(){
     </topTab.Navigator>
   )
 }
+
+function ForumACourseTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="Forum Of A Course By App" 
+    tabBarOptions={{
+      activeTintColor: 'green',
+      inactiveTintColor:'#CCCCCC',
+      indicatorStyle:{
+        backgroundColor: 'green',
+      },
+
+      labelStyle: { fontSize: 10 },
+      }}>
+
+      <topTab.Screen 
+        name="Forum Of A Course By App" 
+        component={ForumCourseOfAppScreen}
+        options={{
+          tabBarLabel:'Ứng dụng'
+        }}
+        />
+  
+      <topTab.Screen 
+        name="Forum Of A Moodle Course" 
+        component={ForumOfCourseMoodleScreen} 
+        options={{
+          tabBarLabel:'Trang môn học'
+        }}/>
+
+    </topTab.Navigator>
+  )
+};
 
 
 

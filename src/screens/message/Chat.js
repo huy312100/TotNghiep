@@ -131,7 +131,7 @@ const ChatScreen = ({route,navigation}) => {
                   user:{
                     _id:2,
                     name:dataRes[key].from,
-                    avatar: route.params.image,
+                    avatar: route.params.avatar,
                   }
                 });
             }

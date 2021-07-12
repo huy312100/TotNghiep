@@ -50,13 +50,8 @@ const ContentForumScreen = ({navigation,route}) =>{
                     </View>
                     
                 </View>
-
-               
-                
             </View>
         </ScrollView>
-
-           
         </View>
         
     )

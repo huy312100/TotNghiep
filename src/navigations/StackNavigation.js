@@ -50,6 +50,7 @@ import ForumUniversityScreen from "../screens/home/forum/forum_university/ForumU
 import ContentForumFacultyAndUniversityScreen from "../screens/home/forum/ContentForum";
 import ForumAllCourseScreen from "../screens/home/forum/forum_course/ForumAllCourse";
 import ForumCourseOfAppScreen from "../screens/home/forum/forum_course/ForumCourseOfApp";
+import ListUserLikedScreen from "../screens/home/forum/ListUserLiked";
 
 
 const Stack = createStackNavigator();
@@ -251,6 +252,14 @@ function HomeStackNavigation({navigation}) {
       <Stack.Screen
         name="Content Forum"
         component={ContentForumFacultyAndUniversityScreen}
+        options={{ 
+          headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name="List User Liked"
+        component={ListUserLikedScreen}
         options={{ 
           headerShown: false
         }}/>
@@ -517,7 +526,8 @@ const getTabBarVisibility = (route) => {
   "Connect application","Content Course","Web Customed","Change Password",
   "Add Event","Modify Event","Find to Chat","University Info",
   "Add people to calendar","Forum","Forum Of A Moodle Course","Content Forum",
-  "Create Post Of Forum","Content Forum Of A Moodle Course","Forum Of A Course"];
+  "Create Post Of Forum","Content Forum Of A Moodle Course","Forum Of A Course",
+  "List User Liked"];
 
   console.log(routeName);
 

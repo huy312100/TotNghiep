@@ -103,11 +103,11 @@ const ForumAllCourseScreen =({navigation})=>{
                     :
                     <TouchableOpacity style={styles.buttonFooter}
                          onPress={async()=>{
-                            //await forumServices.likePost(token,item.ID);
+                            await forumServices.likeCoursePost(token,item.ID);
                             setRefresh(!refresh);
                         }}>
-                         <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
-                         <Text style={{marginTop:3,color:'blue'}}>{item.like}</Text>
+                         <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
+                         <Text style={{marginTop:3,color:'silver'}}>{item.like}</Text>
                     </TouchableOpacity>
                 }
 

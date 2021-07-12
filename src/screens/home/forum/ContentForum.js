@@ -44,6 +44,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         }
     };
 
+
     const getAllCommentOfFacultyOrUniversity =() => {
         let details = {
             IDPost: dataOfForum.ID,
@@ -227,12 +228,23 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         
         <View style={styles.container}>
         
-        <Header
+            <Header
                 containerStyle={{
                     backgroundColor: 'white',
                     justifyContent: 'space-around',
                     borderBottomColor:'#DDDDDD'
                 }}
+
+                rightComponent={
+                    <TouchableOpacity onPress={()=>{
+                        navigation.navigate('List User Liked',{
+                            idPost: dataOfForum.ID,
+                            typeForum:typeForum,
+                        });
+                    }}>
+                        <Ionicons name="list" size={30} color="#006666" />
+                    </TouchableOpacity> 
+                }
 
                 centerComponent={
                     <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10}}>Diễn đàn của {dataOfForum.NameOwn}</Text>

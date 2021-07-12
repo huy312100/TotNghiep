@@ -88,16 +88,29 @@ const ForumAllCourseScreen =({navigation})=>{
 
                 {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
 
-                <View style={styles.footerCard}>
+                 <View style={styles.footerCard}>
+
+                 {/* Grey if not like and blue if like */}
+                 
+                 {item.LikeByOwn === 1 ? <TouchableOpacity style={styles.buttonFooter}
+                         onPress={async()=>{
+                            //await forumServices.likePost(token,item.ID);
+                            setRefresh(!refresh);
+                        }}>
+                         <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
+                         <Text style={{marginTop:3,color:'blue'}}>{item.like}</Text>
+                    </TouchableOpacity>
+                    :
                     <TouchableOpacity style={styles.buttonFooter}
                          onPress={async()=>{
                             //await forumServices.likePost(token,item.ID);
                             setRefresh(!refresh);
-                        }}
-                    >
-                        <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
-                        <Text style={{marginTop:3,color:'silver'}}>{item.like}</Text>
+                        }}>
+                         <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
+                         <Text style={{marginTop:3,color:'blue'}}>{item.like}</Text>
                     </TouchableOpacity>
+                }
+
 
                     <TouchableOpacity style={styles.buttonFooter}>
                         <FontAwesome style={{marginRight:8}} name="comment" size={18} color="silver" />

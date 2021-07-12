@@ -102,7 +102,7 @@ const ForumCourseScreen = ({navigation}) =>{
     const renderFooter = () =>(
         isLoading?
         <View style={styles.footerLoader}>
-            <ActivityIndicator size="large"/>
+            <ActivityIndicator size="large" color="blue"/>
         </View>:null
     );
 

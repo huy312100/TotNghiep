@@ -153,8 +153,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                             await forumServices.likeCoursePost(token,dataOfForum.ID);
                         }
                         setRefresh(!refresh);
-                    }}
-                >
+                    }}>
                     <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
                     <Text style={{marginTop:3,color:'silver'}}>{dataOfForum.like}</Text>
                 </TouchableOpacity>

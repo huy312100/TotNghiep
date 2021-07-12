@@ -254,7 +254,7 @@ const HomeScreen= ({navigation}) =>{
             else{
               dataCalendar.push({
                 id:dataRes[key]._id,
-                type:dataRes[key].TypeCalendar,
+                type:dataRes[key].TypeEvent,
                 title:dataRes[key].Title,
                 summary:dataRes[key].Decription.text,
                 start:dateUtils.ConvertTimestamp(dataRes[key].StartHour),

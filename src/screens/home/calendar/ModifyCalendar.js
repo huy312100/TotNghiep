@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView } from 'react-native';
+import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView,Alert,Platform } from 'react-native';
 import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Overlay,Header } from 'react-native-elements';
@@ -15,6 +15,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     const token = useSelector((state) => state.authen.token);
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
+    const gmtDiff = 25200000;
 
     //Handle for current time
     const getCurrentDay = (timestamp)=>{
@@ -124,20 +125,39 @@ const ModifyCalendarScreen = ({navigation,route}) => {
 
     const toggleSwitch = () => {
         setIsEnabled(previousState => !previousState);
-        if(!isEnabled){
-            console.log(day);
-            setStartTimeConvert(day+'T'+'00:00:00');
-            setEndTimeConvert(day+'T'+'23:59:00');
-            setStartTimestamp(new Date(day+'T'+'00:00:00').getTime());
-            setEndTimestamp(new Date(day+'T'+'23:59:00').getTime());
+        if(Platform.OS === 'ios'){
+            if(!isEnabled){
+                console.log(day);
+                setStartTimeConvert(day+'T'+'00:00:00');
+                setEndTimeConvert(day+'T'+'23:59:00');
+                setStartTimestamp(new Date(day+'T'+'00:00:00').getTime());
+                setEndTimestamp(new Date(day+'T'+'23:59:00').getTime());
+    
+            }
+            else{
+                setStartTimeConvert(day+'T'+startTime);
+                setEndTimeConvert(day+'T'+endTime);
+                setStartTimestamp(new Date(day+'T'+startTime).getTime());
+                setEndTimestamp(new Date(day+'T'+endTime).getTime());
+            }
+        }
+        else if (Platform.OS === 'android'){
+            if(!isEnabled){
+                console.log(day);
+                setStartTimeConvert(day+'T'+'00:00:00');
+                setEndTimeConvert(day+'T'+'23:59:00');
+                setStartTimestamp(new Date(day+'T'+'00:00:00').getTime() - gmtDiff);
+                setEndTimestamp(new Date(day+'T'+'23:59:00').getTime() - gmtDiff);
+    
+            }
+            else{
+                setStartTimeConvert(day+'T'+startTime);
+                setEndTimeConvert(day+'T'+endTime);
+                setStartTimestamp(new Date(day+'T'+startTime).getTime() - gmtDiff);
+                setEndTimestamp(new Date(day+'T'+endTime).getTime() - gmtDiff);
+            }
+        }
 
-        }
-        else{
-            setStartTimeConvert(day+'T'+startTime);
-            setEndTimeConvert(day+'T'+endTime);
-            setStartTimestamp(new Date(day+'T'+startTime).getTime());
-            setEndTimestamp(new Date(day+'T'+endTime).getTime());
-        }
         
     };
 
@@ -151,6 +171,8 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     };
 
     const handleDateConfirm = (a) => {
+        hideDatePicker();
+
         //const x=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
         //const x = moment("12-25-1995", "YYYY-MM-DD");
         //console.log(day);
@@ -167,20 +189,35 @@ const ModifyCalendarScreen = ({navigation,route}) => {
         }
 
         setDay(year+'-' + month+'-'+dt);
-        if(!isEnabled){
-            setStartTimeConvert(year+'-' + month+'-'+dt+'T'+startTime);
-            setEndTimeConvert(year+'-' + month+'-'+dt+'T'+endTime);
-            setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+startTime).getTime());
-            setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+endTime).getTime());
+        if(Platform.OS === 'ios'){
+            if(!isEnabled){
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+startTime);
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+endTime);
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+startTime).getTime());
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+endTime).getTime());
+            }
+            else{
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+'00:00:00');
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+'23:59:00');
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'00:00:00').getTime());
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'23:59:00').getTime());
+            }
         }
-        else{
-            setStartTimeConvert(year+'-' + month+'-'+dt+'T'+'00:00:00');
-            setEndTimeConvert(year+'-' + month+'-'+dt+'T'+'23:59:00');
-            setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'00:00:00').getTime());
-            setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'23:59:00').getTime());
+        else if (Platform.OS === 'android'){
+            if(!isEnabled){
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+startTime);
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+endTime);
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+startTime).getTime() - gmtDiff);
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+endTime).getTime() - gmtDiff);
+            }
+            else{
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+'00:00:00');
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+'23:59:00');
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'00:00:00').getTime() - gmtDiff);
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'23:59:00').getTime() - gmtDiff);
+            }
         }
         
-        hideDatePicker();
     };
 
     //Handle for start time event
@@ -193,6 +230,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     };
 
     const handleStartConfirm = (date) => {
+        hideStartTimePicker();
         //console.log(day);
         //console.log(Date.now());
 
@@ -202,8 +240,12 @@ const ModifyCalendarScreen = ({navigation,route}) => {
 
         setStartTime(addZero(date.getHours())+':'+addZero(date.getMinutes()))
         //console.warn("A date has been picked: ", date);
-        setStartTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
-        hideStartTimePicker();
+        if(Platform.OS === 'ios'){
+            setStartTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
+        }
+        else if(Platform.OS === 'android'){
+            setStartTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime() - gmtDiff);
+        }
     };
 
 
@@ -217,6 +259,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     };
 
     const handleEndConfirm = (date) => {
+        hideEndTimePicker();
         //console.warn("A date has been picked: ", date);
         //setEndTimeConvert(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00');
         //console.log(new Date(endTimeConvert).getTime());
@@ -224,9 +267,12 @@ const ModifyCalendarScreen = ({navigation,route}) => {
         setEndTimeConvert(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00');
 
         setEndTime(addZero(date.getHours())+':'+addZero(date.getMinutes()));
-        setEndTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
-        //console.log(checkValidDate());
-        hideEndTimePicker();
+        if(Platform.OS === 'ios'){
+            setEndTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
+        }
+        else if (Platform.OS === 'android'){
+            setEndTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime() - gmtDiff);
+        }        //console.log(checkValidDate());
     };
 
     //Handle Start and End Date
@@ -303,12 +349,56 @@ const ModifyCalendarScreen = ({navigation,route}) => {
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes])=>{
             console.log(raw);
-            console.log(dataRes);
+            console.log(statusCode,dataRes);
             if(statusCode === 200){
                 //getAllActivitiesInMonth();
                 //dispatch(calendarActions.addNewEventToCalendar());
-                setLoading(false);
                 navigation.navigate('Calendar');
+                setLoading(false);
+            }
+            else if(statusCode ===500){
+                if(dataRes.message === 'No your calendar in db'){
+                    Alert.alert(
+                        "Lỗi",
+                        "Lịch này không còn tồn tại ",
+                        [
+                          {
+                            text: "Xác nhận",
+                            style: "cancel",
+                          },
+                        ],
+                        {
+                          cancelable: true,
+                          onDismiss: () =>
+                            Alert.alert(
+                              "This alert was dismissed by tapping outside of the alert dialog."
+                            ),
+                        }
+                    );
+                    navigation.navigate('Calendar');
+                    setLoading(false);
+                }
+                else{
+                    Alert.alert(
+                        "Lỗi",
+                        "Đã xảy ra lỗi .Vui lòng thử lại sau",
+                        [
+                          {
+                            text: "Xác nhận",
+                            style: "cancel",
+                          },
+                        ],
+                        {
+                          cancelable: true,
+                          onDismiss: () =>
+                            Alert.alert(
+                              "This alert was dismissed by tapping outside of the alert dialog."
+                            ),
+                        }
+                    );
+                    navigation.navigate('Calendar');
+                    setLoading(false);
+                }
             }  
         })
         .catch(error => console.log('error', error));

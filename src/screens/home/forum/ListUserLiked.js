@@ -125,7 +125,7 @@ const ListUserLikedScreen = ({navigation,route}) =>{
                 }}
 
                 centerComponent={
-                    <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10}}>Danh sách yêu thích diễn đàn</Text>
+                    <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10}}>Người yêu thích diễn đàn</Text>
                 }
 
                 leftComponent={

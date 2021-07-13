@@ -94,7 +94,7 @@ export const deletePost = async(token,idPost) => {
     }
     formBody = formBody.join("&");
 
-    fetch("https://hcmusemu.herokuapp.com/forum/delete", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -193,7 +193,7 @@ export const deleteCmt = async (token,idCmt) =>{
     }
     formBody = formBody.join("&");
 
-    fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -328,7 +328,7 @@ export const deleteCoursePost = async(token,idPost) => {
     }
     formBody = formBody.join("&");
 
-    fetch("https://hcmusemu.herokuapp.com/forum/courses/delete", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/courses/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -411,7 +411,7 @@ export const deleteCourseCmt = async(token,idCmt) => {
     }
     formBody = formBody.join("&");
 
-    fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -444,7 +444,7 @@ export const likeCoursePost = async (token,idPost) =>{
     }
     formBody = formBody.join("&");
 
-    fetch("https://hcmusemu.herokuapp.com/forum/courses/like", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/courses/like", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -462,37 +462,4 @@ export const likeCoursePost = async (token,idPost) =>{
         }
     }).catch(error => console.log('error', error));
 };
-
-// export const unlikeCoursePost = async (token,idPost) =>{
-//     let details = {
-//         IDPost: idPost,
-//     };
-  
-//     let formBody = [];
-
-//     for (let property in details) {
-//         let encodedKey = encodeURIComponent(property);
-//         let encodedValue = encodeURIComponent(details[property]);
-//         formBody.push(encodedKey + "=" + encodedValue);
-//     }
-//     formBody = formBody.join("&");
-
-//     fetch("https://hcmusemu.herokuapp.com/forum/courses/like", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/x-www-form-urlencoded",
-//           "Authorization": `bearer ${token}`,
-//         },
-//         body: formBody,
-//     }) .then((response) => {
-//         const statusCode = response.status;
-//         const dataRes = response.json();
-//         return Promise.all([statusCode, dataRes]);
-//     }).then(([statusCode, dataRes]) => {
-//         console.log(statusCode,dataRes);
-//         if(statusCode === 200){
-//             console.log(dataRes);
-//         }
-//     }).catch(error => console.log('error', error));
-// };
 

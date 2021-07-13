@@ -1,5 +1,5 @@
-import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform} from 'react-native';
+import React,{useState,useEffect,useRef,useCallback} from 'react';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform,ActivityIndicator} from 'react-native';
 import { Fontisto,FontAwesome,Entypo,MaterialCommunityIcons,AntDesign,Ionicons } from '@expo/vector-icons';
 import { Header } from 'react-native-elements';
 
@@ -19,27 +19,105 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
 
     const unmounted = useRef(false);
 
+    const [loading, setLoading] = useState(false);
     const [refresh,setRefresh] = useState(false);
 
+    const [dataDetail,setDataDetail] = useState([]);
     const [dataComment,setDataComment] = useState([]);
     const [imageSelected,setImageSelected] = useState({uri:""});
     const [comment,setComment] = useState('');
 
     useEffect(() => {
-        getAllComment();
-        return()=>{
-            unmounted.current = true;
+        getDetailPost();
+        getAllComment();        
+    },[refresh,dataDetail.length]);
+
+    const getDetailPost = () => {
+        if(typeForum === 'faculty' || typeForum === 'university'){
+            getDetailPostOfFacultOrUni();
         }
-    },[refresh]);
+        else if(typeForum === 'course'){
+            getDetailPostOfCourse();
+        }
+    }
+
+
+    //Get detail post 
+    const getDetailPostOfFacultOrUni = () =>{
+        setLoading(true);
+        let details = {
+            IDPost: dataOfForum.ID,
+        };
+
+        let formBody = [];
+
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
+        fetch("https://hcmusemu.herokuapp.com/forum/viewdetail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+            body: formBody,
+        }) .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if(statusCode === 200){
+                setDataDetail(dataRes);
+                setLoading(false);
+            }
+        }).catch(error => console.log('error', error));
+    };
+
+    const getDetailPostOfCourse= () =>{
+        setLoading(true);
+        let details = {
+            IDPost: dataOfForum.ID,
+        };
+
+        let formBody = [];
+
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewdetail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+            body: formBody,
+        }) .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if(statusCode === 200){
+                setDataDetail(dataRes);
+                setLoading(false);
+            }
+        }).catch(error => console.log('error', error));
+    };
 
     const getAllComment =()=>{
-        console.log(typeForum);
         if(typeForum === 'faculty' || typeForum === 'university'){
-            //console.log('a');
             getAllCommentOfFacultyOrUniversity();
         }
         else if(typeForum === 'course'){
-            //console.log('b');
             getAllCommentCourse();
         }
     };
@@ -49,9 +127,9 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         let details = {
             IDPost: dataOfForum.ID,
         };
-      
+
         let formBody = [];
-    
+
         for (let property in details) {
             let encodedKey = encodeURIComponent(property);
             let encodedValue = encodeURIComponent(details[property]);
@@ -71,7 +149,6 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-            console.log(statusCode,dataRes);
             if(statusCode === 200){
                 setDataComment(dataRes);
             }
@@ -82,9 +159,9 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         let details = {
             IDPost: dataOfForum.ID,
         };
-      
+
         let formBody = [];
-    
+
         for (let property in details) {
             let encodedKey = encodeURIComponent(property);
             let encodedValue = encodeURIComponent(details[property]);
@@ -104,14 +181,14 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-            console.log(statusCode,dataRes);
             if(statusCode === 200){
                 setDataComment(dataRes);
             }
         }).catch(error => console.log('error', error));
-    }; 
+    };
 
-    const headerComponent = (
+    const headerComponent = ()=>{
+    return (
         <View>
             <View style={styles.card}>
             <View style={styles.info}>
@@ -120,7 +197,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                     <Text style={styles.nameAndDate}>{dataOfForum.NameOwn}</Text>
                     <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(dataOfForum.time)}</Text>
                 </View>
-                {dataOfForum.EmailOwn === profile[0].Email && 
+                {dataOfForum.EmailOwn === profile[0].Email &&
                 <TouchableOpacity style={{ position: 'absolute',right:0,top:0}}
                     onPress={async() =>{
                         if(typeForum === 'faculty' || typeForum === 'university'){
@@ -131,48 +208,59 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                             await forumServices.deleteCoursePost(token,dataOfForum.ID);
                             navigation.goBack();
                         }
-                        
+
                     }}>
 
                     <AntDesign  name="delete" size={18} color="red" />
                 </TouchableOpacity>}
             </View>
-            
-            <View tyle={[styles.info,{marginBottom:20}]}>      
-                <Text style={[styles.content]}>{dataOfForum.title}</Text>                
+
+            <View tyle={[styles.info,{marginBottom:20}]}>
+                <Text style={[styles.content]}>{dataOfForum.title}</Text>
             </View>
 
             {dataOfForum.image !== "" && <Image style={styles.imagePost} source={{uri:dataOfForum.image}}/>}
 
-            <View style={styles.footerCard}>
-                <TouchableOpacity style={styles.buttonFooter}
+            {dataDetail.length !== 0 && <View style={styles.footerCard}>
+                {dataDetail[0].LikeByOwn === 0 ? <TouchableOpacity style={styles.buttonFooter}
                     onPress={async()=>{
                         if(typeForum === 'faculty' || typeForum === 'university'){
                             await forumServices.likePost(token,dataOfForum.ID);
                         }
-                        else if(typeForum === 'course'){
+                        if(typeForum === 'course'){
                             await forumServices.likeCoursePost(token,dataOfForum.ID);
                         }
                         setRefresh(!refresh);
                     }}>
                     <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
-                    <Text style={{marginTop:3,color:'silver'}}>{dataOfForum.like}</Text>
+                    <Text style={{marginTop:3,color:'silver'}}>{dataDetail[0].like}</Text>
                 </TouchableOpacity>
+                :
+                <TouchableOpacity style={styles.buttonFooter}
+                    onPress={async()=>{
+                        await forumServices.unlikePost(token,dataOfForum.ID);
+                        setRefresh(!refresh);
+                        
+                    }}>
+                    <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
+                     <Text style={{marginTop:3,color:'blue'}}>{dataDetail[0].like}</Text>
+                </TouchableOpacity>}
 
                 <TouchableOpacity style={styles.buttonFooter}>
                     <FontAwesome style={{marginRight:8}} name="comment" size={18} color="silver" />
                     <Text style={{marginTop:2,color:'silver'}}>{dataOfForum.comment}</Text>
                 </TouchableOpacity>
-            </View>
+            </View>}
         </View>
 
         <View style={{flexDirection:'row',marginHorizontal:10,marginTop:10}}>
             <MaterialCommunityIcons name="arrow-top-right-bold-outline" size={24} color="grey" />
             <Text style={{color:'grey',marginTop:4,fontWeight:'600'}}> Tất cả câu trả lời</Text>
         </View>
-        
+
         </View>
-    );
+        )
+    }
 
     const renderItem = ({item}) =>(
         <View style={styles.card}>
@@ -182,17 +270,17 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                     <Text style={[styles.nameAndDate,{marginRight:5},cmtStyles.nameAndDate]}>{item.NameOwn}</Text>
                     <Entypo name="dot-single" size={18} color="silver" />
                     <Text style={[styles.nameAndDate,{fontWeight:'300',marginLeft:5},cmtStyles.nameAndDate]}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
-                    
+
                 </View>
-                {item.EmailOwn === profile[0].Email && 
+                {item.EmailOwn === profile[0].Email &&
                         <TouchableOpacity style={{ marginLeft:30,position: 'absolute',right:0}}
-                            
+
                             onPress={() =>{
                                 Alert.alert(
                                     "Xoá bình luận",
                                     "Bạn có chắc chắn muốn xoá bình luận này ?",
                                     [
-                                      { text: "Từ chối", 
+                                      { text: "Từ chối",
                                         style: "cancel"
                                       },
                                       {
@@ -216,8 +304,8 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                     }
             </View>
 
-            <View tyle={[styles.info,{marginBottom:20}]}>      
-                <Text style={[styles.content,{color:'#555555'}]}>{item.comment}</Text>                
+            <View tyle={[styles.info,{marginBottom:20}]}>
+                <Text style={[styles.content,{color:'#555555'}]}>{item.comment}</Text>
             </View>
 
             {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
@@ -225,9 +313,9 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
     )
 
     return (
-        
+
         <View style={styles.container}>
-        
+
             <Header
                 containerStyle={{
                     backgroundColor: 'white',
@@ -243,7 +331,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                         });
                     }}>
                         <Ionicons name="list" size={30} color="#006666" />
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                 }
 
                 centerComponent={
@@ -251,20 +339,24 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 }
 
                 leftComponent={
-                <TouchableOpacity onPress={() =>{ 
+                <TouchableOpacity onPress={() =>{
                     navigation.goBack();
                     }}>
                         <Entypo name="chevron-left" size={30} color="blue" />
                     </TouchableOpacity>
                 }/>
-            
+                {/* <Text>{dataDetail[0].like}</Text> */}
+
+            {loading ? <ActivityIndicator style={{flex: 1}} color="black"/>
+            :
             <FlatList
                 data={dataComment}
                 renderItem={renderItem}
                 keyExtractor={(item,index) => index.toString()}
-                ListHeaderComponent={headerComponent}
+                ListHeaderComponent={headerComponent()}
                 // ListFooterComponent={footerComponent}
             />
+        }
 
             <View style={{ marginBottom:66}}>
 
@@ -278,7 +370,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                             setImageSelected({uri:""});
                         }}>
                             <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
-                        </TouchableOpacity>   
+                        </TouchableOpacity>
                     </ImageBackground>}
                     <View style={cmtStyles.bottomCmtComponent}>
                         <TouchableOpacity style={{bottom:0}}
@@ -291,16 +383,16 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                             <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
                         </TouchableOpacity>
 
-                        <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... " 
+                        <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... "
                             onChangeText={(value) => setComment(value)}
                             clearButtonMode="always"
                         />
 
                         {comment.trim().length !== 0 &&
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             onPress={async() =>{
                                 if(typeForum === 'faculty' || typeForum === 'university'){
-                                    await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);                                
+                                    await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);
                                 }
                                 else if(typeForum === 'course'){
                                     console.log(token,dataOfForum.ID,comment,imageSelected);
@@ -313,7 +405,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                         >
                             <MaterialCommunityIcons style={cmtStyles.btnSubmitCmt} name="send-circle" size={30} color="blue" />
                         </TouchableOpacity>
-                        }   
+                        }
                     </View>
                 </View>
                 </KeyboardAvoidingView>
@@ -327,7 +419,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                 setImageSelected({uri:""});
                             }}>
                                 <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
-                            </TouchableOpacity>   
+                            </TouchableOpacity>
                         </ImageBackground>}
                         <View style={cmtStyles.bottomCmtComponent}>
                             <TouchableOpacity style={{bottom:0}}
@@ -340,16 +432,16 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                 <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
                             </TouchableOpacity>
 
-                            <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... " 
+                            <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... "
                                 onChangeText={(value) => setComment(value)}
                                 clearButtonMode="always"
                             />
 
                             {comment.trim().length !== 0 &&
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 onPress={async() =>{
                                     if(typeForum === 'faculty' || typeForum === 'university'){
-                                        await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);                                
+                                        await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);
                                     }
                                     else if(typeForum === 'course'){
                                         console.log(token,dataOfForum.ID,comment,imageSelected);
@@ -362,12 +454,12 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                             >
                                 <MaterialCommunityIcons style={cmtStyles.btnSubmitCmt} name="send-circle" size={30} color="blue" />
                             </TouchableOpacity>
-                        }   
+                        }
                     </View>
                 </View>
             }
         </View>
-        
+
     )
 };
 

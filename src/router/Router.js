@@ -59,7 +59,7 @@ class RouterMD extends Component {
                             <ChangePW />
                         </Route>
                         <Route exect path="/" render={() => {
-                            console.log(0)
+                            // console.log(0)
                             if (localStorage.getItem("token"))
                                 <ConnectSocket />
                             return localStorage.getItem("token") ? <Student /> : <Login />

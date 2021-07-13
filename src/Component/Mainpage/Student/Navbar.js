@@ -8,7 +8,7 @@ import { StoreEmail } from '../../../store/actions/authen';
 function Navbar() {
 
     const dispatch = useDispatch();
-    const [noti, setNoti] = useState({noti:0,user:0});
+    const [noti, setNoti] = useState({ noti: 0, user: 0 });
     const [username, setUsername] = useState("");
 
     useEffect(() => {
@@ -29,14 +29,22 @@ function Navbar() {
         };
 
         fetch("https://hcmusemu.herokuapp.com/profile/view", requestOptions)
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok)
+                    return response.json()
+                throw Error("Token expired")
+            })
             .then(result => {
                 console.log(result)
                 setUsername(result[0].HoTen);
                 const action = StoreEmail(result[0].Email);
                 dispatch(action);
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                console.log('error', error)
+                localStorage.removeItem("token");
+                window.location.replace("/");
+            });
     }
 
 

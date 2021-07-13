@@ -1,0 +1,148 @@
+.forum {
+    margin: 76px 0 0 17vw;
+    width: 80vw;
+    background: rgb(255, 255, 255);
+}
+
+.forum .list-forums {
+    background: white;
+    padding: 10px 20px;
+    margin: 10px;
+    /* display: flex; */
+}
+
+.forum .list-forums .title {
+    font-size: 20px;
+    background: rgb(243, 243, 243);
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: 600;
+    max-width: 60vw;
+    text-overflow: ellipsis;
+    white-space:nowrap;
+    overflow: hidden;
+}
+
+.forum .list-forums .time {
+    font-size: 14px;
+    margin-left: 10px;
+    color: gray;
+}
+
+.forum .list-forums .own {
+    font-size: 12px;
+    color: gray;
+}
+
+.forum .list-forums .interactive {
+    font-size: 14px;
+    color: black;
+}
+
+.forum .list-forums .flex {
+    display: flex;
+    align-items: center;
+}
+
+.forum .list-forums.flex {
+    display: flex;
+    align-items: center;
+}
+
+
+.forum .list-forums.own {
+    background: rgb(248, 248, 248);
+}
+
+.forum .list-forums img {
+    margin: 0 2px 0 5px;
+}
+
+.forum .list-forums .comment {
+    margin: 5px 5px;
+    font-size: 14px;
+    color: black;
+}
+
+.forum .list-forums .title.comment.own {
+    background: white;
+}
+
+.forum .list-forums .title.comment {
+    background: rgb(243, 243, 243);
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.post-forum .btn-post {
+    color: #fff;
+    background: #5eba7d;
+    padding: 5px;
+    width: 12vw;
+    text-align: center;
+}
+
+.post-forum .popup {
+    position: fixed;
+    width: 35vw;
+    height: 70vh;
+    top: 50%;
+    left: 50%;
+    margin-top: -30vh;
+    /* Negative half of height. */
+    margin-left: -17vw;
+    /* Negative half of width. */
+    background: rgb(255, 255, 255);
+    border: 1px solid black;
+    box-shadow: 2px 2px 10px 0px rgb(197, 197, 197);
+    /* border-radius: 10px; */
+    overflow: hidden;
+    padding: 20px
+}
+
+.forum .input-comment {
+    width: 70vw;
+    height: 40px;
+    margin: auto;
+    /* display: block; */
+}
+
+.forum .like {
+    color: red
+}
+
+.post-forum .popup .title {
+    border-width: 0 0 2px;
+    outline: none;
+    display: block;
+    width: 30vw;
+    margin: 10px;
+}
+
+.post-forum .popup .header {
+    padding: 10px;
+    font-weight: 500;
+}
+
+.post-forum .popup .select-scope {
+    width: 20vw;
+}
+
+.post-forum .popup .btn-add-post {
+    background: #5eba7d;
+    width: 15vw;
+    padding: 5px;
+    text-align: center;
+}
+
+.post-forum .popup .button-popup {
+    display: flex;
+    justify-content: space-between;
+}
+
+.post-forum .popup .btn-cancel-post {
+    background: #ba5e5e;
+    width: 15vw;
+    padding: 5px;
+    text-align: center;
+}

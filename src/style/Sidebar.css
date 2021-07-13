@@ -52,11 +52,12 @@ a.content-sidenav{
 .nav-text {
     display: flex;
     align-items: center;
+    padding: 5px;
 }
 
 .side-text {
     margin-left: 10px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .selected, .selected:hover {

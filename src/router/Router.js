@@ -16,6 +16,8 @@ import Course from '../Component/Mainpage/Student/Sidebar/Course/Course';
 import DetailCourse from '../Component/Mainpage/Student/Sidebar/Course/DetailCourse';
 import Calendar from '../Component/Mainpage/Student/Sidebar/Calendar';
 import ConnectSocket from '../hook/socket';
+import Forum from '../Component/Mainpage/Student/Sidebar/Forum/Forum';
+import ViewComment from '../Component/Mainpage/Student/Sidebar/Forum/ViewComment';
 
 
 
@@ -25,6 +27,10 @@ class RouterMD extends Component {
             <Router>
                 <div>
                     <Switch>
+                        <Route exact path="/forum" >
+                            <Forum />
+                        </Route>
+                        <Route path="/forum/:id" children={<ViewComment/>}/>
                         <Route path="/calendar">
                             <Calendar />
                         </Route>
@@ -32,9 +38,8 @@ class RouterMD extends Component {
                         <Route path="/course">
                             <Course />
                         </Route>
-                        <Route path="/deadline">
-                            <Deadline />
-                        </Route>
+                        <Route path="/deadline" component={Deadline}/>
+
                         <Route path="/profile">
                             <Profile />
                         </Route>
@@ -44,9 +49,9 @@ class RouterMD extends Component {
                         <Route path="/home">
                             <Student />
                         </Route>
-                        <Route path="/message">
+                        {/* <Route path="/message">
                             <Message />
-                        </Route>
+                        </Route> */}
                         <Route path="/setting">
                             <SetURL />
                         </Route>

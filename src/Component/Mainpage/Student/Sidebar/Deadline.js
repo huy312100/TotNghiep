@@ -7,6 +7,13 @@ import "../../../../style/Deadline.css";
 class Deadline extends Component {
     constructor(props) {
         super(props);
+
+        const search = this.props.location.search;
+        const urlParams = new URLSearchParams(search);
+        let tag = urlParams.get('tag');
+        if (tag === null)
+            tag = "0"
+
         this.state = {
             deadline: [],
             month: 0,
@@ -20,9 +27,11 @@ class Deadline extends Component {
             newsuni: [],
             newsfac: [],
 
-            tag: 0
+            tag: tag
         }
     }
+
+
 
     getNewsUniversity = () => {
         var myHeaders = new Headers();
@@ -68,8 +77,7 @@ class Deadline extends Component {
             .catch(error => console.log('error', error));
     }
 
-
-    async componentDidMount() {
+    getCurrentDeadline = async () => {
         this.getCurrenDate();
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
@@ -102,6 +110,18 @@ class Deadline extends Component {
                 console.log(this.state.year);
             })
             .catch(error => console.log('error', error));
+    }
+
+
+    async componentDidMount() {
+        if (this.state.tag==="0"){
+            this.getCurrentDeadline()
+        }
+        if (this.state.tag==="1")
+            this.getNewsUniversity()
+        if (this.state.tag==="2")
+            this.getNewsFaculty()
+
     }
 
     convertMonth = (m) => {
@@ -245,18 +265,25 @@ class Deadline extends Component {
     }
 
     clickTag = async (numtag) => {
-        await this.setState({
-            tag: numtag
+        this.props.history.push({
+            pathname: '/deadline',
+            search: "?" + new URLSearchParams({tag: numtag}).toString()
         })
-        if (this.state.tag===1 && this.state.loaddingnewsuni===1)
-        this.getNewsUniversity();
-        if (this.state.tag==2 && this.state.loaddingnewsfac===1)
-        this.getNewsFaculty();
+        await this.setState({
+            tag: numtag.toString()
+        })
+        if (this.state.tag === "0" && this.state.loaddingnewsuni === 1)
+            this.getCurrentDeadline();
+        if (this.state.tag === "1" && this.state.loaddingnewsuni === 1)
+            this.getNewsUniversity();
+        if (this.state.tag == "2" && this.state.loaddingnewsfac === 1)
+            this.getNewsFaculty();
 
     }
 
     renderTag = () => {
-        if (this.state.tag === 0)
+
+        if (this.state.tag === "0")
             return (
                 <div>
                     <div className="datepicker">
@@ -274,13 +301,13 @@ class Deadline extends Component {
                     </div>
                 </div>
             )
-        else if (this.state.tag === 1 && this.state.loaddingnewsuni === 0) {
+        else if (this.state.tag === "1" && this.state.loaddingnewsuni === 0) {
             return (
                 <div className="news-page">
 
                     {
                         this.state.newsuni.map((news) => {
-                            return (<a href={"https://www.hcmus.edu.vn/" + news.Link} target="_blank" rel="noopener noreferrer"><div className="news">
+                            return (<a href={news.Link} target="_blank" rel="noopener noreferrer"><div className="news">
                                 <div className="title">
                                     {news.Title}
                                 </div>
@@ -299,13 +326,13 @@ class Deadline extends Component {
             )
         }
 
-        else if (this.state.tag === 2 && this.state.loaddingnewsfac === 0) {
+        else if (this.state.tag === "2" && this.state.loaddingnewsfac === 0) {
             return (
                 <div className="news-page">
 
                     {
                         this.state.newsfac.map((news) => {
-                            return (<a href={"https://www.hcmus.edu.vn/" + news.Link} target="_blank" rel="noopener noreferrer"><div className="news">
+                            return (<a href={news.Link} target="_blank" rel="noopener noreferrer"><div className="news">
                                 <div className="title">
                                     {news.Title}
                                 </div>
@@ -326,9 +353,9 @@ class Deadline extends Component {
     }
 
     render() {
-        var assign = this.state.tag === 0 ? "assign" : "";
-        var university = this.state.tag === 1 ? "university" : "";
-        var faculty = this.state.tag === 2 ? "faculty" : "";
+        var assign = this.state.tag === "0" ? "assign" : "";
+        var university = this.state.tag === "1" ? "university" : "";
+        var faculty = this.state.tag === "2" ? "faculty" : "";
         return (
             <div>
                 <Navbar />

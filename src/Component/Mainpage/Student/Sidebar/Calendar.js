@@ -44,8 +44,9 @@ class Calendar extends Component {
             popup: 0,
             popupview: 0,
 
-            loadding: 1
+            loadding: 1,
 
+            firstselected: 0
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -343,28 +344,50 @@ class Calendar extends Component {
     }
 
     renderSchedule = () => {
+        if (this.state.firstselected === 0)
+            return <div className="schedule" >
+                <div className="calendar-button">
 
-        return <div className="schedule" >
-            <div className="calendar-button">
+                    <div className="date">{this.state.selectedDay + "/" + this.state.month + "/" + this.state.year}</div>
+                    <div type="button" className="btn-add" onClick={this.openPopup}><i className="fa fa-plus" ></i></div>
+                </div>
+                <div className="event" id="style-3">
+                    <table>
+                        <colgroup>
+                            <col span="1" style={{ width: "9%" }} />
+                            <col span="1" style={{ width: "1%" }} />
+                            <col span="1" style={{ width: "85%" }} />
+                            <col span="1" style={{ width: "5%" }} />
+                        </colgroup>
+                        <tbody>
+                            {this.selectedDay()}
+                        </tbody>
+                    </table>
+                </div>
+                {this.viewDetailEvent()}
+            </div>
+        // if (this.state.firstselected === 0)
+        //     return <div className="schedule" >
+        //         <div className="calendar-button">
+        //             <div className="date">{this.state.selectedDay + "/" + this.state.month + "/" + this.state.year}</div>
+        //             <div type="button" className="btn-add" onClick={this.openPopup}><i className="fa fa-plus" ></i></div>
 
-                <div className="date">{this.state.selectedDay + "/" + this.state.month + "/" + this.state.year}</div>
-                <div type="button" className="btn-add" onClick={this.openPopup}><i className="fa fa-plus" ></i></div>
-            </div>
-            <div className="event" id="style-3">
-                <table>
-                    <colgroup>
-                        <col span="1" style={{ width: "9%" }} />
-                        <col span="1" style={{ width: "1%" }} />
-                        <col span="1" style={{ width: "85%" }} />
-                        <col span="1" style={{ width: "5%" }} />
-                    </colgroup>
-                    <tbody>
-                        {this.selectedDay()}
-                    </tbody>
-                </table>
-            </div>
-            {this.viewDetailEvent()}
-        </div>
+        //         </div>
+        //         <div className="event" id="style-3">
+        //             <table>
+        //                 <colgroup>
+        //                     <col span="1" style={{ width: "9%" }} />
+        //                     <col span="1" style={{ width: "1%" }} />
+        //                     <col span="1" style={{ width: "85%" }} />
+        //                     <col span="1" style={{ width: "5%" }} />
+        //                 </colgroup>
+        //                 <tbody>
+        //                     {}
+        //                 </tbody>
+        //             </table>
+        //         </div>
+        //         {this.viewDetailEvent()}
+        //     </div>
 
     }
 

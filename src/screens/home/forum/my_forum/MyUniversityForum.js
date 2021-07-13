@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
-import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
+import { Fontisto,FontAwesome } from '@expo/vector-icons';
 
 import {useSelector} from 'react-redux';
 
@@ -8,7 +8,8 @@ import * as forumServices from '../../../../services/Forum';
 
 import * as dateUtils from '../../../../utils/Date';
 
-const ForumAllCourseScreen =({navigation})=>{
+const MyUniversityForumScreen =({navigation})=>{
+
     const token = useSelector((state) => state.authen.token);
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
@@ -16,9 +17,9 @@ const ForumAllCourseScreen =({navigation})=>{
     const [refresh,setRefresh] = useState(false);
 
     useEffect(() => {
-        getForumAllCourse();
+        getMyUniversityForum();
         const unsubscribe = navigation.addListener('focus', () => {
-            getForumAllCourse();
+            getMyUniversityForum();
         });
         return()=>{
             unmounted.current = true;
@@ -26,9 +27,9 @@ const ForumAllCourseScreen =({navigation})=>{
         }; 
     },[refresh]);
 
-    const getForumAllCourse = () => {
-        fetch("https://hcmusemu.herokuapp.com/forum/courses/view", {
-            method: "POST",
+    const getMyUniversityForum = () => {
+        fetch("https://hcmusemu.herokuapp.com/forum/yourpost", {
+            method: "GET",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
               "Authorization": `bearer ${token}`,
@@ -40,28 +41,40 @@ const ForumAllCourseScreen =({navigation})=>{
         }).then(([statusCode, dataRes]) => {
             console.log(statusCode,dataRes);
             if(statusCode === 200){
-                setDataForum(dataRes);
+                const dataTmp = [];  
+                for (const key in dataRes) {
+                    if(dataRes[key].scope === "u"){
+                        dataTmp.push({
+                            AvartaOwn:dataRes[key].AvartaOwn,
+                            EmailOwn:dataRes[key].EmailOwn,
+                            ID:dataRes[key].ID,
+                            LikeByOwn:dataRes[key].LikeByOwn,
+                            NameOwn:dataRes[key].NameOwn,
+                            comment:dataRes[key].comment,
+                            image:dataRes[key].image,
+                            like:dataRes[key].like,
+                            time:dataRes[key].time,
+                            title:dataRes[key].title,
+                        });
+                    }
+                }
+                setDataForum(dataTmp);
             }
         }).catch(error => console.log('error', error));
-    }
+    };
 
     const renderItem = ({item})=>(
         <TouchableOpacity style={styles.card}
                 onPress={() =>{
                     navigation.navigate('Content Forum',{
                         dataOfForum:item,
-                        typeForum:'course',
+                        typeForum:'university'
                     });
                 }}>
                 <View style={styles.info}>
                     <Image style={styles.imageUserPost} source={ item.AvartaOwn === "" || item.AvartaOwn === null ? require("../../../../../assets/user-icon.png") : {uri : item.AvartaOwn}}/>
                     <View>
-                        
-                        <View style={[styles.nameAndDate,{flexDirection:'row',flexWrap:'wrap'}]}>
-                            <Text style={{fontSize:12,fontWeight:'bold'}}>{item.NameOwn}</Text>
-                            <MaterialIcons style={{marginTop:3}} name="play-arrow" size={10} color="grey" />
-                            <Text style={[{fontWeight:'300',fontSize:10,marginTop:2}]}>{item.NameCourses}</Text>
-                        </View>
+                        <Text style={styles.nameAndDate}>{item.NameOwn}</Text>
                         <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(item.time)}</Text>
                     </View>
 
@@ -73,29 +86,27 @@ const ForumAllCourseScreen =({navigation})=>{
 
                 {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
 
-                 <View style={styles.footerCard}>
+                <View style={styles.footerCard}>
+                    {item.LikeByOwn === 1 ?
+                        <TouchableOpacity style={styles.buttonFooter}
+                            onPress={async()=>{
+                                await forumServices.unlikePost(token,item.ID);
+                                setRefresh(!refresh);
+                            }}>
+                                <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
+                                <Text style={{marginTop:3,color:'blue'}}>{item.like}</Text>
+                        </TouchableOpacity>
+                        : 
+                        <TouchableOpacity style={styles.buttonFooter}
+                            onPress={async()=>{
+                                await forumServices.likePost(token,item.ID);
+                                setRefresh(!refresh);
+                            }}>
 
-                 {/* Grey if not like and blue if like */}
-                 
-                 {item.LikeByOwn === 1 ? <TouchableOpacity style={styles.buttonFooter}
-                         onPress={async()=>{
-                            //await forumServices.likePost(token,item.ID);
-                            setRefresh(!refresh);
-                        }}>
-                         <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
-                         <Text style={{marginTop:3,color:'blue'}}>{item.like}</Text>
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity style={styles.buttonFooter}
-                         onPress={async()=>{
-                            await forumServices.likeCoursePost(token,item.ID);
-                            setRefresh(!refresh);
-                        }}>
-                         <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
-                         <Text style={{marginTop:3,color:'silver'}}>{item.like}</Text>
-                    </TouchableOpacity>
-                }
-
+                                <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
+                                <Text style={{marginTop:3,color:'silver'}}>{item.like}</Text>
+                        </TouchableOpacity>
+                    }
 
                     <TouchableOpacity style={styles.buttonFooter}>
                         <FontAwesome style={{marginRight:8}} name="comment" size={18} color="silver" />
@@ -124,14 +135,12 @@ const styles = StyleSheet.create({
     },
 
     card: {
-        flex:1,
         marginTop:10,
         width: '100%',
         backgroundColor:'white',
         borderBottomWidth:1,
         borderBottomColor: "#cccccc",
-        paddingBottom:5,
-        paddingRight:10
+        paddingBottom:5
     },
 
     imageUserPost:{
@@ -141,8 +150,8 @@ const styles = StyleSheet.create({
     },
 
     nameAndDate: {
-        flex:1,
-        marginRight:10,
+        fontWeight:'bold',
+        marginRight:15,
         marginLeft:15
     },
 
@@ -177,4 +186,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ForumAllCourseScreen;
+export default MyUniversityForumScreen;

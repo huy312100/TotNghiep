@@ -52,6 +52,10 @@ import ForumAllCourseScreen from "../screens/home/forum/forum_course/ForumAllCou
 import ForumCourseOfAppScreen from "../screens/home/forum/forum_course/ForumCourseOfApp";
 import ListUserLikedScreen from "../screens/home/forum/ListUserLiked";
 
+//import my forum
+import MyCourseForumScreen from '../screens/home/forum/my_forum/MyCourseForum';
+import MyFacultyForumScreen from '../screens/home/forum/my_forum/MyFacultyForum';
+import MyUniversityForumScreen from '../screens/home/forum/my_forum/MyUniversityForum';
 
 const Stack = createStackNavigator();
 const bottomTab = createBottomTabNavigator();
@@ -214,14 +218,21 @@ function HomeStackNavigation({navigation}) {
           headerTruncatedBackTitle:false,
 
           headerRight:()=>(
-            <TouchableOpacity style={{marginRight:5}} onPress={() =>{
-              navigation.navigate('Create Post Of Forum');
-            }}>
-              <MaterialIcons name="library-add" size={25} color="#444444"/>
-            </TouchableOpacity>
+            <View style={{flexDirection:'row'}}>
+                <TouchableOpacity style={{marginRight:15}} onPress={() =>{
+                  navigation.navigate("My Forum");
+                  }}>
+<               MaterialCommunityIcons name="clipboard-account-outline" size={25} color="#444444" />
+              </TouchableOpacity>
+
+                <TouchableOpacity style={{marginRight:5}} onPress={() =>{
+                  navigation.navigate('Create Post Of Forum');
+                  }}>
+                  <MaterialIcons name="library-add" size={25} color="#444444"/>
+                </TouchableOpacity>
+            </View>
           )
         }}
-
       />
 
       <Stack.Screen
@@ -263,6 +274,17 @@ function HomeStackNavigation({navigation}) {
         options={{ 
           headerShown: false
         }}/>
+
+      <Stack.Screen
+        name="My Forum"
+        component={MyForumTopTab}
+        options={{ 
+          title: "Diễn đàn của tôi",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+
+        }}
+      />
 
     </Stack.Navigator>
   )
@@ -527,7 +549,7 @@ const getTabBarVisibility = (route) => {
   "Add Event","Modify Event","Find to Chat","University Info",
   "Add people to calendar","Forum","Forum Of A Moodle Course","Content Forum",
   "Create Post Of Forum","Content Forum Of A Moodle Course","Forum Of A Course",
-  "List User Liked"];
+  "List User Liked","My Forum"];
 
   console.log(routeName);
 
@@ -794,6 +816,49 @@ function ForumACourseTopTab(){
         options={{
           tabBarLabel:'Trang môn học'
         }}/>
+
+    </topTab.Navigator>
+  )
+};
+
+//Top tab of my forum
+function MyForumTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="My Course Forum" 
+    tabBarOptions={{
+      activeTintColor: 'blue',
+      inactiveTintColor:'#CCCCCC',
+      indicatorStyle:{
+        backgroundColor: 'blue',
+      },
+
+      labelStyle: { fontSize: 10 },
+      }}>
+
+      <topTab.Screen 
+        name="My Course Forum" 
+        component={MyCourseForumScreen}
+        options={{
+          tabBarLabel:'Môn học'
+        }}
+        />
+
+      <topTab.Screen 
+        name="My Faculty Forum" 
+        component={MyFacultyForumScreen}
+        options={{
+          tabBarLabel:'Khoa'
+        }}
+        />
+
+      <topTab.Screen 
+        name="My University Forum" 
+        component={MyUniversityForumScreen}
+        options={{
+          tabBarLabel:'Trường'
+        }}
+        />
+  
 
     </topTab.Navigator>
   )

@@ -11,10 +11,19 @@ import { useSelector,useDispatch } from "react-redux";
 import * as calendarActions from '../../store/actions/Calendar';
 // import * as msgActions from "../../store/actions/Message";
 
+//import authen screen
 import StartupScreen from "../screens/authentications/Startup";
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
 import HomeScreen from "../screens/home/Home";
+import ForgetPasswordScreen from "../screens/authentications/ForgetPassword";
+import MailSentScreen from "../screens/authentications/ConfirmSentMail";
+
+//import first sign in screen
+import StartConfigScreen from "../screens/first_config/StartConfig";
+import MoodleConfigScreen from "../screens/first_config/MoodleConfig";
+import EndConfigScreen from "../screens/first_config/EndConfig";
+
 import CalendarScreen from "../screens/home/calendar/Calendar";
 import NormalMessageScreen from "../screens/message/NormalMessage";
 import FirstReadMessageScreen from "../screens/message/FirstReadMessage";
@@ -82,9 +91,45 @@ export function AuthenStackNavigation() {
       />
 
       <Stack.Screen
-      name="Register"
-      component={RegisterScreen}
-      options={{ headerShown: false }}
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Forget Password"
+        component={ForgetPasswordScreen}
+        options={{           
+          title: "Quên mật khẩu",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+       }}
+      />
+
+      <Stack.Screen
+        name="Confirm Mail Sent"
+        component={MailSentScreen}
+        options={{           
+          headerShown: false,
+       }}
+      />
+
+      <Stack.Screen
+        name="Start Config"
+        component={StartConfigScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Moodle Config"
+        component={MoodleConfigScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="End Config"
+        component={EndConfigScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

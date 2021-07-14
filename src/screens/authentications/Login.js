@@ -54,11 +54,21 @@ const LoginScreen = ({navigation}) => {
             console.log(statusCode,data);
             setLoading(false);
             if(statusCode===200 && data.role==="1"){
-              const token = data.token + 'sT';
-              await AsyncStorage.setItem('tokenValue',token);
-              dispatch(authActions.login(token));
-              navigation.navigate("Main");
-              setLoading(false);
+              if(data.firstsign === true){
+                const token = data.token + 'sT';
+                await AsyncStorage.setItem('tokenValue',token);
+                dispatch(authActions.login(token));
+                navigation.navigate("Start Config");
+                setLoading(false);
+              }
+              else{
+                const token = data.token + 'sT';
+                await AsyncStorage.setItem('tokenValue',token);
+                dispatch(authActions.login(token));
+                navigation.navigate("Main");
+                setLoading(false);
+              }
+             
             }else{
               setLoading(false);
               alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")
@@ -84,7 +94,11 @@ const LoginScreen = ({navigation}) => {
           onChangeText={(password)=>setPassword(password)}/>
 
         <View style={styles.viewForgetPassword}>
-          <TouchableOpacity >
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Forget Password');
+            }}
+          >
             <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
           </TouchableOpacity>
         </View>

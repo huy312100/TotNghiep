@@ -1,6 +1,5 @@
 import React,{useState} from "react";
 import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity,Alert} from "react-native";
-import RNPickerSelect from 'react-native-picker-select';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {useDispatch,useSelector} from "react-redux";
 import * as profileActions from '../../../../store/actions/Profile';

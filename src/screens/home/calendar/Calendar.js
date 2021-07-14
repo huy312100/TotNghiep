@@ -100,15 +100,25 @@ const CalendarScreen =({navigation})=> {
     setVisibleOverlay(!visibleOverlay);
   };
 
-  const handleConfirm = (date) => {
-    //console.warn("A date has been picked: ", date);
-    // console.log(date.getMonth()+1);
-    // console.log(date.getFullYear());
-    setMonthChanged(date.getMonth() + 1);
+  const handleConfirm = (a) => {
+    let date = new Date(a);
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let dt = date.getDate();
+
+    if (dt < 10) {
+      dt = '0' + dt;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    console.log(year+'-' + month+'-'+dt);
+    setMonthChanged(date.getMonth()+1);
     setYearChanged(date.getFullYear());
-    setCurrentDate(date);
+    setCurrentDate(year+'-' + month+'-'+dt);
     setDatePickerVisibility(false);
   };
+
 
   const handleCancel = () => {
     setDatePickerVisibility(false);
@@ -319,6 +329,18 @@ const CalendarScreen =({navigation})=> {
         }
         />
 
+        <View style={{flexDirection:'row',paddingVertical:10,justifyContent: 'center',alignItems: 'center'}}>
+          <TouchableOpacity >
+            <AntDesign name="caretleft" size={24} color="black" />
+          </TouchableOpacity>
+
+          <Text style={{marginHorizontal:50}}>{dateUtils.ConvertDateDDMMYY(currentDate)}</Text>
+
+          <TouchableOpacity >
+            <AntDesign name="caretright" size={24} color="black" />
+          </TouchableOpacity>
+
+        </View>
 
       <TimelineCalendar
         eventTapped={e => {

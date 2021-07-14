@@ -93,7 +93,7 @@ import {
       return (
         <View style={[this.styles.container, { width }]}>
 
-          <View style={this.styles.header}>
+          {/* <View style={this.styles.header}>
             <TouchableOpacity
                 style={this.styles.arrowButton}
                 onPress={this._previous}
@@ -103,7 +103,7 @@ import {
 
             <View style={this.styles.headerTextContainer}>
               <TouchableOpacity>
-                <Text style={this.styles.headerText}>{headerText}</Text>
+                <Text style={this.styles.headerText}>jjj</Text>
               </TouchableOpacity>
             </View>
 
@@ -114,7 +114,7 @@ import {
               {rightIcon}
             </TouchableOpacity>
             
-          </View>
+          </View> */}
           <DayView
             date={date}
             index={index}

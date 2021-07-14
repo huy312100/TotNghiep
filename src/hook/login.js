@@ -10,10 +10,10 @@ export default function LoginButton() {
 
     let history = useHistory();
     useEffect(() => {
-        if (localStorage.getItem("token") && success===1) {
+        if (localStorage.getItem("token") && success === 1) {
             history.replace("/");
         }
-    },[success])
+    }, [success])
 
 
     async function AcctionLogin() {
@@ -46,10 +46,10 @@ export default function LoginButton() {
             .then(result => {
                 console.log(result.token)
                 if (result.token !== undefined) {
-                    localStorage.setItem("token", result.token+"sT")
+                    localStorage.setItem("token", result.token + "sT")
                     // localStorage.setItem("username", this.state.username)
                     // console.log(result.token)
-                    
+
                     // console.log(username)
                     setSuccess(1)
                 }
@@ -65,11 +65,12 @@ export default function LoginButton() {
     }
 
     function loaddingButton() {
-        if (loadding===1){
-        return (
-            <button type="button" className="btnSubmit"><i className="fa fa-circle-o-notch fa-spin"></i>Loading</button>
+        if (loadding === 1) {
+            return (
+                <button type="button" className="btnSubmit"><i className="fa fa-circle-o-notch fa-spin"></i>Loading</button>
 
-        )}
+            )
+        }
         return (
             <button type="button" className="btnSubmit" onClick={AcctionLogin}>Đăng nhập</button>
         )
@@ -86,15 +87,18 @@ export default function LoginButton() {
                     <form>
                         <h3>Đăng nhập</h3>
                         <div className="form-group">
-                            <input  type="text" className="form-control" name="username" placeholder="Tài khoản" onChange={(e) => setEmail(e.target.value)}/>
+                            <input type="text" className="form-control" name="username" placeholder="Tài khoản" onChange={(e) => setEmail(e.target.value)} />
                         </div>
                         <div className="form-group">
-                            <input  type="password" className="form-control" name="password" placeholder="Mật khẩu" onChange={(e) => setPassword(e.target.value)}/>
+                            <input type="password" className="form-control" name="password" placeholder="Mật khẩu" onChange={(e) => setPassword(e.target.value)} />
                         </div>
                         <div className="form-group">
                             {loaddingButton()}
                             <Link to="/signup" className="btnForgetPwd">Đăng kí</Link>
-                        </div></form>
+                        </div>
+                        <Link to="/forgot">Quên mật khẩu</Link>
+
+                    </form>
                 </div>
             </div>
         </div>

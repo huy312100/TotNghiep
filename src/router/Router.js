@@ -18,6 +18,8 @@ import Calendar from '../Component/Mainpage/Student/Sidebar/Calendar';
 import ConnectSocket from '../hook/socket';
 import Forum from '../Component/Mainpage/Student/Sidebar/Forum/Forum';
 import ViewComment from '../Component/Mainpage/Student/Sidebar/Forum/ViewComment';
+import Forgot from '../Component/Login/ForgotPW';
+import Reset from '../Component/Login/ResetPW';
 
 
 
@@ -27,10 +29,16 @@ class RouterMD extends Component {
             <Router>
                 <div>
                     <Switch>
+                        <Route path="/newpassword" >
+                            <Reset />
+                        </Route>
+                        <Route exact path="/forgot" >
+                            <Forgot />
+                        </Route>
                         <Route exact path="/forum" >
                             <Forum />
                         </Route>
-                        <Route path="/forum/:id" children={<ViewComment/>}/>
+                        <Route path="/forum/:id" children={<ViewComment />} />
                         <Route path="/calendar">
                             <Calendar />
                         </Route>
@@ -38,7 +46,7 @@ class RouterMD extends Component {
                         <Route path="/course">
                             <Course />
                         </Route>
-                        <Route path="/deadline" component={Deadline}/>
+                        <Route path="/deadline" component={Deadline} />
 
                         <Route path="/profile">
                             <Profile />

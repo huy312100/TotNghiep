@@ -47,6 +47,7 @@ const button = {
 const link = {
     padding:"10px",
 }
+//test
 
 export default function Forgot() {
 

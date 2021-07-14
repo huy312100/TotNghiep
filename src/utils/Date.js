@@ -47,14 +47,22 @@ export const ConvertToTimeAgoGeneral = (timestamp) => {
 };
 
 export const ConvertTimestamp = (timestamp) => {
-  var d = new Date(timestamp * 1000), // Convert the passed timestamp to milliseconds
-  yyyy = d.getFullYear(),
-  mm = ('0' + (d.getMonth() + 1)).slice(-2),  // Months are zero based. Add leading 0.
-  dd = ('0' + d.getDate()).slice(-2),         // Add leading 0.
-  hh = d.getHours(),
-  h = hh,
-  min = ('0' + d.getMinutes()).slice(-2),     // Add leading 0.
-  time;
+  var d;
+  // Convert the passed timestamp to milliseconds
+  if(timestamp.toString().length === 10){
+    d= new Date(timestamp * 1000);
+  }  
+  else if(timestamp.toString().length === 13){
+    d=new Date(timestamp);
+  }
+
+  var yyyy = d.getFullYear();
+  var mm = ('0' + (d.getMonth() + 1)).slice(-2);  // Months are zero based. Add leading 0.
+  var dd = ('0' + d.getDate()).slice(-2);         // Add leading 0.
+  var hh = d.getHours();
+  var h = hh;
+  var min = ('0' + d.getMinutes()).slice(-2);   // Add leading 0.
+  var time;
   if (hh < 10) {
     h = '0'+hh ;
   } else  {

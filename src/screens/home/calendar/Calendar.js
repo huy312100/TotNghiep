@@ -67,6 +67,10 @@ const CalendarScreen =({navigation})=> {
 
   const token = useSelector((state) => state.authen.token);
 
+  const [labelTimestamp,setLabelTimestamp] = useState(new Date().getTime());
+
+  const aDayTimestamp = 86400000;
+
   const [visibleOverlay, setVisibleOverlay] = useState(false);
   const [currentDate,setCurrentDate] = useState(getCurrentDate());
   const [monthChanged,setMonthChanged] = useState(getCurrentMonth());
@@ -101,6 +105,7 @@ const CalendarScreen =({navigation})=> {
   };
 
   const handleConfirm = (a) => {
+
     let date = new Date(a);
     let year = date.getFullYear();
     let month = date.getMonth()+1;
@@ -112,10 +117,11 @@ const CalendarScreen =({navigation})=> {
     if (month < 10) {
         month = '0' + month;
     }
-    console.log(year+'-' + month+'-'+dt);
     setMonthChanged(date.getMonth()+1);
     setYearChanged(date.getFullYear());
     setCurrentDate(year+'-' + month+'-'+dt);
+
+    setLabelTimestamp(new Date(a).getTime());    
     setDatePickerVisibility(false);
   };
 
@@ -329,15 +335,39 @@ const CalendarScreen =({navigation})=> {
         }
         />
 
-        <View style={{flexDirection:'row',paddingVertical:10,justifyContent: 'center',alignItems: 'center'}}>
-          <TouchableOpacity >
-            <AntDesign name="caretleft" size={24} color="black" />
+        <View style={{flexDirection:'row',paddingVertical:15,justifyContent: 'center',alignItems: 'center'}}>
+          <TouchableOpacity 
+            onPress={() =>{
+              const timestampConvert =labelTimestamp-aDayTimestamp;
+              const date = new Date(timestampConvert);
+
+              setLabelTimestamp(timestampConvert);
+              const nextDate=dateUtils.ConvertTimestamp(timestampConvert);
+
+              setMonthChanged(date.getMonth()+1);
+              setYearChanged(date.getFullYear());
+              setCurrentDate(nextDate.slice(0,10));
+          }}>
+            <AntDesign name="caretleft" size={16} color="blue" />
           </TouchableOpacity>
 
-          <Text style={{marginHorizontal:50}}>{dateUtils.ConvertDateDDMMYY(currentDate)}</Text>
+          <Text style={{marginHorizontal:50,fontSize:15,color:'black'}}>{dateUtils.ConvertDateDDMMYY(currentDate)}</Text>
 
-          <TouchableOpacity >
-            <AntDesign name="caretright" size={24} color="black" />
+          <TouchableOpacity 
+            onPress={() =>{
+              const timestampConvert =labelTimestamp+aDayTimestamp;
+              const date = new Date(timestampConvert);
+
+
+              setLabelTimestamp(timestampConvert);
+              const nextDate=dateUtils.ConvertTimestamp(timestampConvert);
+
+              setMonthChanged(date.getMonth()+1);
+              setYearChanged(date.getFullYear());
+              setCurrentDate(nextDate.slice(0,10));
+            }}
+          >
+            <AntDesign name="caretright" size={16} color="blue" />
           </TouchableOpacity>
 
         </View>

@@ -147,8 +147,8 @@ function Navbar() {
             <nav className="navbar navbar-light fixed-top">
                 {/* <div className="container"> */}
                 <a className="navbar-brand" href="/home">
-                    <img className="d-inline-block align-top" width="10%" src={process.env.PUBLIC_URL + 'logo192.png'} alt="" />
-                    APPNAME
+                    <img className="d-inline-block align-top" width="30vw" src={process.env.PUBLIC_URL + 'logo.png'} alt="" />
+                    EMU
                 </a>
                 <ul className="navbar-nav">
                     <li className="nav-item">

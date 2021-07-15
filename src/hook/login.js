@@ -80,7 +80,7 @@ export default function LoginButton() {
         <div className="container login-container">
             <div className="row">
                 <div className="col-md-8 info">
-                    <img className="row" width="30%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png" alt="logo"></img>
+                    <img className="row" width="30%" src={process.env.PUBLIC_URL + 'logo.png'} alt="logo"></img>
                     <h3 className="row">Ứng dụng kết nối và quản lý cổng học tập</h3>
                 </div>
                 <div className="col-md-4 login-form-1">
@@ -91,12 +91,17 @@ export default function LoginButton() {
                         </div>
                         <div className="form-group">
                             <input type="password" className="form-control" name="password" placeholder="Mật khẩu" onChange={(e) => setPassword(e.target.value)} />
+                            <Link className="forgetPassword" to="/forgot">Bạn quên mật khẩu?</Link>
+
                         </div>
+
+
+
                         <div className="form-group">
                             {loaddingButton()}
                             <Link to="/signup" className="btnForgetPwd">Đăng kí</Link>
+
                         </div>
-                        <Link to="/forgot">Quên mật khẩu</Link>
 
                     </form>
                 </div>

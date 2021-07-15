@@ -2,50 +2,83 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const background = {
+    display: "block",
     position: "absolute",
-    top: "50%",
+    top: "25%",
     left: "50%",
-    marginTop: "-15vw",
+    // marginTop: "-15vw",
     marginLeft: "-15vw",
     width: "30vw",
-    height: "30vw",
-    border: "1px solid black",
-    background:"#fff"
+    // minWidth:"300px",
+    // height: "30vw",
+    // border: "1px solid black",
+    background: "#fff",
+    boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
+
 }
 
 const header = {
     fontWeight: "600",
-    fontSize: "20px",
-    padding: "10px",
-    textAlign:"center",
-    color:"#434343"
+    fontSize: "2.5vw",
+    marginTop: "4vw",
+    textAlign: "center",
+    color: "#434343"
 }
 
-const body ={
-    padding:"10px"
+const body = {
+    padding: "0.8vw",
 }
 
 const text = {
-    padding:"10px"
+    display:"block",
+    margin:"auto",
+    width:"27vw",
+    fontSize: "1.2vw",
+    padding: "0.8vw",
+    color: "#686d70"
 }
 
 const input = {
-    margin:"auto",
-    padding:"10px",
-    width:"28vw"
+    display: "block",
+    margin: "2vw auto",
+    padding: "0.7vw",
+    width: "27vw",
+    background: "#eeeeef",
+    border: 'none',
+    fontSize: "1.2vw",
+
 }
 
 const button = {
-    background:"#3768a0",
-    width:"20vw",
-    margin:"10px auto",
+    background: "#3768a0",
+    width: "20vw",
+    height: "3vw",
+    margin: "0.8vw auto",
     // padding:"10px",
-    display:"block",
-    color:"#fff",
-    borderRadius:"10px"
+    display: "block",
+    color: "#fff",
+    borderRadius: "0.8vw",
+    border: "none",
+    fontSize: "1.3vw"
 }
 const link = {
-    padding:"10px",
+    // margin:"auto",
+    // width:"17vw",
+    // display:"block",
+    // padding: "0 0 2vw 0",
+    // fontSize: "1.3vw",
+    textAlign:"center",
+    background: "#3768a0",
+    width: "20vw",
+    // height: "3vw",
+    margin: "1.5vw auto",
+    padding:"0.3vw",
+    display: "block",
+    color: "#fff",
+    borderRadius: "0.8vw",
+    border: "none",
+    fontSize: "1.3vw",
+    textDecoration: 'none'
 }
 //test
 
@@ -94,9 +127,9 @@ export default function Forgot() {
             <form onSubmit={handleSubmit}>
                 <div style={header}>Quên mật khẩu</div>
                 <div style={body}>
-                    <div style={text}>Vui lòng nhập email đã đăng kí của bạn</div>
+                    <div style={text}>Vui lòng nhập email đã đăng kí của bạn,liên kết khôi phục mật khẩu sẽ được gửi về địa chỉ email đã đăng kí tài khoản</div>
                     <input style={input} placeholder="Email" required onChange={(event) => setEmail(event.target.value)} />
-                    <button style={button} type="submit">Tiếp tục</button>
+                    <input style={button} type="submit" value="Gửi"></input>
                 </div>
             </form>
         </div>

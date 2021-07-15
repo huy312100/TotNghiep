@@ -1,5 +1,5 @@
 import React,{ useState } from 'react';
-import { View,StyleSheet,Image,Text,TouchableOpacity,TextInput } from 'react-native';
+import { View,StyleSheet,Image,Text,TouchableOpacity,TextInput,TouchableWithoutFeedback,Keyboard } from 'react-native';
 
 import LoadingScreen from '../LoadingScreen';
 
@@ -21,6 +21,9 @@ const ForgetPasswordScreen = ({navigation}) => {
     }
 
     return(
+        <TouchableWithoutFeedback onPress={()=>{
+            Keyboard.dismiss();
+          }}>
         <View style={styles.container}>
            
             <Image style={styles.imageLogo} source={require("../../../assets/email.png")} />
@@ -55,6 +58,8 @@ const ForgetPasswordScreen = ({navigation}) => {
             {isLoading && LoadingScreen()}
 
         </View>
+
+        </TouchableWithoutFeedback>
     )
 };
 

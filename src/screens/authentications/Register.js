@@ -7,6 +7,7 @@ import {
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert
 } from "react-native";
 import {
   Heading,
@@ -35,14 +36,6 @@ const RegisterScreen = ({ navigation }) => {
 
   const [itemNameUniversity,setItemNameUniversity] = useState([]);
   const [itemFacultyName,setItemFacultyName] = useState([]);
-
-  const allInfo = {
-    username:"",
-    password:"",
-    fullname:"",
-    idUni:"",
-    idFaculty:"",
-  };
 
   const dispatch = useDispatch();
 
@@ -150,14 +143,14 @@ const RegisterScreen = ({ navigation }) => {
   }
 
   //call api register
-  const register = (registerInfo) => {
+  const register = () => {
     setLoading(true);
     let details = {
-      username: registerInfo.username,
-      password: registerInfo.password,
-      HoTen: registerInfo.HoTen,
-      MaTruong: registerInfo.MaTruong,
-      MaKhoa: registerInfo.MaKhoa,
+      username: username,
+      password: password,
+      HoTen: fullname,
+      MaTruong: idUni,
+      MaKhoa: idFaculty,
     };
 
     let formBody = [];
@@ -168,6 +161,8 @@ const RegisterScreen = ({ navigation }) => {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
+
+    console.log(formBody);
 
     fetch("https://hcmusemu.herokuapp.com/account/signup", {
       method: "POST",
@@ -184,7 +179,16 @@ const RegisterScreen = ({ navigation }) => {
       if(statusCode === 201){
         dispatch(authActions.register());
         setLoading(false);
-        navigation.navigate("Login");
+        Alert.alert(
+          "Thành công",
+          "Tạo tài khoản thành công",
+          [
+            {
+              text: "Xác nhận",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ]
+        );
       }
       else if(statusCode === 409){
         setLoading(false);
@@ -202,7 +206,7 @@ const RegisterScreen = ({ navigation }) => {
       onPress={() => {
         Keyboard.dismiss();
       }}>
-      <ScrollView>
+      <ScrollView style={{backgroundColor: "#fff"}}>
         {isLoading && LoadingScreen()}
 
         <View style={styles.container}>
@@ -226,8 +230,6 @@ const RegisterScreen = ({ navigation }) => {
                   setIdUni(value);
                   
                   getAllFacultyName(value);
-
-                  console.log(allInfo);
                 }
               }}
               //style={{...pickerSelectStyles}}
@@ -268,13 +270,7 @@ const RegisterScreen = ({ navigation }) => {
               style={styles.btnLoginTouchable}
               onPress={() => {
                 if(checkPassword() && checkUsername() && idUni!="" && idFaculty !="" && fullname.trim().length>0) {
-                  allInfo.fullname=fullname;
-                  allInfo.idUni=idUni;
-                  allInfo.username=username;
-                  allInfo.password=password;
-                  allInfo.idFaculty=idFaculty;
-
-                  register(allInfo);
+                  register();
                 }
                 else if(fullname.trim().length===0){
                   alert("Tên không được bỏ trống");
@@ -317,7 +313,6 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     padding: 10,
     paddingTop: 120,

@@ -1,5 +1,5 @@
 import React,{useState,useCallback} from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,ImageBackground,SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity,TextInput,ImageBackground,SafeAreaView,Image } from 'react-native';
 
 import{useSelector} from 'react-redux';
 
@@ -85,8 +85,8 @@ const FindToChatScreen = ({navigation}) => {
             }}
           >
 
-            <View style={{marginBottom:10}}>
-              <RoundedImage />
+            <View style={{marginVertical:10,borderRadius:25}}>
+              <Image style={{width:70, height:70,borderRadius:40}} source={{ uri:`https://ui-avatars.com/api/?background=random&color=ffffff&name=${item.HoTen}`}}/>
             </View>
             
             {/* <View style={styles.courseInfo}>

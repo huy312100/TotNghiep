@@ -10,7 +10,7 @@ const ForumCourseScreen = ({navigation}) =>{
 
     const unmounted = useRef(false);
     const [pageCurrent,setPageCurrent] = useState(0);
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading,setIsLoading] = useState(true);
 
     var infoCourseChoose = {
         idCourse : "",
@@ -29,7 +29,8 @@ const ForumCourseScreen = ({navigation}) =>{
     }
   }, [pageCurrent]);
 
-  const getAllCourses = () => {
+  const getAllCourses = async () => {
+    setIsLoading(true);
     let details = {
       page: pageCurrent,
     };
@@ -54,18 +55,18 @@ const ForumCourseScreen = ({navigation}) =>{
       body: formBody,
     })
     .then((response) => {
-        const statusCode = response.status;
-        const dataRes = response.json();
-        return Promise.all([statusCode, dataRes]);
-      })
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    })
       .then(([statusCode, dataRes]) => {
-        //tmp.concat(json)
-        if(statusCode === 200) {
-            if(dataRes.message !== 'Page not Found'){
-                setData(data.concat(dataRes));
-                dispatch(courseActions.getAllCourses(data.concat(dataRes)));
-            }
+        if(statusCode === 200){
+          console.log(dataRes);
+          setData(data.concat(dataRes));
+          dispatch(courseActions.getAllCourses(data.concat(dataRes)));
+          setPageCurrent(pageCurrent+1);
         }
+        //tmp.concat(json)
         setIsLoading(false);
       })
       .catch((err) => console.log(err, "error"));
@@ -94,36 +95,24 @@ const ForumCourseScreen = ({navigation}) =>{
         </TouchableOpacity>
     );
 
-    const handleMore = () =>{
-        setPageCurrent(pageCurrent+1);
-        setIsLoading(true);
-    };
-
-    const renderFooter = () =>(
-        isLoading?
-        <View style={styles.footerLoader}>
-            <ActivityIndicator size="large" color="blue"/>
-        </View>:null
-    );
-
     return(
         <View style={styles.container}>
-            {data.length === 0 && 
-                <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
-                
+            {isLoading && data.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="blue"/>
+            </View>}
+
+            {!isLoading && data.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
                     <Text style={{color:'#BBBBBB'}}>
                         Không tìm thấy môn học nào 
                     </Text>
-                </View>
-            }
+                </View>}
+
 
             <FlatList
             data={data}
             renderItem={renderItem}
             keyExtractor={(item,index) => index.toString()}
-            onEndReached={handleMore}
-            onEndReachedThreshold={0}
-            ListFooterComponent={renderFooter}
+
             />
         </View>
         

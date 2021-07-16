@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
 import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
 
 import {useSelector} from 'react-redux';
@@ -14,6 +14,8 @@ const ForumAllCourseScreen =({navigation})=>{
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
     const [refresh,setRefresh] = useState(false);
+    const [isLoading,setIsLoading] = useState(true);
+
 
     useEffect(() => {
         getForumAllCourse();
@@ -27,6 +29,7 @@ const ForumAllCourseScreen =({navigation})=>{
     },[refresh]);
 
     const getForumAllCourse = () => {
+        setIsLoading(true);
         fetch("https://hcmusemu.herokuapp.com/forum/courses/view", {
             method: "POST",
             headers: {
@@ -42,6 +45,7 @@ const ForumAllCourseScreen =({navigation})=>{
             if(statusCode === 200){
                 setDataForum(dataRes);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
     }
 
@@ -107,6 +111,17 @@ const ForumAllCourseScreen =({navigation})=>{
 
     return (
         <View style={styles.container}>
+            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="blue"/>
+            </View>}
+
+            {!isLoading && dataForum.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy diễn đàn môn học nào 
+                    </Text>
+                </View>
+            }
+            
 
             <FlatList
                 data={dataForum}

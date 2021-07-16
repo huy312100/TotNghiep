@@ -12,7 +12,7 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
   const unmounted = useRef(false);
 
   const [data,setData] = useState([]);
-  const [isLoading,setLoading]=useState(false);
+  const [isLoading,setLoading]=useState(true);
 
 
   const currCourses = useSelector((state) => state.course.currCourses);
@@ -82,7 +82,12 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
       <View style={styles.container}>
         {/* <Text>{data.length}</Text> */}
 
-        {isLoading && LoadingWithSkeletonScreen()}
+        {isLoading && data.length === 0 && LoadingWithSkeletonScreen()}
+        {!isLoading && data.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+            <Text>
+              Không tìm thấy thông tin môn học nào
+            </Text>
+          </View>}
         
           <FlatList
             data={data}

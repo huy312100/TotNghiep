@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
 import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
 
 import {useSelector} from 'react-redux';
@@ -15,6 +15,7 @@ const ForumCourseOfAppScreen =({navigation})=>{
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
     const [refresh,setRefresh] = useState(false);
 
     useEffect(() => {
@@ -29,6 +30,7 @@ const ForumCourseOfAppScreen =({navigation})=>{
     },[refresh]);
 
     const getForumCourseOfApp = () => {
+        setIsLoading(true);
         let details = {
             IDCourses: infoCourseChoose.idCourse,
         };
@@ -58,6 +60,7 @@ const ForumCourseOfAppScreen =({navigation})=>{
             if(statusCode === 200){
                 setDataForum(dataRes);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
     }
 
@@ -119,10 +122,14 @@ const ForumCourseOfAppScreen =({navigation})=>{
     return (
         <View style={styles.container}>
 
-            {dataForum.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>       
+                <ActivityIndicator size="large" color="blue"/>
+            </View>}
+
+            {!isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
                 
                 <Text style={{color:'#BBBBBB'}}>
-                    Không có diễn đàn nào được đăng lên
+                    Không tìm thấy diễn đàn nào
                 </Text>
              </View>}
 

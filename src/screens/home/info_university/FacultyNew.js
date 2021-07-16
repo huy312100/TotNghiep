@@ -109,6 +109,12 @@ const FacultyNewScreen = ({navigation}) =>{
             {isLoadingFacultScreen && loadingSkeletonForFacultNewScreen()}
             {statusCode === 500 && !isLoadingFacultScreen && Error500Screen()}
             {statusCode === 503 && !isLoadingFacultScreen && Error503Screen()}
+            {facultNews.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy tin tức khoa nào
+                    </Text>
+                </View>
+            }
            
            <FlatList
                 data={facultNews}

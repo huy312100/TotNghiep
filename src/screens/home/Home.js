@@ -369,14 +369,14 @@ const HomeScreen= ({navigation}) =>{
             setFacultNews(tmpNew);
             dispatch(newsActions.getFacultNews(tmpNew));
         }
-        else if (statusCode === 500){
-            setStatusCode(statusCode);
-        }
-        else if (statusCode === 503){
-            setStatusCode(statusCode)
-        }
+        // else if (statusCode === 500){
+        //     setStatusCode(statusCode);
+        // }
+        // else if (statusCode === 503){
+        //     setStatusCode(statusCode)
+        // }
         else{
-            setStatusCode(statusCode);
+            //setStatusCode(statusCode);
         }
     })
     .catch((err) => console.log(err, "error"));
@@ -608,6 +608,18 @@ const HomeScreen= ({navigation}) =>{
     </View>
   );
 
+  const renderEmptyUniversityNew = (
+    <View style={{marginLeft:50}}> 
+      <Text>Không có tin tức trường nào</Text>
+    </View>
+  );
+
+  const renderEmptyFacultyNew = (
+    <View style={{marginLeft:50}}> 
+      <Text>Không có tin tức khoa nào</Text>
+    </View>
+  );
+
   const renderCalendarInMonth = ({item}) =>(
     <TouchableOpacity style={calendarStyle.card}>
       <View style={{flexDirection:'row'}}>
@@ -763,7 +775,9 @@ const HomeScreen= ({navigation}) =>{
         data={uniNews.slice(0,5)}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={renderNewsItem}/>
+        renderItem={renderNewsItem}
+        ListEmptyComponent={renderEmptyUniversityNew}
+      />
 
       <Text style={styles.label}> Top 5 tin tức khoa mới nhất</Text>
 
@@ -771,7 +785,9 @@ const HomeScreen= ({navigation}) =>{
         data={facultNews.slice(0,5)}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={renderNewsItem}/>
+        renderItem={renderNewsItem}
+        ListEmptyComponent={renderEmptyFacultyNew}
+      />
 
       </ScrollView>
     }   

@@ -13,6 +13,7 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
     const infoCourseChoose = useSelector((state) => state.course.infoCourseChoose);
 
     const [data, setData] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
     const [idForum,setIDForum] = useState('');
 
     useEffect(() => {
@@ -23,6 +24,7 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
  
 
     const getForumCourseOfMoodle = () => {
+        setIsLoading(true);
         let details = {
             IDCourses: infoCourseChoose.idCourse,
         };
@@ -52,6 +54,7 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
             if(statusCode === 200){
                 setData(dataRes[0].Forum);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
     }
 
@@ -70,25 +73,9 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
 
     return(
         <View style={styles.container}>
-            {/* <Header
-            containerStyle={{
-                backgroundColor: 'white',
-                justifyContent: 'space-around',
-                borderBottomColor:'#DDDDDD'
-            }}
-            centerComponent={
-                <Text style={{fontSize:17,fontWeight:'500'}} numberOfLines={1}>{infoCourseChoose.nameCourse}</Text>
-            }
-            leftComponent={
-              <TouchableOpacity onPress={() =>{
-                  navigation.goBack();
-              }}>
-                  <Ionicons name="chevron-back-sharp" size={24} color="blue" />
-              </TouchableOpacity>
-              
-            }/> */}
+          
 
-            {data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+            { !isLoading && data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
                 
                 <Text style={{color:'#BBBBBB'}}>
                     Không có diễn đàn nào từ trang môn học

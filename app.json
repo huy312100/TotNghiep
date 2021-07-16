@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "DoAnTN_Mobile",
-    "slug": "DoAnTN_Mobile",
+    "name": "EMU ",
+    "slug": "emu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,7 +17,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "fit.hcmus.emu",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,7 +27,9 @@
         "backgroundColor": "#6699FF"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "useNextNotificationsApi":true
+      "useNextNotificationsApi":true,
+      "package": "fit.hcmus.emu",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

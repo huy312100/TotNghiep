@@ -4,7 +4,40 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const LoadingWithSkeletonScreen = () => {
     return(
-      <SkeletonPlaceholder>
+      <SkeletonPlaceholder style={{flex: 1}}>
+        <View >
+          <View style={skeletonLoading.courseInfoLoading}>
+            <View style={skeletonLoading.courseNameLoading} />
+            <View style={skeletonLoading.courseNameSecondLineLoading} />
+            <View style={skeletonLoading.teacherNameLoading}/>
+            <View style={skeletonLoading.teacherNameLoading}/>
+            <View style={skeletonLoading.teacherNameLoading}/>
+
+          </View>
+        </View>
+
+        <View >
+          <View style={skeletonLoading.courseInfoLoading}>
+            <View style={skeletonLoading.courseNameLoading} />
+            <View style={skeletonLoading.courseNameSecondLineLoading} />
+            <View style={skeletonLoading.teacherNameLoading}/>
+            <View style={skeletonLoading.teacherNameLoading}/>
+            <View style={skeletonLoading.teacherNameLoading}/>
+
+          </View>
+        </View>
+
+        <View >
+          <View style={skeletonLoading.courseInfoLoading}>
+            <View style={skeletonLoading.courseNameLoading} />
+            <View style={skeletonLoading.courseNameSecondLineLoading} />
+            <View style={skeletonLoading.teacherNameLoading}/>
+            <View style={skeletonLoading.teacherNameLoading}/>
+            <View style={skeletonLoading.teacherNameLoading}/>
+
+          </View>
+        </View>
+
         <View >
           <View style={skeletonLoading.courseInfoLoading}>
             <View style={skeletonLoading.courseNameLoading} />

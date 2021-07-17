@@ -4,8 +4,7 @@ import { useSelector,useDispatch } from 'react-redux';
 
 import * as dateUtils from '../../utils/Date';
 
-// import {Header,SearchBar} from 'react-native-elements';
-// import { MaterialCommunityIcons} from '@expo/vector-icons';
+import LoadingWithSkeletonScreen from '../LoadingSkeleton';
 
 const FirstReadMessageScreen = ({navigation}) => {
 
@@ -16,6 +15,7 @@ const FirstReadMessageScreen = ({navigation}) => {
     const socket = useSelector((state) => state.authen.socket);
 
     const [dataAwaitMsg,setDataAwaitMsg] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const unmounted = useRef(false);
 
@@ -31,47 +31,49 @@ const FirstReadMessageScreen = ({navigation}) => {
 
     //call api get await message 
     const getAwaitMessage =() => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `bearer ${token}`);
+      setIsLoading(true);
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `bearer ${token}`);
 
-        var requestOptions = {
-          method: 'GET',
-          headers: myHeaders,
-          redirect: 'follow'
-        };
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
 
-        
-        fetch("https://hcmusemu.herokuapp.com/chat/findchatawait",requestOptions)
-        .then((response) => {
-            const statusCode = response.status;
-            const dataRes = response.json();
-            return Promise.all([statusCode, dataRes]);
-        }).then(([statusCode, dataRes])=> {
-            console.log(statusCode,dataRes);
-            if (statusCode === 200) {
-                const tmpAwaitMsg =[];
-                for (const key in dataRes.awaittext) {
-                    tmpAwaitMsg.push(
-                    {
-                        state: dataRes.awaittext[key].state,
-                        _id: dataRes.awaittext[key]._id,
-                        idChatRoom: dataRes.awaittext[key].idChatRoom,
-                        from: dataRes.awaittext[key].from,
-                        text: dataRes.awaittext[key].text,
-                        time: dataRes.awaittext[key].time,
+      
+      fetch("https://hcmusemu.herokuapp.com/chat/findchatawait",requestOptions)
+      .then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes])=> {
+          console.log(statusCode,dataRes);
+          if (statusCode === 200) {
+              const tmpAwaitMsg =[];
+              for (const key in dataRes.awaittext) {
+                  tmpAwaitMsg.push(
+                  {
+                      state: dataRes.awaittext[key].state,
+                      _id: dataRes.awaittext[key]._id,
+                      idChatRoom: dataRes.awaittext[key].idChatRoom,
+                      from: dataRes.awaittext[key].from,
+                      text: dataRes.awaittext[key].text,
+                      time: dataRes.awaittext[key].time,
 
-                    });
-                }
-                setDataAwaitMsg(tmpAwaitMsg);
-            }
-           
-            else{
-                console.log(statusCode)
-            }
-            // setLoadingFacultScreen(false);
-            setRefreshing(false);
-        })
-        .catch((err) => console.log(err, "error"));
+                  });
+              }
+              setDataAwaitMsg(tmpAwaitMsg);
+          }
+          
+          else{
+              console.log(statusCode)
+          }
+          // setLoadingFacultScreen(false);
+          setIsLoading(false);
+          setRefreshing(false);
+      })
+      .catch((err) => console.log(err, "error"));
     };
 
     //refresh control trigger
@@ -121,17 +123,28 @@ const FirstReadMessageScreen = ({navigation}) => {
     );
 
     return(
-        <View style={styles.container}> 
-            <FlatList
-                data={dataAwaitMsg}
-                renderItem={renderItem}
-                keyExtractor={(item,index) => index.toString()}
-                refreshControl={<RefreshControl
-                    colors={["#9Bd35A", "#689F38"]}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    />}
-            />
+        <View style={{flex: 1}}> 
+          {isLoading && dataAwaitMsg.length === 0 && LoadingWithSkeletonScreen()}
+
+          {!isLoading && dataAwaitMsg.length === 0 &&  <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                
+                <Text style={{color:'#BBBBBB'}}>
+                    Không tìm thấy tin nhắn chờ nào
+                </Text>
+             </View>}
+             
+          <View style={styles.container}> 
+              <FlatList
+                  data={dataAwaitMsg}
+                  renderItem={renderItem}
+                  keyExtractor={(item,index) => index.toString()}
+                  refreshControl={<RefreshControl
+                      colors={["#9Bd35A", "#689F38"]}
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
+                      />}
+              />
+          </View>
         </View>
     )
 };

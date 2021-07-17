@@ -1,6 +1,7 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl } from 'react-native';
 
+import LoadingWithSkeletonScreen from '../LoadingSkeleton';
 
 import { useSelector,useDispatch } from 'react-redux';
 
@@ -15,6 +16,7 @@ const NormalMessageScreen = ({navigation}) => {
   const[dataMsg,setDataMsg] = useState([]);
 
   const token = useSelector((state) => state.authen.token);
+  const [isLoading,setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const unmounted = useRef(false);
 
@@ -30,6 +32,7 @@ const NormalMessageScreen = ({navigation}) => {
 
     //call api get all message screen
     const getAllMessage =() => {
+      setIsLoading(true);
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `bearer ${token}`);
 
@@ -74,6 +77,7 @@ const NormalMessageScreen = ({navigation}) => {
               console.log(statusCode)
           }
           // setLoadingFacultScreen(false);
+          setIsLoading(false);
           setRefreshing(false);
       })
       .catch((err) => console.log(err, "error"));
@@ -112,41 +116,32 @@ const NormalMessageScreen = ({navigation}) => {
 
 
     return (
-      <View style={styles.container}>
-         {/* <Header
-            containerStyle={{
-                backgroundColor: 'white',
-                justifyContent: 'space-around',
-                borderBottomColor:'#DDDDDD'
-            }}
 
-            centerComponent={
-                <Text style={headerStyle.centerText}>Tin nhắn</Text>
-            }
-            rightComponent={
-              <TouchableOpacity onPress={() =>{ navigation.navigate('Find to Chat')}}>
-                    <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
-                </TouchableOpacity>
+      <View style={{flex: 1}}>
+        {isLoading && dataMsg.length === 0 && LoadingWithSkeletonScreen()}
 
-            }/> */}
+        {!isLoading && dataMsg.length === 0 &&  <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+              
+              <Text style={{color:'#BBBBBB'}}>
+                  Không tìm thấy tin nhắn nào
+              </Text>
+            </View>}
 
 
-        {/* {data.length==0 && <ImageBackground style={styles.img}
-             source={require('../../../assets/chat.png')}
-             resizeMode='contain'/>} */}
-
-
-        <FlatList
-          data={dataMsg}
-          renderItem={renderItem}
-          keyExtractor={(item,index) => index.toString()}
-          refreshControl={<RefreshControl
-            colors={["blue", "red"]}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />}
-        />
+        <View style={styles.container}>
+          <FlatList
+            data={dataMsg}
+            renderItem={renderItem}
+            keyExtractor={(item,index) => index.toString()}
+            refreshControl={<RefreshControl
+              colors={["blue", "red"]}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />}
+          />
+        </View>
       </View>
+      
     );
 };
 
@@ -154,10 +149,10 @@ export default NormalMessageScreen;
 
 const styles = StyleSheet.create({
   container: {
-  flex: 1,
-  paddingLeft:15,
-  alignItems: 'center',
-  backgroundColor: '#ffffff',
+    flex: 1,
+    paddingLeft:15,
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
 
   card: {

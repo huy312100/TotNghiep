@@ -421,24 +421,24 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                 <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
                             </TouchableOpacity>
                         </ImageBackground>}
+
                         <View style={cmtStyles.bottomCmtComponent}>
                             <TouchableOpacity style={{bottom:0}}
                                 onPress={async() =>{
                                     let image = await imagePickerUtils.openImagePickerAsync();
                                     console.log(image);
                                     setImageSelected(image)
-                                }}
-                            >
+                                }}>
                                 <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
                             </TouchableOpacity>
 
                             <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... "
                                 onChangeText={(value) => setComment(value)}
-                                clearButtonMode="always"
                             />
 
-                            {comment.trim().length !== 0 &&
-                            <TouchableOpacity
+                            
+                            {comment.trim().length !== 0 && <TouchableOpacity
+                            style={cmtStyles.btnSubmitCmt}
                                 onPress={async() =>{
                                     if(typeForum === 'faculty' || typeForum === 'university'){
                                         await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);
@@ -450,12 +450,11 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                         setComment('');
                                         setImageSelected({uri:""});
                                         setRefresh(!refresh);
-                                }}
-                            >
-                                <MaterialCommunityIcons style={cmtStyles.btnSubmitCmt} name="send-circle" size={30} color="blue" />
-                            </TouchableOpacity>
-                        }
-                    </View>
+                                }}>
+                                <MaterialCommunityIcons name="send-circle" size={30} color="blue" />
+                            </TouchableOpacity>}
+
+                        </View>
                 </View>
             }
         </View>
@@ -558,8 +557,8 @@ const cmtStyles = StyleSheet.create({
     btnSubmitCmt:{
         position:'absolute',
         right:0,
-        marginHorizontal:2,
-        marginVertical:1.5
+        marginHorizontal:Platform.OS === 'android' ? 9 :2 ,
+        marginVertical:2
     },
 
     imgSelected:{

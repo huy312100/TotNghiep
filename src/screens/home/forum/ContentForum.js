@@ -26,10 +26,14 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
     const [dataComment,setDataComment] = useState([]);
     const [imageSelected,setImageSelected] = useState({uri:""});
     const [comment,setComment] = useState('');
+    const [commentInput,setCommentInput] = useState('');
 
     useEffect(() => {
         getDetailPost();
-        getAllComment();        
+        getAllComment();    
+        return()=>{
+            unmounted.current = true;
+        }    
     },[refresh,dataDetail.length]);
 
     const getDetailPost = () => {
@@ -247,8 +251,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 </TouchableOpacity>}
 
                 <TouchableOpacity style={styles.buttonFooter}>
-                    <FontAwesome style={{marginRight:8}} name="comment" size={18} color="silver" />
-                    <Text style={{marginTop:2,color:'silver'}}>{dataOfForum.comment}</Text>
+                    <Text style={{marginTop:2,color:'silver'}}>{dataDetail[0].comment} câu trả lời</Text>
                 </TouchableOpacity>
             </View>}
         </View>
@@ -284,7 +287,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                         style: "cancel"
                                       },
                                       {
-                                        text: "Cho phép",
+                                        text: "Xác nhận",
                                         onPress: async () => {
                                             if(typeForum === 'faculty' || typeForum === 'university'){
                                                 await forumServices.deleteCmt(token,item.ID);
@@ -315,7 +318,6 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
     return (
 
         <View style={styles.container}>
-
             <Header
                 containerStyle={{
                     backgroundColor: 'white',
@@ -346,6 +348,8 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                     </TouchableOpacity>
                 }/>
                 {/* <Text>{dataDetail[0].like}</Text> */}
+
+                {}
 
             {loading ? <ActivityIndicator style={{flex: 1}} color="black"/>
             :
@@ -384,8 +388,11 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                         </TouchableOpacity>
 
                         <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... "
-                            onChangeText={(value) => setComment(value)}
+                            onChangeText={(value) => {
+                                setComment(value);
+                            }}
                             clearButtonMode="always"
+                            ref={input => { setCommentInput(input) }}
                         />
 
                         {comment.trim().length !== 0 &&
@@ -399,6 +406,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                     await forumServices.commentCoursePost(token,dataOfForum.ID,comment,imageSelected);
                                 }
                                     setComment('');
+                                    commentInput.clear();
                                     setImageSelected({uri:""});
                                     setRefresh(!refresh);
                             }}
@@ -434,9 +442,9 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
 
                             <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... "
                                 onChangeText={(value) => setComment(value)}
+                                ref={input => { setCommentInput(input) }}
                             />
-
-                            
+                           
                             {comment.trim().length !== 0 && <TouchableOpacity
                             style={cmtStyles.btnSubmitCmt}
                                 onPress={async() =>{
@@ -448,11 +456,13 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                         await forumServices.commentCoursePost(token,dataOfForum.ID,comment,imageSelected);
                                     }
                                         setComment('');
+                                        commentInput.clear();
                                         setImageSelected({uri:""});
                                         setRefresh(!refresh);
                                 }}>
                                 <MaterialCommunityIcons name="send-circle" size={30} color="blue" />
                             </TouchableOpacity>}
+
 
                         </View>
                 </View>

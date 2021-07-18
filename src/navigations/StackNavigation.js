@@ -29,7 +29,7 @@ import NormalMessageScreen from "../screens/message/NormalMessage";
 import FirstReadMessageScreen from "../screens/message/FirstReadMessage";
 import FindToChatScreen from "../screens/message/FindToChat";
 import ChatScreen from "../screens/message/Chat";
-import {ProfileScreen} from '../screens/profile/Profile';
+import ProfileScreen from '../screens/profile/Profile';
 import NotificationScreen from '../screens/notifications/Notification';
 import AllCourseInfoScreen from '../screens/home/courses/AllCourse';
 import CurrentCourseInfoScreen from '../screens/home/courses/CurrentCourse';
@@ -674,18 +674,18 @@ function ConnectApplicationTopTab(){
   return (
     <topTab.Navigator initialRouteName="Moodle" 
     tabBarOptions={{
-      scrollEnabled:true,
+      //scrollEnabled:true,
   
       activeTintColor: 'green',
       inactiveTintColor:'#CCCCCC',
       indicatorStyle:{
         backgroundColor: 'green',
       },
-      tabStyle: {
-          width:110,
-      },
+      // tabStyle: {
+      //     width:'110',
+      // },
       labelStyle: { 
-        fontSize: 15,
+        fontSize: 14,
         textTransform:'none'
       },
       }}>
@@ -705,7 +705,7 @@ function ConnectApplicationTopTab(){
         }}
         />
 
-      <topTab.Screen 
+      {/* <topTab.Screen 
         name="Classroom" 
         component={ClassroomConnectScreen}
         options={{
@@ -727,7 +727,7 @@ function ConnectApplicationTopTab(){
         options={{
           tabBarLabel:'Trello'
         }}
-        />  
+        />   */}
     </topTab.Navigator>
   )
 }

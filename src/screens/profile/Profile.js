@@ -49,7 +49,7 @@ const categoryProfile = [
   // more items
 ];
 
-export function ProfileScreen({navigation}) {
+const ProfileScreen = ({navigation}) =>{
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.authen.token);
@@ -83,7 +83,9 @@ export function ProfileScreen({navigation}) {
                   dispatch(authenActions.logout);
                   dispatch(homeActions.VisibleBotTab(false));
                   Notifications.cancelAllScheduledNotificationsAsync();
-                  navigation.navigate("Login");
+                  navigation.reset({
+                    routes: [{ name: "Login" }]
+                  });
                 })
               }
             }}>
@@ -156,4 +158,4 @@ const styles = StyleSheet.create({
 
 });
 
-// export default ProfileScreen;
+export default ProfileScreen;

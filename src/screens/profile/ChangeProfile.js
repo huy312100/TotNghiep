@@ -5,6 +5,8 @@ import * as ImagePicker from 'expo-image-picker';
 import RNPickerSelect from "react-native-picker-select";
 import { useDispatch, useSelector  } from "react-redux";
 
+import LoadingScreen from "../LoadingScreen";
+
 import * as universityActions from "../../../store/actions/University";
 import * as profileActions from "../../../store/actions/Profile";
 
@@ -20,6 +22,8 @@ import RoundedImage from "../../components/profile/main/RoundedImage";
 function ChangeProfileScreen({navigation}) {
   const token = useSelector((state) => state.authen.token);
   const dispatch = useDispatch();
+
+  const [isLoading,setIsLoading] = useState(false);
 
   const uniName = useSelector((state) => state.university.universityInfo);
   const profile=useSelector((state) => state.profile.profile);
@@ -117,7 +121,7 @@ function ChangeProfileScreen({navigation}) {
 
         //console.log(dataUniversity);
         dispatch(profileActions.getProfile(json));
-        navigation.navigate("Profile");
+
       }).catch((err) => console.log(err, "error"));
   };
 
@@ -132,6 +136,8 @@ function ChangeProfileScreen({navigation}) {
     <TouchableWithoutFeedback onPress={() =>{
       Keyboard.dismiss();
     }}>
+      <View style={{ flex:1}}>
+      {isLoading && LoadingScreen()}
 
       <ScrollView style={styles.container}>
 
@@ -207,14 +213,20 @@ function ChangeProfileScreen({navigation}) {
                 onPress={ async () => {
                   console.log(image);
                   if(image.uri !== profile[0].AnhSV && image.uri !==""){
+                    setIsLoading(true);
                     await profileServices.deleteImage(token);
                     await profileServices.uploadImage(token,image);
                     await profileServices.editProfile(token,fullname,idUni,idFaculty);
                     await getProfile();
+                    setIsLoading(false);
+                    navigation.navigate("Profile");
                   }
                   else{
+                    setIsLoading(true);
                     await profileServices.editProfile(token,fullname,idUni,idFaculty);
                     await getProfile();
+                    setIsLoading(false);
+                    navigation.navigate("Profile");
                   }  
                 }}>
                 <Text style={styles.textBtnConnect}>Chỉnh sửa</Text>
@@ -225,7 +237,9 @@ function ChangeProfileScreen({navigation}) {
                 style={[styles.button,{backgroundColor:'grey'}]}>                 
                 <Text style={styles.textBtnConnect}>Chỉnh sửa</Text>
         </TouchableOpacity>}
+
       </ScrollView>
+      </View>
     </TouchableWithoutFeedback>
 
   );
@@ -234,8 +248,7 @@ function ChangeProfileScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginLeft:15,
-    marginRight: 15,
+    marginHorizontal:15
   },
 
   infoView: {

@@ -41,7 +41,8 @@ export const SetChangeFirstSignIn = async (token) => {
 
 export const ForgetPassword = async (email) =>{
     let details = {
-        email: email,
+        emailApp: email,
+        emailReset: email
     };
   
     let formBody = [];

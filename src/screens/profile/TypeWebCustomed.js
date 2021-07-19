@@ -50,6 +50,7 @@ const WebCustomedScreen = ({navigation}) =>{
                     {
                         Type: dataRes[key].Type,
                         Url:dataRes[key].Url,
+                        Username:dataRes[key].Username,
                     });
                 };
                 setData(tmp);

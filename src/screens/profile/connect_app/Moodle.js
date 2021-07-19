@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity,Alert} from "react-native";
+import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity,Alert,ScrollView} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {useDispatch,useSelector} from "react-redux";
 import * as profileActions from '../../../../store/actions/Profile';
@@ -19,6 +19,9 @@ const MoodleConnectScreen = ({navigation})=>{
 
     const dispatch=useDispatch();
     const token = useSelector((state) => state.authen.token);
+    const typeWebCustomed = useSelector((state) => state.profile.allWebCustomed);
+
+    var nameWebCustomed = typeWebCustomed.find(item => item.Type === 'Moodle');
 
     const ConnectAppHandler =()=>{
         setLoading(true);
@@ -115,6 +118,7 @@ const MoodleConnectScreen = ({navigation})=>{
             Keyboard.dismiss();
         }}>
             <View style={styles.container}>
+            {nameWebCustomed == undefined && <View style={styles.container}>
                 {isLoading && LoadingScreen()}
                
                 <Text style={styles.label}>
@@ -153,6 +157,19 @@ const MoodleConnectScreen = ({navigation})=>{
                 }}>
                 <Text style={styles.textBtnConnect}>Kết nối</Text>
             </TouchableOpacity>
+            </View>}
+
+        {nameWebCustomed != undefined && <ScrollView style={styles.container}>
+            <Text style={{marginHorizontal:18,color:"black",fontWeight:'500',textAlign:"center",marginBottom:20}}>
+                Ứng dụng đã được kết nối với tài khoản Moodle : {nameWebCustomed.Username}
+            </Text>
+
+            <Text style={{marginHorizontal:18}}>
+                Để huỷ kết nối ứng dụng cũ vui lòng vào <Text style={{fontWeight: 'bold'}}>Tài khoản &gt; Ứng dụng đã được kết nối</Text> 
+            </Text>
+
+        </ScrollView>}
+
         </View>
         </TouchableWithoutFeedback>
         

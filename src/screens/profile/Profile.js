@@ -37,6 +37,11 @@ const categoryProfile = [
     type_icon: "font-awesome-5",
   },
   {
+    name: "Tạo tài khoản phụ huynh",
+    icon: "supervisor-account",
+    type_icon: "material",
+  },
+  {
     name: "Đổi mật khẩu",
     icon: "lock-reset",
     type_icon: "material-community",
@@ -75,9 +80,12 @@ const ProfileScreen = ({navigation}) =>{
                 navigation.navigate("Web Customed"); 
               }
               else if(index === 3){
-                navigation.navigate("Change Password");
+                navigation.navigate("Create Parent Account");
               }
               else if(index === 4){
+                navigation.navigate("Change Password");
+              }
+              else if(index === 5){
                 AsyncStorage.removeItem('tokenValue').then(async () => {
                   await authenServices.SignOut(token);
                   dispatch(authenActions.logout);

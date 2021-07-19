@@ -18,6 +18,8 @@ import RegisterScreen  from "../screens/authentications/Register";
 import HomeScreen from "../screens/home/Home";
 import ForgetPasswordScreen from "../screens/authentications/ForgetPassword";
 import MailSentScreen from "../screens/authentications/ConfirmSentMail";
+import ChangePasswordScreen from '../screens/authentications/ChangePassword';
+import CreateParentAccountScreen from '../screens/authentications/CreateParentAccount';
 
 //import first sign in screen
 import StartConfigScreen from "../screens/first_config/StartConfig";
@@ -36,7 +38,6 @@ import CurrentCourseInfoScreen from '../screens/home/courses/CurrentCourse';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse';
 import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
-import ChangePasswordScreen from '../screens/authentications/ChangePassword';
 import AddToCalendarScreen from '../screens/home/calendar/AddToCalendar';
 import ModifyCalendarScreen from '../screens/home/calendar/ModifyCalendar';
 import AddPeopleToCalendarScreen from '../screens/home/calendar/AddPeopleToCalendar';
@@ -491,6 +492,21 @@ function ProfileStackNavigation({navigation}) {
       />
 
       <Stack.Screen
+        name="Create Parent Account"
+        component={CreateParentAccountScreen}
+        options={{ 
+          title: "Tạo tài khoản phụ huynh",
+          headerTitleAlign: 'center',
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+          headerTintColor:"#FFFFFF",
+          headerStyle:{
+            backgroundColor:"#33CCFF"
+          },
+        }}
+      />
+
+      <Stack.Screen
         name="Change Password"
         component={ChangePasswordScreen}
         options={{ 
@@ -504,6 +520,7 @@ function ProfileStackNavigation({navigation}) {
           },
         }}
       />
+
     </Stack.Navigator>
   )
 }
@@ -594,7 +611,7 @@ const getTabBarVisibility = (route) => {
   "Add Event","Modify Event","Find to Chat","University Info",
   "Add people to calendar","Forum","Forum Of A Moodle Course","Content Forum",
   "Create Post Of Forum","Content Forum Of A Moodle Course","Forum Of A Course",
-  "List User Liked","My Forum"];
+  "List User Liked","My Forum","Create Parent Account"];
 
   console.log(routeName);
 

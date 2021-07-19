@@ -405,11 +405,12 @@ const HomeScreen= ({navigation}) =>{
         const tmp =[];
         if (statusCode === 200){
           for (const key in dataRes) {
-              tmp.push(
-              {
-                  Type: dataRes[key].Type,
-                  Url:dataRes[key].Url,
-              });
+            tmp.push(
+            {
+              Type: dataRes[key].Type,
+              Url:dataRes[key].Url,
+              Username:dataRes[key].Username,
+            });
           };
           setWebCustomed(tmp)
           dispatch(profileActions.getAllWebCustomed(tmp));

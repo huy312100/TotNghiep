@@ -171,7 +171,10 @@ function ChangeProfileScreen({navigation}) {
           </View>
           <Input disabled={true}>{profile[0].Email}</Input>
         
-        <Text style={styles.labelText}>Chọn trường</Text>
+          <View style={styles.emailLabel}>
+            <Text style={styles.labelText}>Chọn trường</Text>
+            <Text style={{marginLeft:10,color:'red'}}>(Không thể thay đổi)</Text>
+          </View>
           <RNPickerSelect
               style={pickerSelectStyles}
               onValueChange={(value) => {
@@ -184,9 +187,13 @@ function ChangeProfileScreen({navigation}) {
                 value:profile[0].MaTruong
               }}
               useNativeAndroidPickerStyle={false}
+              //disabled = {true}
               items={itemNameUniversity}/>
 
-        <Text style={styles.labelText}>Chọn khoa</Text>
+          <View style={styles.emailLabel}>
+            <Text style={styles.labelText}>Chọn khoa</Text>
+            <Text style={{marginLeft:10,color:'red'}}>(Không thể thay đổi)</Text>
+          </View>
           <RNPickerSelect
               style={pickerSelectStyles}
               onValueChange={(value) => {
@@ -199,6 +206,7 @@ function ChangeProfileScreen({navigation}) {
                 value:profile[0].MaKhoa,
               }}
               useNativeAndroidPickerStyle={false}
+              //disabled = {true}
               items={itemFacultyName}/>
         
        { checkInfo() ? <TouchableOpacity

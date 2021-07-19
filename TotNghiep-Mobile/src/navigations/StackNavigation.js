@@ -14,6 +14,8 @@ import * as calendarActions from '../../store/actions/Calendar';
 import StartupScreen from "../screens/authentications/Startup";
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
+import ForgetPasswordScreen from "../screens/authentications/ForgetPassword";
+import MailSentScreen from "../screens/authentications/ConfirmSentMail";
 import HomeScreen from "../screens/home/Home";
 import CalendarScreen from "../screens/home/calendar/Calendar";
 import NormalMessageScreen from "../screens/message/NormalMessage";
@@ -48,6 +50,10 @@ import ForumUniversityScreen from "../screens/home/forum/forum_university/ForumU
 import ContentForumFacultyAndUniversityScreen from "../screens/home/forum/ContentForum";
 import ForumAllCourseScreen from "../screens/home/forum/forum_course/ForumAllCourse";
 
+import StartConfigScreen from "../screens/first_config/StartConfig";
+import MoodleConfigScreen from "../screens/first_config/MoodleConfig";
+import EndConfigScreen from "../screens/first_config/EndConfig";
+
 import { View } from "react-native";
 
 
@@ -79,6 +85,42 @@ export function AuthenStackNavigation() {
       name="Register"
       component={RegisterScreen}
       options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Forget Password"
+        component={ForgetPasswordScreen}
+        options={{           
+          title: "Quên mật khẩu",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+       }}
+      />
+
+      <Stack.Screen
+        name="Confirm Mail Sent"
+        component={MailSentScreen}
+        options={{           
+          headerShown: false,
+       }}
+      />
+
+      <Stack.Screen
+        name="Start Config"
+        component={StartConfigScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Moodle Config"
+        component={MoodleConfigScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="End Config"
+        component={EndConfigScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

@@ -1,5 +1,5 @@
 import React,{ useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback, Image} from "react-native";
 import {
   Heading,
   UsernameInput,
@@ -74,17 +74,23 @@ const LoginScreen = ({navigation}) => {
       Keyboard.dismiss();
     }}>
       <View style={styles.container}>
-
-        <Heading style={{textAlign: "center", paddingTop: 30}}>Đăng nhập</Heading>
+        <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
+        <Heading style={{textAlign: "center", paddingTop: 0}}>E M U</Heading>
         <UsernameInput placeholder={"Tên đăng nhập"}
           onChangeText={(username)=>setUsername(username)}/>
 
         <PasswordInput placeholder={"Mật khẩu"}
           onChangeText={(password)=>setPassword(password)}/>
 
-        <TouchableOpacity>
-          <Text style={styles.forgetPassText}>Lấy lại mật khẩu</Text>
-        </TouchableOpacity>
+        <View style={styles.viewForgetPassword}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Forget Password');
+            }}
+          >
+            <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
+          </TouchableOpacity>
+        </View>
 
 
         <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
@@ -112,6 +118,18 @@ const styles = StyleSheet.create({
   passInput: {
     backgroundColor: "#ccc",
     width: "100%",
+  },
+
+  viewForgetPassword: {
+    width:'100%',
+    paddingRight:5,
+    marginTop:20
+  },
+
+  imageLogo: {
+    width:175,
+    height:125,
+    alignSelf: "center"
   },
 
   forgetPassText: {

@@ -88,7 +88,7 @@ const ForumFacultyScreen =({navigation})=>{
                 <View style={styles.info}>
                     <Image style={styles.imageUserPost} source={ item.AvartaOwn === "" || item.AvartaOwn === null ? require("../../../../../assets/user-icon.png") : {uri : item.AvartaOwn}}/>
                     <View>
-                        <Text style={styles.nameAndDate}>{item.NameOwn}</Text>
+                        <Text style={[styles.nameAndDate, {fontSize:15}]}>{item.NameOwn}</Text>
                         <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(item.time)}</Text>
                     </View>
 
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
 
     content: {
         marginHorizontal:15,
-        fontSize:12,
+        fontSize:17,
         marginBottom:10,
     },
 

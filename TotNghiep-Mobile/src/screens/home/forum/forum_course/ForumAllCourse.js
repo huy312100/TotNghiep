@@ -73,7 +73,7 @@ const ForumAllCourseScreen =({navigation})=>{
                     <View>
                         
                         <View style={[styles.nameAndDate,{flexDirection:'row',flexWrap:'wrap'}]}>
-                            <Text style={{fontSize:12,fontWeight:'bold'}}>{item.NameOwn}</Text>
+                            <Text style={{fontSize:15,fontWeight:'bold'}}>{item.NameOwn}</Text>
                             <MaterialIcons style={{marginTop:3}} name="play-arrow" size={10} color="grey" />
                             <Text style={[{fontWeight:'300',fontSize:10,marginTop:2}]}>{item.NameCourses}</Text>
                         </View>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
 
     content: {
         marginHorizontal:15,
-        fontSize:12,
+        fontSize:17,
         marginBottom:10,
     },
 

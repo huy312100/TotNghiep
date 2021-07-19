@@ -77,9 +77,9 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
              <View style={styles.info}>
                 <Image style={styles.imageUserPost} source={ item.AvartOwn === "" || item.AvartOwn == null ? require("../../../../assets/user-icon.png") : {uri : item.AvartOwn}}/>
                 <View style={{flexDirection:'row'}}>
-                    <Text style={[styles.nameAndDate,{marginRight:5},cmtStyles.nameAndDate]}>{item.NameOwn}</Text>
-                    <Entypo name="dot-single" size={18} color="silver" />
-                    <Text style={[styles.nameAndDate,{fontWeight:'300',marginLeft:5},cmtStyles.nameAndDate]}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
+                    <Text style={[styles.nameAndDate,{marginRight:5, color: "black"}]}>{item.NameOwn}</Text>
+                    <Entypo name="dot-single" size={18} color="black" />
+                    <Text style={[styles.nameAndDate,{fontWeight:'300',marginLeft:5, color: "black"}]}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
                     
                 </View>
                 {item.EmailOwn === profile[0].Email && 
@@ -124,34 +124,14 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         return true;
     }
 
-    return (
-        
-        <View style={styles.container}>
-        
-        <Header
-                containerStyle={{
-                    backgroundColor: '#33CCFF',
-                    justifyContent: 'space-around',
-                    borderBottomColor:'#DDDDDD'
-                }}
-
-                centerComponent={
-                    <Text numberOfLines={1} style={{fontSize:16,fontWeight:'500',marginTop:5, color: "white"}}>Bài đăng của {dataOfForum.NameOwn}</Text>
-                }
-
-                leftComponent={
-                <TouchableOpacity onPress={() =>{ 
-                    navigation.goBack();
-                    }}>
-                        <Entypo name="chevron-left" size={30} color="white" />
-                    </TouchableOpacity>
-                }/>
-            <View>
+    const headerComponent =() =>{
+        return(
+        <View>
             <View style={styles.card}>
             <View style={styles.info}>
             <Image style={styles.imageUserPost} source={ dataOfForum.AvartaOwn === "" || dataOfForum.AvartaOwn === null ? require("../../../../assets/user-icon.png") : {uri : dataOfForum.AvartaOwn}}/>
                 <View>
-                    <Text style={styles.nameAndDate}>{dataOfForum.NameOwn}</Text>
+                    <Text style={[styles.nameAndDate, {fontSize:15}]}>{dataOfForum.NameOwn}</Text>
                     <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(dataOfForum.time)}</Text>
                 </View>
                 {dataOfForum.EmailOwn === profile[0].Email && 
@@ -189,13 +169,40 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         </View>
         
         </View>
+        )
+    }
+
+
+    return (
+        
+        <View style={styles.container}>
+        
+        <Header
+                containerStyle={{
+                    backgroundColor: '#33CCFF',
+                    justifyContent: 'space-around',
+                    borderBottomColor:'#DDDDDD'
+                }}
+
+                centerComponent={
+                    <Text numberOfLines={1} style={{fontSize:16,fontWeight:'500',marginTop:5, color: "white"}}>Bài đăng của {dataOfForum.NameOwn}</Text>
+                }
+
+                leftComponent={
+                <TouchableOpacity onPress={() =>{ 
+                    navigation.goBack();
+                    }}>
+                        <Entypo name="chevron-left" size={30} color="white" />
+                    </TouchableOpacity>
+                }/>
+            
             <FlatList
                 data={dataComment}
                 renderItem={renderItem}
                 keyExtractor={(item,index) => index.toString()}
-                //ListHeaderComponent={headerComponent}
+                ListHeaderComponent={headerComponent}
                 // ListFooterComponent={footerComponent}
-                ListFooterComponent={<View style={{height: 80}}/>}
+                ListFooterComponent={<View style={{height: 90}}/>}
             />
 
         
@@ -286,7 +293,7 @@ const styles = StyleSheet.create({
 
     content: {
         marginHorizontal:15,
-        fontSize:12,
+        fontSize:17,
         marginBottom:10,
     },
 

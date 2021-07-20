@@ -52,12 +52,20 @@ const DrawerContentScreen =({navigation}) =>{
                             onPress={() => {navigation.navigate('Detail Calendar')}}
                         />
 
-                        <DrawerItem 
+                        <DrawerItem style={styles.drawerItem}
                             icon={({color, size}) => (
                                 <Entypo name="info" size={size} color="grey" /> 
                            )}
                             label="Thông tin trường"
                             onPress={() => {navigation.navigate('Info University')}}
+                        />
+
+                        <DrawerItem 
+                            icon={({color, size}) => (
+                                <Entypo name="open-book" size={size} color="grey" />
+                           )}
+                            label="Môn học của sinh viên"
+                            onPress={() => {navigation.navigate('Course')}}
                         />
                         
                     </Drawer.Section>

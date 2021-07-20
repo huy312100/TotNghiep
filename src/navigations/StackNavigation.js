@@ -19,6 +19,10 @@ import FacultyNewScreen from "../screens/main/new/FacultyNew";
 import InfoUniversityScreen from "../screens/main/InfoUniversity";
 import ChangeProfileScreen from "../screens/main/profile/ChangeProfile";
 
+//import course
+import CurrentCourseScreen from "../screens/main/course/CurrentCourse";
+import AllCourseScreen from "../screens/main/course/AllCourse";
+
 
 const Stack = createStackNavigator();
 const topTab= createMaterialTopTabNavigator();
@@ -100,6 +104,14 @@ function HomeStackNavigation({navigation}){
                 }}
             />
 
+            <Stack.Screen name="Course" component={CourseTopTab}
+                options ={{
+                    title:'Môn học',
+                    headerTruncatedBackTitle:false,
+                    headerBackTitleVisible:false,
+                }}
+            />
+
         </Stack.Navigator>
     )
 }
@@ -161,7 +173,7 @@ const getTabBarVisibility = (route) => {
 
     const routeName = getFocusedRouteNameFromRoute(route) ;
   
-    const arrHideBotTab=["Detail Calendar","Info University","Change Profile"];
+    const arrHideBotTab=["Detail Calendar","Info University","Change Profile","Course"];
   
     for (var i = 0; i < arrHideBotTab.length; i++) {
       if (routeName === arrHideBotTab[i]) {
@@ -222,4 +234,32 @@ function NewTopTab(){
         />
     </topTab.Navigator>
   )
+}
+
+//Top tab of course screen
+function CourseTopTab(){
+  return (
+  <topTab.Navigator initialRouteName="Current Course" 
+    tabBarOptions={{
+      activeTintColor: 'blue',
+      labelStyle: { fontSize: 11 },
+      }}>
+  
+      <topTab.Screen 
+        name="Current Course" 
+        component={CurrentCourseScreen}
+        options={{
+          tabBarLabel:'Học kì gần nhất'
+        }}
+        />
+
+      <topTab.Screen 
+        name="All Course" 
+        component={AllCourseScreen}
+        options={{
+          tabBarLabel:'Tất cả'
+        }}
+      />
+  </topTab.Navigator>
+)
 }

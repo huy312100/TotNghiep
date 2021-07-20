@@ -1,0 +1,34 @@
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
+export const TOKEN_NOTIFICATION = 'TOKEN_NOTIFICATION';
+
+export const login = (token) => {
+  return async dispatch => {
+    dispatch({
+      type: LOGIN,
+      token: token,
+    })
+  }
+};
+
+export const logout = () => {
+  return {type: LOGOUT};
+};
+
+export const changePassword =() => {
+  return async dispatch =>{
+    dispatch({
+      type: CHANGE_PASSWORD,
+    })
+  }
+};
+
+export const storeTokenNotification = (data) => {
+  return async dispatch => {
+    dispatch({
+      type: TOKEN_NOTIFICATION,
+      tokenNotification:data
+    })
+  }
+};

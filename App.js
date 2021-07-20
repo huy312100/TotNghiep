@@ -10,9 +10,11 @@ import { createStore,combineReducers,applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk';
 
 import authenReducer from './store/reducers/Authen';
+import profileReducer from './store/reducers/Profile';
 
 const rootReducer = combineReducers({
-  authen:authenReducer
+  authen:authenReducer,
+  profile:profileReducer
 });
 
 const store = createStore(rootReducer,applyMiddleware(ReduxThunk));
@@ -21,9 +23,9 @@ export default function App() {
   return (
     <Provider store={store}>
         <SafeAreaProvider>
-        <NavigationContainer>
-          <MainStackNavigation/>
-        </NavigationContainer>
+          <NavigationContainer>
+            <MainStackNavigation/>
+          </NavigationContainer>
         </SafeAreaProvider>
         
     </Provider>

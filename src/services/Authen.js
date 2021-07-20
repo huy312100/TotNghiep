@@ -27,4 +27,31 @@ export const login=async(username, password)=>{
         console.log(statusCode, data);
         return data;
     }).catch(error => {console.log(error)})
-}
+};
+
+export const postTokenNotification = async (token,tokenNotification) => {
+    let details = {
+      TokenNotification: tokenNotification,
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    await fetch("https://hcmusemu.herokuapp.com/account/tokennotification", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `bearer ${token}`,
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((json) => {
+
+      }).catch((err) => console.log(err, "error"));
+  };

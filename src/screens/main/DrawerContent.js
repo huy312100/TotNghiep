@@ -1,34 +1,72 @@
-import React from 'react'
+import React,{useState,useEffect,useRef} from 'react'
 import { View,Text,StyleSheet,TouchableOpacity,TextInput } from 'react-native';
-import {useDispatch} from "react-redux";
-
+import {useDispatch,useSelector} from "react-redux";
 
 import { DrawerContentScrollView,DrawerItem } from '@react-navigation/drawer';
 import {Drawer,Avatar} from 'react-native-paper';
 
 import { MaterialIcons,FontAwesome,Entypo } from '@expo/vector-icons';
 
-import * as authActions from '../../../store/actions/Authen'
+import * as profileActions from '../../../store/actions/Profile';
+import * as authActions from '../../../store/actions/Authen';
 
 const DrawerContentScreen =({navigation}) =>{
+    const token = useSelector((state) => state.authen.token);
 
     const dispatch =useDispatch();
+
+    const unmounted = useRef(false);
+
+    const [dataProfile,setDataProfile] = useState([]);
+
+    useEffect(()=>{
+        const unsubscribe = navigation.addListener('focus', () => {
+            getProfile();
+        });
+
+        return()=>{
+            unmounted.current = true;
+            unsubscribe();
+        }
+    },[]);
 
     const SignOut =() =>{
         dispatch(authActions.logout());
         navigation.navigate('Login');
-    }
+    };
+
+    const getProfile = () =>{
+        //setLoading(true);
+        //console.log(token);
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `bearer ${token}`);
+    
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+    
+        fetch("https://hcmusemu.herokuapp.com/profile/view/parent",requestOptions)
+          .then((response) => response.json())
+          .then((json) => {
+            console.log(json);
+    
+            dispatch(profileActions.getProfile(json));
+            setDataProfile(json);
+            
+          }).catch((err) => console.log(err, "error"));
+    };
 
     return(
         <View style={styles.container}>
             <DrawerContentScrollView>
             <View style={styles.container}>
-                    <View style={[styles.userInfoSection]}>
+                    {dataProfile.length !== 0 && <View style={[styles.userInfoSection]}>
                         <TouchableOpacity style={{flexDirection:'row',marginTop: 10,marginRight:10}}
                             onPress={() => {
                                 navigation.navigate('Change Profile')
-                            }}
-                        >
+                            }}>
                             <Avatar.Image 
                                 source={
                                     // uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'
@@ -37,11 +75,11 @@ const DrawerContentScreen =({navigation}) =>{
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Text numberOfLines={1} style={styles.title}>Nguyễn Văn A</Text>
-                                <Text numberOfLines={1} style={styles.caption}>nndhparent@gmail.com</Text>
+                                <Text numberOfLines={1} style={styles.title}>{dataProfile[0].HoTen}</Text>
+                                <Text numberOfLines={1} style={styles.caption}>{dataProfile[0].Email}</Text>
                             </View>
                         </TouchableOpacity>
-                    </View>
+                    </View>}
                 </View>
                 <Drawer.Section style={styles.drawerSection}>
                         <DrawerItem style={styles.drawerItem}

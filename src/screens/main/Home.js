@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import { View,Text,StyleSheet,TouchableOpacity } from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
@@ -8,8 +8,19 @@ import {LocaleConfig} from 'react-native-calendars';
 
 import {useDispatch,useSelector} from "react-redux";
 
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
+import * as authenServices from '../../services/Authen';
 import * as dateUtils from '../../utils/Date';
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+});
 
 LocaleConfig.locales['fr'] = {
   monthNames: ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'],
@@ -23,15 +34,25 @@ LocaleConfig.defaultLocale = 'fr';
 const HomeScreen =({navigation}) =>{
     const token = useSelector((state) => state.authen.token);
 
+    const dispatch = useDispatch();
+    const unmounted = useRef(false);
+
     const currentDate =dateUtils.CurrentDateYYMMDD();
+    const [isLoading,setLoading]=useState(false);
     const [deadlineThisMonth,setDeadlineThisMonth] = useState([]);
+    const [tokenNotification,setTokenNotification] = useState('');
+
 
     useEffect(()=>{
+        getPermissionNotifications();
         getDeadlineThisMonth();
+        return()=>{
+            unmounted.current = true;
+        }
     },[]);
 
+
     const getDeadlineThisMonth = () =>{
-        //setLoading(true);
         //console.log(token);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `bearer ${token}`);
@@ -45,14 +66,40 @@ const HomeScreen =({navigation}) =>{
         fetch("https://hcmusemu.herokuapp.com/deadlinemoodle/month/parent",requestOptions)
           .then((response) => response.json())
           .then((json) => {
-            console.log(json);
-    
+            console.log(json);    
             //dispatch(homeActions.NewestDeadline(json));
             //console.log(dataUniversity);
             setDeadlineThisMonth(json);
+            setLoading(false);
             
           }).catch((err) => console.log(err, "error"));
     };
+
+    //Get permission to notifications on iOS 
+    const getPermissionNotifications = () =>{
+        setLoading(true);
+        Permissions.getAsync(Permissions.NOTIFICATIONS)
+        .then((statusObj) =>{
+          if(statusObj.status !== 'granted'){
+            return Permissions.askAsync(Permissions.NOTIFICATIONS);
+          }
+          return statusObj;
+        }).then((statusObj) =>{
+          if(statusObj.status !== 'granted'){
+            throw new Error('Permission not granted');
+          }
+        }).then(()=>{
+          return Notifications.getExpoPushTokenAsync();
+        }).then(async(res)=>{
+          setTokenNotification(res.data);
+          //console.log(tokenNotification);
+          await authenServices.postTokenNotification(token,res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+          return null;
+        });
+      };
 
     return(
         <View style={styles.container}>

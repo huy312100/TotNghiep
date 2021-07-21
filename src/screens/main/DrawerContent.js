@@ -50,7 +50,7 @@ const DrawerContentScreen =({navigation}) =>{
         fetch("https://hcmusemu.herokuapp.com/profile/view/parent",requestOptions)
           .then((response) => response.json())
           .then((json) => {
-            console.log(json);
+            //console.log(json);
     
             dispatch(profileActions.getProfile(json));
             setDataProfile(json);
@@ -62,16 +62,14 @@ const DrawerContentScreen =({navigation}) =>{
         <View style={styles.container}>
             <DrawerContentScrollView>
             <View style={styles.container}>
+                    {/* <Text>{dataProfile[0].HoTen}</Text> */}
                     {dataProfile.length !== 0 && <View style={[styles.userInfoSection]}>
                         <TouchableOpacity style={{flexDirection:'row',marginTop: 10,marginRight:10}}
                             onPress={() => {
                                 navigation.navigate('Change Profile')
                             }}>
                             <Avatar.Image 
-                                source={
-                                    // uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'
-                                    require("../../../assets/user.png")
-                                }
+                                source={dataProfile[0].AnhSV !== '' && dataProfile[0].AnhSV != null ? {uri: dataProfile[0].AnhSV} : require("../../../assets/user.png")}
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>

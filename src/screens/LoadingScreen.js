@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(52, 52, 52, 0.5)'
+        backgroundColor: 'rgba(52, 52, 52, 1)'
     },
 
     txtIndicator: {

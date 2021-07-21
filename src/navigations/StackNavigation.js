@@ -790,13 +790,13 @@ function ForumTopTab(){
     <topTab.Navigator initialRouteName="Forum Total Course" 
     tabBarOptions={{
       scrollEnabled:true,
-      activeTintColor: 'green',
+      activeTintColor: 'blue',
       inactiveTintColor:'#CCCCCC',
       tabStyle:{
         width:'auto',
       },
       indicatorStyle:{
-        backgroundColor: 'green',
+        backgroundColor: 'blue',
       },
 
       }}>
@@ -806,7 +806,7 @@ function ForumTopTab(){
         component={ForumAllCourseScreen} 
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:90}}>
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:90}}>
               Tất cả khoá học
             </Text>
           )
@@ -818,7 +818,7 @@ function ForumTopTab(){
         component={ForumCourseScreen} 
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:(DeviceWidth-90)/4}}>
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
               Môn học
             </Text>
           )
@@ -829,7 +829,7 @@ function ForumTopTab(){
         component={ForumFacultyScreen}
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:(DeviceWidth-90)/4}}>
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
               Khoa
             </Text>
           )
@@ -840,7 +840,7 @@ function ForumTopTab(){
         component={ForumUniversityScreen}
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:(DeviceWidth-90)/4}}>
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
               Trường
             </Text>
           )
@@ -855,10 +855,10 @@ function ForumACourseTopTab(){
   return (
     <topTab.Navigator initialRouteName="Forum Of A Course By App" 
     tabBarOptions={{
-      activeTintColor: 'green',
+      activeTintColor: 'blue',
       inactiveTintColor:'#CCCCCC',
       indicatorStyle:{
-        backgroundColor: 'green',
+        backgroundColor: 'blue',
       },
 
       labelStyle: { fontSize: 10 },

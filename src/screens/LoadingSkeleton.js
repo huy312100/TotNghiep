@@ -5,7 +5,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 const LoadingWithSkeletonScreen = () => {
     return(
       <SkeletonPlaceholder>
-        <View style={skeletonLoading.infoLoading}>
+        <View style={[skeletonLoading.infoLoading,{marginTop:20}]}>
           <View style={skeletonLoading.imageLoading} />
           <View style={{ marginLeft: 20 }}>
             <View style={skeletonLoading.contentLoading}>

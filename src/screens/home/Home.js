@@ -1,7 +1,7 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView,ImageBackground,SafeAreaView } from 'react-native';
 import io from 'socket.io-client';
-import { FontAwesome , Ionicons , FontAwesome5,MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome , Ionicons , FontAwesome5,MaterialCommunityIcons,MaterialIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 
@@ -750,7 +750,16 @@ const HomeScreen= ({navigation}) =>{
       </View>
         
 
-      <Text style={styles.label}>Deadline trong tháng</Text>
+      <View style={styles.labelRowTitle}>
+        <Text style={styles.label}>Deadline trong tháng</Text>
+        <TouchableOpacity style={styles.detailInfoBtn}
+            onPress={() =>{
+                navigation.navigate('');
+            }}>
+            <Text style={{fontSize:12,color:'blue'}}>Xem thêm</Text>
+            <MaterialIcons name="keyboard-arrow-right" size={15.5} color="blue" />
+        </TouchableOpacity>
+      </View>
       
       <FlatList 
         data={newDeadline}
@@ -760,7 +769,16 @@ const HomeScreen= ({navigation}) =>{
         ListEmptyComponent={renderEmptyNewsetDeadline}/>
       
 
-      <Text style={styles.label}>Lịch trong tháng</Text>
+      <View style={styles.labelRowTitle}>
+        <Text style={styles.label}>Lịch trong tháng</Text>
+        <TouchableOpacity style={styles.detailInfoBtn}
+            onPress={() =>{
+                navigation.navigate('');
+            }}>
+            <Text style={{fontSize:12,color:'blue'}}>Xem thêm</Text>
+            <MaterialIcons name="keyboard-arrow-right" size={15.5} color="blue" />
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={calendar}
@@ -769,8 +787,17 @@ const HomeScreen= ({navigation}) =>{
         renderItem={renderCalendarInMonth}
         ListEmptyComponent={renderEmptyCalendarInMonth}/>
 
-
-      <Text style={styles.label}> Top 5 tin tức trường mới nhất</Text>
+      <View style={styles.labelRowTitle}>
+          <Text style={styles.label}>Top 5 tin tức trường mới nhất</Text>
+          <TouchableOpacity style={styles.detailInfoBtn}
+              onPress={() =>{
+                  navigation.navigate('University Info');
+              }}>
+              <Text style={{fontSize:12,color:'blue'}}>Xem thêm</Text>
+              <MaterialIcons name="keyboard-arrow-right" size={15.5} color="blue" />
+          </TouchableOpacity>
+          
+      </View>
 
       <FlatList
         data={uniNews.slice(0,5)}
@@ -780,7 +807,18 @@ const HomeScreen= ({navigation}) =>{
         ListEmptyComponent={renderEmptyUniversityNew}
       />
 
-      <Text style={styles.label}> Top 5 tin tức khoa mới nhất</Text>
+      <View style={styles.labelRowTitle}>
+        <Text style={styles.label}>Top 5 tin tức khoa mới nhất</Text>
+        <TouchableOpacity style={styles.detailInfoBtn}
+            onPress={() =>{
+              navigation.navigate('University Info',{
+                screen:'Faculty New'
+              });
+            }}>
+            <Text style={{fontSize:12,color:'blue'}}>Xem thêm</Text>
+            <MaterialIcons name="keyboard-arrow-right" size={15.5} color="blue" />
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={facultNews.slice(0,5)}
@@ -817,6 +855,8 @@ const styles = StyleSheet.create({
   },
 
   label: {
+    width:'100%',
+    flexDirection:'row',
     marginVertical:15,
     marginHorizontal:10,
     fontSize:16,
@@ -887,6 +927,18 @@ const styles = StyleSheet.create({
     borderColor: "#cccccc",
     borderRadius: 10,
   },
+
+  labelRowTitle: {
+    marginVertical:10,
+    justifyContent:'center'
+  },
+
+  detailInfoBtn:{
+    position:'absolute',
+    right:5,
+    flexDirection:'row',
+    justifyContent:'center'
+  }
 });
 
 const calendarStyle = StyleSheet.create({

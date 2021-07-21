@@ -114,6 +114,13 @@ const PortalConnectScreen = ({navigation})=>{
         .catch((err) => console.log(err, "error"));
     };
 
+    const checkDisableButton = () => {
+        if(url.trim().length === 0) {
+            return true; 
+        }
+        return false;
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
@@ -151,7 +158,8 @@ const PortalConnectScreen = ({navigation})=>{
                 </View> */}
 
             <TouchableOpacity
-                style={styles.button}
+                disabled={checkDisableButton()}
+                style={[styles.button,{backgroundColor: checkDisableButton() ? "grey" : "green"}]}
                 onPress={() => {
                     ConnectAppHandler();
                     getWebCustomed();
@@ -160,7 +168,7 @@ const PortalConnectScreen = ({navigation})=>{
             </TouchableOpacity>
             </View>}
 
-            {nameWebCustomed != undefined && <ScrollView style={styles.container}>
+            {nameWebCustomed != undefined && <View style={[styles.container,{justifyContent:'center',alignItems: 'center'}]}>
                 <Text style={{marginHorizontal:18,color:"black",fontWeight:'500',textAlign:"center",marginBottom:20}}>
                     Ứng dụng đã được kết nối với tài khoản Portal
                 </Text>
@@ -169,7 +177,7 @@ const PortalConnectScreen = ({navigation})=>{
                     Để huỷ kết nối ứng dụng cũ vui lòng vào <Text style={{fontWeight: 'bold'}}>Tài khoản &gt; Ứng dụng đã được kết nối</Text> 
                 </Text>
 
-             </ScrollView>}
+             </View>}
 
         </View>
         </TouchableWithoutFeedback>
@@ -213,7 +221,6 @@ const styles = StyleSheet.create({
     },
 
     button:{
-        backgroundColor: "green",
         margin:60,
         borderRadius:20,
         padding:10

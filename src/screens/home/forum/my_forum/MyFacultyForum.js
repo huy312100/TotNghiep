@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
 import { Fontisto,FontAwesome } from '@expo/vector-icons';
 
 import {useSelector} from 'react-redux';
@@ -14,6 +14,7 @@ const MyFacultyForumScreen =({navigation})=>{
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
     const [refresh,setRefresh] = useState(false);
 
     useEffect(() => {
@@ -28,6 +29,7 @@ const MyFacultyForumScreen =({navigation})=>{
     },[refresh]);
 
     const getMyFacultyForum = () => {
+        setIsLoading(true);
         fetch("https://hcmusemu.herokuapp.com/forum/yourpost", {
             method: "GET",
             headers: {
@@ -60,6 +62,7 @@ const MyFacultyForumScreen =({navigation})=>{
                 }
                 setDataForum(dataTmp);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
     };
 
@@ -118,6 +121,17 @@ const MyFacultyForumScreen =({navigation})=>{
 
     return (
         <View style={styles.container}>
+
+            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="blue"/>
+            </View>}
+
+            {!isLoading && dataForum.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy diễn đàn nào 
+                    </Text>
+                </View>
+            }
 
             <FlatList
                 data={dataForum}

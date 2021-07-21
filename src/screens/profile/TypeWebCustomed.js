@@ -15,7 +15,7 @@ const WebCustomedScreen = ({navigation}) =>{
 
     const token = useSelector((state) => state.authen.token);
     const [data,setData] = useState([]);
-    const [isLoading,setLoading] = useState(false);
+    const [isLoading,setLoading] = useState(true);
 
     const dispatch = useDispatch();
 
@@ -43,6 +43,7 @@ const WebCustomedScreen = ({navigation}) =>{
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
             const tmp =[];
             if (statusCode === 200){
                 for (const key in dataRes) {
@@ -56,6 +57,11 @@ const WebCustomedScreen = ({navigation}) =>{
                 setData(tmp);
             }
             //setData(json);
+            else if ( statusCode === 500) {
+                if (dataRes.message === 'You dont custom web'){
+                    setData(tmp);
+                }
+            }
             dispatch(profileActions.getAllWebCustomed(tmp));
             setLoading(false);
         })
@@ -133,14 +139,6 @@ const WebCustomedScreen = ({navigation}) =>{
         )
     };
 
-    const renderEmpty =()=>{
-        return(
-            <View style={styles.emptyContent}>
-                <Text style={styles.emptyInfo}>Nội dung không tìm thấy</Text>
-            </View>     
-        )   
-    }
-
     return(
         <View style={styles.container}>
 
@@ -163,13 +161,23 @@ const WebCustomedScreen = ({navigation}) =>{
 
 
             <View style={{height:10}}/>
+                {!isLoading && data.length === 0 && <View style={[styles.container,{justifyContent:'center',alignItems: 'center'}]}>
+                    <Text style={{marginHorizontal:18,color:"black",fontWeight:'500',textAlign:"center",marginBottom:20}}>
+                        Chưa được kết nối với ứng dụng nào
+                    </Text>
 
-             <SwipeListView
-                data={data}
-                keyExtractor={(item,index) => index.toString()}
-                renderItem={renderItem}
-                renderHiddenItem={renderHiddenItem}
-                rightOpenValue={-75}/>
+                    <Text style={{marginHorizontal:18}}>
+                        Để kết nối ứng dụng . Xin vui lòng vào <Text style={{fontWeight: 'bold'}}>Tài khoản &gt; Kết nối ứng dụng</Text> 
+                    </Text>
+
+                </View>}
+
+                <SwipeListView
+                    data={data}
+                    keyExtractor={(item,index) => index.toString()}
+                    renderItem={renderItem}
+                    renderHiddenItem={renderHiddenItem}
+                    rightOpenValue={-75}/>
              
 
         {isLoading && LoadingScreen()}

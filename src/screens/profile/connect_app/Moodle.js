@@ -113,6 +113,13 @@ const MoodleConnectScreen = ({navigation})=>{
         .catch((err) => console.log(err, "error"));
     };
 
+    const checkDisableButton = () => {
+        if(url.trim().length === 0 || username.trim().length === 0 || password.trim().length === 0) {
+            return true; 
+        }
+        return false;
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
@@ -150,7 +157,8 @@ const MoodleConnectScreen = ({navigation})=>{
                 </View>
 
             <TouchableOpacity
-                style={styles.button}
+                disabled={checkDisableButton()}
+                style={[styles.button,{backgroundColor: checkDisableButton() ? "grey" : "green"}]}
                 onPress={() => {
                     ConnectAppHandler();
                     getWebCustomed();
@@ -159,7 +167,7 @@ const MoodleConnectScreen = ({navigation})=>{
             </TouchableOpacity>
             </View>}
 
-        {nameWebCustomed != undefined && <ScrollView style={styles.container}>
+        {nameWebCustomed != undefined && <View style={[styles.container,{justifyContent:'center',alignItems: 'center'}]}>
             <Text style={{marginHorizontal:18,color:"black",fontWeight:'500',textAlign:"center",marginBottom:20}}>
                 Ứng dụng đã được kết nối với tài khoản Moodle : {nameWebCustomed.Username}
             </Text>
@@ -168,7 +176,7 @@ const MoodleConnectScreen = ({navigation})=>{
                 Để huỷ kết nối ứng dụng cũ vui lòng vào <Text style={{fontWeight: 'bold'}}>Tài khoản &gt; Ứng dụng đã được kết nối</Text> 
             </Text>
 
-        </ScrollView>}
+        </View>}
 
         </View>
         </TouchableWithoutFeedback>
@@ -212,7 +220,6 @@ const styles = StyleSheet.create({
     },
 
     button:{
-        backgroundColor: "green",
         margin:60,
         borderRadius:20,
         padding:10
@@ -230,7 +237,7 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 15,
         textAlign: "center",
-      },
+    },
 });
 
 export default MoodleConnectScreen;

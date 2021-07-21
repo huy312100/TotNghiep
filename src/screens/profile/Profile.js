@@ -4,6 +4,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { ListItem, Icon } from "react-native-elements";
 
@@ -63,7 +64,7 @@ const ProfileScreen = ({navigation}) =>{
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.infoView}>
         <RoundedImage source={{uri: profile[0].AnhSV ==="" ? undefined : profile[0].AnhSV}}></RoundedImage>
         <Text style={styles.nameText}>{profile[0].HoTen}</Text>
@@ -108,7 +109,7 @@ const ProfileScreen = ({navigation}) =>{
           </ListItem>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

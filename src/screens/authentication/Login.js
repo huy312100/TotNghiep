@@ -104,8 +104,11 @@ const LoginScreen =({navigation}) =>{
                 <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
                 </TouchableOpacity>
         
-                <TouchableOpacity>
-                <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
+                <TouchableOpacity
+                    onPress={()=>{
+                        navigation.navigate("Forget Password");
+                    }}>
+                    <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
                 </TouchableOpacity>
         
                 {isLoading && LoadingScreen()}

@@ -23,6 +23,9 @@ import ChangeProfileScreen from "../screens/main/profile/ChangeProfile";
 import CurrentCourseScreen from "../screens/main/course/CurrentCourse";
 import AllCourseScreen from "../screens/main/course/AllCourse";
 
+import ForgetPasswordScreen from "../screens/authentication/ForgetPassword";
+import MailSentScreen from "../screens/authentication/ConfirmSentMail";
+
 
 const Stack = createStackNavigator();
 const topTab= createMaterialTopTabNavigator();
@@ -33,16 +36,30 @@ export const MainStackNavigation =() => {
     return(
         <Stack.Navigator>
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
-            <Stack.Screen name="Main" component={DrawerNavigation} 
-                
+            <Stack.Screen name="Main" component={DrawerNavigation}                
                 options={{ 
-                    // title:'Trang chủ',
-                    // headerLeft:()=>(
-                    //     <Ionicons name="ios-menu" size={24} color="white"/>
-                    // )
                     headerShown: false
                 }}
             />
+
+          <Stack.Screen
+            name="Forget Password"
+            component={ForgetPasswordScreen}
+            options={{           
+              title: "Quên mật khẩu",
+              headerBackTitle:false,
+              headerTruncatedBackTitle:false,
+          }}
+          />
+
+          <Stack.Screen
+            name="Confirm Mail Sent"
+            component={MailSentScreen}
+            options={{           
+              headerShown: false,
+          }}
+          />
+
         </Stack.Navigator>
     )
 };

@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import NavBar from "../Navigation/NavBar"
 import {
   Grid,
-  Paper,
   Typography,
   createMuiTheme,
   MuiThemeProvider,
   makeStyles,
-  TextField,
-  Button,
-  Toolbar 
+  Toolbar,
+
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
-
+import LanguageIcon from '@material-ui/icons/Language';
+import SchoolIcon from '@material-ui/icons/School';
+import MailIcon from '@material-ui/icons/Mail';
+import PhoneIcon from '@material-ui/icons/Phone';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import HomeIcon from '@material-ui/icons/Home';
+import BusinessIcon from '@material-ui/icons/Business';
+import LoadingScreen from "./LoadingScreen"
 let theme = createMuiTheme();
 theme.typography.h6 = {
   fontSize: "1rem",
@@ -30,24 +35,6 @@ theme.typography.h6 = {
   }
 };
 
-// dummy data
-const data = {
-  Name: "Trường Đại học Khoa học Tự nhiên - Đại học Quốc gia TPHCM",
-  Website: "https://www.hcmus.edu.vn",
-  Facebook: "https://www.facebook.com/us.vnuhcm/",
-  Phone: "(84.8)38 353 193 - (028) 38 962 823",
-  Address: "227 Đ. Nguyễn Văn Cừ, Phường 4, Quận 5, Thành phố Hồ Chí Minh",
-  Email: "bantin@hcmus.edu.vn"
-};
-
-const mapInformation = {
-  Name:"Trường",
-  Website: "Địa chỉ web",
-  Facebook: "Fanpage",
-  Phone: "Điện thoại",
-  Address: "Địa chỉ",
-  Email: "Hộp thư"
-};
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -69,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   form: {
-    backgroundColor: "white",
+    backgroundColor: "#ddde9b",
     color: "#594f8d ",
     padding: "1em",
     width: "60%",
@@ -93,66 +80,111 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor:"#78AB46",
       top:"5px",
     },
-    root:{
-        marginLeft: "200px"
+  root:{
+        marginLeft: "210px",
+        backgroundColor: "#faf9e8"
+    },
+  img:{
+      width:"100%",
+      height:"300px"
     }
 
 }));
 
 
-const DataInfoGridItem = (formState,propt, index) => {
-  const classes = useStyles();
-  return (
-    <Grid
-      item
-      xs={6}
-      key={`display-${index}`}
-      container
-      direction="column"
-      alignItems="center"
-     
-    >
-      <Paper className={classes.paper}>
-        <Grid item xs={12}>
-          <Typography variant="subtitle1">{mapInformation[propt]}</Typography>
-        </Grid>
-        <Grid item xs={12} align="normal">
-            <Typography variant="h6">{formState[propt]}</Typography>
-        </Grid>
-      </Paper>
-    </Grid>
-  );
-};
-
-
 export default function UniversityInfo() {
- const [formInput, setFormInput] = useState(data);
-  const classes = useStyles()
-  const toggleRender = () => {
-    return Object.keys(data).map((key, index) =>
-      DataInfoGridItem(formInput,key, index)
-    );
-  };
+  const classes = useStyles();
+  const [info,setInfo] = useState([{
+    TenTruongDH: "",
+    WebSite: "",
+    Email: "",
+    SDT: "",
+    FanFage: "",
+    TenDiaChi: "",
+    TenKhoa: "",
+    Website: "",
+    Images:""
+  }])
+  const [loading,setLoading] = useState(true);
+  const getInfoUni = async() => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
+
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    await fetch("https://hcmusemu.herokuapp.com/info/getinfo", requestOptions)
+        .then(response => {return response.json();})
+        .then(result => {
+         setInfo({
+           TenTruongDH: result[0].TenTruongDH,
+           WebSite: result[0].WebSite,
+           Email: result[0].Email,
+           SDT: result[0].SDT,
+           FanFage: result[0].FanFage,
+           TenDiaChi: result[0].TenDiaChi,
+           TenKhoa: result[0].TenKhoa,
+           Website: result[0].WebSite,
+           Images: result[0].Images}
+         );
+         setLoading(false);
+        })
+        .catch(error => console.log('error', error));
+    }
+  useEffect(() =>{
+    getInfoUni();
+  },[])
+  if (loading == true){
+    return(
+      <LoadingScreen/>
+    )
+  }
+  else{
   return (
     <div className={classes.root}>
     <NavBar className = {classes.floatingMenu}/>
     <Toolbar /> 
       <MuiThemeProvider theme={theme}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} container spacing={2}>
-            <Grid item sm={6} md={12} align="center">
-                <Paper 
-                circle= "true"
-                style={{ border: "2px solid", height: "200px", width: "200px", borderRadius:'50%' }}
-          >
-              <img src = "" alt=""  style={{width:'100%', height:'100%',borderRadius:'50%'}} ></img>
-        </Paper>
-        <Typography variant="h4">{`${data.Name}`}</Typography>
-            </Grid>
-          </Grid>
-          {toggleRender()}
+        <Typography align="center" variant="h3"> Chào mừng đến với trang tin liên hệ của trường</Typography>
+        <br/>
+        <Grid container spacing={2} item xs={12}>
+              <img className={classes.img} src = {info.Images} alt=""  ></img>
         </Grid>
+        <br/><br/>
+        <div style={{marginLeft: "5%"}}>
+          <Typography variant="h5">
+            <SchoolIcon style={{fontSize: "25px"}}/> {info.TenTruongDH}
+          </Typography>
+          <br/>
+          <Typography style={{fontSize: "25px"}}>
+            <LanguageIcon style={{fontSize: "25px"}}/> {info.WebSite}
+          </Typography>
+          <br/>
+          <Typography style={{fontSize: "25px"}}>
+            <MailIcon style={{fontSize: "25px"}}/> {info.Email}
+          </Typography>
+          <br/>
+          <Typography style={{fontSize: "25px"}}>
+            <PhoneIcon style={{fontSize: "25px"}}/> {info.SDT}
+          </Typography>
+          <br/>
+          <Typography style={{fontSize: "25px"}}>
+            <FacebookIcon style={{fontSize: "25px"}}/> {info.FanFage}
+          </Typography>
+          <br/>
+          <Typography style={{fontSize: "25px"}}>
+            <HomeIcon style={{fontSize: "25px"}}/> {info.TenDiaChi}
+          </Typography>
+          <br/>
+          <Typography style={{fontSize: "25px"}}>
+            <BusinessIcon style={{fontSize: "25px"}}/> {info.TenKhoa}
+          </Typography>
+          </div>
       </MuiThemeProvider>
     </div>
   );
+  }
 }

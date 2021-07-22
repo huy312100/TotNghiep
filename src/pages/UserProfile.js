@@ -5,6 +5,9 @@ import {Toolbar, Button} from "@material-ui/core"
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import 'font-awesome/css/font-awesome.min.css';
+import { FormControl } from '@material-ui/core';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import { IconButton } from 'material-ui';
 
 const useStyles = () => ({
   center: {
@@ -33,7 +36,7 @@ const useStyles = () => ({
     width: "100%"
   },
   info_profile_th: {
-    fontSize: "14px", 
+    fontSize: "20px", 
     padding: "8px", 
     textAlign: "left", 
     borderBottom: "1px solid #ddd"
@@ -56,13 +59,15 @@ const useStyles = () => ({
     margin: "2px", 
     padding: "5px", 
     background: "#304f8d", 
-    color: "white"
+    color: "white",
+    width: "100px"
   },
   info_profile__cancel: {
     margin: "2px", 
     padding: "4px", 
     background: "#ffffff", 
-    border: "1px solid"
+    border: "1px solid",
+    width: "100px"
   },
   info_profile__image: {
     borderRadius: "100px"
@@ -98,7 +103,7 @@ const useStyles = () => ({
     display: "inline-block", 
     border: "1px solid gray", 
     margin: "0 0 1px 10px", 
-    fontSize: "12px", 
+    fontSize: "15px", 
     fontWeight: "600",
     textAlign: "center"
   },
@@ -109,7 +114,7 @@ const useStyles = () => ({
   },
   popup_box_image__title: {
     padding: "15px", 
-    fontSize: "18px", 
+    fontSize: "20px", 
     fontWeight: "400"
   },
   popup_box_image_input_type__file: {
@@ -180,7 +185,6 @@ class Profile extends Component {
         fetch("https://hcmusemu.herokuapp.com/profile/view", requestOptions)
             .then(response => response.json())
             .then(result => {
-                console.log(result[0].AnhSV)
                 this.setState({
                     name: result[0].HoTen,
                     email: result[0].Email,
@@ -260,7 +264,10 @@ class Profile extends Component {
             return <tr>
                 <td className={clsx(classes.info_profile__firstcol,classes.info_profile_td)}>Tên</td>
                 <td className={classes.info_profile_td}><input className={classes.info_profile_input} name="name" value={this.state.name} onChange={this.setParams}></input></td>
-                <td><span className={classes.info_profile__confirm} type="button" onClick={this.updateProfile}>Xác nhận</span><span className={classes.info_profile__cancel} type="button" onClick={this.CancelEdit}>Hủy</span></td>
+                <td>
+                    <Button className={classes.info_profile__confirm} onClick={this.updateProfile}>Xác nhận</Button>
+                    <Button className={classes.info_profile__cancel} onClick={this.CancelEdit}>Hủy</Button>
+                </td>
             </tr>
         }
     }
@@ -335,13 +342,14 @@ class Profile extends Component {
         else {
             return <tr>
                 <td className={clsx(classes.info_profile__tb_row_hover,classes.info_profile_td)}>Trường</td>
-                <td className={classes.info_profile_td}><select className="form-control" name="uniselected" onChange={this.setParams} value={this.state.uniselected}>
-                    {}
-                    {this.state.listuniversity}
-                </select></td>
                 <td className={classes.info_profile_td}>
-                    <span className={classes.info_profile__confirm} type="button" onClick={this.updateProfile}>Xác nhận</span>
-                    <span className="cancel" type="button" onClick={this.CancelEdit}>Hủy</span>
+                    <select fontSize="20px" className="form-control" name="uniselected" onChange={this.setParams} value={this.state.uniselected}>
+                    {this.state.listuniversity}
+                    </select>
+                </td>
+                <td className={classes.info_profile_td}>
+                    <Button className={classes.info_profile__confirm} onClick={this.updateProfile}>Xác nhận</Button>
+                    <Button className="cancel"  onClick={this.CancelEdit}>Hủy</Button>
                 </td>
             </tr>
         }
@@ -359,10 +367,14 @@ class Profile extends Component {
         else {
             return <tr>
                 <td className={clsx(classes.info_profile_td,classes.info_profile__firstcol)}>Khoa</td>
-                <td className={classes.info_profile_td}><select className="form-control" name="facselected" onChange={this.setParams} value={this.state.facselected}>
+                <td className={classes.info_profile_td}>
+                    <select className="form-control" name="facselected" onChange={this.setParams} value={this.state.facselected}>
                     {this.state.listfaculty}
-                </select></td>
-                <td className={classes.info_profile_td}><span className={classes.info_profile__confirm} type="button" onClick={this.updateProfile}>Xác nhận</span><span className={classes.info_profile__cancel} type="button" onClick={this.CancelEdit}>Hủy</span></td>
+                     </select>
+                </td>
+                <td className={classes.info_profile_td}>
+                    <Button className={classes.info_profile__confirm} onClick={this.updateProfile}>Xác nhận</Button>
+                    <Button className={classes.info_profile__cancel} onClick={this.CancelEdit}>Hủy</Button></td>
             </tr>
         }
     }
@@ -414,7 +426,7 @@ class Profile extends Component {
     uploadIMG = async () => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/form-data");
-        
+        console.log(this.state.picture)
         let formdata = new FormData();
         formdata.append("image",this.state.picture);
        var requestOptions = {
@@ -447,7 +459,7 @@ class Profile extends Component {
                 {}
             </div>
             <div className={classes.popup_box_image__body}>
-                <img className={classes.popup_box_image__body_img} width="150vw" height="150vh" src={this.state.imgData} alt=""></img>
+                <img className={classes.popup_box_image__body_img} width="150vw" height="150vh" src={this.state.picture} alt=""></img>
                 <label className={classes.popup_box_image__custom_file_upload}>
                     <input className={classes.popup_box_image_input_type__file} type="file" accept="image/png, image/jpeg, image/jpg, img/tiff" onChange={this.onChangePicture} />
                     Chọn ảnh từ máy tính của bạn
@@ -474,21 +486,21 @@ class Profile extends Component {
                <div>
                 {this.checkPopup()}
                 <div className={classes.info_profile}>
-                    <h3>Thông tin cá nhân</h3>
+                    <h1>Thông tin cá nhân</h1>
                     <hr className={classes.info_profile_hr} />
 
                     <table className= {classes.info_profile_table}>
                         <colgroup>
                             <col style={{ width: "25%" }} />
-                            <col style={{ width: "65%" }} />
-                            <col style={{ width: "15%" }} />
+                            <col style={{ width: "50%" }} />
+                            <col style={{ width: "25%" }} />
                         </colgroup>
                         <tbody>
                             <tr className={classes.info_profile__tb_row_hover} onClick={this.changeIMG}>
                                 <td className={clsx(classes.info_profile_td,classes.info_profile__firstcol)}>Ảnh</td>
                                 <td className={classes.info_profile_td} style={{ color: "grey" }}>Thêm hình ảnh để cá nhân hóa tài khoản</td>
                                 <td className={classes.info_profile_td}>
-                                    <img className={classes.info_profile__image} width="50vw" height="50vh" src="https://i.pinimg.com/originals/a4/f8/f9/a4f8f91b31d2c63a015ed34ae8c13bbd.jpg" alt="">
+                                    <img className={classes.info_profile__image} width="80vw" height="80vh" src={this.state.picture}>
                                     </img>
                                 </td>
                             </tr>

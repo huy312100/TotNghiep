@@ -3,12 +3,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import {Grid} from "@material-ui/core"
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
+import LoadingScreen from '../LoadingScreen';
 const useStyles = makeStyles((theme) => ({
     news_page: {
       margin: "10px 0 0 16vw", 
-      background: "white", 
+      background: "#faf9e8", 
       width: "80vw", 
-      boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 3px"
+      boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 3px",
+      
     },
     news_page_a: {
       textDecoration: "none"
@@ -34,7 +36,7 @@ export default function Khoa()
 {
     const classes = useStyles()
     const [newsfac,setNewsFac] = useState([]);
-
+    const [loading,setLoading] = useState(true);
     const getNewsFaculty = async() => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
@@ -54,8 +56,13 @@ export default function Khoa()
         }
     useEffect(() => {
         getNewsFaculty();
+        setLoading(false);
      },[]);
-     if (newsfac.length != undefined)
+     if (loading==true) {
+       return(
+      <LoadingScreen/>
+    )}
+     else
      {
         return newsfac.map((item, index) => {
             return (
@@ -82,8 +89,4 @@ export default function Khoa()
               </Grid>
             )
       })}
-      else return(
-        <div>
-        </div>
-      )
 }

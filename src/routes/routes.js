@@ -12,7 +12,7 @@ import UniversityInfo from "../pages/UniversityInfo"
 import News from "../pages/News/News"
 import Homepage from "../pages/Homepage/Homepage"
 import CalendarSchedule from '../pages/Calendar/Calendar';
-import Forum from '../pages/Forum';
+import Forum from '../pages/Forum/Forum';
 import Course from '../pages/Course';
 import Notifications from "../pages/Notifications/Notification"
 import Chat from "../pages/Chat/Chat"

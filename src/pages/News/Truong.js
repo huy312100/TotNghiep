@@ -2,6 +2,8 @@ import React , {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
+import LoadingScreen from '../LoadingScreen';
+import ButtonCircularProgress from '../../components/shared/ButtonCircularProgress';
 const useStyles = makeStyles((theme) => ({
     news_page: {
       margin: "10px 0 0 16vw", 
@@ -33,6 +35,7 @@ export default function Truong()
 {
     const classes = useStyles()
     const [newsuni,setNewsUni] = useState([]);
+    const [loading,setLoading] = useState(true);
 
     const getNewsUniversity = async() => {
         var myHeaders = new Headers();
@@ -46,16 +49,18 @@ export default function Truong()
     
         await fetch("https://hcmusemu.herokuapp.com/info/newsuniversity", requestOptions)
             .then(response => {return response.json()})
-            .then(result => {
-                setNewsUni(result)
-            })
-            .catch(error => console.log('error', error));
+            .then(result => {setNewsUni(result)})
+            .catch(error => console.log('error', error), setLoading(false));
     }
 
     useEffect(() => {
         getNewsUniversity();
+       
      },[]);
-     if (newsuni.length != undefined)
+     if (loading == true) return (
+      <ButtonCircularProgress/>
+      )
+    else
      {
         return newsuni.map((item, index) => {
             return (
@@ -77,7 +82,5 @@ export default function Truong()
               </div>
             )
       })}
-      else return (
-        <div></div>
-      )
+    
 }

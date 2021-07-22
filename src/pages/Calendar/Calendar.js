@@ -6,19 +6,19 @@ import "./Calendar.css";
 import NavBar from '../../Navigation/NavBar';
 import "react-datepicker/dist/react-datepicker.css";
 import { CirclePicker } from 'react-color';
-import {makeStyles,withStyles} from "@material-ui/core"
+import {makeStyles} from "@material-ui/core"
 import clsx from 'clsx';
 import 'font-awesome/css/font-awesome.min.css';
-import {Grid, Button,TextField, FormControl,Select,NativeSelect , InputLabel ,FormHelperText ,} from "@material-ui/core"
+import {Button,TextField,Input } from "@material-ui/core"
 import 'date-fns'
-import DateFnsUtils from '@date-io/date-fns'; 
-import {
-  TimePicker,
-  MuiPickersUtilsProvider 
-} from '@material-ui/pickers';
+import TitleIcon from '@material-ui/icons/Title';
+
 import TimelapseIcon from '@material-ui/icons/Timelapse';
 import DescriptionIcon from '@material-ui/icons/Description';
-import Typography from 'material-ui/styles/typography';
+import CategoryIcon from '@material-ui/icons/Category';
+import LinkIcon from '@material-ui/icons/Link';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import ColorLensIcon from '@material-ui/icons/ColorLens';
 const useStyles = makeStyles(() => ({
   "calendar_page": {
     "width": "81vw",
@@ -304,6 +304,7 @@ class Calendar extends Component {
             add_listguestName: [],
             add_url: "",
 
+            add_temp_user: "",
             popup: 0,
             popupview: 0,
             
@@ -466,9 +467,9 @@ class Calendar extends Component {
                 if (item === "")
                     return <></>
                 if (item.id !== "") return <tr style={{'background-color': item.value.Color}} onClick={() => this.selectedEventClick(index)}>
-                    <td className="time">{item.value.StartHour != null ? this.convertTimestamp(item.value.StartHour): ""}</td>
+                    <td className="time">{item.value.StartHour != null ? this.convertTimestamp(item.value.StartHour): "12 AM"}</td>
                     <td>{item === "" ? "" : "-"}</td>
-                    <td className="time">{item.value.EndHour != null ? this.convertTimestamp(item.value.EndHour): ""}</td>
+                    <td className="time">{item.value.EndHour != null ? this.convertTimestamp(item.value.EndHour): "11 PM"}</td>
                     <td>{item.title}</td>
                     <Button onClick={() => this.removeEvent(item.id)}><i className="remove fa fa-trash" ></i></Button>
                 </tr>
@@ -617,7 +618,6 @@ class Calendar extends Component {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
         myHeaders.append("Content-Type", "application/json");
-
         var raw = JSON.stringify({
             "Title": this.state.add_title,
             "TypeEvent": this.state.add_type_event,
@@ -627,16 +627,16 @@ class Calendar extends Component {
             "StartHour": this.state.add_startUNIX,
             "EndHour": this.state.add_endUNIX,
             "desciptionText": this.state.add_desc,
-            "url": "https://www.google.com/",
+            "url": this.add_url,
             "UnderLine": false,
             "Italic": false,
             "Bold": false,
             "Color": this.state.add_color,
-            "listguestEmail": this.add_listguestEmail,
-            "listguestName": this.add_listguestName,
+            "listguestEmail": [],
+            "listguestName": [],
             "Notification": this.state.add_noti
         });
-
+        console.log(raw)
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -646,7 +646,7 @@ class Calendar extends Component {
 
         await fetch("https://hcmusemu.herokuapp.com/calendar/post", requestOptions)
             .then(response => response.text())
-            .then()
+            .then(result => console.log(result))
             .catch(error => console.log('error', error));
 
         this.getCalendar();
@@ -746,25 +746,62 @@ class Calendar extends Component {
         this.getCalendar();
     }
 
+    getName = (item) => {
+        this.setState({
+            loadcalendar: 1
+        })
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("username", item);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/profile/findname", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                this.setState({
+                    add_listguestEmail:[...this.state.add_listguestEmail, result[0]]
+                })
+            })
+            .then()
+            .catch(error => console.log('error', error));
+    }
+
+    renderAddedUser = () => {
+        //console.log(localStorage.getItem("token"))
+        
+        this.state.add_listguestEmail.map((item, i)=> {
+            var  result = this.getName()
+            return (
+              <TextField id={'userss['+i+']'} label={'user '+i} key={i} onChange={this.handleChange('roles['+i+']')}  />
+            )
+          })
+    }
     viewDetailEvent = () => {
       if (this.state.popupview === 1) {
-
         return (
             <div className="popup-event">
-                
+                <span style={{color: "black"}}>  <TitleIcon/> Tiêu đề    </span>
                 <input className="add-title" placeholder="Thêm tiêu đề" onChange={this.setParams} name="add_title" value={this.state.add_title}></input>
                 <div>
-                    <label> Loại công việc:    </label>
+                       <span style={{color: "black"}}> <CategoryIcon/> Xếp loại lịch hẹn    </span>
                     <span> </span>
                     <select fontSize="20px" onChange={this.handleChange} value={this.state.add_type_event}>
                             {this.renderTypeWork()}
                         </select>
                     </div>
                 <DatePicker dateFormat="dd/MM/yyyy" locale="vi" selected={this.state.add_date} onChange={(date) => this.renderDatepicker(date)} />
-                <TimelapseIcon/>
                 <div className="event-clock">
-                    <label style={{ color: "black" }}>Thời gian</label>
+                    <span style={{ color: "black" }}><TimelapseIcon/>Thời gian</span>
                     <select className="clock" name="add_start" onChange={this.handleChange} value={this.state.add_start}>
                         {this.renderClockPicker()}
                     </select>
@@ -774,12 +811,16 @@ class Calendar extends Component {
                     </select>
                 </div>
                 <div>
+                    <span style={{ color: "black" }}><DescriptionIcon/>Nội dung</span>
                     <textarea className="content" placeholder="Xem nội dung" onChange={this.setParams} name="add_desc" value={this.state.add_desc}></textarea>
                 </div>
-                <textarea label="Them khách mời"> Thêm khách mời</textarea>
+                <div className="useradd">
+                    <span style={{ color: "black" }}><PersonAddIcon/> Thêm người dự </span>
+                    <TextField type="email" required width="30px" placeholder="Thêm người dùng" onChange={this.setParams} name="add_user_list"> </TextField>                
+                </div>
                 <div className="event">
-                    <label style={{ color: "black" }}>Màu đánh dấu</label>
-                    <CirclePicker color={this.state.add_color} width="30vw" onChangeComplete={this.handleChangeComplete} circleSize={28}></CirclePicker>
+                    <span style={{ color: "black" }}><ColorLensIcon/> Màu đánh dấu</span>
+                    <CirclePicker color={this.state.add_color} width="32vw" onChangeComplete={this.handleChangeComplete} circleSize={28}></CirclePicker>
                 </div>
                 <div className="btn-box">
                     <Button class="btn add" onClick={this.editEvent}>Chỉnh sửa</Button>
@@ -794,47 +835,50 @@ class Calendar extends Component {
         if (this.state.popup === 1) {
             return (
                 <div className="popup-event">
-                    <input type="textarea" className="add-title" placeholder="Thêm tiêu đề" onChange={this.setParams} name="add_title" value={this.state.add_title}></input>
+                    <TitleIcon/>
+                    <label fontSize="20" color="black"> Tiêu đề    </label>
+                    <input type="text" className="add-title" placeholder="Thêm tiêu đề" onChange={this.setParams} name="add_title" value={this.state.add_title}>
+                    </input>
                     <div className="event-type">
-                    <label color="black"> Xếp loại lịch hẹn:    </label>
-                    <span> </span>
-                    <select className="clock" onChange={this.handleEventChange} value={this.state.add_type_event}>
+                        <span> <CategoryIcon/> Xếp loại lịch hẹn    </span>
+                        <select className="clock" onChange={this.handleEventChange} value={this.state.add_type_event}>
                             {this.renderTypeWork()}
-                    </select>
+                        </select>
                     </div>
                     <DatePicker dateFormat="dd/MM/yyyy" placeholderText="Ngày lên lịch" locale="vi" selected={this.state.add_date} onChange={(date) => this.renderDatepicker(date)} />
                     <div className="event-clock">
-                    <TimelapseIcon/>
-                    <label style={{ color: "black" }}>Thời gian</label>
-                    <br/>
-                    <select className="clock" name="add_start" onChange={this.handleChange} value={this.state.add_start}>
+                        <span>  <TimelapseIcon/>Thời gian: &nbsp; &nbsp; </span>
+                        <select borderRadius="50%" className="clock" name="add_start" onChange={this.handleChange} value={this.state.add_start}>
                             {this.renderClockPicker()}
                         </select>
-                        <span> - </span>
-                        <select className="clock" name="add_end" onChange={this.handleChange} value={this.state.add_end}>
+                        <span>&nbsp; - &nbsp;</span>
+                        <select borderRadius="50%" className="clock" name="add_end" onChange={this.handleChange} value={this.state.add_end}>
                             {this.renderClockPicker()}
                         </select>
                     </div>
                     <div>
-                        <DescriptionIcon fontSize="18px"/> <label> Mô tả lịch hẹn</label>
+                         <span> <DescriptionIcon/>Mô tả lịch hẹn</span>
                         <textarea className="content" placeholder="Thêm nội dung" onChange={this.setParams} name="add_desc" value={this.state.add_desc}></textarea>
                     </div>
                     <div>
-                        <label> URL </label>
-                        <input type="text" className="add-title" placeholder="Thêm url" onChange={this.setParams} name="add_url" value={this.state.add_title}></input>
+                        <LinkIcon verticalAlign="center"/>
+                        <span>Link</span>
+                        <input type="text" className="add-title" placeholder="Thêm url tuỳ chọn" onChange={this.setParams} name="add_url" value={this.state.add_url}></input>
                     </div>
-                    <div>
-                        <label> Thêm người dùng</label>
-                        <br/>
-                        <TextField width="30vw" placeholder="Thêm khách mời"> </TextField>
+                    <div className="useradd">
+                        <PersonAddIcon/> <span> Thêm người dùng</span>
+                        <TextField  height="50px" type="email" placeholder="Thêm người dùng" onChange={this.setParams} name="add_user_list"> </TextField>
+                        {this.renderAddedUser()}
                     </div>
                     <div className="event">
+                        <ColorLensIcon/>
                         <label>Màu đánh dấu</label>
                         <CirclePicker color={this.state.add_color} width="30vw" onChangeComplete={this.handleChangeComplete} circleSize={28}></CirclePicker>
                     </div>
                     
                     <div className="btn-box">
                         <Button class="btn add" onClick={this.addEvent}>Thêm thông báo</Button>
+                        <span>&nbsp;&nbsp;&nbsp; </span>
                         <Button class="btn cancel" onClick={this.closePopup}>Hủy</Button>
                     </div>
                 </div>
@@ -864,7 +908,7 @@ class Calendar extends Component {
     render() {
         if (this.state.loadding === 0)
             return (
-                <div>
+                <div style={{marginLeft:10}}>
                     <NavBar />
                     <div className="calendar-page">
                         <div className="calendar">
@@ -876,13 +920,13 @@ class Calendar extends Component {
                             </div>
                             <hr />
                             <ul className="dayofweek">
-                                <li key="H">H</li>
-                                <li key="BA">B</li>
-                                <li key="T">T</li>
-                                <li key="N">N</li>
-                                <li key="S">S</li>
-                                <li key="B">B</li>
-                                <li key="C">C</li>
+                                <li key="H">Hai</li>
+                                <li key="BA">Ba</li>
+                                <li key="T">Tư</li>
+                                <li key="N">Năm</li>
+                                <li key="S">Sáu</li>
+                                <li key="B">Bảy</li>
+                                <li key="C">CN</li>
                             </ul>
                             <ul className="days">
                                 {this.renderCalendar()}

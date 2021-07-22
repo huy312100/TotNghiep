@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import clsx from "clsx"
 import { makeStyles } from '@material-ui/core';
 import { Grid, FormControl,FormLabel,FormControlLabel,FormHelperText,Input,InputLabel, FormGroup,CssBaseline} from '@material-ui/core';
+import Logo from "../images/logo.png"
 
 const useStyles = makeStyles(() => ({
     login_container: {
@@ -121,14 +122,23 @@ export default function LoginButton() {
     return (
         <div className={clsx(classes.login_container,classes.login_container)}>
             <Grid  container  direction="row" spacing={2} justify="center">
-                <Grid  className={classes.info} item xs={8} md={8}>
-                    <Grid >
-                        <img width="50%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png" alt="logo"></img>
-                    </Grid>
+                    
+                <Grid  className={classes.info} item xs={4} md={8}>
                     <Grid >
                         <h1 className={classes.login_form_1_h3}>Ứng dụng kết nối và quản lý cổng học tập</h1>
                     </Grid>
+                    <div
+                        style={{
+                            position: 'absolute', 
+                            left: '45%', 
+                            top: '45%',
+                            transform: 'translate(-50%, -50%)'
+                        }}
+                    >                      
+                        <img style={{alignSelf: "center"}} width="25%" src={Logo} alt="logo"></img>
+                    </div>
                 </Grid>
+              
                 <Grid className={classes.login_form_1} item xs={4} md={4} >
                         <h1 className={classes.login_form_1_h3}>Đăng nhập</h1>
                         <FormGroup height="50%">

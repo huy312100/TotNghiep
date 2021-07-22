@@ -114,12 +114,12 @@ class Deadline extends Component {
 
 
     async componentDidMount() {
-        if (this.state.tag==="0"){
+        if (this.state.tag === "0") {
             this.getCurrentDeadline()
         }
-        if (this.state.tag==="1")
+        if (this.state.tag === "1")
             this.getNewsUniversity()
-        if (this.state.tag==="2")
+        if (this.state.tag === "2")
             this.getNewsFaculty()
 
     }
@@ -267,7 +267,7 @@ class Deadline extends Component {
     clickTag = async (numtag) => {
         this.props.history.push({
             pathname: '/deadline',
-            search: "?" + new URLSearchParams({tag: numtag}).toString()
+            search: "?" + new URLSearchParams({ tag: numtag }).toString()
         })
         await this.setState({
             tag: numtag.toString()
@@ -287,9 +287,9 @@ class Deadline extends Component {
             return (
                 <div>
                     <div className="datepicker">
-                        <div className="change-month" type="button" onClick={() => this.changeMonth(-1)}><i width="20vw" className="fa fa-angle-left fa-lg fa-fw" aria-hidden="true"></i>Tháng trước</div>
+                        <div className="change-month" type="button" onClick={() => this.changeMonth(-1)}><i width="20vw" className="fa fa-angle-left fa-lg fa-fw" aria-hidden="true"></i></div>
                         <div className="month">{"Tháng " + this.convertMonth(this.state.month) + " " + this.state.year}</div>
-                        <div className="change-month" type="button" onClick={() => this.changeMonth(1)}>Tháng sau<i width="20vw" className="fa fa-angle-right fa-lg fa-fw" aria-hidden="true"></i></div>
+                        <div className="change-month" type="button" onClick={() => this.changeMonth(1)}><i width="20vw" className="fa fa-angle-right fa-lg fa-fw" aria-hidden="true"></i></div>
 
                     </div>
                     <div className="deadline-page">
@@ -357,20 +357,20 @@ class Deadline extends Component {
         var university = this.state.tag === "1" ? "university" : "";
         var faculty = this.state.tag === "2" ? "faculty" : "";
         return (
-            <div>
-                <Navbar />
-                <Sidebar />
+            <div className="col deadline" >
                 <div className="deadline-tag">
-                    <div className="tag">
-                        <div type="button" className={"btn-deadline " + assign} onClick={() => this.clickTag(0)}>Bài tập
+                    <div className="row tag">
+                        <div type="button" className={"col btn-deadline " + assign} onClick={() => this.clickTag(0)}><i class="fa fa-book" aria-hidden="true"></i> Bài tập
                         </div>
-                        <div type="button" className={"btn-deadline " + university} onClick={() => this.clickTag(1)}>Tin tức trường
+                        <div type="button" className={"col btn-deadline " + university} onClick={() => this.clickTag(1)}><i class="fa fa-university" aria-hidden="true"></i> Tin tức trường
                         </div>
-                        <div type="button" className={"btn-deadline " + faculty} onClick={() => this.clickTag(2)}>Tin tức khoa
+                        <div type="button" className={"col btn-deadline " + faculty} onClick={() => this.clickTag(2)}><i class="fa fa-graduation-cap" aria-hidden="true"></i> Tin tức khoa
                         </div>
                     </div>
                 </div>
-                {this.renderTag()}
+                <div className="content">
+                    {this.renderTag()}
+                </div>
             </div>
         );
     }

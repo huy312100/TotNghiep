@@ -631,8 +631,6 @@ class Calendar extends Component {
         if (this.state.loadding === 0)
             return (
                 <div>
-                    <Navbar />
-                    <Sidebar />
                     <div className="calendar-page">
                         <div className="calendar">
                             <div className="title">LỊCH CÁ NHÂN</div>

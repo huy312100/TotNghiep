@@ -36,18 +36,21 @@ function NewsFac() {
                 {/* <hr/> */}
                 {
                     fac.slice(0, 5).map((news) => {
-                        return (<a href={news.Link} target="_blank" rel="noopener noreferrer">
+                        return (
                             <div className="news">
-                                <div className="title">
-                                    {news.Title}
-                                </div>
+                                <a href={news.Link} target="_blank" rel="noopener noreferrer">
+
+                                    <div className="title">
+                                        {news.Title}
+                                    </div>
+                                </a>
                                 <div className="time">
                                     {news.Date}
                                 </div>
 
                             </div>
-                            {/* <hr/> */}
-                        </a>
+
+
                         )
                     })
                 }

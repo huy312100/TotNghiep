@@ -18,6 +18,7 @@ class Course extends Component {
                     teacher: []
                 }
             ],
+            // course:[],
             tag: 0,
             allcourse: [],
             loadding: 1,
@@ -210,9 +211,7 @@ class Course extends Component {
         var alltag = this.state.tag === 0 ? "" : "all";
         if(this.state.loadding===0)
         return (
-            <div onScroll={this.handleScroll}>
-                <Navbar />
-                <Sidebar />
+            <div onScroll={this.handleScroll} className="col col-12">
                 <div className="course-tag">
                     <div className="tag">
                         <div type="button" className={"btn-course " + curtag} onClick={(numtag) => this.clickTag(0)}>Môn học hiện tại

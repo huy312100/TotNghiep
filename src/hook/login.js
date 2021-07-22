@@ -36,7 +36,7 @@ export default function LoginButton() {
 
         await fetch("https://hcmusemu.herokuapp.com/account/signin", requestOptions)
             .then(response => {
-                console.log(response.clone)
+                // console.log(response.clone)
                 if (response.ok) {
                     return response.json()
                 }
@@ -47,6 +47,7 @@ export default function LoginButton() {
                 console.log(result.token)
                 if (result.token !== undefined) {
                     localStorage.setItem("token", result.token + "sT")
+                    localStorage.setItem("expired",(new Date).getTime()+7200000)
                     // localStorage.setItem("username", this.state.username)
                     // console.log(result.token)
 

@@ -46,8 +46,8 @@ function ConnectSocket() {
             })
             .catch(error => {
                 console.log('error', error)
-                localStorage.removeItem("token");
-                window.location.reload();
+                // localStorage.removeItem("token");
+                // window.location.reload();
             });
     }
 

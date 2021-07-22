@@ -14,7 +14,7 @@ const infoReducer = (state = initialState, action) => {
             return {
                 ...state,
                 name: action.payload.HoTen,
-                image:action.payload.AnhSV
+                image: action.payload.AnhSV
             }
 
         default:

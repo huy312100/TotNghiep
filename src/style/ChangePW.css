@@ -1,39 +1,54 @@
 .change-pw{
-    width: 60vw;
-    margin: 76px 27.5vw;
-    background: white;
-    box-shadow: 0px 0.5px 1px grey;
-    padding: 20px;
-    border-radius: 10px;
+
+    margin: 20px auto;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);
+    border-radius: 5px;
 }
 
 .pw-input {
-    display: flex;
+    /* display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center; */
     margin: 10px;
 }
 
 .pw-input label{
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 400;
+    color: #6e6b7b;
+    display: inline;
 }
 
 .pw-input .inputops {
-    width: 40vw;
+    width: 100%;
+    
+    /* width: 200px; */
     font-size: 16px;
     height: 30px;
+    border-radius: 100px;
+    border:0.05px solid rgb(206, 206, 206);
 }
 
 .pw-input input[type=password] {
     /* font:small-caption; */
+    width: 100%;
+    
+    /* width: 200px; */
     font-size: 16px;
     height: 30px;
-    background: white;
-    border: 1px solid black;
-    border-radius: 1.5px;
-    margin: 0;
-    padding: 5px;
-    border-radius: 10px;
+    border-radius: 100px;
+    border:0.05px solid rgb(206, 206, 206);
+}
+
+.pw-input input{
+    padding: 10px
+}
+
+.pw-input input:focus{
+    outline: none;
+    border:0.05px solid #0c63dc;
 }
 
 .pw-input input[type=password]:focus {
@@ -49,9 +64,9 @@
 
 .connect-box .btnconnect-box .btnconnect {
     text-align: center;
-    width: 15vw;
+    width: 200px;
     padding: 5px;
-    border: 1px solid grey;
+    /* border: 1px solid grey; */
     background: #3b5da1;
     color: white;
     border-radius: 10px;

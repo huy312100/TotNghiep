@@ -31,23 +31,26 @@ function Home() {
 
     if (loading === 0)
         return <div>
+            {/* <div className="col-12"> */}
             <div className="news-page-uni">
+
                 <div className="header">Thông báo nhà trường</div>
                 {/* <hr/> */}
 
                 {
                     uni.slice(0, 5).map((news) => {
-                        return (<a href={news.Link} target="_blank" rel="noopener noreferrer"><div className="news">
-                            <div className="title">
-                                {news.Title}
-                            </div>
-                            <div className="time">
-                                {news.Date}
-                            </div>
+                        return (
+                            <div className="news">
+                                <a href={news.Link} target="_blank" rel="noopener noreferrer">
+                                    <div className="title">
+                                        {news.Title}
+                                    </div>
+                                </a>
+                                <div className="time">
+                                    {news.Date}
+                                </div>
 
-                        </div>
-                            {/* <hr/> */}
-                        </a>
+                            </div>
                         )
                     })
                 }

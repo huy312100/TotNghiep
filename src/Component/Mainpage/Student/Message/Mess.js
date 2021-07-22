@@ -327,8 +327,6 @@ function Message() {
 
     return (
         <div>
-            <Navbar />
-            <Sidebar />
             <div className="wrap">
                 <div className="listfriend-box">
                     <div>

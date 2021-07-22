@@ -22,10 +22,8 @@ class Student extends Component {
     render() {
         return (
             <div>
-                <Navbar />
-                <Sidebar />
                 <ConnectSocket />
-                <div className="home">
+                <div className="col-12 home">
                     <Home />
                     <NewsFac/>
                     <CldAndDl/>

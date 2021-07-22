@@ -290,9 +290,7 @@ function ViewComment() {
     }
 
     if (loading === 0 && loadingtopic === 0)
-        return <div>
-            <Navbar />
-            <Sidebar />
+        return <div className="col col-12">
             <div className="forum">
                 {viewTopic()}
                 {imgData !== null ? <img width="200vw" height="200vw" src={imgData} /> : null}

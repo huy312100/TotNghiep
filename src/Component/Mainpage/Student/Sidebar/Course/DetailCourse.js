@@ -136,8 +136,6 @@ class DetailCourse extends Component {
         if (this.state.loadding === 0) {
             return (
                 <div>
-                    <Navbar />
-                    <Sidebar />
                     <div className="detail-course-page">
                         <div className="name">Quản trị CSDL hiện đại - 17HTTT</div>
                         {this.renderLabel()}

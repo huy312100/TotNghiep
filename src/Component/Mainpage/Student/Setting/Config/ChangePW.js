@@ -14,7 +14,7 @@ class ChangePW extends Component {
             reptnewpw: "",
             loadding: 0,
             success: -1,
-            repeat:0
+            repeat: 0
         }
 
     }
@@ -75,7 +75,7 @@ class ChangePW extends Component {
                 {this.checkLoadding()}
             </div>
         }
-        if (this.state.repeat===1) {
+        if (this.state.repeat === 1) {
             return <div className="btnconnect-box">
                 <label className="connect-status fail">
                     Nhập lại mật khẩu mới sai
@@ -83,7 +83,7 @@ class ChangePW extends Component {
                 {this.checkLoadding()}
             </div>
         }
-        if (this.state.repeat===0 && this.state.success===0) {
+        if (this.state.repeat === 0 && this.state.success === 0) {
             return <div className="btnconnect-box">
                 <label className="connect-status fail">
                     Mật khẩu sai
@@ -101,13 +101,13 @@ class ChangePW extends Component {
 
     checkRepeatPassword = () => {
         if (this.state.newpw === this.state.reptnewpw) {
-            this.setState({repeat:0,success:-1})
+            this.setState({ repeat: 0, success: -1 })
             this.changePassword();
         }
-        else{
-            this.setState({repeat:1})
+        else {
+            this.setState({ repeat: 1 })
         }
-        
+
     }
 
     checkLoadding = () => {
@@ -123,23 +123,25 @@ class ChangePW extends Component {
     render() {
         return (
             <div>
-                <Navbar />
+                {/* <Navbar /> */}
                 <NavSetting />
-                <div className="change-pw">
-                    <div className="pw-input">
-                        <label>Mật khẩu hiện tại</label>
-                        <input type="password" className="inputops inputpw" name="pw" onChange={this.setParams} value={this.state.pw} />
-                    </div>
-                    <div className="pw-input">
-                        <label>Mật khẩu mới</label>
-                        <input type="password" className="inputops inputpw" name="newpw" onChange={this.setParams} value={this.state.newpw} />
-                    </div>
-                    <div className="pw-input">
-                        <label>Nhập lại mật khẩu mới</label>
-                        <input type="password" className="inputops inputpw" name="reptnewpw" onChange={this.setParams} value={this.state.reptnewpw} />
-                    </div>
-                    <div className="connect-box">
-                        {this.checkSuccess()}
+                <div style={{ margin: "auto" }} className="col col-12 col-md-6">
+                    <div className="change-pw">
+                        <div className="pw-input">
+                            <label>Mật khẩu hiện tại</label>
+                            <input type="password" className="inputops inputpw" name="pw" onChange={this.setParams} value={this.state.pw} />
+                        </div>
+                        <div className="pw-input">
+                            <label>Mật khẩu mới</label>
+                            <input type="password" className="inputops inputpw" name="newpw" onChange={this.setParams} value={this.state.newpw} />
+                        </div>
+                        <div className="pw-input">
+                            <label>Nhập lại mật khẩu mới</label>
+                            <input type="password" className="inputops inputpw" name="reptnewpw" onChange={this.setParams} value={this.state.reptnewpw} />
+                        </div>
+                        <div className="connect-box">
+                            {this.checkSuccess()}
+                        </div>
                     </div>
                 </div>
             </div>

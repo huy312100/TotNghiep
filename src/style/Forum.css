@@ -1,6 +1,4 @@
 .forum {
-    margin: 76px 0 0 17vw;
-    width: 80vw;
     background: rgb(255, 255, 255);
 }
 
@@ -8,7 +6,6 @@
     background: white;
     padding: 10px 20px;
     margin: 10px;
-    /* display: flex; */
 }
 
 .forum .list-forums .title {
@@ -95,13 +92,12 @@
     background: rgb(255, 255, 255);
     border: 1px solid black;
     box-shadow: 2px 2px 10px 0px rgb(197, 197, 197);
-    /* border-radius: 10px; */
     overflow: hidden;
     padding: 20px
 }
 
 .forum .input-comment {
-    width: 70vw;
+    /* width: 70vw; */
     height: 40px;
     margin: auto;
     /* display: block; */

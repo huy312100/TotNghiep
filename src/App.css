@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-color:white
+  background-color:linear-gradient(180deg,hsla(0,0%,96.4%,.96) 43%,hsla(0,0%,96.4%,.44) 74%,hsla(0,0%,100%,0))
 }
 
 .App-logo {
@@ -37,3 +37,5 @@
     transform: rotate(360deg);
   }
 }
+body
+{overflow-y:scroll;}

@@ -20,65 +20,88 @@ import Forum from '../Component/Mainpage/Student/Sidebar/Forum/Forum';
 import ViewComment from '../Component/Mainpage/Student/Sidebar/Forum/ViewComment';
 import Forgot from '../Component/Login/ForgotPW';
 import Reset from '../Component/Login/ResetPW';
+import Navbar from '../Component/Mainpage/Student/Navbar';
+import Sidebar from '../Component/Mainpage/Student/Sidebar';
+import { useSelector } from 'react-redux';
 
 
 
-class RouterMD extends Component {
-    render() {
-        return (
-            <Router>
-                <div>
-                    <Switch>
-                        <Route path="/newpassword" >
-                            <Reset />
-                        </Route>
-                        <Route exact path="/forgot" >
-                            <Forgot />
-                        </Route>
-                        <Route exact path="/forum" >
-                            <Forum />
-                        </Route>
-                        <Route path="/forum/:id" children={<ViewComment />} />
-                        <Route path="/calendar">
-                            <Calendar />
-                        </Route>
-                        <Route path="/course/:id" component={DetailCourse} />
-                        <Route path="/course">
-                            <Course />
-                        </Route>
-                        <Route path="/deadline" component={Deadline} />
 
-                        <Route path="/profile">
-                            <Profile />
-                        </Route>
-                        <Route path="/signup">
-                            <Signup />
-                        </Route>
-                        <Route path="/home">
-                            <Student />
-                        </Route>
-                        {/* <Route path="/message">
-                            <Message />
-                        </Route> */}
-                        <Route path="/setting">
-                            <SetURL />
-                        </Route>
-                        <Route path="/changepw">
-                            <ChangePW />
-                        </Route>
-                        <Route exect path="/" render={() => {
-                            // console.log(0)
-                            if (localStorage.getItem("token"))
-                                <ConnectSocket />
-                            return localStorage.getItem("token") ? <Student /> : <Login />
-                        }}>
-                        </Route>
 
-                    </Switch>
-                </div>
-            </Router>
-        );
-    }
+function RouterMD() {
+    const open = useSelector(state => state.sidebar.open)
+    // localStorage.clear()
+
+    return (
+        <Router>
+            <Route exect path="/" render={() => {
+                // console.log(0)
+                if (!localStorage.getItem("token"))
+                    return <Login />
+                else {
+                    return <div>
+                        <div>
+                            <Navbar />
+                            <Sidebar />
+                        </div>
+                        <div className="main" style={{ margin: `66px 0 20px ${open ? '260px' : '80px'}` }}>
+                            <Switch>
+                                <Route path="/newpassword" >
+                                    <Reset />
+                                </Route>
+                                <Route exact path="/forgot" >
+                                    <Forgot />
+                                </Route>
+                                <Route exact path="/forum" >
+                                    <Forum />
+                                </Route>
+                                <Route path="/forum/:id" children={<ViewComment />} />
+                                <Route path="/calendar">
+                                    <Calendar />
+                                </Route>
+                                <Route path="/course/:id" component={DetailCourse} />
+                                <Route path="/course">
+                                    <Course />
+                                </Route>
+                                <Route path="/deadline" component={Deadline} />
+
+                                <Route path="/profile">
+                                    <Profile />
+                                </Route>
+                                <Route path="/signup">
+                                    <Signup />
+                                </Route>
+                                <Route path="/home">
+                                    <Student />
+                                </Route>
+                                {/* <Route path="/message">
+                                <Message />
+                            </Route> */}
+                                <Route path="/setting">
+                                    <SetURL />
+                                </Route>
+                                <Route path="/changepw">
+                                    <ChangePW />
+                                </Route>
+                                <Route exect path="/" >
+                                    <ConnectSocket />
+                                    <Student />
+                                </Route>
+
+                            </Switch>
+                        </div>
+                    </div>
+                    // <ConnectSocket/>
+                    // <Student />
+                }
+            }}>
+            </Route>
+
+
+
+        </Router>
+    );
+
 }
 
 export default RouterMD;

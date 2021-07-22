@@ -7,9 +7,7 @@ import PostForum from './PostForum';
 
 
 function Forum() {
-    return <div>
-        <Navbar/>
-        <Sidebar/>
+    return <div className="col col-12">
         <ViewForums/>
     </div>
 }

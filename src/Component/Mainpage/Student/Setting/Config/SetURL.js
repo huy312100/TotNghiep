@@ -8,14 +8,14 @@ class SetURL extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            type: "Portal",
+            type: "Moodle",
             username: "",
             password: "",
             url: "",
             success: -1,
             loadding: 0,
             unlinkloadding: 0,
-            tag: 0,
+            tag: 1,
             connected: []
         }
     }
@@ -31,12 +31,19 @@ class SetURL extends Component {
         };
 
         fetch("https://hcmusemu.herokuapp.com/web/getcustomlink", requestOptions)
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok)
+                    return response.json()
+                throw Error("Đã có lỗi xảy ra")
+            })
             .then(result => {
                 console.log(result)
                 this.setState({
-                    connected: result
+                    connected: result,
+                    username:result.find(x=>x.Type==="Moodle").Username,
+                    url:result.find(x=>x.Type==="Moodle").Url
                 })
+                
             })
             .catch(error => console.log('error', error));
     }
@@ -47,12 +54,12 @@ class SetURL extends Component {
 
 
     checkTypeWeb = () => {
-        if (this.state.type === "Portal") {
-            return (
-                <></>
-            )
-        }
-        else {
+        // if (this.state.type === "Portal") {
+        //     return (
+        //         <></>
+        //     )
+        // }
+        // else {
             return (
                 <div>
                     <div className="lb-input">
@@ -65,12 +72,12 @@ class SetURL extends Component {
                     </div>
                 </div>
             )
-        }
+        // }
     }
 
     checkConnect = () => {
         var portalunlink = this.state.connected.indexOf("Portal") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
-        var moodleunlink = this.state.connected.indexOf("Moodle") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
+        var moodleunlink = <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
         var trellounlink = this.state.connected.indexOf("Trello") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
         var slackunlink = this.state.connected.indexOf("Slack") === -1 ? <></> : <div className="btndisconnect" type="button" onClick={this.disconnect3rdApp}>Hủy thông tin đã lưu</div>;
         var type = [portalunlink, moodleunlink, trellounlink, slackunlink];
@@ -96,7 +103,7 @@ class SetURL extends Component {
                 <div className="btnconnect-box">
                     <label className="connect-status">
                         Lưu thất bại
-                </label>
+                    </label>
                     <div className="btnconnect" type="button" onClick={this.connect3rdApp}>Thử lại</div>
                 </div>
             )
@@ -222,15 +229,23 @@ class SetURL extends Component {
     }
 
     renderSetULRbox = () => {
-        var portaltag = this.state.tag === 0 ? "portal" : "";
-        var moodletag = this.state.tag === 1 ? "moodle" : "";
-        var trellotag = this.state.tag === 2 ? "trello" : "";
-        var slacktag = this.state.tag === 3 ? "slack" : "";
+        // var portaltag = this.state.tag === 0 ? "portal" : "";
+        // var moodletag = this.state.tag === 1 ? "moodle" : "";
+        // var trellotag = this.state.tag === 2 ? "trello" : "";
+        // var slacktag = this.state.tag === 3 ? "slack" : "";
 
-        var portallink = this.state.connected.indexOf("Portal") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
-        var moodlelink = this.state.connected.indexOf("Moodle") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
-        var trellolink = this.state.connected.indexOf("Trello") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
-        var slacklink = this.state.connected.indexOf("Slack") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
+        // if (this.state.connected.length>0) {
+        //     var portallink = this.state.connected.indexOf("Portal") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
+        //     var moodlelink = this.state.connected.indexOf("Moodle") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
+        //     var trellolink = this.state.connected.indexOf("Trello") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
+        //     var slacklink = this.state.connected.indexOf("Slack") === -1 ? "" : <i class="fa fa-check-circle fa-fw" style={{ color: "green" }}></i>;
+        // }
+        // else {
+        //     var portallink = ""
+        //     var moodlelink = ""
+        //     var trellolink = ""
+        //     var slacklink = ""
+        // }
 
         return (
             <div>
@@ -243,7 +258,7 @@ class SetURL extends Component {
                     <option value="Portal">Portal</option>
                 </select>
             </div> */}
-                <div className="seturl-tag">
+                {/* <div className="seturl-tag" >
                     <div className="tag">
                         <div type="button" className={"btn-seturl " + portaltag} onClick={(numtag) => this.clickTag(0)}>Portal {portallink}
                         </div>
@@ -251,10 +266,10 @@ class SetURL extends Component {
                         </div>
                         <div type="button" className={"btn-seturl " + trellotag} onClick={(numtag) => this.clickTag(2)}>Trello {trellolink}
                         </div>
-                        <div type="button" className={"btn-seturl " + slacktag} style={{marginTop:"2px"}} onClick={(numtag) => this.clickTag(3)}>Slack {slacklink}
+                        <div type="button" className={"btn-seturl " + slacktag} style={{ marginTop: "2px" }} onClick={(numtag) => this.clickTag(3)}>Slack {slacklink}
                         </div>
                     </div>
-                </div>
+                </div > */}
                 <div className="seturl-box">
 
                     <div className="lb-input">
@@ -267,7 +282,7 @@ class SetURL extends Component {
                         {this.checkConnect()}
                     </div>
                 </div>
-            </div>
+            </div >
         )
     }
 
@@ -277,9 +292,9 @@ class SetURL extends Component {
         let checkrender = this.state.success === 1 ? (<div className="seturl-successbox"><SetURLSuccuss /></div>) : this.renderSetULRbox();
         return (
             <div>
-                <Navbar />
+                {/* <Navbar /> */}
                 <NavSetting />
-                <div>
+                <div style={{margin:"auto"}} className="col col-12 col-md-6">
                     {checkrender}
 
                 </div>

@@ -316,21 +316,17 @@ const CalendarScreen =({navigation})=> {
 
         rightComponent={
           <View style={{flexDirection:'row'}}>
-              <TouchableOpacity style={{marginRight:5}} onPress={() =>{ setDatePickerVisibility(true); }}>
-                <AntDesign name="calendar" size={26} color="blue" />
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                onPress={() => 
-                  navigation.navigate('Add Event',{
-                    nameEvent: '',
-                    decriptionEvent:'',
-                    urlEvent:''
-                  })
-              
-              }>
-                <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
-              </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => 
+                navigation.navigate('Add Event',{
+                  nameEvent: '',
+                  decriptionEvent:'',
+                  urlEvent:''
+                })
+            
+            }>
+              <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
+            </TouchableOpacity>
           </View>
         }
         />
@@ -348,10 +344,13 @@ const CalendarScreen =({navigation})=> {
               setYearChanged(date.getFullYear());
               setCurrentDate(nextDate.slice(0,10));
           }}>
-            <AntDesign name="caretleft" size={16} color="blue" />
+            <AntDesign name="caretleft" size={16} color="gray" />
           </TouchableOpacity>
 
-          <Text style={{marginHorizontal:50,fontSize:15,color:'black'}}>{dateUtils.ConvertDateDDMMYY(currentDate)}</Text>
+          <TouchableOpacity onPress={() =>{ setDatePickerVisibility(true); }}>
+            <Text style={{marginHorizontal:50,fontSize:15,color:'black'}}>{dateUtils.ConvertDateDDMMYY(currentDate)}</Text>
+          </TouchableOpacity>
+          
 
           <TouchableOpacity 
             onPress={() =>{
@@ -367,7 +366,7 @@ const CalendarScreen =({navigation})=> {
               setCurrentDate(nextDate.slice(0,10));
             }}
           >
-            <AntDesign name="caretright" size={16} color="blue" />
+            <AntDesign name="caretright" size={16} color="gray" />
           </TouchableOpacity>
 
         </View>
@@ -514,23 +513,24 @@ const CalendarScreen =({navigation})=> {
         </Overlay>
 
            { Platform.OS === 'ios' ? <DateTimePickerModal
-                   // display="inline"
-                    display = "inline"
-                    isVisible={isDatePickerVisible }
-                    time="date"
-                    value={currentDate}
-                    headerTextIOS={"Lịch"}
-                    cancelTextIOS="Huỷ bỏ"
-                    confirmTextIOS="Xác nhận"
-                    onConfirm={handleConfirm}
-                    onCancel={handleCancel}
-                    // onHide={()=>{
-                    //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
-                    // }}
-                    />
+              display = "inline"
+              locale="vi"
+              isVisible={isDatePickerVisible }
+              time="date"
+              value={currentDate}
+              headerTextIOS={"Lịch"}
+              cancelTextIOS="Huỷ bỏ"
+              confirmTextIOS="Xác nhận"
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+              // onHide={()=>{
+              //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+              // }}
+            />
             :
             <DateTimePickerModal
                    // display="inline"
+              locale="vi"
               isVisible={isDatePickerVisible }
               time="date"
               value={currentDate}

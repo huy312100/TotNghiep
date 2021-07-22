@@ -754,7 +754,7 @@ const HomeScreen= ({navigation}) =>{
         <Text style={styles.label}>Deadline trong tháng</Text>
         <TouchableOpacity style={styles.detailInfoBtn}
             onPress={() =>{
-                navigation.navigate('');
+                navigation.navigate('Deadline In Month');
             }}>
             <Text style={{fontSize:12,color:'blue'}}>Xem thêm</Text>
             <MaterialIcons name="keyboard-arrow-right" size={15.5} color="blue" />

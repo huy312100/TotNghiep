@@ -74,6 +74,34 @@ export const ConvertTimestamp = (timestamp) => {
   return time;
 };
 
+export const ConvertTimestampToVNTime = (timestamp) => {
+  var d;
+  // Convert the passed timestamp to milliseconds
+  if(timestamp.toString().length === 10){
+    d= new Date(timestamp * 1000);
+  }  
+  else if(timestamp.toString().length === 13){
+    d=new Date(timestamp);
+  }
+
+  var yyyy = d.getFullYear();
+  var mm = ('0' + (d.getMonth() + 1)).slice(-2);  // Months are zero based. Add leading 0.
+  var dd = ('0' + d.getDate()).slice(-2);         // Add leading 0.
+  var hh = d.getHours();
+  var h = hh;
+  var min = ('0' + d.getMinutes()).slice(-2);   // Add leading 0.
+  var time;
+  if (hh < 10) {
+    h = '0'+hh ;
+  } else  {
+    h = hh;
+  }
+
+  // ie: 2014-03-24, 15:00
+  time = dd + '/' + mm + '/' + yyyy + ' ' + h + ':' + min ;
+  return time;
+};
+
 export const ConvertDateDDMMYY =(str) => {
   let yy = str.slice(0,4);
   let mm = str.slice(5,7);
@@ -83,4 +111,25 @@ export const ConvertDateDDMMYY =(str) => {
   
   const date = dd + '-' + mm + '-' + yy;
   return date;
+};
+
+export const NextMonth = (month,year) =>{
+  var newMonth = month + 1;
+  var newYear = year;
+  if(newMonth > 12){
+    newMonth = 1 ;
+    newYear = newYear + 1;
+  }
+  return [newMonth,newYear];
+};
+
+export const PreviousMonth = (month,year) =>{
+  var newMonth = month - 1;
+  var newYear = year;
+  if(newMonth <= 0) {
+    newMonth = 12 ;
+    newYear = newYear - 1;
+  }
+  return [newMonth,newYear];
 }
+

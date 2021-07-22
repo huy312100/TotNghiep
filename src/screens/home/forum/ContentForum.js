@@ -349,8 +349,6 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 }/>
                 {/* <Text>{dataDetail[0].like}</Text> */}
 
-                {}
-
             {loading ? <ActivityIndicator style={{flex: 1}} color="black"/>
             :
             <FlatList

@@ -26,6 +26,7 @@ import StartConfigScreen from "../screens/first_config/StartConfig";
 import MoodleConfigScreen from "../screens/first_config/MoodleConfig";
 import EndConfigScreen from "../screens/first_config/EndConfig";
 
+import DeadlineMonthScreen from "../screens/home/deadline/DeadlineMonth";
 import CalendarScreen from "../screens/home/calendar/Calendar";
 import NormalMessageScreen from "../screens/message/NormalMessage";
 import FirstReadMessageScreen from "../screens/message/FirstReadMessage";
@@ -215,33 +216,6 @@ function HomeStackNavigation({navigation}) {
         component={AddToCalendarScreen}
         options={{ 
           headerShown: false
-        //   title: 'Sự kiện mới',
-        //   headerTitleStyle: {
-        //     color: 'black'
-        //   },
-        //   headerRight:()=>(
-        //       <TouchableOpacity disabled={checkDisableAddButton()} onPress={() =>{
-        //          var x= new AddToCalendarScreen();
-        //          x.Test();
-        //       }}>
-        //         <Text style={{fontSize:17,color: checkDisableAddButton() ? 'silver' : 'blue'}}>
-        //           Thêm
-        //         </Text>
-        //       </TouchableOpacity>
-        //   ),
-        //   headerLeft:()=>(
-        //     <HeaderBackButton 
-        //     label='Huỷ'
-        //     tintColor='red'
-        //     onPress={()=>{
-        //       dispatch(calendarActions.getStatusOfTitle(false));
-        //       dispatch(calendarActions.getStatusOfDate(true));
-        //       navigation.navigate("Calendar")
-        //     }}/>
-        //   ),
-        //   headerRightContainerStyle:{
-        //     paddingRight:10
-        //   },
         }}
       />
 
@@ -328,6 +302,15 @@ function HomeStackNavigation({navigation}) {
           title: "Diễn đàn của tôi",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
+
+        }}
+      />
+
+      <Stack.Screen
+        name="Deadline In Month"
+        component={DeadlineMonthScreen}
+        options={{ 
+          headerShown: false
 
         }}
       />
@@ -611,7 +594,7 @@ const getTabBarVisibility = (route) => {
   "Add Event","Modify Event","Find to Chat","University Info",
   "Add people to calendar","Forum","Forum Of A Moodle Course","Content Forum",
   "Create Post Of Forum","Content Forum Of A Moodle Course","Forum Of A Course",
-  "List User Liked","My Forum","Create Parent Account"];
+  "List User Liked","My Forum","Create Parent Account","Deadline In Month"];
 
   console.log(routeName);
 

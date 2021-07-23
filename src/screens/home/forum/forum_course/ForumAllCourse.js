@@ -153,6 +153,8 @@ const styles = StyleSheet.create({
         width:38,
         height:38,
         borderRadius:25,
+        borderColor:'silver',
+        borderWidth:.3
     },
 
     nameAndDate: {

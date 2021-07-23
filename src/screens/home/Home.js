@@ -723,7 +723,7 @@ const HomeScreen= ({navigation}) =>{
                 else{
                   Alert.alert(
                     "Chưa kết nối",
-                    " Vui lòng vô phần cài đặt để thiết lập kết nối đến portal",
+                    " Vui lòng vô phần tài khoản để thiết lập kết nối đến portal",
                     [
                       { text: "OK", 
                         style: "cancel"

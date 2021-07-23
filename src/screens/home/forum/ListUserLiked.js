@@ -1,5 +1,6 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { View,Text,StyleSheet,FlatList,Image,TouchableOpacity } from 'react-native';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 import { Entypo } from '@expo/vector-icons';
 
@@ -16,6 +17,7 @@ const ListUserLikedScreen = ({navigation,route}) =>{
     const typeForum = route.params.typeForum;
 
     const [data, setData] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
 
     useEffect(() => {
         getUserLiked();
@@ -36,6 +38,7 @@ const ListUserLikedScreen = ({navigation,route}) =>{
     };
 
     const getUserLikedForumFaculOrUni = () => {
+        setIsLoading(true);
         let details = {
             IDPost: idPost
         }
@@ -65,10 +68,12 @@ const ListUserLikedScreen = ({navigation,route}) =>{
             if(statusCode === 200){
                 setData(dataRes);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
     };
 
     const getUserLikedForumCourse= () => {
+        setIsLoading(true);
         let details = {
             IDPost: idPost
         }
@@ -98,6 +103,7 @@ const ListUserLikedScreen = ({navigation,route}) =>{
             if(statusCode === 200){
                 setData(dataRes);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
     };
 
@@ -114,6 +120,145 @@ const ListUserLikedScreen = ({navigation,route}) =>{
             </View>
           </View>
     );
+
+    const LoadingWithSkeletonScreen = () => {
+        return(
+          <SkeletonPlaceholder>
+            <View style={[skeletonLoading.infoLoading,{marginTop:20}]}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+            <View style={skeletonLoading.infoLoading}>
+              <View style={skeletonLoading.imageLoading} />
+              <View style={{ marginLeft: 20 }}>
+                <View style={skeletonLoading.contentLoading}>
+                  <View style={skeletonLoading.titleLoading} />
+                </View>
+                <View style={skeletonLoading.detailLoading}/>
+                <View style={skeletonLoading.divideLoading}/>
+              </View>
+            </View>
+    
+          </SkeletonPlaceholder>
+        )
+    }
 
     return (
         <View style={styles.container}>
@@ -135,6 +280,16 @@ const ListUserLikedScreen = ({navigation,route}) =>{
                         <Entypo name="chevron-left" size={30} color="blue" />
                     </TouchableOpacity>
             }/>
+
+            {isLoading && data.length === 0 && LoadingWithSkeletonScreen()}
+
+            {!isLoading && data.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy người nào thích bài đăng này
+                    </Text>
+                </View>
+            }
+
             <FlatList
                 data={data}
                 renderItem={renderItem}
@@ -196,5 +351,51 @@ const styles = StyleSheet.create({
     },
 
 });
+
+const skeletonLoading = StyleSheet.create({
+    infoLoading: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginLeft:10,
+      marginBottom:20
+    },
+  
+    imageLoading:{
+      width: 50, 
+      height: 50, 
+      borderRadius: 25
+    },
+  
+    contentLoading:{
+      flexDirection:'row',
+      justifyContent: "space-between"
+    },
+  
+    titleLoading: { 
+      width: 320, 
+      height: 15, 
+      borderRadius: 4
+    },
+  
+    timeLoading:{ 
+      width: 50, 
+      height: 15, 
+      borderRadius: 4 
+    },
+  
+    detailLoading:{ 
+      marginTop: 6, 
+      width: 320, 
+      height: 20, 
+      borderRadius: 4
+    },
+  
+    divideLoading:{
+      marginTop: 15, 
+      width: 320, 
+      height: 2, 
+      borderRadius: 4
+    }
+  })
 
 export default ListUserLikedScreen;

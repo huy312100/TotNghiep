@@ -1,6 +1,8 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { View,Text,FlatList,StyleSheet,TouchableOpacity,Linking,ActivityIndicator } from 'react-native';
 import { useSelector } from 'react-redux';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+
 
 import { Entypo,AntDesign } from '@expo/vector-icons';
 import { Header } from 'react-native-elements';
@@ -86,6 +88,75 @@ const DeadlineMonthScreen = ({navigation}) => {
         </TouchableOpacity>
     );
 
+    const loadingSkeletonScreen = () => {
+        return(
+            <SkeletonPlaceholder>
+                <View >
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+                
+                <View >
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+
+                <View >
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+
+                <View >
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+
+                <View >
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+
+                <View style={skeletonLoading.card}>
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+
+                <View style={skeletonLoading.card}>
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+
+                <View style={skeletonLoading.card}>
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+
+                <View style={skeletonLoading.card}>
+                    <View style={skeletonLoading.info}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.secondLine]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.onTheRightArrow]}/>
+                    <View style={[skeletonLoading.info,skeletonLoading.date]}/>
+                </View>
+            </SkeletonPlaceholder>
+        )
+    }
+
     return(
         <View style={styles.container}>
             <Header
@@ -113,6 +184,7 @@ const DeadlineMonthScreen = ({navigation}) => {
                     const changed = dateUtils.PreviousMonth(month,year);
                     setMonth(changed[0]);
                     setYear(changed[1]);
+                    setData([]);
                 }}>
                     <AntDesign name="arrowleft" size={18} color="navy" />
                 </TouchableOpacity>
@@ -126,15 +198,14 @@ const DeadlineMonthScreen = ({navigation}) => {
                     const changed = dateUtils.NextMonth(month,year);
                     setMonth(changed[0]);
                     setYear(changed[1]);
+                    setData([]);
                 }}>
                     <AntDesign name="arrowright" size={18} color="navy" />
                 </TouchableOpacity>
 
             </View>
 
-            {isLoading && data.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
-                <ActivityIndicator size="large" color="blue"/>
-            </View>}
+            {isLoading && loadingSkeletonScreen()}
 
             {!isLoading && data.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
                     <Text style={{color:'#BBBBBB'}}>
@@ -189,7 +260,41 @@ const styles = StyleSheet.create({
         marginRight:30,
         marginLeft:15,
         fontSize:12
-    }
+    },
+
+});
+
+const skeletonLoading = StyleSheet.create({
+
+    info: {
+        borderRadius:5,
+        marginVertical:10,
+        marginHorizontal:15,
+        marginLeft:15,
+        width:'60%',
+        height:20
+    },
+
+    secondLine:{
+        borderRadius:5,
+        width:'87%',
+        marginTop:0
+    },
+
+    onTheRightArrow: {
+        borderRadius:5,
+        width:'6%',
+        alignSelf: 'flex-end',
+        marginTop:-45,
+        marginRight:5
+    },
+
+    date: { 
+        marginTop:0,
+        borderRadius:5,
+        width:'40%',
+        height:14
+    },
 });
 
 export default DeadlineMonthScreen;

@@ -51,7 +51,7 @@ const ForumFacultyScreen =({navigation})=>{
                 for (const key in dataRes) {
                     if(dataRes[key].scope === "f"){
                         dataTmp.push({
-                            AvartaOwn:dataRes[key].AvartaOwn,
+                            AvartaOwn:dataRes[key].AvartaOwn.replace(/\s/g,''),
                             EmailOwn:dataRes[key].EmailOwn,
                             ID:dataRes[key].ID,
                             LikeByOwn:dataRes[key].LikeByOwn,
@@ -165,6 +165,8 @@ const styles = StyleSheet.create({
         width:38,
         height:38,
         borderRadius:25,
+        borderColor:'silver',
+        borderWidth:.3
     },
 
     nameAndDate: {

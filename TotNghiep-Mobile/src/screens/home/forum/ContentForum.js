@@ -293,7 +293,6 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                                                 await forumServices.deleteCmt(token,item.ID);
                                             }
                                             else if(typeForum === 'course'){
-                                                console.log(item.ID);
                                                 await forumServices.deleteCourseCmt(token,item.ID);
                                             }
                                             setRefresh(!refresh);
@@ -321,9 +320,11 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         <View style={styles.container}>
             <Header
                 containerStyle={{
-                    backgroundColor: 'white',
                     justifyContent: 'space-around',
-                    borderBottomColor:'#DDDDDD'
+                    headerBackTitle:false,
+                    headerTruncatedBackTitle:false,
+                    headerTitleAlign: 'center',
+                    backgroundColor:"#33CCFF",
                 }}
 
                 rightComponent={
@@ -333,19 +334,19 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                             typeForum:typeForum,
                         });
                     }}>
-                        <Ionicons name="list" size={30} color="#006666" />
+                        <Ionicons name="list" size={30} color="white" />
                     </TouchableOpacity>
                 }
 
                 centerComponent={
-                    <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10}}>Diễn đàn của {dataOfForum.NameOwn}</Text>
+                    <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10, color: "white"}}>Diễn đàn của {dataOfForum.NameOwn}</Text>
                 }
 
                 leftComponent={
                 <TouchableOpacity onPress={() =>{
                     navigation.goBack();
                     }}>
-                        <Entypo name="chevron-left" size={30} color="blue" />
+                        <Entypo name="chevron-left" size={30} color="white" />
                     </TouchableOpacity>
                 }/>
                 {/* <Text>{dataDetail[0].like}</Text> */}

@@ -192,6 +192,10 @@ function HomeStackNavigation({navigation}) {
           title: "Thông tin khóa học",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
+          headerTitleAlign: 'center',
+          headerTintColor:"#FFFFFF",
+          headerStyle:{
+            backgroundColor:"#33CCFF"},
         }}
       />
 
@@ -203,6 +207,9 @@ function HomeStackNavigation({navigation}) {
           headerTitleAlign: 'center',
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
+          headerTintColor:"#FFFFFF",
+          headerStyle:{
+            backgroundColor:"#33CCFF"},
         })}
       />
 
@@ -310,7 +317,10 @@ function HomeStackNavigation({navigation}) {
           title: "Diễn đàn của tôi",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
-
+          headerTitleAlign: 'center',
+          headerTintColor: "white",
+          headerStyle:{
+            backgroundColor:"#33CCFF"},
         }}
       />
 
@@ -585,19 +595,28 @@ function BottomTabNavigator() {
 
 //Top tab of course screen
 function CourseInfoTopTab(){
+  const DeviceWidth = Dimensions.get('window').width;
   return (
     <topTab.Navigator initialRouteName="Learning">
       <topTab.Screen 
         name="Current Course" 
         component={CurrentCourseInfoScreen} 
         options={{
-          tabBarLabel:'Học kì gần nhất'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
+              HỌC KỲ GẦN NHẤT
+            </Text>
+          )
         }}/>
       <topTab.Screen 
         name="All Course" 
         component={AllCourseInfoScreen}
         options={{
-          tabBarLabel:'Tất cả môn học'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
+              TẤT CẢ MÔN HỌC
+            </Text>
+          )
         }}
         />
     </topTab.Navigator>
@@ -760,8 +779,8 @@ function ForumTopTab(){
         component={ForumAllCourseScreen} 
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:90}}>
-              Tất cả khoá học
+            <Text style = {{textAlign: 'center',fontSize: 10, color: focused? 'blue' : 'silver',width:90}}>
+              TẤT CẢ MÔN HỌC
             </Text>
           )
         }}/>
@@ -772,8 +791,8 @@ function ForumTopTab(){
         component={ForumCourseScreen} 
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:(DeviceWidth-90)/4}}>
-              Môn học
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
+              MÔN HỌC
             </Text>
           )
         }}/>

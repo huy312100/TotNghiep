@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { View, Text, TouchableOpacity, StyleSheet,FlatList,ActivityIndicator  } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
+import LoadingWithSkeletonScreen from "./LoadingSkeleton";
 
 import * as courseActions from "../../../../store/actions/Course";
 
 const AllCourseInfoScreen = ({navigation}) => {
   const [pageCurrent,setPageCurrent] = useState(0);
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading,setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
   // const allCourses = useSelector((state) => state.course.allCourses);
@@ -18,6 +19,7 @@ const AllCourseInfoScreen = ({navigation}) => {
 
 
   const getAllCourses = async () => {
+    setIsLoading(true);
     let details = {
       page: pageCurrent,
     };
@@ -41,12 +43,19 @@ const AllCourseInfoScreen = ({navigation}) => {
       },
       body: formBody,
     })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    })
+      .then(([statusCode, dataRes]) => {
+        if(statusCode === 200){
+          console.log(dataRes);
+          setData(data.concat(dataRes));
+          dispatch(courseActions.getAllCourses(data.concat(dataRes)));
+          setPageCurrent(pageCurrent+1);
+        }
         //tmp.concat(json)
-        setData(data.concat(json));
-        dispatch(courseActions.getAllCourses(data.concat(json)));
         setIsLoading(false);
       })
       .catch((err) => console.log(err, "error"));
@@ -55,8 +64,10 @@ const AllCourseInfoScreen = ({navigation}) => {
 
 
   useEffect(() => {
-    setIsLoading(true);
     getAllCourses();
+    return()=>{
+
+    }
   }, [pageCurrent]);
 
   const renderItem = ({ item }) => (
@@ -86,27 +97,25 @@ const AllCourseInfoScreen = ({navigation}) => {
     </View>
   );
 
-  const handleMore = () =>{
-    setPageCurrent(pageCurrent+1);
-    setIsLoading(true);
-  };
-
-  const renderFooter = () =>(
-      isLoading?
-      <View style={styles.footerLoader}>
-          <ActivityIndicator size="large"/>
-      </View>:null
-  )
 
   return (
     <View style={styles.container}>
+      {isLoading && data.length === 0 && LoadingWithSkeletonScreen()}
+      {!isLoading && data.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+            <Text>
+              Không tìm thấy thông tin môn học nào
+            </Text>
+          </View>}
+
       <FlatList
         data={data}
         renderItem={renderItem}
         keyExtractor={(item,index) => index.toString()}
-        onEndReached={handleMore}
-        onEndReachedThreshold={0}
-        ListFooterComponent={renderFooter}/>
+        // onEndReached={handleMore}
+        // onEndReachedThreshold={0}
+        // ListFooterComponent={renderFooter}
+      />
+
     </View>
   );
 };

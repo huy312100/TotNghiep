@@ -106,13 +106,13 @@ const CreatePostScreen = ({navigation}) => {
             <View style={styles.container}>
                 <Header
                     containerStyle={{
-                        backgroundColor: 'white',
+                        backgroundColor: '#33CCFF',
                         justifyContent: 'space-around',
                         borderBottomColor:'#DDDDDD'
                     }}
 
                     centerComponent={
-                        <Text style={{fontSize:20,fontWeight:'500',marginTop:3}}>Tạo mới </Text>
+                        <Text style={{fontSize:20,fontWeight:'500',marginTop:3, color: "white"}}>Tạo mới </Text>
                     }
 
                     leftComponent={
@@ -120,7 +120,7 @@ const CreatePostScreen = ({navigation}) => {
                         //socket.emit('Return-Chat',[roomID,route.params.email]);
                         navigation.goBack();
                         }}>
-                            <Entypo name="chevron-left" size={30} color="blue" />
+                            <Entypo name="chevron-left" size={30} color="white" />
                         </TouchableOpacity>
                     }
 

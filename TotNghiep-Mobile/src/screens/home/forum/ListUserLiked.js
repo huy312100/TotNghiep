@@ -119,20 +119,22 @@ const ListUserLikedScreen = ({navigation,route}) =>{
         <View style={styles.container}>
              <Header
                 containerStyle={{
-                    backgroundColor: 'white',
                     justifyContent: 'space-around',
-                    borderBottomColor:'#DDDDDD'
+                    headerBackTitle:false,
+                    headerTruncatedBackTitle:false,
+                    headerTitleAlign: 'center',
+                    backgroundColor:"#33CCFF",
                 }}
 
                 centerComponent={
-                    <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10}}>Người yêu thích diễn đàn</Text>
+                    <Text numberOfLines={1} style={{fontSize:17,fontWeight:'500',marginTop:10, color: "white"}}>Người yêu thích diễn đàn</Text>
                 }
 
                 leftComponent={
                 <TouchableOpacity onPress={() =>{ 
                     navigation.goBack();
                     }}>
-                        <Entypo name="chevron-left" size={30} color="blue" />
+                        <Entypo name="chevron-left" size={30} color="white" />
                     </TouchableOpacity>
             }/>
             <FlatList

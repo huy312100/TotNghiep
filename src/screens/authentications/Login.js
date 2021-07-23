@@ -65,7 +65,9 @@ const LoginScreen = ({navigation}) => {
                 const token = data.token + 'sT';
                 await AsyncStorage.setItem('tokenValue',token);
                 dispatch(authActions.login(token));
-                navigation.navigate("Main");
+                navigation.reset({
+                  routes: [{ name: "Main" }]
+                });
                 setLoading(false);
               }
              

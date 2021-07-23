@@ -48,22 +48,30 @@ const StartupScreen = ({navigation}) =>{
                     if(dataRes.message === "Token still"){
                         dispatch(authActions.login(token));
                         console.log(token);
-                        navigation.navigate("Main");
+                        navigation.reset({
+                            routes: [{ name: "Main" }]
+                        });
                         return;
                     }
                     else{
-                        navigation.navigate("Login");
+                        navigation.reset({
+                            routes: [{ name: "Login" }]
+                        });
                         return;
                     }
                 }
                 else{
-                    navigation.navigate("Login");
+                    navigation.reset({
+                        routes: [{ name: "Login" }]
+                    });
                     return;
                 }        
             }).catch(error => console.log('error', error));
         }
         else{
-            navigation.navigate("Login");
+            navigation.reset({
+                routes: [{ name: "Login" }]
+            });
             return;
         }
     }

@@ -9,7 +9,7 @@ import Khoa from "./Khoa/Khoa"
 const useStyles = makeStyles((theme) => ({
     root: {
       marginLeft: 200,
-      backgroundColor:"#f5f8fa"
+      backgroundColor:"#faf9e8"
     },
     toolbar: {
       display: 'flex',
@@ -46,7 +46,7 @@ export default function News(){
            textColor="primary"
             variant = "fullWidth"
           >
-        <Tab label="Diễn đàn trường"/>
+        <Tab backgroundColo="#c5f0ca"  label="Diễn đàn trường"/>
         <Tab  label="Diễn đàn khoa"/>
         <Tab  label="Diễn đàn môn học"/>
       </Tabs>

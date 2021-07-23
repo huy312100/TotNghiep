@@ -3,10 +3,15 @@ import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import clsx from "clsx"
 import { makeStyles } from '@material-ui/core';
-import { Grid, FormControl,FormLabel,FormControlLabel,FormHelperText,Input,InputLabel, FormGroup,CssBaseline} from '@material-ui/core';
+import { Grid, FormControl,Input, FormGroup,Box,IconButton,endAdornment,InputAdornment,InputLabel } from '@material-ui/core';
 import Logo from "../images/logo.png"
-
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import { School } from '@material-ui/icons';
 const useStyles = makeStyles(() => ({
+    root:{
+        justifyContent: "absolute"
+    },
     login_container: {
         marginTop: "10%", 
         marginBottom: "10%", 
@@ -20,7 +25,7 @@ const useStyles = makeStyles(() => ({
       login_form_1: {
         borderRadius: "10px", 
         padding: "3%", 
-        background: "#ffffff", 
+        background: "#ebedc7", 
         boxShadow: "0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19)"
       },
       login_form_1_h3: {
@@ -52,13 +57,25 @@ const useStyles = makeStyles(() => ({
       login_input: {
         background: "#ffffff", 
         border: "1px solid black"
+      },
+      inputContainer: {
+        justifyContent: 'center',
+      },
+      input: {
+        height: 50,
+      },
+      icon: {
+        position: 'absolute',
+        right: 10,
       }
+    
 }));
 export default function LoginButton() {
     const classes = useStyles()
     const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loadding, setLoadding] = useState(0);
+    const [visible, setVisible] = useState(false);
     let history = useHistory();
     useEffect(() => {
         if (localStorage.getItem("token")) {
@@ -115,32 +132,41 @@ export default function LoginButton() {
 
         )}
         return (
-            <button type="button" className={classes.btnSubmit} onClick={AcctionLogin}>Đăng nhập</button>
+                <button type="button" className={classes.btnSubmit} onClick={AcctionLogin}>Đăng nhập</button>
         )
     }
-
+    
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+      };
+      const handleClickShowPassword = () => {
+        setVisible(!visible);
+      };
     return (
+        <Box  width="95%" className={classes.root} border={2.5} style={{marginLeft: "20px", marginRight:"20px", marginTop:"100px", marginBottom:"100px",backgroundColor:"#d5f3f5"}}>
         <div className={clsx(classes.login_container,classes.login_container)}>
             <Grid  container  direction="row" spacing={2} justify="center">
                     
                 <Grid  className={classes.info} item xs={4} md={8}>
                     <Grid >
-                        <h1 className={classes.login_form_1_h3}>Ứng dụng kết nối và quản lý cổng học tập</h1>
+                        <h1 className={classes.login_form_1_h3}>Ứng dụng kết nối và quản lý học tập</h1>
                     </Grid>
-                    <div
+                    
+                    <Grid
                         style={{
                             position: 'absolute', 
                             left: '45%', 
-                            top: '45%',
+                            top: '55%',
                             transform: 'translate(-50%, -50%)'
                         }}
                     >                      
-                        <img style={{alignSelf: "center"}} width="25%" src={Logo} alt="logo"></img>
-                    </div>
+                        <img style={{alignSelf: "center"}} width="30%" src={Logo} alt="logo"></img>
+                    </Grid>
+                  
                 </Grid>
               
                 <Grid className={classes.login_form_1} item xs={4} md={4} >
-                        <h1 className={classes.login_form_1_h3}>Đăng nhập</h1>
+                        <h1 className={classes.login_form_1_h3}><School/>&nbsp;Đăng nhập</h1>
                         <FormGroup height="50%">
                             <FormControl borderRadius = "50%">
                                 <Input className={classes.login_input} name="username" placeholder="Tài khoản" onChange={(e) => setEmail(e.target.value)}/>
@@ -148,15 +174,33 @@ export default function LoginButton() {
                             <br></br>
                         </FormGroup>
                         <FormGroup>
-                            <FormControl>
-                                <Input type="password" className={classes.login_input} name="password" placeholder="Mật khẩu" onChange={(e) => setPassword(e.target.value)}/>
+                            <FormControl >
+                                <div style={{position: 'relative', display: 'inline-block'}}>
+                                    <Input type={visible ? "text" : "password"}
+                                    className={classes.login_input} 
+                                    name="password"
+                                    placeholder="Mật khẩu" 
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                          <IconButton
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                          >
+                                            {visible? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                          </IconButton>
+                                        </InputAdornment>
+                                      }
+                                    />
+                                 </div>
                             </FormControl>
                         </FormGroup>
                        <br/>
                             {loaddingButton()}
-                            <Link to="/signup" className={classes.btnForgetPwd}>Đăng kí</Link>
+                            <Link to="/signup" className={classes.btnForgetPwd}>Quên mật khẩu?</Link>
                 </Grid>
             </Grid>
         </div>
+        </Box>
     )
 }

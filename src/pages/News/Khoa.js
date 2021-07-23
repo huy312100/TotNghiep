@@ -1,6 +1,6 @@
 import React , {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid} from "@material-ui/core"
+import {Box, Grid} from "@material-ui/core"
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
 import LoadingScreen from '../LoadingScreen';
@@ -66,7 +66,7 @@ export default function Khoa()
      {
         return newsfac.map((item, index) => {
             return (
-              <Grid container
+              <Box container
               justifyContent="center"
               alignItems="left"
               background="dark">
@@ -86,7 +86,7 @@ export default function Khoa()
             </div>
             </a>
               </div>
-              </Grid>
+              </Box>
             )
       })}
 }

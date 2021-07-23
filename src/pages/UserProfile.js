@@ -230,7 +230,7 @@ class Profile extends Component {
         urlencoded.append("HoTen", this.state.name);
         urlencoded.append("MaTruong", this.state.uniselected);
         urlencoded.append("MaKhoa", this.state.facselected);
-        urlencoded.append("AnhSV", "");
+        urlencoded.append("AnhSV", this.state.picture);
 
         var requestOptions = {
             method: 'POST',

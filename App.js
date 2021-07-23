@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import {AuthenStackNavigation} from './src/navigations/StackNavigation';
+import { MenuProvider } from 'react-native-popup-menu';
 
 import { Provider } from 'react-redux';
 import { createStore,combineReducers,applyMiddleware } from 'redux';
@@ -30,11 +31,14 @@ const store = createStore(rootReducer,applyMiddleware(ReduxThunk));
 
 function App() {
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <AuthenStackNavigation/>
-      </NavigationContainer>
-    </Provider>
+    <MenuProvider>
+      <Provider store={store}>
+        <NavigationContainer>
+          <AuthenStackNavigation/>
+        </NavigationContainer>
+     </Provider>
+    </MenuProvider>
+    
   );
 }
 

@@ -1,7 +1,14 @@
 import React, {useState,useEffect,useRef} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Platform ,Alert,Linking,Dimensions} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Platform ,Alert,Linking,Dimensions,FlatList} from 'react-native';
 import { Overlay,Header } from 'react-native-elements';
-import { Entypo,MaterialCommunityIcons,AntDesign } from '@expo/vector-icons';
+import { Entypo,MaterialCommunityIcons,AntDesign,Ionicons,FontAwesome } from '@expo/vector-icons';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+
 
 import {useDispatch,useSelector} from 'react-redux';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -12,6 +19,7 @@ import LoadingScreen from '../../LoadingScreen';
 import TimelineCalendar from './timeline_calendar/TimelineCalendar';
 
 import * as dateUtils from '../../../utils/Date';
+import { event } from 'react-native-reanimated';
 
 let { width } = Dimensions.get('window');
 
@@ -70,6 +78,8 @@ const CalendarScreen =({navigation})=> {
   const [labelTimestamp,setLabelTimestamp] = useState(new Date().getTime());
 
   const aDayTimestamp = 86400000;
+
+  const [mode,setMode] = useState('day');
 
   const [visibleOverlay, setVisibleOverlay] = useState(false);
   const [currentDate,setCurrentDate] = useState(getCurrentDate());
@@ -289,7 +299,30 @@ const CalendarScreen =({navigation})=> {
         setLoading(false);
       }
     }).catch(error => console.log('error', error));
-  }
+  };
+
+  const renderItemViewMonth = ({ item }) => (
+    <TouchableOpacity style={[viewMonthItem.card,{backgroundColor: item.color === '' || item.color == null ? '#f4f6ff' : item.color}]}
+        
+    >
+      <View style={viewMonthItem.info}>
+          <View style={{flexDirection:'row'}}>
+              <Text style={viewMonthItem.title} numberOfLines={1}>{item.title}</Text>
+              <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{dateUtils.ConvertDateDDMMYY(item.start.slice(0,10))}</Text>
+          </View>
+
+          <Text style={[viewMonthItem.title,{fontWeight:'normal',marginTop:10}]}>{item.summary}</Text>
+          <Text style={[viewMonthItem.title,{fontSize:12,marginTop:10}]}>{item.start.slice(11)} - {item.end.slice(11)}</Text>
+          
+      </View>
+      
+      <View style={[{marginBottom:20,flexDirection:'row',alignItems: 'center'}]}>
+        <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{item.type}</Text>
+        {item.typeGuest === 'Nhóm' ? <FontAwesome style={{marginHorizontal:15}} name="group" size={22} color="#817c8f" /> : <Ionicons style={{marginHorizontal:15}} name="person" size={24} color="#817c8f" />}
+      </View>
+            
+    </TouchableOpacity>
+);
 
 
   return (
@@ -316,6 +349,31 @@ const CalendarScreen =({navigation})=> {
 
         rightComponent={
           <View style={{flexDirection:'row'}}>
+            {/* <TouchableOpacity style={{marginTop:3,marginRight:5}}>
+              <MaterialCommunityIcons name="filter" size={24} color="blue" />
+            </TouchableOpacity> */}
+
+            <Menu style={{marginRight:5,marginTop:3}}>
+
+              <MenuTrigger>
+                  <MaterialCommunityIcons name="filter" size={24} color="blue" />
+              </MenuTrigger>
+
+              <MenuOptions>
+                <MenuOption onSelect={() => setMode('day')} style={{flexDirection:'row',alignItems: 'center'}}>
+                  <Ionicons name="today-sharp" size={23} color="grey" />
+                  <Text style={{color: 'grey',marginLeft:10}}>Theo ngày</Text>
+                </MenuOption>
+
+                <MenuOption onSelect={() => setMode('month')} style={{flexDirection:'row',alignItems: 'center'}}>
+                  <MaterialCommunityIcons name="calendar-month" size={24} color="grey" />
+                  <Text style={{color: 'grey',marginLeft:10}}>Theo tháng</Text>
+                </MenuOption>
+                
+              </MenuOptions>
+              
+              </Menu>
+
             <TouchableOpacity 
               onPress={() => 
                 navigation.navigate('Add Event',{
@@ -331,7 +389,10 @@ const CalendarScreen =({navigation})=> {
         }
         />
 
-        <View style={{flexDirection:'row',paddingVertical:15,justifyContent: 'center',alignItems: 'center'}}>
+        {/* display type of calendar depend mode that user choose  */}
+
+        {/* choose day:type */}
+        {mode === 'day' && <View style={headerCalendar.headerStyle}>
           <TouchableOpacity 
             onPress={() =>{
               const timestampConvert =labelTimestamp-aDayTimestamp;
@@ -344,11 +405,11 @@ const CalendarScreen =({navigation})=> {
               setYearChanged(date.getFullYear());
               setCurrentDate(nextDate.slice(0,10));
           }}>
-            <AntDesign name="caretleft" size={16} color="gray" />
+            <AntDesign name="arrowleft" size={18} color="navy" />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() =>{ setDatePickerVisibility(true); }}>
-            <Text style={{marginHorizontal:50,fontSize:15,color:'black'}}>{dateUtils.ConvertDateDDMMYY(currentDate)}</Text>
+            <Text style={headerCalendar.labelDate}>{dateUtils.ConvertDateDDMMYY(currentDate)}</Text>
           </TouchableOpacity>
           
 
@@ -366,12 +427,12 @@ const CalendarScreen =({navigation})=> {
               setCurrentDate(nextDate.slice(0,10));
             }}
           >
-            <AntDesign name="caretright" size={16} color="gray" />
+            <AntDesign name="arrowright" size={18} color="navy" />
           </TouchableOpacity>
 
-        </View>
+        </View>}
 
-      <TimelineCalendar
+      {mode === 'day' && <TimelineCalendar
         eventTapped={e => {
           toggleOverlay();
           setIdEvent(e.id);
@@ -394,7 +455,42 @@ const CalendarScreen =({navigation})=> {
         upperCaseHeader
         uppercase
         scrollToFirst={false}
-      />
+      />}
+
+
+      {mode === 'month' &&<View style={headerCalendar.headerStyle}>
+        <TouchableOpacity onPress={() =>{
+            const changed = dateUtils.PreviousMonth(monthChanged,yearChanged);
+            setMonthChanged(changed[0]);
+            setYearChanged(changed[1]);
+        }}>
+            <AntDesign name="arrowleft" size={18} color="navy" />
+        </TouchableOpacity>
+
+        <TouchableOpacity >
+            <Text style={headerCalendar.labelDate}>Tháng {monthChanged} , {yearChanged}</Text>
+        </TouchableOpacity>
+        
+
+        <TouchableOpacity onPress={() =>{
+            const changed = dateUtils.NextMonth(monthChanged,yearChanged);
+            setMonthChanged(changed[0]);
+            setYearChanged(changed[1]);
+        }}>
+            <AntDesign name="arrowright" size={18} color="navy" />
+        </TouchableOpacity>
+
+      </View>}
+
+      {mode === 'month' && <View style={{flex:1,backgroundColor:'white'}}>
+        <FlatList 
+          data={allEvents}
+          renderItem={renderItemViewMonth}
+          keyExtractor={(item,index) => index.toString()}/>
+      </View>}
+
+
+
 
     <Overlay isVisible={visibleOverlay} onBackdropPress={toggleOverlay} >
       <View style={overlayStyle.overlay}>
@@ -512,38 +608,38 @@ const CalendarScreen =({navigation})=> {
           </View>
         </Overlay>
 
-           { Platform.OS === 'ios' ? <DateTimePickerModal
-              display = "inline"
-              locale="vi"
-              isVisible={isDatePickerVisible }
-              time="date"
-              value={currentDate}
-              headerTextIOS={"Lịch"}
-              cancelTextIOS="Huỷ bỏ"
-              confirmTextIOS="Xác nhận"
-              onConfirm={handleConfirm}
-              onCancel={handleCancel}
-              // onHide={()=>{
-              //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
-              // }}
-            />
-            :
-            <DateTimePickerModal
-                   // display="inline"
-              locale="vi"
-              isVisible={isDatePickerVisible }
-              time="date"
-              value={currentDate}
-              headerTextIOS={"Lịch"}
-              cancelTextIOS="Huỷ bỏ"
-              confirmTextIOS="Xác nhận"
-              onConfirm={handleConfirm}
-              onCancel={handleCancel}
-              // onHide={()=>{
-              //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
-              // }}
-              />
-          }
+        { Platform.OS === 'ios' ? <DateTimePickerModal
+            display = "inline"
+            locale="vi"
+            isVisible={isDatePickerVisible }
+            time="date"
+            value={currentDate}
+            headerTextIOS={"Lịch"}
+            cancelTextIOS="Huỷ bỏ"
+            confirmTextIOS="Xác nhận"
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+            // onHide={()=>{
+            //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+            // }}
+         />
+        :
+          <DateTimePickerModal
+                // display="inline"
+            locale="vi"
+            isVisible={isDatePickerVisible }
+            time="date"
+            value={currentDate}
+            headerTextIOS={"Lịch"}
+            cancelTextIOS="Huỷ bỏ"
+            confirmTextIOS="Xác nhận"
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+            // onHide={()=>{
+            //     dispatch(calendarActions.getStatusOfDate(checkValidDate()));
+            // }}
+          />
+        }
          
     </View>
   );
@@ -597,6 +693,57 @@ const overlayStyle = StyleSheet.create({
     color: "white",
     fontSize: 15,
     textAlign: "center",
+  },
+});
+
+const headerCalendar = StyleSheet.create({
+  headerStyle: {
+    flexDirection:'row',
+    paddingVertical:15,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  labelDate:{
+    marginHorizontal:50,
+    fontSize:15,
+    color:'navy'
+  },
+
+});
+
+const viewMonthItem = StyleSheet.create({
+  card: {
+    borderRadius:20,
+    paddingBottom:10,
+    backgroundColor:'#BEC4DB',
+    marginHorizontal:15,
+    marginTop:15,
+    borderWidth:0.3,
+    borderColor:'silver'
+  },
+
+  onTheRight: {
+      position: 'absolute',
+      right: 5
+  },
+
+  title: {
+      color:'#817c8f',
+      fontWeight:'bold',
+      marginHorizontal:15
+  },
+
+  info: {
+      justifyContent: 'center',
+      marginVertical:10
+  },
+
+  date: {
+      color:'red',
+      marginRight:30,
+      marginLeft:15,
+      fontSize:12
   },
 })
 

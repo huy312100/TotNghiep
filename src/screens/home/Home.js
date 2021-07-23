@@ -644,7 +644,7 @@ const HomeScreen= ({navigation}) =>{
             <Text>{item.end.slice(11)}</Text>
           </View>
 
-          <View style={{flexDirection:'row'}}> 
+          <View style={{flexDirection:'row',alignItems: 'center'}}> 
             {item.typeGuest === 'Nhóm' ? <FontAwesome name="group" size={22} color="black" /> : <Ionicons name="person" size={24} color="black" />}
             <Text style={{position:'absolute',right:0}}>{item.type}</Text>
           </View>

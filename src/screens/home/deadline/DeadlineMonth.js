@@ -179,7 +179,7 @@ const DeadlineMonthScreen = ({navigation}) => {
                 }
             />
 
-            <View style={{flexDirection:'row',paddingVertical:15,justifyContent: 'center',alignItems: 'center',borderBottomColor:'#222222',borderBottomWidth:.5}}>
+            <View style={{flexDirection:'row',paddingVertical:15,justifyContent: 'center',alignItems: 'center',borderBottomColor:'#222222',borderBottomWidth:.5,backgroundColor:'#f2f2f2'}}>
                 <TouchableOpacity onPress={() =>{
                     const changed = dateUtils.PreviousMonth(month,year);
                     setMonth(changed[0]);

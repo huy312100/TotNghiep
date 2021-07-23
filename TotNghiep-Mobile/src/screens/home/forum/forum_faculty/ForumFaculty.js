@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
 import { Fontisto,FontAwesome } from '@expo/vector-icons';
 
 import {useSelector} from 'react-redux';
@@ -11,13 +11,11 @@ import * as dateUtils from '../../../../utils/Date';
 const ForumFacultyScreen =({navigation})=>{
 
     const token = useSelector((state) => state.authen.token);
-    const profile=useSelector((state) => state.profile.profile);
-    const [Email,setFullemail] = useState(profile[0].Email);
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
     const [refresh,setRefresh] = useState(false);
-    const [checklike,setCheckLike] = useState(false);
 
     useEffect(() => {
         getForum();
@@ -31,6 +29,7 @@ const ForumFacultyScreen =({navigation})=>{
     },[refresh]);
 
     const getForum = () => {
+        setIsLoading(true);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `bearer ${token}`);
 
@@ -46,7 +45,7 @@ const ForumFacultyScreen =({navigation})=>{
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-            console.log(dataRes);
+            //console.log(dataRes);
             if(statusCode === 200){
                 const dataTmp = [];  
                 for (const key in dataRes) {
@@ -67,28 +66,22 @@ const ForumFacultyScreen =({navigation})=>{
                 }
                 setDataForum(dataTmp);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
-    }
-
-    const checkLike = (item) =>{
-        if(item.LikeByOwn === 1)
-        {
-            return true;
-        }
-        else{return false;}
     }
 
     const renderItem = ({item})=>(
         <TouchableOpacity style={styles.card}
                 onPress={() =>{
                     navigation.navigate('Content Forum',{
-                        dataOfForum:item
+                        dataOfForum:item,
+                        typeForum:'faculty'
                     });
                 }}>
                 <View style={styles.info}>
                     <Image style={styles.imageUserPost} source={ item.AvartaOwn === "" || item.AvartaOwn === null ? require("../../../../../assets/user-icon.png") : {uri : item.AvartaOwn}}/>
                     <View>
-                        <Text style={[styles.nameAndDate, {fontSize:15}]}>{item.NameOwn}</Text>
+                        <Text style={styles.nameAndDate}>{item.NameOwn}</Text>
                         <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(item.time)}</Text>
                     </View>
 
@@ -101,41 +94,53 @@ const ForumFacultyScreen =({navigation})=>{
                 {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
 
                 <View style={styles.footerCard}>
-                    
-                    <TouchableOpacity style={styles.buttonFooter}
-                         onPress={async()=>{
-                            await forumServices.likePost(token,item.ID);
-                            setRefresh(!refresh);
-                        }}
-                    >
-                        <Fontisto style={{marginRight:8, color:checkLike(item) ? 'blue':'silver'}} name="like" size={18} color="silver" />
-                        <Text style={{marginTop:3,color:checkLike(item) ? 'blue':'silver'}}>{item.like}</Text>
-                    </TouchableOpacity>
+                    {item.LikeByOwn === 1 ?
+                        <TouchableOpacity style={styles.buttonFooter}
+                            onPress={async()=>{
+                                await forumServices.unlikePost(token,item.ID);
+                                setRefresh(!refresh);
+                            }}>
+                                <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
+                                <Text style={{marginTop:3,color:'blue'}}>{item.like}</Text>
+                        </TouchableOpacity>
+                        : 
+                        <TouchableOpacity style={styles.buttonFooter}
+                            onPress={async()=>{
+                                await forumServices.likePost(token,item.ID);
+                                setRefresh(!refresh);
+                            }}>
+
+                                <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
+                                <Text style={{marginTop:3,color:'silver'}}>{item.like}</Text>
+                        </TouchableOpacity>
+                    }
 
                     <TouchableOpacity style={styles.buttonFooter}>
                         <FontAwesome style={{marginRight:8}} name="comment" size={18} color="silver" />
-                        <Text style={{marginTop:2,color: 'silver'}}>{item.comment}</Text>
+                        <Text style={{marginTop:2,color:'silver'}}>{item.comment}</Text>
                     </TouchableOpacity>
                 </View>
             </TouchableOpacity>
     )
 
-
-    const renderEmptyForum = (
-        <View style={{alignItems: "center"}}> 
-          <Text>Bạn chưa tham gia diễn đàn</Text>
-        </View>
-      );
-
-
     return (
         <View style={styles.container}>
+
+            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="blue"/>
+            </View>}
+
+            {!isLoading && dataForum.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy diễn đàn nào 
+                    </Text>
+                </View>
+            }
 
             <FlatList
                 data={dataForum}
                 renderItem={renderItem}
                 keyExtractor = {(item,index) => index.toString()}
-                ListEmptyComponent={renderEmptyForum}
             />
             
         </View>
@@ -177,7 +182,7 @@ const styles = StyleSheet.create({
 
     content: {
         marginHorizontal:15,
-        fontSize:17,
+        fontSize:12,
         marginBottom:10,
     },
 

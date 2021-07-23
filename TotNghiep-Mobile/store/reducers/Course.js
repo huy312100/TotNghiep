@@ -1,4 +1,4 @@
-import { GET_ALL_COURSES,GET_CURRENT_COURSES } from '../actions/Course';
+import { GET_ALL_COURSES,GET_CURRENT_COURSES,GET_INFO_COURSE_CHOOSE } from '../actions/Course';
 
 
 const initialState = {
@@ -18,6 +18,11 @@ export default (state=initialState,action) => {
                 ...state,
                 curCourses:action.curCourses,
             }
+            case GET_INFO_COURSE_CHOOSE:
+                return {
+                    ...state,
+                    infoCourseChoose:action.infoCourseChoose
+            }   
         default:
             return state;
     }

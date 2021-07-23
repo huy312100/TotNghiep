@@ -69,50 +69,58 @@ const LoginScreen = ({navigation}) => {
       alert("Xin vui lòng điển đầy đủ thông tin");
     }
  }
-  return (
-    <TouchableWithoutFeedback onPress={()=>{
-      Keyboard.dismiss();
-    }}>
-      <View style={styles.container}>
-        <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
-        <Heading style={{textAlign: "center", paddingTop: 0}}>E M U</Heading>
-        <UsernameInput placeholder={"Tên đăng nhập"}
-          onChangeText={(username)=>setUsername(username)}/>
+ return (
+  <TouchableWithoutFeedback onPress={()=>{
+    Keyboard.dismiss();
+  }}>
+    <View style={styles.container}>
 
-        <PasswordInput placeholder={"Mật khẩu"}
-          onChangeText={(password)=>setPassword(password)}/>
+      <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
+      <Heading>E M U</Heading>
+      <UsernameInput placeholder={"Địa chỉ E-mail"}
+        onChangeText={(username)=>setUsername(username)}/>
 
-        <View style={styles.viewForgetPassword}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('Forget Password');
-            }}
-          >
-            <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
-          </TouchableOpacity>
-        </View>
+      <PasswordInput placeholder={"Mật khẩu"}
+        onChangeText={(password)=>setPassword(password)}/>
 
-
-        <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
+      <View style={styles.viewForgetPassword}>
+        <TouchableOpacity
           onPress={() => {
-            loginAPI();
-            }}>
-          <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
+            navigation.navigate('Forget Password');
+          }}
+        >
+          <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
         </TouchableOpacity>
+      </View>
 
-        {isLoading && LoadingScreen()}
-        </View>
-    </TouchableWithoutFeedback>
-    
-  );
+
+
+      <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
+        onPress={() => {
+          loginAPI();
+          }}>
+        <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
+      </TouchableOpacity>
+
+      {isLoading && LoadingScreen()}
+      </View>
+  </TouchableWithoutFeedback>
+  
+);
 };
 
 const styles = StyleSheet.create({
-    container: {
+  container: {
     flex: 1,
     backgroundColor: "#fff",
+    alignItems: "center",
     padding: 10,
-    paddingTop: 30,
+    paddingTop: 80,
+  },
+
+  imageLogo: {
+    width:175,
+    height:125,
   },
 
   passInput: {
@@ -122,22 +130,15 @@ const styles = StyleSheet.create({
 
   viewForgetPassword: {
     width:'100%',
+    alignItems: 'flex-end',
     paddingRight:5,
     marginTop:20
   },
 
-  imageLogo: {
-    width:175,
-    height:125,
-    alignSelf: "center"
-  },
-
   forgetPassText: {
     fontWeight: "bold",
-    color: "blue",
+    color: "#336633",
     fontSize: 16,
-    marginTop: 20,
-    marginLeft: 20
   },
 
   bottomText: {
@@ -157,23 +158,20 @@ const styles = StyleSheet.create({
   },
 
   buttonLoginContainer: {
-    backgroundColor: "blue",
-    height: 55,
+    backgroundColor: "#0066FF",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 20,
-    borderRadius: 100,
+    borderRadius: 10,
     paddingTop:20,
-    paddingBottom:20,
-    marginTop:90,
-    marginLeft:20,
-    marginRight:20
+    paddingBottom:20
   },
 
   textBtnLogIn: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 25,
+    fontSize: 20,
     textAlign: "center",
   },
 

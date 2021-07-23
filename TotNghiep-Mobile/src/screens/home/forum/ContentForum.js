@@ -1,5 +1,5 @@
-import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert} from 'react-native';
+import React,{useState,useEffect,useRef,useCallback} from 'react';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform,ActivityIndicator} from 'react-native';
 import { Fontisto,FontAwesome,Entypo,MaterialCommunityIcons,AntDesign,Ionicons } from '@expo/vector-icons';
 import { Header } from 'react-native-elements';
 
@@ -8,37 +8,132 @@ import {useSelector} from 'react-redux';
 import * as dateUtils from '../../../utils/Date';
 import * as imagePickerUtils from '../../../utils/ImagePicker';
 import * as forumServices from '../../../services/Forum';
-import { color } from 'react-native-elements/dist/helpers';
 
 const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
 
     const token = useSelector((state) => state.authen.token);
     const profile=useSelector((state) => state.profile.profile);
 
+    const dataOfForum = route.params.dataOfForum;
+    const typeForum=route.params.typeForum;
+
     const unmounted = useRef(false);
 
+    const [loading, setLoading] = useState(false);
     const [refresh,setRefresh] = useState(false);
 
+    const [dataDetail,setDataDetail] = useState([]);
     const [dataComment,setDataComment] = useState([]);
     const [imageSelected,setImageSelected] = useState({uri:""});
     const [comment,setComment] = useState('');
-    const dataOfForum = route.params.dataOfForum;
+    const [commentInput,setCommentInput] = useState('');
 
     useEffect(() => {
-        getAllComment();
+        getDetailPost();
+        getAllComment();    
         return()=>{
             unmounted.current = true;
+        }    
+    },[refresh,dataDetail.length]);
+
+    const getDetailPost = () => {
+        if(typeForum === 'faculty' || typeForum === 'university'){
+            getDetailPostOfFacultOrUni();
         }
-    },[refresh]);
+        else if(typeForum === 'course'){
+            getDetailPostOfCourse();
+        }
+    }
 
 
-    const getAllComment =()=>{
+    //Get detail post 
+    const getDetailPostOfFacultOrUni = () =>{
+        setLoading(true);
         let details = {
             IDPost: dataOfForum.ID,
         };
-      
+
         let formBody = [];
-    
+
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
+        fetch("https://hcmusemu.herokuapp.com/forum/viewdetail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+            body: formBody,
+        }) .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if(statusCode === 200){
+                setDataDetail(dataRes);
+                setLoading(false);
+            }
+        }).catch(error => console.log('error', error));
+    };
+
+    const getDetailPostOfCourse= () =>{
+        setLoading(true);
+        let details = {
+            IDPost: dataOfForum.ID,
+        };
+
+        let formBody = [];
+
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewdetail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+            body: formBody,
+        }) .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if(statusCode === 200){
+                setDataDetail(dataRes);
+                setLoading(false);
+            }
+        }).catch(error => console.log('error', error));
+    };
+
+    const getAllComment =()=>{
+        if(typeForum === 'faculty' || typeForum === 'university'){
+            getAllCommentOfFacultyOrUniversity();
+        }
+        else if(typeForum === 'course'){
+            getAllCommentCourse();
+        }
+    };
+
+
+    const getAllCommentOfFacultyOrUniversity =() => {
+        let details = {
+            IDPost: dataOfForum.ID,
+        };
+
+        let formBody = [];
+
         for (let property in details) {
             let encodedKey = encodeURIComponent(property);
             let encodedValue = encodeURIComponent(details[property]);
@@ -62,14 +157,112 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 setDataComment(dataRes);
             }
         }).catch(error => console.log('error', error));
-    }
+    };
 
-    const checkLike = (item) =>{
-        if(item.LikeByOwn === 1)
-        {
-            return true;
+    const getAllCommentCourse =() => {
+        let details = {
+            IDPost: dataOfForum.ID,
+        };
+
+        let formBody = [];
+
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
         }
-        else{return false;}
+        formBody = formBody.join("&");
+
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewcmt", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+            body: formBody,
+        }) .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            if(statusCode === 200){
+                setDataComment(dataRes);
+            }
+        }).catch(error => console.log('error', error));
+    };
+
+    const headerComponent = ()=>{
+    return (
+        <View>
+            <View style={styles.card}>
+            <View style={styles.info}>
+            <Image style={styles.imageUserPost} source={ dataOfForum.AvartaOwn === "" || dataOfForum.AvartaOwn === null ? require("../../../../assets/user-icon.png") : {uri : dataOfForum.AvartaOwn}}/>
+                <View>
+                    <Text style={styles.nameAndDate}>{dataOfForum.NameOwn}</Text>
+                    <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(dataOfForum.time)}</Text>
+                </View>
+                {dataOfForum.EmailOwn === profile[0].Email &&
+                <TouchableOpacity style={{ position: 'absolute',right:0,top:0}}
+                    onPress={async() =>{
+                        if(typeForum === 'faculty' || typeForum === 'university'){
+                            await forumServices.deletePost(token,dataOfForum.ID);
+                            navigation.goBack();
+                        }
+                        else if(typeForum === 'course'){
+                            await forumServices.deleteCoursePost(token,dataOfForum.ID);
+                            navigation.goBack();
+                        }
+
+                    }}>
+
+                    <AntDesign  name="delete" size={18} color="red" />
+                </TouchableOpacity>}
+            </View>
+
+            <View tyle={[styles.info,{marginBottom:20}]}>
+                <Text style={[styles.content]}>{dataOfForum.title}</Text>
+            </View>
+
+            {dataOfForum.image !== "" && <Image style={styles.imagePost} source={{uri:dataOfForum.image}}/>}
+
+            {dataDetail.length !== 0 && <View style={styles.footerCard}>
+                {dataDetail[0].LikeByOwn === 0 ? <TouchableOpacity style={styles.buttonFooter}
+                    onPress={async()=>{
+                        if(typeForum === 'faculty' || typeForum === 'university'){
+                            await forumServices.likePost(token,dataOfForum.ID);
+                        }
+                        if(typeForum === 'course'){
+                            await forumServices.likeCoursePost(token,dataOfForum.ID);
+                        }
+                        setRefresh(!refresh);
+                    }}>
+                    <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
+                    <Text style={{marginTop:3,color:'silver'}}>{dataDetail[0].like}</Text>
+                </TouchableOpacity>
+                :
+                <TouchableOpacity style={styles.buttonFooter}
+                    onPress={async()=>{
+                        await forumServices.unlikePost(token,dataOfForum.ID);
+                        setRefresh(!refresh);
+                        
+                    }}>
+                    <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
+                     <Text style={{marginTop:3,color:'blue'}}>{dataDetail[0].like}</Text>
+                </TouchableOpacity>}
+
+                <TouchableOpacity style={styles.buttonFooter}>
+                    <Text style={{marginTop:2,color:'silver'}}>{dataDetail[0].comment} câu trả lời</Text>
+                </TouchableOpacity>
+            </View>}
+        </View>
+
+        <View style={{flexDirection:'row',marginHorizontal:10,marginTop:10}}>
+            <MaterialCommunityIcons name="arrow-top-right-bold-outline" size={24} color="grey" />
+            <Text style={{color:'grey',marginTop:4,fontWeight:'600'}}> Tất cả câu trả lời</Text>
+        </View>
+
+        </View>
+        )
     }
 
     const renderItem = ({item}) =>(
@@ -77,26 +270,32 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
              <View style={styles.info}>
                 <Image style={styles.imageUserPost} source={ item.AvartOwn === "" || item.AvartOwn == null ? require("../../../../assets/user-icon.png") : {uri : item.AvartOwn}}/>
                 <View style={{flexDirection:'row'}}>
-                    <Text style={[styles.nameAndDate,{marginRight:5, color: "black"}]}>{item.NameOwn}</Text>
-                    <Entypo name="dot-single" size={18} color="black" />
-                    <Text style={[styles.nameAndDate,{fontWeight:'300',marginLeft:5, color: "black"}]}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
-                    
+                    <Text style={[styles.nameAndDate,{marginRight:5},cmtStyles.nameAndDate]}>{item.NameOwn}</Text>
+                    <Entypo name="dot-single" size={18} color="silver" />
+                    <Text style={[styles.nameAndDate,{fontWeight:'300',marginLeft:5},cmtStyles.nameAndDate]}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
+
                 </View>
-                {item.EmailOwn === profile[0].Email && 
+                {item.EmailOwn === profile[0].Email &&
                         <TouchableOpacity style={{ marginLeft:30,position: 'absolute',right:0}}
-                            
+
                             onPress={() =>{
                                 Alert.alert(
                                     "Xoá bình luận",
                                     "Bạn có chắc chắn muốn xoá bình luận này ?",
                                     [
-                                      { text: "Từ chối", 
+                                      { text: "Từ chối",
                                         style: "cancel"
                                       },
                                       {
-                                        text: "Cho phép",
+                                        text: "Xác nhận",
                                         onPress: async () => {
-                                            await forumServices.deleteCmt(token,item.ID);
+                                            if(typeForum === 'faculty' || typeForum === 'university'){
+                                                await forumServices.deleteCmt(token,item.ID);
+                                            }
+                                            else if(typeForum === 'course'){
+                                                console.log(item.ID);
+                                                await forumServices.deleteCourseCmt(token,item.ID);
+                                            }
                                             setRefresh(!refresh);
                                         },
                                       },
@@ -109,151 +308,168 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                     }
             </View>
 
-            <View tyle={[styles.info,{marginBottom:20}]}>      
-                <Text style={[styles.content,{color:'#555555'}]}>{item.comment}</Text>                
+            <View tyle={[styles.info,{marginBottom:20}]}>
+                <Text style={[styles.content,{color:'#555555'}]}>{item.comment}</Text>
             </View>
 
             {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
         </View>
     )
 
-    const checkDisableAddButton =() =>{
-        if(comment.trim().length !== 0){
-            return false;
-        }
-        return true;
-    }
-
-    const headerComponent =() =>{
-        return(
-        <View>
-            <View style={styles.card}>
-            <View style={styles.info}>
-            <Image style={styles.imageUserPost} source={ dataOfForum.AvartaOwn === "" || dataOfForum.AvartaOwn === null ? require("../../../../assets/user-icon.png") : {uri : dataOfForum.AvartaOwn}}/>
-                <View>
-                    <Text style={[styles.nameAndDate, {fontSize:15}]}>{dataOfForum.NameOwn}</Text>
-                    <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(dataOfForum.time)}</Text>
-                </View>
-                {dataOfForum.EmailOwn === profile[0].Email && 
-                <TouchableOpacity style={{ position: 'absolute',right:0,top:0}}
-                    onPress={async() =>{
-                        await forumServices.deletePost(token,dataOfForum.ID);
-                        navigation.goBack();
-                    }}>
-
-                    <AntDesign  name="delete" size={18} color="red" />
-                </TouchableOpacity>}
-            </View>
-            
-            <View tyle={[styles.info,{marginBottom:20}]}>      
-                <Text style={[styles.content]}>{dataOfForum.title}</Text>                
-            </View>
-
-            {dataOfForum.image !== "" && <Image style={styles.imagePost} source={{uri:dataOfForum.image}}/>}
-
-            <View style={styles.footerCard}>
-                <TouchableOpacity style={styles.buttonFooter}
-                    onPress={async()=>{
-                        await forumServices.likePost(token,dataOfForum.ID);
-                        setRefresh(!refresh);
-                    }}
-                >
-                    <Fontisto style={{marginRight:8, color:checkLike(dataOfForum) ? 'blue':'silver'}} name="like" size={18} color="silver" />
-                    <Text style={{marginTop:3,color:checkLike(dataOfForum) ? 'blue':'silver'}}>{dataOfForum.like}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonFooter}>
-                    <Text style={{marginTop:2,color:'silver'}}>{dataOfForum.comment + "  " + "Comments"}</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-        
-        </View>
-        )
-    }
-
-
     return (
-        
+
         <View style={styles.container}>
-        
-        <Header
+            <Header
                 containerStyle={{
-                    backgroundColor: '#33CCFF',
+                    backgroundColor: 'white',
                     justifyContent: 'space-around',
                     borderBottomColor:'#DDDDDD'
                 }}
 
+                rightComponent={
+                    <TouchableOpacity onPress={()=>{
+                        navigation.navigate('List User Liked',{
+                            idPost: dataOfForum.ID,
+                            typeForum:typeForum,
+                        });
+                    }}>
+                        <Ionicons name="list" size={30} color="#006666" />
+                    </TouchableOpacity>
+                }
+
                 centerComponent={
-                    <Text numberOfLines={1} style={{fontSize:16,fontWeight:'500',marginTop:5, color: "white"}}>Bài đăng của {dataOfForum.NameOwn}</Text>
+                    <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10}}>Diễn đàn của {dataOfForum.NameOwn}</Text>
                 }
 
                 leftComponent={
-                <TouchableOpacity onPress={() =>{ 
+                <TouchableOpacity onPress={() =>{
                     navigation.goBack();
                     }}>
-                        <Entypo name="chevron-left" size={30} color="white" />
+                        <Entypo name="chevron-left" size={30} color="blue" />
                     </TouchableOpacity>
                 }/>
-            
+                {/* <Text>{dataDetail[0].like}</Text> */}
+
+                {}
+
+            {loading ? <ActivityIndicator style={{flex: 1}} color="black"/>
+            :
             <FlatList
                 data={dataComment}
                 renderItem={renderItem}
                 keyExtractor={(item,index) => index.toString()}
-                ListHeaderComponent={headerComponent}
+                ListHeaderComponent={headerComponent()}
                 // ListFooterComponent={footerComponent}
-                ListFooterComponent={<View style={{height: 90}}/>}
             />
+        }
 
-        
-            <View style={cmtStyles.bottomCmtView} >
-            {imageSelected.uri !== "" &&
-                <ImageBackground source={{uri: imageSelected.uri}} style={cmtStyles.imgSelected}>
-                    <TouchableOpacity onPress={() =>{
-                        setImageSelected({uri:""});
-                    }}>
-                        <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
-                    </TouchableOpacity>   
-                </ImageBackground>
-            }
-                <View style={cmtStyles.bottomCmtComponent}>
-                    <TouchableOpacity style={{bottom:0}}
-                        onPress={async() =>{
-                            let image = await imagePickerUtils.openImagePickerAsync();
-                            console.log(image);
-                            setImageSelected(image)
-                        }}
-                    >
-                        <Ionicons style={{marginTop:2}} name="md-image-outline" size={28} color="#CCCCCC" />
-                    </TouchableOpacity>
+            <View style={{ marginBottom:66}}>
 
-                    <TextInput
-                        style={cmtStyles.bottomTxtInput}
-                        multiline={true}
-                        editable={true}
-                        placeholder="Nhập câu trả lời... " 
-                        value = {comment}
-                        onChangeText={value => setComment(value)}
-                    />
-
-                    <TouchableOpacity  disabled = {checkDisableAddButton()}
-                        onPress={async() =>{
-                            await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);
-                            setComment('');
-                            setImageSelected({uri:""});
-                            setRefresh(!refresh);
-                        }}
-                    >
-                        <MaterialCommunityIcons style={[cmtStyles.btnSubmitCmt, {color: checkDisableAddButton() ? 'silver':'blue'}]} name="send-circle" size={30}/>
-                    </TouchableOpacity>
-                
-                </View>
             </View>
-            
-        
-        
+
+            {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='position'>
+                <View style={cmtStyles.bottomCmtView} >
+                {imageSelected.uri !== "" &&
+                    <ImageBackground source={{uri: imageSelected.uri}} style={cmtStyles.imgSelected}>
+                        <TouchableOpacity onPress={() =>{
+                            setImageSelected({uri:""});
+                        }}>
+                            <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
+                        </TouchableOpacity>
+                    </ImageBackground>}
+                    <View style={cmtStyles.bottomCmtComponent}>
+                        <TouchableOpacity style={{bottom:0}}
+                            onPress={async() =>{
+                                let image = await imagePickerUtils.openImagePickerAsync();
+                                console.log(image);
+                                setImageSelected(image)
+                            }}
+                        >
+                            <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
+                        </TouchableOpacity>
+
+                        <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... "
+                            onChangeText={(value) => {
+                                setComment(value);
+                            }}
+                            clearButtonMode="always"
+                            ref={input => { setCommentInput(input) }}
+                        />
+
+                        {comment.trim().length !== 0 &&
+                        <TouchableOpacity
+                            onPress={async() =>{
+                                if(typeForum === 'faculty' || typeForum === 'university'){
+                                    await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);
+                                }
+                                else if(typeForum === 'course'){
+                                    console.log(token,dataOfForum.ID,comment,imageSelected);
+                                    await forumServices.commentCoursePost(token,dataOfForum.ID,comment,imageSelected);
+                                }
+                                    setComment('');
+                                    commentInput.clear();
+                                    setImageSelected({uri:""});
+                                    setRefresh(!refresh);
+                            }}
+                        >
+                            <MaterialCommunityIcons style={cmtStyles.btnSubmitCmt} name="send-circle" size={30} color="blue" />
+                        </TouchableOpacity>
+                        }
+                    </View>
+                </View>
+                </KeyboardAvoidingView>
+
+                :
+
+                <View style={cmtStyles.bottomCmtView} >
+                    {imageSelected.uri !== "" &&
+                        <ImageBackground source={{uri: imageSelected.uri}} style={cmtStyles.imgSelected}>
+                            <TouchableOpacity onPress={() =>{
+                                setImageSelected({uri:""});
+                            }}>
+                                <Ionicons style={{ position: 'absolute',right:0, opacity:0.5}} name="close-circle-outline" size={20} color="#EEEEEE" />
+                            </TouchableOpacity>
+                        </ImageBackground>}
+
+                        <View style={cmtStyles.bottomCmtComponent}>
+                            <TouchableOpacity style={{bottom:0}}
+                                onPress={async() =>{
+                                    let image = await imagePickerUtils.openImagePickerAsync();
+                                    console.log(image);
+                                    setImageSelected(image)
+                                }}>
+                                <Ionicons style={{marginTop:2}} name="md-image-outline" size={32} color="#CCCCCC" />
+                            </TouchableOpacity>
+
+                            <TextInput multiline style={cmtStyles.bottomTxtInput} placeholder="Nhập câu trả lời... "
+                                onChangeText={(value) => setComment(value)}
+                                ref={input => { setCommentInput(input) }}
+                            />
+                           
+                            {comment.trim().length !== 0 && <TouchableOpacity
+                            style={cmtStyles.btnSubmitCmt}
+                                onPress={async() =>{
+                                    if(typeForum === 'faculty' || typeForum === 'university'){
+                                        await forumServices.commentPost(token,dataOfForum.ID,comment,imageSelected);
+                                    }
+                                    else if(typeForum === 'course'){
+                                        console.log(token,dataOfForum.ID,comment,imageSelected);
+                                        await forumServices.commentCoursePost(token,dataOfForum.ID,comment,imageSelected);
+                                    }
+                                        setComment('');
+                                        commentInput.clear();
+                                        setImageSelected({uri:""});
+                                        setRefresh(!refresh);
+                                }}>
+                                <MaterialCommunityIcons name="send-circle" size={30} color="blue" />
+                            </TouchableOpacity>}
+
+
+                        </View>
+                </View>
+            }
         </View>
-        
+
     )
 };
 
@@ -293,7 +509,7 @@ const styles = StyleSheet.create({
 
     content: {
         marginHorizontal:15,
-        fontSize:17,
+        fontSize:12,
         marginBottom:10,
     },
 
@@ -327,22 +543,21 @@ const cmtStyles = StyleSheet.create({
         position: 'absolute',
         bottom:0,
         backgroundColor:'white',
-        width:'100%',
-        paddingTop: Header.HEIGHT,
+        width:'100%'
     },
 
     bottomCmtComponent:{
         flexDirection:'row',
         marginTop:15,
         marginLeft:8,
-        marginBottom:20,
+        marginBottom:20
     },
 
     bottomTxtInput: {
         maxHeight:100,
         borderRadius:20,
         backgroundColor:'#EEEEEE',
-        width:'80%',
+        width:'88%',
         marginLeft:10,
         paddingLeft:14,
         paddingRight:25,
@@ -351,9 +566,10 @@ const cmtStyles = StyleSheet.create({
     },
 
     btnSubmitCmt:{
+        position:'absolute',
         right:0,
-        marginHorizontal:2,
-        marginVertical:1.5
+        marginHorizontal:Platform.OS === 'android' ? 9 :2 ,
+        marginVertical:2
     },
 
     imgSelected:{

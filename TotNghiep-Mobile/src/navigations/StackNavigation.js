@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-import {TouchableOpacity,Image, Text} from "react-native"
+import {TouchableOpacity,Image, Text, Dimensions} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -49,10 +49,16 @@ import ForumFacultyScreen from "../screens/home/forum/forum_faculty/ForumFaculty
 import ForumUniversityScreen from "../screens/home/forum/forum_university/ForumUniversity";
 import ContentForumFacultyAndUniversityScreen from "../screens/home/forum/ContentForum";
 import ForumAllCourseScreen from "../screens/home/forum/forum_course/ForumAllCourse";
+import ForumCourseOfAppScreen from "../screens/home/forum/forum_course/ForumCourseOfApp";
 
 import StartConfigScreen from "../screens/first_config/StartConfig";
 import MoodleConfigScreen from "../screens/first_config/MoodleConfig";
 import EndConfigScreen from "../screens/first_config/EndConfig";
+
+import MyCourseForumScreen from '../screens/home/forum/my_forum/MyCourseForum';
+import MyFacultyForumScreen from '../screens/home/forum/my_forum/MyFacultyForum';
+import MyUniversityForumScreen from '../screens/home/forum/my_forum/MyUniversityForum';
+import ListUserLikedScreen from "../screens/home/forum/ListUserLiked";
 
 import { View } from "react-native";
 
@@ -228,30 +234,48 @@ function HomeStackNavigation({navigation}) {
         }}
       />
 
-      <Stack.Screen
+<Stack.Screen
         name="Forum"
         component={ForumTopTab}
         options={{ 
           title: "Diễn đàn",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
           headerTitleAlign: 'center',
-          headerTintColor:"#FFFFFF",
+          headerTintColor: "white",
           headerStyle:{
             backgroundColor:"#33CCFF"},
 
           headerRight:()=>(
-            <TouchableOpacity style={{marginRight:5}} onPress={() =>{
-              navigation.navigate('Create Post Of Forum');
-            }}>
-              <MaterialIcons name="library-add" size={25} color="white"/>
-            </TouchableOpacity>
+            <View style={{flexDirection:'row'}}>
+                <TouchableOpacity style={{marginRight:15}} onPress={() =>{
+                  navigation.navigate("My Forum");
+                  }}>
+                  <MaterialCommunityIcons name="clipboard-account-outline" size={25} color="white" />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{marginRight:5}} onPress={() =>{
+                  navigation.navigate('Create Post Of Forum');
+                  }}>
+                  <MaterialIcons name="library-add" size={25} color="white"/>
+                </TouchableOpacity>
+            </View>
           )
         }}
-
       />
 
       <Stack.Screen
-        name="Forum Of A Moodle Course"
-        component={ForumOfCourseMoodleScreen}
+        name="Forum Of A Course"
+        component={ForumACourseTopTab}
+        options={{ 
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false
+        }}
+      />
+
+      <Stack.Screen
+        name="Content Forum Of A Moodle Course"
+        component={ContentForumMoodleScreen}
         options={{ 
           headerShown: false
         }}
@@ -269,7 +293,26 @@ function HomeStackNavigation({navigation}) {
         component={ContentForumFacultyAndUniversityScreen}
         options={{ 
           headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name="List User Liked"
+        component={ListUserLikedScreen}
+        options={{ 
+          headerShown: false
         }}/>
+
+      <Stack.Screen
+        name="My Forum"
+        component={MyForumTopTab}
+        options={{ 
+          title: "Diễn đàn của tôi",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
+
+        }}
+      />
 
     </Stack.Navigator>
   )
@@ -699,6 +742,7 @@ function MessageTopTab(){
 
 //Top tab of forum screen 
 function ForumTopTab(){
+  const DeviceWidth = Dimensions.get('window').width;
   return (
     <topTab.Navigator initialRouteName="Forum Total Course" 
     tabBarOptions={{
@@ -718,6 +762,18 @@ function ForumTopTab(){
           tabBarLabel: ({focused}) => (
             <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:90}}>
               Tất cả khoá học
+            </Text>
+          )
+        }}/>
+
+        <topTab.Screen 
+        name="Forum Course" 
+        style={{color: 'white'}}
+        component={ForumCourseScreen} 
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'green' : 'silver',width:(DeviceWidth-90)/4}}>
+              Môn học
             </Text>
           )
         }}/>
@@ -772,7 +828,47 @@ function ForumACourseTopTab(){
   )
 };
 
+function MyForumTopTab(){
+  return (
+    <topTab.Navigator initialRouteName="My Course Forum" 
+    tabBarOptions={{
+      activeTintColor: 'blue',
+      inactiveTintColor:'#CCCCCC',
+      indicatorStyle:{
+        backgroundColor: 'blue',
+      },
 
+      labelStyle: { fontSize: 10 },
+      }}>
+
+      <topTab.Screen 
+        name="My Course Forum" 
+        component={MyCourseForumScreen}
+        options={{
+          tabBarLabel:'Môn học'
+        }}
+        />
+
+      <topTab.Screen 
+        name="My Faculty Forum" 
+        component={MyFacultyForumScreen}
+        options={{
+          tabBarLabel:'Khoa'
+        }}
+        />
+
+      <topTab.Screen 
+        name="My University Forum" 
+        component={MyUniversityForumScreen}
+        options={{
+          tabBarLabel:'Trường'
+        }}
+        />
+  
+
+    </topTab.Navigator>
+  )
+};
 
 
 

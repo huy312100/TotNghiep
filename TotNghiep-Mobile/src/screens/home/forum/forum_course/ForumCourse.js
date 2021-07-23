@@ -2,7 +2,7 @@ import React,{useState,useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ActivityIndicator } from 'react-native';
 import { useDispatch,useSelector } from 'react-redux';
 
-
+import * as courseActions from '../../../../../store/actions/Course';
 
 const ForumCourseScreen = ({navigation}) =>{
     const token = useSelector((state) => state.authen.token);
@@ -10,7 +10,12 @@ const ForumCourseScreen = ({navigation}) =>{
 
     const unmounted = useRef(false);
     const [pageCurrent,setPageCurrent] = useState(0);
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading,setIsLoading] = useState(true);
+
+    const infoCourseChoose = {
+        idCourse : "",
+        nameCourse : ""
+    };
 
   // const allCourses = useSelector((state) => state.course.allCourses);
 
@@ -19,9 +24,13 @@ const ForumCourseScreen = ({navigation}) =>{
   useEffect(() => {
     setIsLoading(true);
     getAllCourses();
+    return()=>{
+        unmounted.current = true;
+    }
   }, [pageCurrent]);
 
-  const getAllCourses = () => {
+  const getAllCourses = async () => {
+    setIsLoading(true);
     let details = {
       page: pageCurrent,
     };
@@ -45,12 +54,19 @@ const ForumCourseScreen = ({navigation}) =>{
       },
       body: formBody,
     })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    })
+      .then(([statusCode, dataRes]) => {
+        if(statusCode === 200){
+          console.log(dataRes);
+          setData(data.concat(dataRes));
+          dispatch(courseActions.getAllCourses(data.concat(dataRes)));
+          setPageCurrent(pageCurrent+1);
+        }
         //tmp.concat(json)
-        setData(data.concat(json));
-        //dispatch(courseActions.getAllCourses(data.concat(json)));
         setIsLoading(false);
       })
       .catch((err) => console.log(err, "error"));
@@ -58,54 +74,45 @@ const ForumCourseScreen = ({navigation}) =>{
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card} 
-            onPress={() =>{navigation.navigate('Forum Of A Moodle Course',{
-                idCourse: item.IDCourses,
-                name: item.name,
-            })
+            onPress={() =>{
+                infoCourseChoose.idCourse=item.IDCourses;
+                infoCourseChoose.nameCourse=item.name;
+                dispatch(courseActions.getInfoCourseChoose(infoCourseChoose));
+                navigation.navigate('Forum Of A Course');
         }}>
 
             <View style={styles.info}>
                 <Text style={styles.title}>{item.name}</Text>
             </View>
-            
-            <View tyle={[styles.info,{marginBottom:20,marginLeft:20}]}>
+
+            {typeof(item.teacher.map) !== 'undefined' && <View tyle={[styles.info,{marginBottom:20,marginLeft:20}]}>
                 {item.teacher.map((item, index) => (
                 <Text key={index} style={styles.date}>Giáo viên : {item}</Text>
               ))
               }
-            </View>
+            </View>}
             
         </TouchableOpacity>
     );
 
-    const handleMore = () =>{
-        setPageCurrent(pageCurrent+1);
-        setIsLoading(true);
-    };
-
-    const renderFooter = () =>(
-        isLoading?
-        <View style={styles.footerLoader}>
-            <ActivityIndicator size="large"/>
-        </View>:null
-    );
-
-    const renderEmptyForum = (
-        <View style={{alignItems: "center"}}> 
-          <Text>Bạn chưa tham gia diễn đàn</Text>
-        </View>
-      );
-
     return(
         <View style={styles.container}>
+            {isLoading && data.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="blue"/>
+            </View>}
+
+            {!isLoading && data.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy môn học nào 
+                    </Text>
+                </View>}
+
+
             <FlatList
             data={data}
             renderItem={renderItem}
             keyExtractor={(item,index) => index.toString()}
-            onEndReached={handleMore}
-            onEndReachedThreshold={0}
-            ListFooterComponent={renderFooter}
-            ListEmptyComponent={renderEmptyForum}
+
             />
         </View>
         
@@ -146,7 +153,6 @@ const styles = StyleSheet.create({
         marginTop : 10,
         alignItems: "center",
     }
-
 });
 
 export default ForumCourseScreen;

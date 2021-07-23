@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
-import { Fontisto,FontAwesome } from '@expo/vector-icons';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
+import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
 
 import {useSelector} from 'react-redux';
 
@@ -8,19 +8,18 @@ import * as forumServices from '../../../../services/Forum';
 
 import * as dateUtils from '../../../../utils/Date';
 
-const ForumUniversityScreen =({navigation})=>{
+const MyCourseForumScreen =({navigation})=>{
 
     const token = useSelector((state) => state.authen.token);
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
-    const [isLoading,setIsLoading] = useState(true);
     const [refresh,setRefresh] = useState(false);
 
     useEffect(() => {
-        getForum();
+        getMyCourseForum();
         const unsubscribe = navigation.addListener('focus', () => {
-            getForum();
+            getMyCourseForum();
         });
         return()=>{
             unmounted.current = true;
@@ -28,61 +27,44 @@ const ForumUniversityScreen =({navigation})=>{
         }; 
     },[refresh]);
 
-    const getForum = () => {
-        setIsLoading(true);
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `bearer ${token}`);
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch("https://hcmusemu.herokuapp.com/forum/view", requestOptions)
-        .then((response) => {
+    const getMyCourseForum = () => {
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/yourpost", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+        }) .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-            //console.log(dataRes);
+            console.log(statusCode,dataRes);
             if(statusCode === 200){
-                const dataTmp = [];  
-                for (const key in dataRes) {
-                    if(dataRes[key].scope === "u"){
-                        dataTmp.push({
-                            AvartaOwn:dataRes[key].AvartaOwn,
-                            EmailOwn:dataRes[key].EmailOwn,
-                            ID:dataRes[key].ID,
-                            LikeByOwn:dataRes[key].LikeByOwn,
-                            NameOwn:dataRes[key].NameOwn,
-                            comment:dataRes[key].comment,
-                            image:dataRes[key].image,
-                            like:dataRes[key].like,
-                            time:dataRes[key].time,
-                            title:dataRes[key].title,
-                        });
-                    }
-                }
-                setDataForum(dataTmp);
+                setDataForum(dataRes);
             }
-            setIsLoading(false);
         }).catch(error => console.log('error', error));
-    }
+    };
 
     const renderItem = ({item})=>(
         <TouchableOpacity style={styles.card}
                 onPress={() =>{
                     navigation.navigate('Content Forum',{
                         dataOfForum:item,
-                        typeForum:'university'
+                        typeForum:'course'
                     });
                 }}>
                 <View style={styles.info}>
                     <Image style={styles.imageUserPost} source={ item.AvartaOwn === "" || item.AvartaOwn === null ? require("../../../../../assets/user-icon.png") : {uri : item.AvartaOwn}}/>
                     <View>
-                        <Text style={styles.nameAndDate}>{item.NameOwn}</Text>
+
+                        <View style={[styles.nameAndDate,{flexDirection:'row',flexWrap:'wrap'}]}>
+                            <Text style={{fontSize:12,fontWeight:'bold'}}>{item.NameOwn}</Text>
+                            <MaterialIcons style={{marginTop:3}} name="play-arrow" size={10} color="grey" />
+                            <Text style={[{fontWeight:'300',fontSize:10,marginTop:2}]}>{item.NameCourses}</Text>
+                        </View>
                         <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(item.time)}</Text>
+                    
                     </View>
 
                 </View>
@@ -123,24 +105,20 @@ const ForumUniversityScreen =({navigation})=>{
             </TouchableOpacity>
     )
 
+    const renderEmptyForum = (
+        <View style={{alignItems: "center"}}> 
+          <Text>Bạn chưa chưa đăng bài lên diễn đàn này</Text>
+        </View>
+      );
+
     return (
         <View style={styles.container}>
-
-            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
-                <ActivityIndicator size="large" color="blue"/>
-            </View>}
-
-            {!isLoading && dataForum.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
-                    <Text style={{color:'#BBBBBB'}}>
-                        Không tìm thấy diễn đàn nào 
-                    </Text>
-                </View>
-            }
 
             <FlatList
                 data={dataForum}
                 renderItem={renderItem}
                 keyExtractor = {(item,index) => index.toString()}
+                ListEmptyComponent = {renderEmptyForum}
             />
             
         </View>
@@ -204,4 +182,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ForumUniversityScreen;
+export default MyCourseForumScreen;

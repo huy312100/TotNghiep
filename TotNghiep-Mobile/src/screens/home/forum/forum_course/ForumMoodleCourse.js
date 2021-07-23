@@ -10,18 +10,23 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
 
     const token = useSelector((state) => state.authen.token);
 
+    const infoCourseChoose = useSelector((state) => state.course.infoCourseChoose);
+
     const [data, setData] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
     const [idForum,setIDForum] = useState('');
 
     useEffect(() => {
+        console.log(infoCourseChoose);
         getForumCourseOfMoodle();
     },[]);
     
  
 
     const getForumCourseOfMoodle = () => {
+        setIsLoading(true);
         let details = {
-            IDCourses: route.params.idCourse,
+            IDCourses: infoCourseChoose.idCourse,
         };
       
         let formBody = [];
@@ -49,6 +54,7 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
             if(statusCode === 200){
                 setData(dataRes[0].Forum);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
     }
 
@@ -63,27 +69,19 @@ const ForumOfCourseMoodleScreen = ({navigation,route}) =>{
                 <Text style={{marginLeft:15,marginTop:10}}>Người đăng : {item.fullname}</Text>
             </View>
         </TouchableOpacity>
-    )
+    );
 
     return(
         <View style={styles.container}>
-            <Header
-            containerStyle={{
-                backgroundColor: 'white',
-                justifyContent: 'space-around',
-                borderBottomColor:'#DDDDDD'
-            }}
-            centerComponent={
-                <Text style={{fontSize:17,fontWeight:'500'}} numberOfLines={1}>{route.params.name}</Text>
-            }
-            leftComponent={
-              <TouchableOpacity onPress={() =>{
-                  navigation.goBack();
-              }}>
-                  <Ionicons name="chevron-back-sharp" size={24} color="blue" />
-              </TouchableOpacity>
-              
-            }/>
+          
+
+            { !isLoading && data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                
+                <Text style={{color:'#BBBBBB'}}>
+                    Không có diễn đàn nào từ trang môn học
+                </Text>
+             </View>}
+
 
             <FlatList
                 data={data}

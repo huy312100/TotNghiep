@@ -1,4 +1,20 @@
-import {Alert } from "react-native";
+
+export const SignOut = async (token) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
+
+    var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+    };
+
+    await fetch("https://hcmusemu.herokuapp.com/account/signout", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+};
+
 export const SetChangeFirstSignIn = async (token) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `bearer ${token}`);
@@ -24,11 +40,9 @@ export const SetChangeFirstSignIn = async (token) => {
     }).catch(error => console.log('error', error));
 };
 
-export const ForgetPassword = async (emailapp, emailreset, {navigation}) =>{
-
+export const ForgetPassword = async (email) =>{
     let details = {
-        emailApp: emailapp,
-        emailReset: emailreset
+        email: email,
     };
   
     let formBody = [];
@@ -53,8 +67,7 @@ export const ForgetPassword = async (emailapp, emailreset, {navigation}) =>{
     }).then(([statusCode, dataRes]) => {
         console.log(statusCode,dataRes);
         if(statusCode === 200){
-            navigation.navigate('Confirm Mail Sent');
+            console.log(dataRes);
         }
-        else{Alert.alert("Tài khoản liên kết không tồn tại. Vui lòng nhập lại");}
     }).catch(error => console.log('error', error));
 };

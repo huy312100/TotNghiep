@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
 import { Fontisto,FontAwesome } from '@expo/vector-icons';
 
 import {useSelector} from 'react-redux';
@@ -8,19 +8,18 @@ import * as forumServices from '../../../../services/Forum';
 
 import * as dateUtils from '../../../../utils/Date';
 
-const ForumUniversityScreen =({navigation})=>{
+const MyUniversityForumScreen =({navigation})=>{
 
     const token = useSelector((state) => state.authen.token);
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
-    const [isLoading,setIsLoading] = useState(true);
     const [refresh,setRefresh] = useState(false);
 
     useEffect(() => {
-        getForum();
+        getMyUniversityForum();
         const unsubscribe = navigation.addListener('focus', () => {
-            getForum();
+            getMyUniversityForum();
         });
         return()=>{
             unmounted.current = true;
@@ -28,24 +27,19 @@ const ForumUniversityScreen =({navigation})=>{
         }; 
     },[refresh]);
 
-    const getForum = () => {
-        setIsLoading(true);
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `bearer ${token}`);
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch("https://hcmusemu.herokuapp.com/forum/view", requestOptions)
-        .then((response) => {
+    const getMyUniversityForum = () => {
+        fetch("https://hcmusemu.herokuapp.com/forum/yourpost", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+        }) .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-            //console.log(dataRes);
+            console.log(statusCode,dataRes);
             if(statusCode === 200){
                 const dataTmp = [];  
                 for (const key in dataRes) {
@@ -66,9 +60,8 @@ const ForumUniversityScreen =({navigation})=>{
                 }
                 setDataForum(dataTmp);
             }
-            setIsLoading(false);
         }).catch(error => console.log('error', error));
-    }
+    };
 
     const renderItem = ({item})=>(
         <TouchableOpacity style={styles.card}
@@ -123,24 +116,20 @@ const ForumUniversityScreen =({navigation})=>{
             </TouchableOpacity>
     )
 
+    const renderEmptyForum = (
+        <View style={{alignItems: "center"}}> 
+          <Text>Bạn chưa chưa đăng bài lên diễn đàn này</Text>
+        </View>
+      );
+
     return (
         <View style={styles.container}>
-
-            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
-                <ActivityIndicator size="large" color="blue"/>
-            </View>}
-
-            {!isLoading && dataForum.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
-                    <Text style={{color:'#BBBBBB'}}>
-                        Không tìm thấy diễn đàn nào 
-                    </Text>
-                </View>
-            }
 
             <FlatList
                 data={dataForum}
                 renderItem={renderItem}
                 keyExtractor = {(item,index) => index.toString()}
+                ListEmptyComponent = {renderEmptyForum}
             />
             
         </View>
@@ -204,4 +193,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ForumUniversityScreen;
+export default MyUniversityForumScreen;

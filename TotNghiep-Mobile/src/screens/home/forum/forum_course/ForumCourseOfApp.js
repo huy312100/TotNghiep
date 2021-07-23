@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
-import { Fontisto,FontAwesome } from '@expo/vector-icons';
+import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
 
 import {useSelector} from 'react-redux';
 
@@ -8,9 +8,10 @@ import * as forumServices from '../../../../services/Forum';
 
 import * as dateUtils from '../../../../utils/Date';
 
-const ForumUniversityScreen =({navigation})=>{
-
+const ForumCourseOfAppScreen =({navigation})=>{
     const token = useSelector((state) => state.authen.token);
+    const infoCourseChoose = useSelector((state) => state.course.infoCourseChoose);
+
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
@@ -18,9 +19,9 @@ const ForumUniversityScreen =({navigation})=>{
     const [refresh,setRefresh] = useState(false);
 
     useEffect(() => {
-        getForum();
+        getForumCourseOfApp();
         const unsubscribe = navigation.addListener('focus', () => {
-            getForum();
+            getForumCourseOfApp();
         });
         return()=>{
             unmounted.current = true;
@@ -28,43 +29,36 @@ const ForumUniversityScreen =({navigation})=>{
         }; 
     },[refresh]);
 
-    const getForum = () => {
+    const getForumCourseOfApp = () => {
         setIsLoading(true);
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `bearer ${token}`);
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            redirect: 'follow'
+        let details = {
+            IDCourses: infoCourseChoose.idCourse,
         };
-
-        fetch("https://hcmusemu.herokuapp.com/forum/view", requestOptions)
-        .then((response) => {
+      
+        let formBody = [];
+    
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+    
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewone", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+            body: formBody,
+        }) .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-            //console.log(dataRes);
+            console.log(statusCode,dataRes);
             if(statusCode === 200){
-                const dataTmp = [];  
-                for (const key in dataRes) {
-                    if(dataRes[key].scope === "u"){
-                        dataTmp.push({
-                            AvartaOwn:dataRes[key].AvartaOwn,
-                            EmailOwn:dataRes[key].EmailOwn,
-                            ID:dataRes[key].ID,
-                            LikeByOwn:dataRes[key].LikeByOwn,
-                            NameOwn:dataRes[key].NameOwn,
-                            comment:dataRes[key].comment,
-                            image:dataRes[key].image,
-                            like:dataRes[key].like,
-                            time:dataRes[key].time,
-                            title:dataRes[key].title,
-                        });
-                    }
-                }
-                setDataForum(dataTmp);
+                setDataForum(dataRes);
             }
             setIsLoading(false);
         }).catch(error => console.log('error', error));
@@ -72,16 +66,17 @@ const ForumUniversityScreen =({navigation})=>{
 
     const renderItem = ({item})=>(
         <TouchableOpacity style={styles.card}
-                onPress={() =>{
-                    navigation.navigate('Content Forum',{
-                        dataOfForum:item,
-                        typeForum:'university'
-                    });
-                }}>
+            onPress={() =>{
+                navigation.navigate('Content Forum',{
+                    dataOfForum:item,
+                    typeForum:'course'
+                });
+            }}
+        >
                 <View style={styles.info}>
                     <Image style={styles.imageUserPost} source={ item.AvartaOwn === "" || item.AvartaOwn === null ? require("../../../../../assets/user-icon.png") : {uri : item.AvartaOwn}}/>
                     <View>
-                        <Text style={styles.nameAndDate}>{item.NameOwn}</Text>
+                        <Text style={[styles.nameAndDate,{fontWeight:'bold'}]}>{item.NameOwn}</Text>
                         <Text style={[styles.nameAndDate,{fontWeight:'300',fontSize:12}]}>{dateUtils.ConvertToTimeAgo(item.time)}</Text>
                     </View>
 
@@ -94,26 +89,27 @@ const ForumUniversityScreen =({navigation})=>{
                 {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
 
                 <View style={styles.footerCard}>
-                    {item.LikeByOwn === 1 ?
-                        <TouchableOpacity style={styles.buttonFooter}
-                            onPress={async()=>{
-                                await forumServices.unlikePost(token,item.ID);
-                                setRefresh(!refresh);
-                            }}>
-                                <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
-                                <Text style={{marginTop:3,color:'blue'}}>{item.like}</Text>
-                        </TouchableOpacity>
-                        : 
-                        <TouchableOpacity style={styles.buttonFooter}
-                            onPress={async()=>{
-                                await forumServices.likePost(token,item.ID);
-                                setRefresh(!refresh);
-                            }}>
+                {item.LikeByOwn === 1 ? <TouchableOpacity style={styles.buttonFooter}
+                         onPress={async()=>{
+                            //await forumServices.likePost(token,item.ID);
+                            setRefresh(!refresh);
+                        }}
+                    >
+                        <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
+                        <Text style={{marginTop:3,color:'silver'}}>{item.like}</Text>
+                    </TouchableOpacity>
+                :
+                    <TouchableOpacity style={styles.buttonFooter}
+                         onPress={async()=>{
+                            //await forumServices.likePost(token,item.ID);
+                            setRefresh(!refresh);
+                        }}
+                    >
+                        <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
+                        <Text style={{marginTop:3,color:'silver'}}>{item.like}</Text>
+                    </TouchableOpacity>
+                }
 
-                                <Fontisto style={{marginRight:8}} name="like" size={18} color="silver" />
-                                <Text style={{marginTop:3,color:'silver'}}>{item.like}</Text>
-                        </TouchableOpacity>
-                    }
 
                     <TouchableOpacity style={styles.buttonFooter}>
                         <FontAwesome style={{marginRight:8}} name="comment" size={18} color="silver" />
@@ -126,16 +122,16 @@ const ForumUniversityScreen =({navigation})=>{
     return (
         <View style={styles.container}>
 
-            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>       
                 <ActivityIndicator size="large" color="blue"/>
             </View>}
 
-            {!isLoading && dataForum.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
-                    <Text style={{color:'#BBBBBB'}}>
-                        Không tìm thấy diễn đàn nào 
-                    </Text>
-                </View>
-            }
+            {!isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                
+                <Text style={{color:'#BBBBBB'}}>
+                    Không tìm thấy diễn đàn nào
+                </Text>
+             </View>}
 
             <FlatList
                 data={dataForum}
@@ -158,7 +154,7 @@ const styles = StyleSheet.create({
         backgroundColor:'white',
         borderBottomWidth:1,
         borderBottomColor: "#cccccc",
-        paddingBottom:5
+        paddingBottom:5,
     },
 
     imageUserPost:{
@@ -168,8 +164,7 @@ const styles = StyleSheet.create({
     },
 
     nameAndDate: {
-        fontWeight:'bold',
-        marginRight:15,
+        marginRight:10,
         marginLeft:15
     },
 
@@ -204,4 +199,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ForumUniversityScreen;
+export default ForumCourseOfAppScreen;

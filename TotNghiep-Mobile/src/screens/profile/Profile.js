@@ -20,11 +20,6 @@ import * as homeActions from "../../../store/actions/Home";
 
 const categoryProfile = [
   {
-    name: "Trang mạng xã hội",
-    icon: "facebook",
-    type_icon: "material-community",
-  },
-  {
     name: "Kết nối ứng dụng",
     icon: "transit-connection-variant",
     type_icon: "material-community",
@@ -51,7 +46,7 @@ export function ProfileScreen({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.infoView}>
-        <RoundedImage styles = {{fontSize: 20}} source={{uri: profile[0].AnhSV ==="" ? undefined : profile[0].AnhSV}}></RoundedImage>
+        <RoundedImage styles = {{fontSize: 30}} source={{uri: profile[0].AnhSV ==="" ? undefined : profile[0].AnhSV}}></RoundedImage>
         <Text style={styles.nameText}>{profile[0].HoTen}</Text>
       </View>
       
@@ -59,17 +54,14 @@ export function ProfileScreen({navigation}) {
         {categoryProfile.map((item, index) => (
           <ListItem key={index}  bottomDivider>
             <TouchableOpacity style={styles.itemBtn} onPress={() =>{
-              if(index === 1){
+              if(index === 0){
                 navigation.navigate("Connect application");
               }
-              else if(index === 2){
+              else if(index === 1){
                 navigation.navigate("Web Customed"); 
               }
-              else if(index === 3){
+              else if(index === 2){
                 navigation.navigate("Change Password");
-              }
-              else{
-
               }
             }}>
               <Icon name={item.icon} type={item.type_icon} color='black'/>
@@ -108,7 +100,7 @@ const styles = StyleSheet.create({
 
   nameText: {
     marginTop: 20,
-    fontSize: 20
+    fontSize: 25
   },
 
   infoView: {
@@ -124,6 +116,7 @@ const styles = StyleSheet.create({
 
   itemName: {
     paddingLeft: 10,
+    fontSize: 17
   },
 
   headerTitle: {
@@ -137,21 +130,23 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     marginHorizontal:10,
     borderRadius: 30,
-    borderColor:"red",
+    borderColor:"blue",
     borderWidth: 1,
   },
 
   signoutBtnTouchable:{
     flex: 1,
     justifyContent: 'flex-end',
-    marginBottom: -10,
-    width: "100%",
+    alignSelf: "center",
+    marginBottom: 10,
+    width: "50%",
 
   },
 
   signoutTextBtn:{
-    color:"red",
+    color:"blue",
     fontWeight: "bold",
+    fontSize: 17
   },
 
 });

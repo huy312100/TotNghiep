@@ -232,6 +232,9 @@ const HomeScreen= ({navigation}) =>{
     }).then(([statusCode, dataRes])=>{
       if(statusCode === 200){
         console.log(dataRes);
+        if(dataRes.length >=5){
+          dataRes=dataRes.slice(0,5);
+        }
         const dataCalendar = [];
         for (const key in dataRes) {
           if(dataRes[key].TypeCalendar !== undefined){
@@ -462,6 +465,9 @@ const HomeScreen= ({navigation}) =>{
       return Promise.all([statusCode, dataRes]);
     }).then(([statusCode, dataRes]) => {
         //console.log(json);
+        if(dataRes.length >= 5){
+          dataRes=dataRes.slice(0,5);
+        }
         if(statusCode === 200){
           dispatch(homeActions.NewestDeadline(dataRes));
           console.log(dataRes);
@@ -770,10 +776,11 @@ const HomeScreen= ({navigation}) =>{
       
 
       <View style={styles.labelRowTitle}>
-        <Text style={styles.label}>Lịch trong tháng</Text>
+        <Text style={styles.label}>Sự kiện mới nhất trong tháng</Text>
         <TouchableOpacity style={styles.detailInfoBtn}
             onPress={() =>{
-                navigation.navigate('');
+                dispatch(calendarActions.getModeOfCalendar('month'));
+                navigation.navigate('Calendar');
             }}>
             <Text style={{fontSize:12,color:'blue'}}>Xem thêm</Text>
             <MaterialIcons name="keyboard-arrow-right" size={15.5} color="blue" />

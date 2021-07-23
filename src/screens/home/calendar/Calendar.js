@@ -1,5 +1,5 @@
 import React, {useState,useEffect,useRef} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Platform ,Alert,Linking,Dimensions,FlatList} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Platform ,Alert,Linking,Dimensions,FlatList,ActivityIndicator} from 'react-native';
 import { Overlay,Header } from 'react-native-elements';
 import { Entypo,MaterialCommunityIcons,AntDesign,Ionicons,FontAwesome } from '@expo/vector-icons';
 import {
@@ -8,7 +8,6 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-
 
 import {useDispatch,useSelector} from 'react-redux';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -19,10 +18,8 @@ import LoadingScreen from '../../LoadingScreen';
 import TimelineCalendar from './timeline_calendar/TimelineCalendar';
 
 import * as dateUtils from '../../../utils/Date';
-import { event } from 'react-native-reanimated';
 
 let { width } = Dimensions.get('window');
-
 
 
 const CalendarScreen =({navigation})=> {
@@ -74,12 +71,13 @@ const CalendarScreen =({navigation})=> {
 
 
   const token = useSelector((state) => state.authen.token);
+  const modeCalendar = useSelector((state) => state.calendar.modeCalendar);
 
   const [labelTimestamp,setLabelTimestamp] = useState(new Date().getTime());
 
   const aDayTimestamp = 86400000;
 
-  const [mode,setMode] = useState('day');
+  const [mode,setMode] = useState(modeCalendar);
 
   const [visibleOverlay, setVisibleOverlay] = useState(false);
   const [currentDate,setCurrentDate] = useState(getCurrentDate());
@@ -103,6 +101,7 @@ const CalendarScreen =({navigation})=> {
   const [endTimestamp,setEndTimestamp] = useState('');
 
   const [isLoading,setLoading] = useState(false);
+  const [loadingWhenLoadData,setLoadingWhenLoadData] = useState(true);
 
   const [allEvents,setEvent] = useState([]);
   const dispatch = useDispatch();
@@ -142,6 +141,7 @@ const CalendarScreen =({navigation})=> {
 
   //Call getCalendarThis Month Calendar
   const getAllActivitiesInMonth = ()=>{
+    setLoadingWhenLoadData(true);
     let details = {
       year: yearChanged,
       month: monthChanged,
@@ -240,17 +240,18 @@ const CalendarScreen =({navigation})=> {
       else{
         console.log(statusCode);
       }
+      setLoadingWhenLoadData(false);
     }).catch(error => console.log('error', error));
   };
 
     useEffect(() => {
       console.log(getCurrentDate());
         //console.log(token);
-    getAllActivitiesInMonth();
-    return()=>{
-      unmounted.current=true;
-      //unsubscribe();
-    };
+      getAllActivitiesInMonth();
+      return()=>{
+        unmounted.current=true;
+        //unsubscribe();
+      };
   },[monthChanged,yearChanged]);
 
   useEffect(() => {
@@ -303,20 +304,34 @@ const CalendarScreen =({navigation})=> {
 
   const renderItemViewMonth = ({ item }) => (
     <TouchableOpacity style={[viewMonthItem.card,{backgroundColor: item.color === '' || item.color == null ? '#f4f6ff' : item.color}]}
-        
+        onPress={() => {
+          toggleOverlay();
+          setIdEvent(item.id);
+          setNameEvent(item.title);
+          setStartTimeEvent(item.start);
+          setEndTimeEvent(item.end);
+          setDecriptionEvent(item.summary);
+          setTypeEvent(item.type);
+          setTypeGuest(item.typeGuest);
+          setUrlEvent(item.url);           
+          setColorEvent(item.color); 
+          setStartTimestamp(item.startTimestamp);
+          setEndTimestamp(item.endTimestamp);
+          setAllMembers(item.ListGuest);
+        }}
     >
       <View style={viewMonthItem.info}>
           <View style={{flexDirection:'row'}}>
-              <Text style={viewMonthItem.title} numberOfLines={1}>{item.title}</Text>
+              <Text style={[viewMonthItem.title,{width:200}]} numberOfLines={1}>{item.title}</Text>
               <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{dateUtils.ConvertDateDDMMYY(item.start.slice(0,10))}</Text>
           </View>
 
-          <Text style={[viewMonthItem.title,{fontWeight:'normal',marginTop:10}]}>{item.summary}</Text>
+          <Text style={[viewMonthItem.title,{fontWeight:'normal',marginTop:10}]} numberOfLines={4}>{item.summary}</Text>
           <Text style={[viewMonthItem.title,{fontSize:12,marginTop:10}]}>{item.start.slice(11)} - {item.end.slice(11)}</Text>
           
       </View>
       
-      <View style={[{marginBottom:20,flexDirection:'row',alignItems: 'center'}]}>
+      <View style={[{marginBottom:10,flexDirection:'row',alignItems: 'center'}]}>
         <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{item.type}</Text>
         {item.typeGuest === 'Nhóm' ? <FontAwesome style={{marginHorizontal:15}} name="group" size={22} color="#817c8f" /> : <Ionicons style={{marginHorizontal:15}} name="person" size={24} color="#817c8f" />}
       </View>
@@ -341,6 +356,7 @@ const CalendarScreen =({navigation})=> {
         leftComponent={
           <TouchableOpacity onPress={() =>{ 
             //socket.emit('Return-Chat',[roomID,route.params.email]);
+            dispatch(calendarActions.getModeOfCalendar('day'));
             navigation.goBack()
             }}>
                 <Entypo name="chevron-left" size={28} color="blue" />
@@ -463,6 +479,7 @@ const CalendarScreen =({navigation})=> {
             const changed = dateUtils.PreviousMonth(monthChanged,yearChanged);
             setMonthChanged(changed[0]);
             setYearChanged(changed[1]);
+            setEvent([]);
         }}>
             <AntDesign name="arrowleft" size={18} color="navy" />
         </TouchableOpacity>
@@ -476,6 +493,7 @@ const CalendarScreen =({navigation})=> {
             const changed = dateUtils.NextMonth(monthChanged,yearChanged);
             setMonthChanged(changed[0]);
             setYearChanged(changed[1]);
+            setEvent([]);
         }}>
             <AntDesign name="arrowright" size={18} color="navy" />
         </TouchableOpacity>
@@ -483,13 +501,24 @@ const CalendarScreen =({navigation})=> {
       </View>}
 
       {mode === 'month' && <View style={{flex:1,backgroundColor:'white'}}>
+        {loadingWhenLoadData && allEvents.length ===0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+            <ActivityIndicator size="large" color="blue"/>
+        </View>}
+
+        {!loadingWhenLoadData && allEvents.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+          <Text style={{color:'#BBBBBB'}}>
+              Không tìm thấy lịch sự kiện nào cho tháng này
+          </Text>
+        </View>}
+
         <FlatList 
           data={allEvents}
           renderItem={renderItemViewMonth}
           keyExtractor={(item,index) => index.toString()}/>
+
       </View>}
 
-
+      
 
 
     <Overlay isVisible={visibleOverlay} onBackdropPress={toggleOverlay} >
@@ -716,7 +745,6 @@ const viewMonthItem = StyleSheet.create({
   card: {
     borderRadius:20,
     paddingBottom:10,
-    backgroundColor:'#BEC4DB',
     marginHorizontal:15,
     marginTop:15,
     borderWidth:0.3,
@@ -731,7 +759,7 @@ const viewMonthItem = StyleSheet.create({
   title: {
       color:'#817c8f',
       fontWeight:'bold',
-      marginHorizontal:15
+      marginHorizontal:15,
   },
 
   info: {

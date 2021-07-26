@@ -132,6 +132,7 @@ function Homepage() {
               .catch(error => console.log('error', error));
           }
     useEffect(() => {
+
         getNewsFaculty();
         getNewsUniversity();
         getInfoUni();

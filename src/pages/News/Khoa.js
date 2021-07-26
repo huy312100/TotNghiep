@@ -73,7 +73,10 @@ export default function Khoa()
 
               <div key={index}>
                 <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer">
-              <div className={classes.news_page__news}>
+              <div className={classes.news_page__news} style={{
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',}}>
               <FiberNewIcon/>
               <span className={classes.news_page__title}>
                   {item.Title}

@@ -181,6 +181,7 @@ export default function LoginButton() {
                                     name="password"
                                     placeholder="Mật khẩu" 
                                     onChange={(e) => setPassword(e.target.value)}
+                                    style={{width:"100%"}}
                                     endAdornment={
                                         <InputAdornment position="end">
                                           <IconButton
@@ -197,7 +198,7 @@ export default function LoginButton() {
                         </FormGroup>
                        <br/>
                             {loaddingButton()}
-                            <Link to="/signup" className={classes.btnForgetPwd}>Quên mật khẩu?</Link>
+                            <Link to="/resetaccount" className={classes.btnForgetPwd}>Quên mật khẩu?</Link>
                 </Grid>
             </Grid>
         </div>

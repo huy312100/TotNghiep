@@ -5,10 +5,8 @@ import {Toolbar, Button} from "@material-ui/core"
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import 'font-awesome/css/font-awesome.min.css';
-import { FormControl } from '@material-ui/core';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import { IconButton } from 'material-ui';
-
+import DefaultPicture from "../images/default.png"
+import LoadingScreen from '../components/shared/LoadingScreen';
 const useStyles = () => ({
   center: {
     display: "flex", 
@@ -166,7 +164,8 @@ class Profile extends Component {
             loading: 0,                                      
 
             picture: "",
-            imgData: process.env.PUBLIC_URL + 'uploadimg.png'
+            imgData: DefaultPicture,
+            notUpdatedProfile: "",
         }
 
     }
@@ -191,9 +190,12 @@ class Profile extends Component {
                     university: result[0].TenTruongDH,
                     fac: result[0].TenKhoa,
                     picture: result[0].AnhSV,
+                    imgData: result[0].AnhSV,
                     loading: 1,
                     facselected:result[0].MaKhoa,
-                    uniselected:result[0].MaTruong
+                    uniselected:result[0].MaTruong,
+                    notUpdatedProfile: result[0].AnhSV,
+
                 })
             })
             .catch(error => console.log('error', error));
@@ -202,16 +204,19 @@ class Profile extends Component {
     onChangePicture = e => {
         if (e.target.files[0]) {
             this.setState({
-                picture: e.target.files[0]
-            });
-            const reader = new FileReader();
+                imgData:URL.createObjectURL(e.target.files[0])})
+            this.setState({
+                    picture: e.target.files[0]
+                });
+           /* const reader = new FileReader();
             reader.addEventListener("load", () => {
                 this.setState({
-                    imgData: reader.result
+                    picture: reader.result
                 });
             });
-            reader.readAsDataURL(e.target.files[0]);
+            reader.readAsDataURL(e.target.files[0]);*/
         }
+       
     };
 
     EditName = () => {
@@ -380,7 +385,6 @@ class Profile extends Component {
     }
 
 
-
     setParams = (event) => {
         this.setState({ [event.target.name]: event.target.value })
     }
@@ -405,6 +409,8 @@ class Profile extends Component {
                 editimg: 0
             })
         }
+        //var img = this.state.notUpdatedProfile;
+        this.setState({picture:this.state.notUpdatedProfile})
     }
     deleteIMG = async () => {
         var myHeaders = new Headers();
@@ -417,7 +423,7 @@ class Profile extends Component {
         };
 
         await fetch("https://hcmusemu.herokuapp.com/profile/deleteimg", requestOptions)
-            .then(response => response.json())
+            .then(response =>{response.json();console.log(response.status,response.text())})
             .then(result => console.log(result))
             .catch(error => console.log('error', error));
     }
@@ -437,16 +443,22 @@ class Profile extends Component {
         };
 
         await fetch("https://hcmusemu.herokuapp.com/profile/uploadimg", requestOptions)
-            .then(response => response.json())
+            .then(response => {response.json();console.log(response.status,response.text())})
             .then(result => {
-                this.setState({editimg:0})
+                this.setState({editimg:0});
+                console.log(result);
             })
             .catch(error => console.log('error', error));
     }
     
-    updateImage = async () => {
-        await this.deleteIMG();
-        await this.uploadIMG();
+    updateImage = () => {
+        if (this.state.notUpdatedProfile == ""){
+            this.uploadIMG();
+        }
+        else{
+            this.uploadIMG();
+            this.deleteIMG();
+        }
         window.location.reload();
     }
     popupBox = () => 
@@ -459,25 +471,25 @@ class Profile extends Component {
                 {}
             </div>
             <div className={classes.popup_box_image__body}>
-                <img className={classes.popup_box_image__body_img} width="150vw" height="150vh" src={this.state.picture} alt=""></img>
+                <img className={classes.popup_box_image__body_img} width="150vw" height="150vh" src={this.state.imgData} alt=""></img>
                 <label className={classes.popup_box_image__custom_file_upload}>
                     <input className={classes.popup_box_image_input_type__file} type="file" accept="image/png, image/jpeg, image/jpg, img/tiff" onChange={this.onChangePicture} />
                     Chọn ảnh từ máy tính của bạn
                 </label>
             </div>
             <div className= {classes.popup_box_image__footer}>
-                <Button className={classes.popup_box_image__btnchange}  onClick={this.updateImage}>Đặt ảnh đại diện</Button>
-                <Button className={classes.popup_box_image__btncancel} onClick={this.changeIMG}>Hủy</Button>
+                <button type="button" className={classes.popup_box_image__btnchange}  onClick={this.updateImage}>Đặt ảnh đại diện</button>
+                <button type="button" className={classes.popup_box_image__btncancel} onClick={this.changeIMG}>Hủy</button>
             </div>
         </div>
         );
     }
 
-
+ 
     render() {
         const {classes} = this.props
         if (this.state.loading === 0) {
-            return <></>
+            return <div><LoadingScreen/></div>
         }
         return (
             <div>

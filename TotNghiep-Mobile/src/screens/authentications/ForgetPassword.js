@@ -4,6 +4,7 @@ import { View,StyleSheet,Image,Text,TouchableOpacity,TextInput,TouchableWithoutF
 import LoadingScreen from '../LoadingScreen';
 
 import * as authenServies from '../../services/Authen';
+import { Alert } from 'react-native';
 
 
 const ForgetPasswordScreen = ({navigation}) => {
@@ -19,6 +20,40 @@ const ForgetPasswordScreen = ({navigation}) => {
         }
         return false;
     }
+
+    const ForgetPassword = async (email) =>{
+        let details = {
+            emailApp: email,
+            emailReset: email
+        };
+      
+        let formBody = [];
+    
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+    
+        await fetch("https://hcmusemu.herokuapp.com/account/forgotpassword", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: formBody,
+        }) .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if(statusCode === 200){
+                navigation.navigate('Confirm Mail Sent');
+            }
+            else{Alert.alert("Lỗi!", "Không tìm thấy Email người dùng. Vui lòng nhập lại.")}
+        }).catch(error => console.log('error', error));
+    };
 
     return(
         <TouchableWithoutFeedback onPress={()=>{
@@ -45,8 +80,7 @@ const ForgetPasswordScreen = ({navigation}) => {
             <TouchableOpacity style={[styles.buttonSend,{backgroundColor:checkBtnSendDisabled()?'silver':'#0066FF',}]} disabled={checkBtnSendDisabled()}
                 onPress={async()=>{
                     setLoading(true);
-                    await authenServies.ForgetPassword(email);
-                    navigation.navigate('Confirm Mail Sent');
+                    await ForgetPassword(email);
                     setLoading(false);
                 }}>
                 <View style={{marginVertical:15}}>

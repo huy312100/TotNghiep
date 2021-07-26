@@ -3,13 +3,12 @@ import NavBar from '../../Navigation/NavBar'
 import { makeStyles } from '@material-ui/core/styles';
 import { Tab, Tabs, Typography, Box,Paper  } from '@material-ui/core';
 import PropTypes from "prop-types"
-import Truong from './Truong/Truong';
-import MonHoc from "./MonHoc/MonHoc"
-import Khoa from "./Khoa/Khoa"
+import Moodle from './Moodle';
+import Portal from './Portal';
 const useStyles = makeStyles((theme) => ({
     root: {
       marginLeft: 200,
-      backgroundColor:"#faf9e8"
+      backgroundColor:"#fcfcfc"
     },
     toolbar: {
       display: 'flex',
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }));
   
 
-export default function News(){
+export default function SetupURL(){
   const classes = useStyles()
   const [value, setValue] = useState(0);
 
@@ -46,13 +45,11 @@ export default function News(){
            textColor="primary"
             variant = "fullWidth"
           >
-        <Tab backgroundColo="#c5f0ca"  label="Diễn đàn trường"/>
-        <Tab  label="Diễn đàn khoa"/>
-        <Tab  label="Diễn đàn môn học"/>
+        <Tab  label="Moodle"/>
+        <Tab  label="Portal"/>
       </Tabs>
-      {value === 0 && <Truong/>} 
-      {value === 1 && <Khoa/>} 
-      {value === 2 && <MonHoc/>} 
+      {value === 0 && <Moodle/>} 
+      {value === 1 && <Portal/>} 
       </main>
       </Paper>
   )};

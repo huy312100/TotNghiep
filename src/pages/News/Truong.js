@@ -2,8 +2,8 @@ import React , {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
-import LoadingScreen from '../LoadingScreen';
-import ButtonCircularProgress from '../../components/shared/ButtonCircularProgress';
+import LoadingScreen from '../../components/shared/LoadingScreen';
+
 const useStyles = makeStyles((theme) => ({
     news_page: {
       margin: "10px 0 0 16vw", 
@@ -55,10 +55,12 @@ export default function Truong()
 
     useEffect(() => {
         getNewsUniversity();
+        setLoading(!loading);
        
      },[]);
-     if (loading == true) return (
-      <ButtonCircularProgress/>
+     if (loading == true) 
+     return (
+      <LoadingScreen/>
       )
     else
      {

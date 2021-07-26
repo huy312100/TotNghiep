@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const PostThread =  ({
         isOpen,
-        handleClose
+        handleClose,
     })=>{
     const classes  = useStyles();
     const [image,setImage] = useState("");
@@ -65,11 +65,10 @@ export const PostThread =  ({
     const [post, setPost] = useState(false);
     const handlePostClick = () => {
         setPost(true);
-      };
-    
-      const handlePostClose = () => {
+    };
+    const handlePostClose = () => {
         setPost(false);
-      };
+    };
     function Alert(props) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
@@ -80,8 +79,6 @@ export const PostThread =  ({
         var formdata = new FormData();
         
         if(upload.uri !== "" && upload.uri !== null){
-           // let localUri = upload.uri;
-            //let filename = localUri.split('/').pop();
 
             formdata.append("title", title);
             formdata.append("image", upload.uri);
@@ -211,7 +208,7 @@ export const PostThread =  ({
             </DialogContent>
 
             <DialogActions>
-                <Button onClick={handleClose} onChange={resetImage} color="primary">
+                <Button onClick={handleClose} onChange={()=>{resetImage();handlePostClose()}} color="primary">
                     Huỷ
                 </Button>
                 <Snackbar open={post} autoHideDuration={3000} onClose={handleClose}>
@@ -219,7 +216,7 @@ export const PostThread =  ({
                         Đăng bài viết thành công
                     </Alert>
                 </Snackbar>
-                <Button onClick={postNewThread}>
+                <Button onClick={()=>{postNewThread();handlePostClick()}}>
                     Đăng bài viết
                 </Button>
             </DialogActions>

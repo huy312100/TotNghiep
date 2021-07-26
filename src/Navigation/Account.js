@@ -28,17 +28,13 @@ const StyledMenuItem = withStyles((theme) => ({
     }
     return (
       <List className= "Account_btn">
-        <StyledMenuItem onClick={()=> history.push("/homepage")}>
-          <HomeIcon style={{minWidth: '40px'}}/>
-          <ListItemText primary="Trang chủ" />
-        </StyledMenuItem>
         <StyledMenuItem onClick={()=> history.push("/profile")}>
           <PersonOutlineRoundedIcon style={{minWidth: '40px'}}/>
           <ListItemText primary="Hồ sơ cá nhân" />
         </StyledMenuItem>
-        <StyledMenuItem>
+        <StyledMenuItem onClick={()=> history.push("/connection")}>
           <MessageIcon style={{minWidth: '40px'}}/>
-          <ListItemText primary="Tin nhắn" />
+          <ListItemText primary="Thiết lập kết nối" />
         </StyledMenuItem>
         <StyledMenuItem>
           <HelpOutlineOutlinedIcon style={{minWidth: '40px'}}/>

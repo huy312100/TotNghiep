@@ -17,7 +17,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import HomeIcon from '@material-ui/icons/Home';
 import BusinessIcon from '@material-ui/icons/Business';
-import LoadingScreen from "./LoadingScreen"
+import LoadingScreen from '../components/shared/LoadingScreen';
 let theme = createMuiTheme();
 theme.typography.h6 = {
   fontSize: "1rem",

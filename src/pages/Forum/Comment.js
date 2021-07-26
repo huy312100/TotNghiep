@@ -1,14 +1,13 @@
 import React, {useState,useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import {Box,Typography, IconButton,Input,TextField} from '@material-ui/core'
+import {Box,Typography,Button} from '@material-ui/core'
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
-
-
+import ConfirmDialog from "../../components/shared/ConfirmDialog"
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,12 +25,15 @@ const useStyles = makeStyles((theme) => ({
     input: {
       display: 'none'
   },
+ 
   }));
-function UserComment({id}) {
+function UserComment({id,email}) {
+    console.log(email);
     const classes = useStyles();
     const [comment,getComment] = useState([]); 
-    const [images,setImages] = useState("")
-    const [title,setTitle] = useState("")
+    const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
+    const [list,setList] = useState([]);
+    const [currentComment,setCurrentComment] = useState(null);
     const getPostComment = async() => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
@@ -51,80 +53,155 @@ function UserComment({id}) {
             })
             .catch(error => console.log('error', error));
       }
-    useEffect(()=>{
-        getPostComment();
-    },[])
-
-    const handleTitle = (event) => {
-      setTitle(event.target.value);
-    }
-
-    const handleCapture = (e) => {
-      const reader = new FileReader();
-      reader.onload = function() {
-          console.log(reader.result)
-          setImages(reader.result)
+    const getLikedUser = async() => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+        
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("IDPost", id);
+  
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        await fetch("https://hcmusemu.herokuapp.com/forum/viewlike", requestOptions)
+            .then(response => {return response.json()})
+            .then((result)=>{
+              setList(result);
+            })
+            .catch(error => console.log('error', error));
       }
-      reader.readAsDataURL(e.target.files[0]);
+    useEffect(()=>{
+      const timer = setTimeout(() => {
+        getPostComment();
+        getLikedUser();
+      }, 3000);
+      return () => clearTimeout(timer);
+    },[])
+    const handleDeleteComment = (id) => {
+      setConfirmDialog({
+        ...confirmDialog,
+        isOpen: false
+    })
+    deleteComments(id);
     }
-    const renderImage = (item) =>{
+    const removeElementState =(id)=> {
+      var array = [...comment];
+      var index = array.findIndex(x=> x.ID === id);
+      if (index !== -1) {
+        array.splice(index, 1);
+        getComment([...array]);
+      }
+    }
+    const deleteComments = async(id) => {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("IDCmt", id);
+      var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: 'follow'
+      };
+      await fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", requestOptions)
+      .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes]) => {
+        if(statusCode === 200){
+          console.log("Xoá thành công");
+          removeElementState(id);
+        }
+        else{
+          console.log(statusCode);
+          console.log("loi");
+        }
+  
+      }).catch((err) => console.log(err, "error"));
+    }
+    const renderImageUser = (item) =>{
         if (item.image != "")
         return(
-              <img style={{height:"100px", width:"100px"}} src={item.image} alt="recipe thumbnail"/>   
+              <Zoom>
+                <img style={{height:"100px", width:"100px"}} src={item.image} alt="recipe thumbnail"/>  
+              </Zoom> 
         )
         else return(
           <div>  
           </div>
         )
        }
-    const totalProps = comment.reduce((a, obj) => a + Object.keys(obj).length, 0);
+    
+    
+    const totalProps = comment.reduce((a, obj) => a + Object.keys(obj).length, 0)/3;
+    const totalLike = list.reduce((a, obj) => a + Object.keys(obj).length, 0)/3;
+   
 
-    const renderBoxPostComment = () =>{
+    const renderUserLike = () =>{
+      if (totalLike == 0)
       return(
-        <Box border={0.1} borderColor="black" borderRadius="5px" width="100%" height="50%">
-            <Input type="file" className={classes.input} id="icon-button-photo" onChange={handleCapture} accept="image/png, image/jpeg, image/jpg, img/tiff"/>
-                <label htmlFor="icon-button-photo">
-                    <IconButton color="primary" component="span">
-                        <PhotoCameraIcon />
-                    </IconButton>
-                </label>
-                <TextField className={classes.HeightTextField} required variant="outlined" value={title} onChange={handleTitle} margin="normal"  fullWidth size="small" multiline placeholder="Nhập bình luận của bạn tại đây ^^"/>
-        </Box>
+        <div></div>
       )
-    }
-
+      else{
+        return list.map((item, index) => {
+          return (
+              <div key={index} style={{ display: 'flex', alignItems: 'center',flexWrap: 'wrap',}}>
+                    <Avatar src={item.Avart}/>  <span>&nbsp; {item.Name}</span>
+              </div>
+  
+          )
+      })}}
     const renderComment = () =>{
+      
       return comment.map((item, index) => {
         return (
             <div key={index}>
                 <Box border={0.1} borderColor="black" borderRadius="5px" width="100%" height="50%">
                   <CardHeader avatar={<Avatar src= {item.AvartOwn}/>} title={item.NameOwn} 
                    action={
-                    <IconButton aria-label="settings">
+                    <Button aria-label="settings" disabled={email==item.EmailOwn?false:true} onClick={()=>{
+                      setCurrentComment(item.ID); 
+                      setConfirmDialog({
+                       isOpen: true,
+                       title: 'Bạn muốn xoá bình luận này chứ',
+                       subTitle: "Giao tác không thể hoàn",
+                       onConfirm: () => {handleDeleteComment(currentComment);setConfirmDialog({isOpen: false,}); }
+                   })}}>
                       <DeleteIcon />
-                    </IconButton>
+                    </Button>               
                   }/>
-                  {renderImage(item)}
+                  {renderImageUser(item)}
+
                     <div>
                         <Typography style={{ marginLeft:"5%"}} >{item.comment}</Typography>
                     </div>
+                    <ConfirmDialog
+              confirmDialog={confirmDialog}
+              setConfirmDialog={setConfirmDialog}
+              />
                 </Box>
             </div>
 
         )
-    })
-    }
+    })}
+
+   
     if (totalProps == 0){
-      return(
-        <div>
-          {renderBoxPostComment()}
-        </div>
-      )
+      return null;
     }
     else{
         return(
           <div>
-            {renderBoxPostComment()}
+            <hr/>
+            <Typography> Những người like bài viết:</Typography>
+            {renderUserLike()}
+            <hr/>
+            <Typography>Bình luận ở dưới:</Typography>
             {renderComment()}
           </div>
         )
@@ -135,6 +212,7 @@ function UserComment({id}) {
   
  UserComment.propTypes = {
     id: PropTypes.any.isRequired,
+    email: PropTypes.string.isRequired
   };
 
 export default UserComment;

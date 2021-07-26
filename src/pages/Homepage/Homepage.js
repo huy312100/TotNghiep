@@ -7,7 +7,7 @@ import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse'; 
 import {useHistory} from "react-router-dom"
 import Footer from '../../components/footer/Footer';
-import LoadingScreen from '../LoadingScreen';
+import LoadingScreen from '../../components/shared/LoadingScreen';
 const border = 200;
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -69,6 +69,7 @@ function Homepage() {
   const classes = useStyles();
   const [newsfac,setNewsFac] = useState([]);
   const [newsuni,setNewsUni] = useState([]);
+  const [loading,setLoading] = useState(true);
   const [info, setInfo] = useState([{
   TenTruongDH: "Trường Đại học Khoa học Tự nhiên - ĐHQG TPHCM",
   WebSite: "https://www.hcmus.edu.vn/",
@@ -79,7 +80,6 @@ function Homepage() {
   TenKhoa: "Khoa Địa chất",
   Website: "https://phys.hcmus.edu.vn/",
   Images: "https://www.hcmus.edu.vn/images/2020/04/07/bn2.jpg"}]);
-  const [loading,setLoading] = useState(true);
   const getNewsUniversity = async() => {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");

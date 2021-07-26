@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import {Box, Grid} from "@material-ui/core"
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
-import LoadingScreen from '../LoadingScreen';
+import LoadingScreen from '../../components/shared/LoadingScreen';
 const useStyles = makeStyles((theme) => ({
     news_page: {
       margin: "10px 0 0 16vw", 

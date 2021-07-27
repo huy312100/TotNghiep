@@ -124,16 +124,17 @@ const FirstReadMessageScreen = ({navigation}) => {
 
     return(
         <View style={{flex: 1}}> 
-          <View style={styles.container}> 
+
           {isLoading && dataAwaitMsg.length === 0 && LoadingWithSkeletonScreen()}
 
-          {!isLoading && dataAwaitMsg.length === 0 &&  <View style={{flex:1,justifyContent: 'center',alignItems: 'center',color:'white'}}>
+          {!isLoading && dataAwaitMsg.length === 0 &&  <View style={{flex:1,justifyContent: 'center',alignItems: 'center',backgroundColor: '#ffffff'}}>
                 
                 <Text style={{color:'#BBBBBB'}}>
                     Không tìm thấy tin nhắn chờ nào
                 </Text>
-             </View>}
+            </View>}
 
+          <View style={styles.container}> 
               <FlatList
                   data={dataAwaitMsg}
                   renderItem={renderItem}

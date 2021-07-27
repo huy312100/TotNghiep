@@ -124,11 +124,13 @@ const HomeScreen= ({navigation}) =>{
     }).then(([statusCode, dataRes]) => {
       if (statusCode === 200) {
         let countNotRead = 0;
-        for (const key in dataRes) {
-          if(!dataRes[key].State){
-            countNotRead++;
+        if(dataRes.message !== 'Dont have notification'){
+          for (const key in dataRes) {
+            if(!dataRes[key].State){
+              countNotRead++;
+            };
           };
-        };
+        } 
         dispatch(homeActions.NotiNotRead(countNotRead));
       }        
     }).catch((err) => console.log(err, "error"));
@@ -152,9 +154,14 @@ const HomeScreen= ({navigation}) =>{
     }).then(([statusCode, dataRes])=> {
       console.log(statusCode,dataRes);
       if (statusCode === 200) {
-        for (const key in dataRes.awaittext) {
-          if(!dataRes.awaittext[key].state){
-            countMsgNotRead++;
+        if(dataRes.message==='Message await is Empty'){
+          return;
+        }
+        else{
+          for (const key in dataRes.awaittext) {
+            if(!dataRes.awaittext[key].state){
+              countMsgNotRead++;
+            }
           }
         }
       }        

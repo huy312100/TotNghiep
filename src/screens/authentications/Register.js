@@ -211,7 +211,7 @@ const RegisterScreen = ({ navigation }) => {
 
         <View style={styles.container}>
           <Heading>Đăng ký</Heading>
-          <UsernameInput placeholder={"Tên đăng nhập"}
+          <UsernameInput placeholder={"Email"}
           onChangeText={(username) => setUsername(username)} />
 
           <PasswordInput placeholder={"Mật khẩu"}

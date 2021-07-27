@@ -467,10 +467,9 @@ const CalendarScreen =({navigation})=> {
         events={allEvents}
         width={width}
         initDate={currentDate}
-        scrollToFirst
         upperCaseHeader
         uppercase
-        scrollToFirst={false}
+        scrollToFirst
       />}
 
 

@@ -77,19 +77,6 @@ import {
       } = this.props;
       const date = moment(initDate).add(index - this.props.size, 'days');
   
-      const leftIcon = this.props.headerIconLeft ? (
-          this.props.headerIconLeft
-      ) : (
-          <Image source={require('../../../../../assets/timeline_calendar/back.png')} style={this.styles.arrow} />
-      );
-      const rightIcon = this.props.headerIconRight ? (
-          this.props.headerIconRight
-      ) : (
-          <Image source={require('../../../../../assets/timeline_calendar/forward.png')} style={this.styles.arrow} />
-      );
-  
-      let headerText = date.format(formatHeader || 'DD MMMM YYYY');
-  
       return (
         <View style={[this.styles.container, { width }]}>
 
@@ -199,6 +186,7 @@ import {
             getItemLayout={this._getItemLayout.bind(this)}
             horizontal
             pagingEnabled
+            scrollEnabled={false}
             renderItem={this._renderItem.bind(this)}
             style={{ width: width }}
             onMomentumScrollEnd={event => {

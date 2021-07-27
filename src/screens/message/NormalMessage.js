@@ -119,16 +119,16 @@ const NormalMessageScreen = ({navigation}) => {
 
       <View style={{flex: 1}}>
 
-        <View style={styles.container}>
-        {isLoading && dataMsg.length === 0 && LoadingWithSkeletonScreen()}
+      {isLoading && dataMsg.length === 0 && LoadingWithSkeletonScreen()}
 
-        {!isLoading && dataMsg.length === 0 &&  <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
-              
-              <Text style={{color:'#BBBBBB'}}>
-                  Không tìm thấy tin nhắn nào
-              </Text>
-            </View>}
+      {!isLoading && dataMsg.length === 0 &&  <View style={{flex:1,justifyContent: 'center',alignItems: 'center',backgroundColor: '#ffffff',}}>
             
+            <Text style={{color:'#BBBBBB'}}>
+                Không tìm thấy tin nhắn nào
+            </Text>
+          </View>}
+
+        <View style={styles.container}>
           <FlatList
             data={dataMsg}
             renderItem={renderItem}

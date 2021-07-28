@@ -2,7 +2,7 @@ import React,{useState,useEffect,useRef} from 'react';
 import { StyleSheet, View, Text,Dimensions,TouchableOpacity,Image,FlatList,Linking,Alert,ScrollView,ImageBackground,SafeAreaView } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
 import io from 'socket.io-client';
-import { FontAwesome , Ionicons } from '@expo/vector-icons';
+import { FontAwesome , Ionicons,MaterialIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 
@@ -544,49 +544,23 @@ const HomeScreen= ({navigation}) =>{
 
 
 
-  //Render
-
-  const renderNewestDeadlineItem = ({item}) => (
-    <TouchableOpacity style={styles.card} onPress={() =>{
-      Alert.alert(
-        "Chuyển tiếp",
-        "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
-        [
-          { text: "Từ chối", 
-            style: "cancel"
-          },
-          {
-            text: "Cho phép",
-            onPress: () => Linking.openURL(item.url),
-          },
-        ]
-      );
-      
-    }}>
-      <View style={styles.deadlineInfo}>
-        <View style={styles.deadlineImgWrapper}>
-          <Image style={styles.deadlineImg} source={require("../../../assets/moodle-deadline.png")} />
-        </View>
-        <View style={styles.textSection}>
-          <View style={styles.courseInfoText}>
-            <Text style={styles.courseName}>{item.nameCourese}</Text> */
-            <Text style={styles.timeDeadline}>{dateUtils.ConvertTimestamp(item.duedate)}</Text>
-          </View>
-          <Text style={styles.contentDeadline}>{item.decription}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const renderEmptyNewsetDeadline = (
-    <View style={{marginLeft:50}}> 
-      <Text>Không có deadline nào trong tháng này</Text>
-    </View>
-  );
+  //Render  
 
   const renderEmptyCalendarInMonth = (
     <View style={{marginLeft:50}}> 
       <Text>Không có sự kiện nào trong tháng này</Text>
+    </View>
+  );
+
+  const renderEmptyUniversityNew = (
+    <View style={{marginLeft:50}}> 
+      <Text>Không có tin tức trường nào</Text>
+    </View>
+  );
+
+  const renderEmptyFacultyNew = (
+    <View style={{marginLeft:50}}> 
+      <Text>Không có tin tức khoa nào</Text>
     </View>
   );
 
@@ -692,7 +666,17 @@ const HomeScreen= ({navigation}) =>{
         </View>
               
       </View>
-      <Text style={styles.label}>Lịch trong tháng</Text>
+
+      <View style={styles.labelRowTitle}>
+      <Text style={styles.label}>Sự kiện mới nhất trong tháng</Text>
+      <TouchableOpacity style={styles.detailInfoBtn}
+            onPress={() =>{
+                dispatch(calendarActions.getModeOfCalendar('month'));
+                navigation.navigate('Calendar');
+            }}>
+            <Text style={{fontSize:12,color:'blue', marginLeft: 10}}>Xem thêm {'>'}</Text>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -703,8 +687,15 @@ const HomeScreen= ({navigation}) =>{
         renderItem={renderCalendarInMonth}
         ListEmptyComponent={renderEmptyCalendarInMonth}/>
 
-
-      <Text style={styles.label}> Top 5 tin tức trường mới nhất</Text>
+    <View style={styles.labelRowTitle}>
+      <Text style={styles.label}>Top 5 tin tức trường mới nhất</Text>
+      <TouchableOpacity style={styles.detailInfoBtn}
+              onPress={() =>{
+                  navigation.navigate('University Info');
+              }}>
+              <Text style={{fontSize:12,color:'blue', marginLeft: 10}}>Xem thêm {'>'}</Text>
+          </TouchableOpacity></View>
+      
 
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -712,9 +703,19 @@ const HomeScreen= ({navigation}) =>{
         data={uniNews.slice(0,5)}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={renderNewsItem}/>
+        renderItem={renderNewsItem}
+        ListEmptyComponent={renderEmptyUniversityNew}/>
 
-      <Text style={styles.label}> Top 5 tin tức khoa mới nhất</Text>
+    <View style={styles.labelRowTitle}>
+      <Text style={styles.label}>Top 5 tin tức khoa mới nhất</Text>
+      <TouchableOpacity style={styles.detailInfoBtn}
+            onPress={() =>{
+              navigation.navigate('University Info',{
+                screen:'Faculty New'
+              });
+            }}>
+            <Text style={{fontSize:12,color:'blue', marginLeft: 10}}>Xem thêm {'>'}</Text>
+        </TouchableOpacity></View>
 
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -722,7 +723,8 @@ const HomeScreen= ({navigation}) =>{
         data={facultNews.slice(0,5)}
         horizontal={true}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={renderNewsItem}/>
+        renderItem={renderNewsItem}
+        ListEmptyComponent={renderEmptyFacultyNew}/>
 
       </ScrollView>
     }
@@ -820,6 +822,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#cccccc",
     borderRadius: 10,
+  },
+
+  labelRowTitle: {
+    marginVertical:10,
+    justifyContent:'center',
   },
 });
 

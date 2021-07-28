@@ -77,6 +77,9 @@ const LoginScreen = ({navigation}) => {
 
       <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
       <Heading>E M U</Heading>
+      <Text style={{fontSize:20,
+        color:'blue',
+        fontWeight:'bold'}}>Giáo viên</Text>
       <UsernameInput placeholder={"Địa chỉ E-mail"}
         onChangeText={(username)=>setUsername(username)}/>
 

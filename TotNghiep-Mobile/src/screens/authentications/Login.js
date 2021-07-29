@@ -54,11 +54,20 @@ const LoginScreen = ({navigation}) => {
             console.log(statusCode,data);
             setLoading(false);
             if(statusCode===200 && data.role==="2"){
+              if(data.firstsign === true){
               const token = data.token + 'tC';
               await AsyncStorage.setItem('tokenValue',token);
               dispatch(authActions.login(token));
-              navigation.navigate("Main");
+              navigation.navigate("Start Config");
               setLoading(false);
+              }
+              else{
+                const token = data.token + 'tC';
+                await AsyncStorage.setItem('tokenValue',token);
+                dispatch(authActions.login(token));
+                navigation.navigate("Main");
+                setLoading(false);
+              }
             }else{
               setLoading(false);
               alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")

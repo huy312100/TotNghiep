@@ -6,6 +6,9 @@ import {
   PasswordInput,
 } from "../../components/authentications/common/Index";
 
+import GmailInput from 'react-native-gmailtype-textinput';
+
+
 import { useDispatch } from 'react-redux';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -89,10 +92,13 @@ const LoginScreen = ({navigation}) => {
 
         <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
         <Heading>E M U</Heading>
-        <UsernameInput placeholder={"Địa chỉ E-mail"}
+
+        <UsernameInput label="Email"
+          hideLabel={username !== ''}
           onChangeText={(username)=>setUsername(username)}/>
 
-        <PasswordInput placeholder={"Mật khẩu"}
+        <PasswordInput label="Mật khẩu"
+          hideLabel={password !== ''}
           onChangeText={(password)=>setPassword(password)}/>
 
         <View style={styles.viewForgetPassword}>

@@ -15,7 +15,9 @@ import {
   PasswordInput,
 } from "../../components/authentications/common/Index";
 import RNPickerSelect from "react-native-picker-select";
-import { useDispatch, useSelector,shallowEqual  } from "react-redux";
+import { useDispatch} from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+
 import * as universityActions from "../../../store/actions/University";
 import * as authActions from '../../../store/actions/Authen';
 
@@ -211,17 +213,21 @@ const RegisterScreen = ({ navigation }) => {
 
         <View style={styles.container}>
           <Heading>Đăng ký</Heading>
-          <UsernameInput placeholder={"Email"}
-          onChangeText={(username) => setUsername(username)} />
+          <UsernameInput label="Email"
+            hideLabel={username !== ''}
+            onChangeText={(username) => setUsername(username)} />
 
-          <PasswordInput placeholder={"Mật khẩu"}
-          onChangeText={(password) => setPassword(password)} />
+          <PasswordInput label="Mật khẩu"
+            hideLabel={password !== ''}
+            onChangeText={(password) => setPassword(password)} />
 
-          <PasswordInput placeholder={"Nhập lại mật khẩu"}
-          onChangeText={(password) => setConfirmPwd(password)} />
+          <PasswordInput label="Nhập lại mật khẩu"
+            hideLabel={confirmPwd !== ''}
+            onChangeText={(password) => setConfirmPwd(password)} />
 
-          <UsernameInput placeholder={"Họ và tên"} 
-          onChangeText={(fullname) => setFullname(fullname)} />
+          <UsernameInput label="Họ và tên" 
+            hideLabel={fullname !== ''}
+            onChangeText={(fullname) => setFullname(fullname)} />
 
           <View style={styles.dropdown}>
             <RNPickerSelect
@@ -240,6 +246,16 @@ const RegisterScreen = ({ navigation }) => {
                 value: null,
               }}
               items={itemNameUniversity}
+              style={{
+                placeholder: {
+                  fontSize: 15.5,
+                  fontWeight:"500",
+                  color:'#b3b3b3'
+                },
+              }}
+              Icon={() => {
+                return <Ionicons style={pickerSelectStyles.iconDropdown} name="caret-down-outline" size={20} color="gray" />;
+              }}
             />
             </View>
 
@@ -260,6 +276,17 @@ const RegisterScreen = ({ navigation }) => {
               placeholder={{
                 label: "Chọn khoa",
                 value: null,
+              }}
+
+              style={{
+                placeholder: {
+                  fontSize: 15.5,
+                  fontWeight:"500",
+                  color:'#b3b3b3'
+                },
+              }}
+              Icon={() => {
+                return <Ionicons style={pickerSelectStyles.iconDropdown} name="caret-down-outline" size={20} color="gray" />;
               }}
               items={itemFacultyName}
             />
@@ -319,15 +346,15 @@ const styles = StyleSheet.create({
   },
 
   dropdown: {
-    marginLeft: 15,
-    marginRight: 15,
-    backgroundColor: "#cccc",
-    paddingLeft: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+    marginLeft:5,
+    paddingLeft: 16,
+    paddingVertical:14,
     width: "100%",
-    borderRadius: 10,
-    marginVertical: 20,
+    borderWidth: 2,
+    borderColor:'#b3b3b3',
+    borderRadius: 5,
+    marginTop:20,
+    marginBottom: 5,
   },
 
   buttonLoginContainer: {
@@ -388,6 +415,10 @@ const pickerSelectStyles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 20,
   },
+
+  iconDropdown: {
+    marginRight:20
+  }
 });
 
 export default RegisterScreen;

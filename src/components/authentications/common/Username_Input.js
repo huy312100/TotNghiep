@@ -1,20 +1,19 @@
 import React from 'react';
-import { TextInput,StyleSheet } from 'react-native';
+import { View,StyleSheet } from 'react-native';
+import GmailInput from 'react-native-gmailtype-textinput';
+
 
 export function UsernameInput(props) {
     return(
-        <TextInput testID="Form.UsernameInput" {...props} style={styles.input} keyboardType="default">
-            {props.children}
-        </TextInput>
+        <View style={styles.input}>
+            <GmailInput testID="Form.UsernameInput" {...props} keyboardType="default"/>
+        </View> 
     );
 }
 
 const styles = StyleSheet.create({
     input: {
-        backgroundColor:'#ccc',
         width:'100%',
-        marginVertical:20,
-        padding:20,
-        borderRadius:10,
+        marginLeft:-16
     }
 })

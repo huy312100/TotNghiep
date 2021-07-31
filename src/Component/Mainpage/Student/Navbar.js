@@ -195,7 +195,7 @@ function Navbar() {
                         <img className="bg-icon" width="40vm" src={process.env.PUBLIC_URL + 'Icon/noti.png'} alt="" />
                     </li> */}
                     <li type="button" className="nav-item" onClick={() => UserClick()}>
-                        <img width="40px" height="40px" style={{ borderRadius: "100%" }} src={image} alt="" />
+                        <img width="40px" height="40px" style={{ borderRadius: "100%",border: "1px solid #dfdfdf" }} src={image} alt="" />
                     </li>
                 </ul>
                 {/* </div> */}

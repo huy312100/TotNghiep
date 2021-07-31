@@ -1,18 +1,13 @@
-.wrap {
-    display: flex;
-    width: 82vw;
-    margin: 66px 0 0 16vw;
-    justify-content: space-between;
-    /* background: white; */
-    /* padding: 10px; */
+.mess .row {
+    margin:0;
 }
 
 .listfriend-box {
     /* display: inline-block; */
-    width: 28vw;
+    /* width: 28vw; */
     height: 85vh;
     background: rgb(255, 255, 255);
-    margin-right: 5px;
+    /* margin-right: 5px; */
 }
 
 .box-input {
@@ -28,7 +23,7 @@
     overflow: auto;
 }
 
-.wrap .message-box {
+.message-box {
     /* display: inline-block; */
     height: 85vh;
     width: 53vw;
@@ -52,7 +47,6 @@
     display: flex;
     margin: 5px;
     margin-right: 15px;
-
     /* padding: 2px; */
     justify-content: flex-end;
 }
@@ -98,7 +92,7 @@
 .message-box .enter {
     color: white;
     height: 3vw;
-    background:rgb(230, 155, 85);
+    background: rgb(230, 155, 85);
     width: 3vw;
     line-height: 3vw;
     /* height: 7vw; */
@@ -113,7 +107,7 @@
 .message-box .selected-user {
     margin: 10px;
     display: flex;
-    width: 20vh;
+    /* width: 20vh; */
 }
 
 .message-box hr {
@@ -132,7 +126,6 @@
     font-size: 10px;
     color: grey;
 }
-
 
 .listfriend-box .message-content {
     padding: 5px 0 0px 5px;
@@ -170,8 +163,6 @@
     font-size: 13px;
     color: rgb(92, 92, 92);
     font-weight: 400;
-
-
     /* text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -184,14 +175,47 @@
     cursor: pointer;
 }
 
-.search-user:hover{
+.search-user:hover {
     background: #f1f2f4;
 }
 
-.search-user .name{
+.search-user .name {
     font-size: 14px;
 }
 
-.search-user .email{
+.search-user .email {
     font-size: 12px;
+}
+
+.mess-tag {
+    /* background: white; */
+    /* border-radius: 7px; */
+    box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);
+    /* display: inline-block; */
+}
+
+.mess-tag .btn-mess {
+    /* display: inline-block; */
+        /* background: white; */
+
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    font-size: 16px;
+    /* font-weight: 600;
+    color: #18468b;
+    border: 1px solid gray; */
+    font-weight: 400;
+    line-height: 1.2;
+    /* color: #5e5873; */
+}
+
+.mess .btn-acceptawait{
+    background: #18468b;
+    color: white;
+    padding:5px;
+    margin: 10px;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 14px;
 }

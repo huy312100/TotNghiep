@@ -7,8 +7,11 @@ import PostForum from './PostForum';
 
 
 function Forum() {
+
+
     return <div className="col col-12">
-        <ViewForums/>
+
+        <ViewForums />
     </div>
 }
 

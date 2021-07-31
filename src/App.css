@@ -1,6 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 .App {
   text-align: center;
-  background-color:linear-gradient(180deg,hsla(0,0%,96.4%,.96) 43%,hsla(0,0%,96.4%,.44) 74%,hsla(0,0%,100%,0))
+  background-color: linear-gradient(180deg, hsla(0, 0%, 96.4%, .96) 43%, hsla(0, 0%, 96.4%, .44) 74%, hsla(0, 0%, 100%, 0))
 }
 
 .App-logo {
@@ -37,5 +38,9 @@
     transform: rotate(360deg);
   }
 }
-body
-{overflow-y:scroll;}
+
+body {
+  overflow-y: scroll;
+  font-family: 'Montserrat', sans-serif;
+}
+

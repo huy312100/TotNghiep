@@ -3,7 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import Navbar from './../Navbar';
 import "../../../../style/Message.css"
 import Sidebar from '../Sidebar';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Category from '../Category';
+import { connectSocket } from '../../../../store/actions/authen';
+import { io } from 'socket.io-client';
+
 
 // var socket = io("https://hcmusemu.herokuapp.com", { transports: ['websocket', 'polling', 'flashsocket'] });
 
@@ -21,29 +25,47 @@ function Message() {
     const [newmessage, setNewmessage] = useState({ text: null, time: null });
     const [mess, setMess] = useState("");
 
+    const [awaitmess, setAwaitmess] = useState(null)
+    const [acceptawaitmess, setAcceptAwaitmess] = useState(false)
+    const [selectedawaitmess,setSelectedAwaitmess] = useState("")
+
+    const [tag, setTag] = useState("0")
+
     const divRef = useRef(null);
 
     const socket = useSelector(state => state.authen.socket)
     const email = useSelector(state => state.authen.email)
+
+    const dispatch = useDispatch()
     // console.log(email)
 
     useEffect(() => {
         getMessage();
+        viewChatAwait();
 
-        socket.on('Private-Message-To-Client', (data) => {
-            setSelectedmessage(selectedmessage => [...selectedmessage, {
-                state: false,
-                _id: data[0],
-                from: selected.room,
-                text: data[2],
-                time: data[3]
-            }]);
-            setNewmessage({ text: data[2], time: data[3] })
+        if (socket === null) {
+            var newsocket = io("https://hcmusemu.herokuapp.com", { transports: ['websocket'] });
+            newsocket.emit("Start", localStorage.getItem("token"));
 
-            // socket.emit()
+            console.log("Connect socket");
 
-            console.log(data)
-        })
+            const action = connectSocket(newsocket)
+            dispatch(action);
+        }
+
+
+        if (socket !== null)
+            socket.on('Private-Message-To-Client', (data) => {
+                setSelectedmessage(selectedmessage => [...selectedmessage, {
+                    state: false,
+                    _id: data[0],
+                    from: selected.room,
+                    text: data[2],
+                    time: data[3]
+                }]);
+                setNewmessage({ text: data[2], time: data[3] })
+                console.log(data)
+            })
 
         return () => {
             socket.off('Private-Message-To-Client');
@@ -118,15 +140,17 @@ function Message() {
     }
 
     useEffect(() => {
-        if (selected.room !== "")
+        if (selected.room !== "" && acceptawaitmess === false)
             viewChat();
     }, [selected])
 
-    const selectUser = (room, email, name) => {
+    const selectUser = (room, email, name, image) => {
         // console.log(email)
         socket.emit('Return-Chat', [selected.room, selected.email]);
         socket.emit('Return-Chat', [room, email]);
-        setSelected({ email: email, room: room, name: name })
+        setSelected({ email: email, room: room, name: name, image: image })
+        setAcceptAwaitmess(false)
+
     }
 
     useEffect(() => {
@@ -142,15 +166,28 @@ function Message() {
         }
     }, [newmessage])
 
+    const AcceptAwaitMessage = (messageList, user) => {
+        setSelectedmessage([messageList]);
+        setSelected(user)
+        setAcceptAwaitmess(true)
+    }
+
 
     const Messages = () => {
+        var listmess = usermessage;
+        if (tag === "1") {
+            listmess = awaitmess.awaittext;
 
-        var list = usermessage.map((messageList) => (
-            <div type="button" className="message-content" onClick={() => selectUser(messageList.idRoom, messageList.Email, messageList.name)}>
-                <img width="50vw" style={{ borderRadius: "50%", marginTop: "5px" }} src="https://1.bp.blogspot.com/-r8taaC_nv5U/XngOYFjbRVI/AAAAAAAAZnc/QjGkkHS78GMm6CocQ1OqrWGgQTkG1oQNACLcBGAsYHQ/s1600/Avatar-Facebook%2B%25281%2529.jpg" alt=""></img>
+        }
+        if (listmess.length < 1 || listmess === null)
+            return <div>Không có tin nhắn chờ</div>
+
+        var list = listmess.map((messageList) => (
+            <div type="button" className="message-content" onClick={() => tag === "1" ? AcceptAwaitMessage(messageList, { email: "", room: messageList.idChatRoom, name: messageList.from }) : selectUser(messageList.idRoom, messageList.Email, messageList.name, messageList.Anh)}>
+                <img width="50px" height="50px" style={{ borderRadius: "50%", marginTop: "5px" }} src={messageList.Anh} alt=""></img>
                 <span className="message-content-text">
                     <div className="name">
-                        {messageList.name}
+                        {tag === "0" ? messageList.name : messageList.from}
                     </div>
                     <div className="text">
                         {messageList.text}
@@ -163,6 +200,22 @@ function Message() {
             </div>
         ))
         return list;
+    }
+
+    const viewChatAwait = () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://hcmusemu.herokuapp.com/chat/findchatawait", requestOptions)
+            .then(response => response.json())
+            .then(result => setAwaitmess(result))
+            .catch(error => console.log('error', error));
     }
 
     const viewChat = () => {
@@ -223,7 +276,7 @@ function Message() {
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         var urlencoded = new URLSearchParams();
-        urlencoded.append("username", search);
+        urlencoded.append("HoTen", search);
 
         var requestOptions = {
             method: 'POST',
@@ -232,7 +285,7 @@ function Message() {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/profile/findname", requestOptions)
+        fetch("https://hcmusemu.herokuapp.com/profile/findinfofromfullname", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -301,22 +354,38 @@ function Message() {
         }
     }
 
+    const handleKeyDownAwaitmess = (event) => {
+        if (event.key === 'Enter') {
+            sendAwaitMessage();
+        }
+    }
+
     const handleSearch = (event) => {
         if (event.key === 'Enter') {
             searchUser()
         }
     }
 
+    const SearchUserSelelected = (selecteduser) => {
+        setSelected(selecteduser)
+    }
+
     const renderFoundedUser = () => {
         if (loadingSearch === 1) {
             const list = foundedUser.map((user) => {
-                return <div className="search-user">
-                    <div className="name">{user.HoTen}</div>
-                    <div className="email">({user.Email})</div>
+                return <div type="button" className="message-content" onClick={() => SearchUserSelelected({ email: user.Email, name: user.HoTen, image: user.AnhSV })}>
+                    <img width="50px" height="50px" style={{ borderRadius: "50%", marginTop: "5px" }} src={user.AnhSV} alt=""></img>
+                    <span className="message-content-text">
+                        <div className="name">
+                            {user.HoTen}
+                        </div>
+                        <div className="email">{user.Email}</div>
+                    </span>
                 </div>
             })
             return list;
         }
+
         return <div className="listfriend">
             <div>
                 {Messages()}
@@ -324,40 +393,94 @@ function Message() {
         </div>;
     }
 
+    const Btn_ClickAccept = () => {
+        socket.emit("Accepted", selected.room)
+        setAcceptAwaitmess(false)
+        setTag("0")
+        getMessage();
+    }
 
-    return (
-        <div>
-            <div className="wrap">
-                <div className="listfriend-box">
+    const sendAwaitMessage = () => {
+        socket.emit('Create-Room', [localStorage.getItem("token"), selected.email]);
+        socket.once('Reply-Create-Room', (data) => {
+            console.log(data);
+            console.log(selected.email)
+            console.log(selectedawaitmess)
+            socket.emit("Private-Message", [data, selected.email, selectedawaitmess]);
+
+        });
+        setSelectedAwaitmess("")
+    }
+
+    const renderMessage = () => {
+        if (loadingSearch === 1) {
+            return <div>
+                <div className="message"></div>
+                <div className="textbox-message">
                     <div>
-                        <input className="box-input" type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => setSearch(e.target.value)} onKeyDown={handleSearch} />
-                    </div>
-                    {/* <div className="listfriend">
-                        <div>
-                            {Messages()}
-                        </div>
-                    </div> */}
-                    {renderFoundedUser()}
-                </div>
-                <div className="message-box">
-                    <div className="selected-user">
-                        <img width="40vw" height="40vw" style={{ borderRadius: "50%" }} src="https://1.bp.blogspot.com/-r8taaC_nv5U/XngOYFjbRVI/AAAAAAAAZnc/QjGkkHS78GMm6CocQ1OqrWGgQTkG1oQNACLcBGAsYHQ/s1600/Avatar-Facebook%2B%25281%2529.jpg" alt=""></img>
-                        <div className="infouser">
-                            <div className="name">{selected.name}</div>
-                            <div className="email">{selected.email}</div>
-                        </div>
-                    </div>
-                    <hr />
-                    {renderChatSelected()}
-                    <div className="textbox-message">
-                        <input value={mess} className="box-chat" type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setMess(e.target.value)} onKeyDown={handleKeyDown} />
-                        <i type="button" className="enter fa fa-reply" onClick={sendMessage}></i>
-
+                        <input value={selectedawaitmess} className="box-chat" type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setSelectedAwaitmess(e.target.value)} onKeyDown={handleKeyDownAwaitmess} />
+                        <i type="button" className="enter fa fa-reply" onClick={() => sendAwaitMessage()}></i>
                     </div>
                 </div>
             </div>
-            {/* <Footer /> */}
-        </div >
+        }
+        if (acceptawaitmess)
+            return <div><div className="row justify-content-center">
+                <div type="button" className="col-6 btn-acceptawait" onClick={() => Btn_ClickAccept()}>Cho phép nhận tin nhắn</div>
+            </div>
+                {renderChatSelected()}
+            </div>
+        else if (!acceptawaitmess)
+            return <div>
+                {renderChatSelected()}
+                <div className="textbox-message">
+                    <div>
+                        <input value={mess} className="box-chat" type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setMess(e.target.value)} onKeyDown={handleKeyDown} />
+                        <i type="button" className="enter fa fa-reply" onClick={sendMessage}></i>
+                    </div>
+                </div>
+            </div>
+    }
+
+
+    var messtag = tag === "0" ? "selected" : "";
+    var messawaittag = tag === "1" ? "selected" : "";
+    return (
+        <div className="mess">
+            <div className="col-12">
+                <Category current="Tin nhắn" />
+                <div className="col-md-4 mess-tag">
+                    <div className="row tag">
+                        <div type="button" className={"col-md-6 btn-mess " + messtag} onClick={() => setTag("0")}>Tin nhắn hiện tại
+                        </div>
+                        <div type="button" className={"col-md-6 btn-mess " + messawaittag} onClick={() => setTag("1")}>Tin nhắn chờ
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-4 listfriend-box">
+                        {<div>
+                            <div>
+                                <input className="box-input" type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => setSearch(e.target.value)} onKeyDown={handleSearch} />
+                            </div>
+                            {renderFoundedUser()}
+                        </div>}
+                    </div>
+                    <div className="col-md-8 message-box">
+                        <div className="selected-user">
+                            <img width="50px" height="50px" style={{ borderRadius: "50%" }} src={selected.image} alt=""></img>
+                            <div className="infouser">
+                                <div className="name">{selected.name}</div>
+                                <div className="email">{selected.email}</div>
+                            </div>
+                        </div>
+                        <hr />
+                        {renderMessage()}
+                    </div>
+                </div>
+                {/* <Footer /> */}
+            </div >
+        </div>
     );
 }
 

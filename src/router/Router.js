@@ -23,6 +23,9 @@ import Reset from '../Component/Login/ResetPW';
 import Navbar from '../Component/Mainpage/Student/Navbar';
 import Sidebar from '../Component/Mainpage/Student/Sidebar';
 import { useSelector } from 'react-redux';
+import ViewCourseCommemt from '../Component/Mainpage/Student/Sidebar/Forum/ViewCourseComment';
+import ViewForumCourse from '../Component/Mainpage/Student/Sidebar/Forum/Courses/ViewForumCourse';
+import checkTokenExpired from '../auth/auth';
 
 
 
@@ -34,6 +37,8 @@ function RouterMD() {
 
     return (
         <Router>
+            {!checkTokenExpired() ? <ConnectSocket /> : null}
+
             <Route exect path="/" render={() => {
                 // console.log(0)
                 if (!localStorage.getItem("token"))
@@ -55,7 +60,10 @@ function RouterMD() {
                                 <Route exact path="/forum" >
                                     <Forum />
                                 </Route>
-                                <Route path="/forum/:id" children={<ViewComment />} />
+                                <Route path="/forum/courses/post/:id" children={<ViewCourseCommemt />} />
+                                <Route path="/forum/courses/:id" children={<ViewForumCourse />} />
+                                <Route path="/forum/post/:id" children={<ViewComment />} />
+
                                 <Route path="/calendar">
                                     <Calendar />
                                 </Route>
@@ -74,9 +82,9 @@ function RouterMD() {
                                 <Route path="/home">
                                     <Student />
                                 </Route>
-                                {/* <Route path="/message">
-                                <Message />
-                            </Route> */}
+                                <Route path="/message">
+                                    <Message />
+                                </Route>
                                 <Route path="/setting">
                                     <SetURL />
                                 </Route>

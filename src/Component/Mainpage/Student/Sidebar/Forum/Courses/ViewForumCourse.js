@@ -1,47 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
-import "../../../../../style/Forum.css";
-import Category from '../../Category';
-import Forum from './Forum';
-import PostForum from './PostForum';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import "../../../../../../style/Forum.css";
+import Category from '../../../Category';
+import Forum from './../Forum';
+import PostForum from './../PostForum';
 
 
-function ViewForums() {
-    let history = useHistory();
-
+function ViewForumCourse() {
     const [forums, setForums] = useState(null);
-    const [uni, setUni] = useState(null)
-    const [fac, setFac] = useState(null)
-    const [course, setCourse] = useState(null)
+    const [course, setCourse] = useState(null);
+    const [courseMoodle, setCourseMoodle] = useState(null)
     const [loadingC, setLoadingC] = useState(1);
     const [loadingMoodleC, setLoadingMoodleC] = useState(1);
-    const [loadingUF, setLoadingUF] = useState(1);
-    const [page, setPage] = useState(0)
-    const [allcourse, setAllcourse] = useState([])
+    const [popup, setPopup] = useState(false)
+    const [popupinfo, setPopupInfo] = useState(null)
 
     const email = useSelector(state => state.authen.email)
     const [tag, setTag] = useState("0")
+    const { id } = useParams();
 
 
 
     useEffect(() => {
-        viewFacUniForums()
-        viewCourseForums()
-
+        getForumCourse()
+        getForumMoodle()
     }, [])
 
-    useEffect(() => {
-        getAllCourse()
-    }, [page])
 
-    const getAllCourse = () => {
+    const getForumMoodle = () => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         var urlencoded = new URLSearchParams();
-        urlencoded.append("page", page);
+        urlencoded.append("IDCourses", "1266");
 
         var requestOptions = {
             method: 'POST',
@@ -50,66 +43,32 @@ function ViewForums() {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", requestOptions)
-            .then(response => {
-                if (response.ok)
-                    return response.json()
-                throw new Error('Đã hết môn học');
-            })
-            .then(result => {
-                console.log(result)
-                // let temp=this.state.allcourse;
-                // temp.push(result)
-                // console.log("temp:",temp)
-                let temp = allcourse;
-                Array.prototype.push.apply(temp, result)
-                setAllcourse(temp)
-                setLoadingMoodleC(0)
-            })
-            .then(() => setPage(page + 1))
-            .catch(error => console.log('error', error));
-    }
-
-    const viewFacUniForums = () => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") + "sT");
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch("https://hcmusemu.herokuapp.com/forum/view", requestOptions)
+        fetch("https://hcmusemu.herokuapp.com/forummoodle", requestOptions)
             .then(response => response.json())
             .then(result => {
-                // console.log(result)
-                var clean = result
-                // var clean = result.filter((result, index, self) =>
-                //     index === self.findIndex((t) => (t.ID === result.ID)))
-                setForums(clean)
-                setLoadingUF(0)
-                setUni(clean.filter(function (item) {
-                    return item.scope == "u";
-                }))
-                setFac(clean.filter(function (item) {
-                    return item.scope == "f";
-                }))
+                console.log(result[0])
+                setCourseMoodle(result[0])
+                setLoadingMoodleC(0)
             })
             .catch(error => console.log('error', error));
     }
 
-    const viewCourseForums = () => {
+    const getForumCourse = () => {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") + "sT");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("IDCourses", id);
 
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
+            body: urlencoded,
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/forum/courses/view", requestOptions)
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewone", requestOptions)
             .then(response => response.json())
             .then(result => {
                 setCourse(result)
@@ -118,6 +77,10 @@ function ViewForums() {
             .catch(error => console.log('error', error));
     }
 
+    const openPopup = ({...value}) =>{
+        setPopupInfo({...value})
+        setPopup(true)
+    }
 
     const convertTimeAgo = (UNIX_timestamp) => {
         // var a = new Date(UNIX_timestamp);
@@ -156,60 +119,36 @@ function ViewForums() {
         }
     }
 
-    const Delete_API = (removeid) => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    const renderPopup = () => {
+        if (popupinfo === null)
+            return null;
+        return <div className=" view row justify-content-center" >
+            <div id="scrollbar1" className="col-8 col-md-4 popup" >
+                <div type="button" onClick={()=>setPopup(false)} style={{ position: "absolute", right: "5px", top: "0" }}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+                </div>
+                <div>
+                    <div style={{ fontWeight: "600" }}>{popupinfo.name}</div>
+                    <div style={{ fontSize: "15px", paddingBottom: "10px" }}>Người đăng : {popupinfo.fullname}</div>
+                    <div className="content" dangerouslySetInnerHTML={{ __html: popupinfo.mess }}></div>
+                </div>
+            </div >
 
-        var urlencoded = new URLSearchParams();
-        urlencoded.append("IDPost", removeid);
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: urlencoded,
-            redirect: 'follow'
-        };
-
-        const items = [...forums];
-        const temp = [...forums];
-        const j = items.findIndex(item => item.ID === removeid);
-
-        items.splice([j], 1);
-
-        // rm company node if it have no items
-
-        setForums(items)
-
-        var url
-        if (tag === "0")
-            url = 'https://hcmusemu.herokuapp.com/forum/courses/delete'
-        else url = 'https://hcmusemu.herokuapp.com/forum/delete'
-        fetch(url, requestOptions)
-            .then(response => {
-                if (response.ok)
-                    return response.text()
-                throw Error("Đã xảy ra lỗi khi xóa bài viết")
-            })
-            .catch(error => setForums(temp));
+        </div >
     }
-
 
     const renderTag = () => {
 
-        var showforums = null;
-        if (tag === "0" && loadingC === 0)
-            showforums = course;
-        else if (loadingUF === 0 && tag !== "1") {
-            if (tag === "2")
-                showforums = fac;
-            else showforums = uni;
-        }
-        if (showforums === null && (tag !== "1" || loadingMoodleC === 1))
-            return null;
-        return <div>
-            {tag !== "1" &&
-                showforums.map((forum) => {
+        if (tag === "0" && loadingC === 0) {
+            if (course === null || course.length < 1)
+                return <div class="row justify-content-center" >
+                    <div className="col-md-6 list-forums" style={{ textAlign: "center", marginTop: "50px", fontSize: "20px" }}>Không tìm thấy diễn đàn nào</div>
+                </div>
+
+            return <div>
+                {course.map((forum) => {
 
                     return <div class="row justify-content-center" >
                         <div className="col-md-6 list-forums">
@@ -260,59 +199,55 @@ function ViewForums() {
 
                     </div>
 
-                })
-            }
-
-            {tag === "1" &&
-                allcourse.map((c, index) => {
-                    return (
-                        <div key={index} className="course">
-                            <Link to={"/forum/courses/" + c.IDCourses} className="titlee direct">{c.name}</Link>
-                            <div className="list-teacher">
-                                {c.teacher.map((tc, tindex) => (
-                                    <div key={tindex} className="content">
-                                        <span>Giáo viên: </span>
-                                        <span>{tc}</span>
-                                    </div>))}
-                            </div>
+                })}
+            </div>
+        }
+        else if (loadingMoodleC === 0 && tag === "1") {
+            if (courseMoodle === null || courseMoodle.length < 1)
+                return <div class="row justify-content-center" >
+                    <div className="col-md-6 list-forums" style={{ textAlign: "center", marginTop: "50px", fontSize: "20px" }}>Không tìm thấy diễn đàn nào</div>
+                </div>
+            return <div>
+                {courseMoodle.Forum.map((forum) => {
+                    return <div class="row justify-content-center">
+                        <div type="button" className="col-md-6 list-forums" style={{ background: "white", padding: "15px", borderRadius: "7px", boxShadow: "0 4px 24px 0 rgb(34 41 47 / 10%)" }} onClick={() => openPopup({ fullname: forum.fullname, name: forum.name, mess: forum.message })}>
+                            {console.log(forum.name)}
+                            <div style={{ fontWeight: "600" }}>{forum.name}</div>
+                            <div style={{ fontSize: "15px" }}>Người đăng : {forum.fullname}</div>
                         </div>
-                    )
-                })
-            }
-            {/* {this.LoaddingIcon()} */}
-        </div>
+                    </div>
+                })}
+            </div>
+        }
     }
 
-    if (loadingUF === 1 && loadingC === 1)
+
+    if (loadingMoodleC === 1 && loadingC === 1)
         return null;
     else {
         var assign = tag === "0" ? "assign" : "";
         var moodle = tag === "1" ? "assign" : "";
-        var university = tag === "2" ? "university" : "";
-        var faculty = tag === "3" ? "faculty" : "";
-        return <div className="forum">
-            <Category current="Diễn đàn" currentlink="/forum"/>
-            <div className="deadline-tag">
-                <div className="row tag">
-                    <div type="button" className={"col-6 col-md-3 btn-deadline " + assign} onClick={() => setTag("0")} style={{ fontSize: "14px" }}> Tất cả khóa học
-                    </div>
-                    <div type="button" className={"col-6 col-md-3 btn-deadline " + moodle} onClick={() => setTag("1")}> Môn học
-                    </div>
-                    <div type="button" className={"col-6 col-md-3 btn-deadline " + university} onClick={() => setTag("2")}> Khoa
-                    </div>
-                    <div type="button" className={"col-6 col-md-3 btn-deadline " + faculty} onClick={() => setTag("3")}> Trường
+
+        return <div className="col col-12">
+            <div className="forum">
+                <Category current="Môn học" currentlink="/forum/courses" sub1="Diễn đàn" sub1link={"/forum"} />
+                <div className="deadline-tag">
+                    <div className="row tag">
+                        <div type="button" className={"col-6 btn-deadline " + assign} onClick={() => setTag("0")} style={{ fontSize: "14px" }}> Tất cả khóa học
+                        </div>
+                        <div type="button" className={"col-6 btn-deadline " + moodle} onClick={() => setTag("1")}> Môn học
+                        </div>
                     </div>
                 </div>
+                {/* <PostForum /> */}
+                {renderTag()}
+                {popup && renderPopup()}
             </div>
-            {/* <PostForum /> */}
-
-            {renderTag()}
-        </div>;
+        </div>
     }
+
 
     return null;
 }
 
-
-
-export default ViewForums;
+export default ViewForumCourse;

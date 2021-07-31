@@ -15,6 +15,8 @@ function ViewComment() {
     const [image, setImage] = useState(null);
     const [imgData, setimgData] = useState(null);
 
+    console.log("id", id)
+
 
     const email = useSelector(state => state.authen.email)
 
@@ -27,25 +29,6 @@ function ViewComment() {
     }, [])
 
     const getTopic = () => {
-        // var myHeaders = new Headers();
-        // myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") + "sT");
-
-        // var requestOptions = {
-        //     method: 'POST',
-        //     headers: myHeaders,
-        //     redirect: 'follow'
-        // };
-
-        // fetch("https://hcmusemu.herokuapp.com/forum/view", requestOptions)
-        //     .then(response => response.json())
-        //     .then(result => {
-        //         console.log(result)
-        //         var clean = result.filter((result, index, self) =>
-        //             index === self.findIndex((t) => (t.ID === result.ID)))
-        //         setTopic(clean)
-        //         setLoadingtopic(0)
-        //     })
-        //     .catch(error => console.log('error', error));
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") + "sT");
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -60,7 +43,7 @@ function ViewComment() {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/forum/viewdetail", requestOptions)
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewdetail", requestOptions)
             .then(response => response.json())
             .then(result => {
                 setTopic(result)
@@ -72,9 +55,11 @@ function ViewComment() {
     const getComments = () => {
 
         var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         var urlencoded = new URLSearchParams();
+
         urlencoded.append("IDPost", id);
 
         var requestOptions = {
@@ -84,7 +69,7 @@ function ViewComment() {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/forum/viewcmt", requestOptions)
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewcmt", requestOptions)
             .then(response => response.json())
             .then(result => {
                 setComments(result)
@@ -179,7 +164,7 @@ function ViewComment() {
         };
 
         setTopic([...topics, topics[0].LikeByOwn = 1])
-        fetch("https://hcmusemu.herokuapp.com/forum/like", requestOptions)
+        fetch("https://hcmusemu.herokuapp.com/forum/courses/like", requestOptions)
             .then(response => {
                 if (response.ok)
                     response.text()
@@ -197,7 +182,7 @@ function ViewComment() {
                 : <div type="button" className="like" onClick={LikeAndUnlikeClick}>Đã thích</div>;
             if (topic.ID == id)
                 return <div className="list-forums flex">
-                    <img width="100vw" height="100vw" src={topic.image}></img>
+                    {topic.image === "" ? <img width="100vw" height="100vw" style={{ border: "0.01px solid grey" }} src={process.env.PUBLIC_URL + 'Icon/no-image.jpg'}></img> : <img width="100vw" height="100vw" style={{ border: "0.01px solid grey" }} src={topic.image}></img>}
                     <div>
                         <div className="flex">
                             <span className="title">{topic.title}</span>
@@ -248,7 +233,7 @@ function ViewComment() {
         };
         SetNewcomment("");
 
-        await fetch("https://hcmusemu.herokuapp.com/forum/cmt", requestOptions)
+        await fetch("https://hcmusemu.herokuapp.com/forum/courses/cmt", requestOptions)
             .then(response => response.text())
             .then(result => {
                 console.log(result)
@@ -334,7 +319,7 @@ function ViewComment() {
                                 <span className="time">{convertTimeAgo(comment.time)}</span>
 
                             </div>
-                            <img width="300vw" height="300vw" src={comment.image} />
+                            {comment.image === "" ? null : <img width="300vw" height="300vw" src={comment.image} />}
                             <div className="own flex">
                                 <span className={"title comment" + user}>{comment.comment}</span>
                             </div>

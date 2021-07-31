@@ -114,6 +114,9 @@
 .deadline-tag {
     /* box-shadow: rgba(0,0,0, 0.05) 0 0 15px 0 ; */
     background: white;
+    border-radius: 7px;
+    box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);
+
 }
 
 .deadline-tag .tag {
@@ -144,18 +147,21 @@
 }
 
 .deadline-tag .tag .assign {
-    border-bottom: 2px solid rgb(125, 149, 255);
-    color: rgb(125, 149, 255);
+    border-bottom: 2px solid #18468b;
+    color: #18468b;
+    margin-bottom: -2px;
 }
 
 .deadline-tag .tag .university {
-    border-bottom: 2px solid rgb(125, 149, 255);
-    color: rgb(125, 149, 255);
+    border-bottom: 2px solid #18468b;
+    color: #18468b;
+    margin-bottom: -2px;
 }
 
 .deadline-tag .tag .faculty {
-    border-bottom: 2px solid rgb(125, 149, 255);
-    color: rgb(125, 149, 255);
+    border-bottom: 2px solid #18468b;
+    color: #18468b;
+    margin-bottom: -2px;
 }
 
 .news-page {

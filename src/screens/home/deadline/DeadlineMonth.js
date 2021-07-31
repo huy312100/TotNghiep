@@ -8,6 +8,7 @@ import { Entypo,AntDesign } from '@expo/vector-icons';
 import { Header } from 'react-native-elements';
 
 import * as dateUtils from "../../../utils/Date";
+import * as arrUtils from "../../../utils/Array";
 
 const DeadlineMonthScreen = ({navigation}) => {
 
@@ -57,10 +58,10 @@ const DeadlineMonthScreen = ({navigation}) => {
           const dataRes = response.json();
           return Promise.all([statusCode, dataRes]);
         })
-          .then(([statusCode, dataRes]) => {
+        .then(([statusCode, dataRes]) => {
             if(statusCode === 200){
-              console.log(dataRes);
-              setData(dataRes);
+                console.log(dataRes);
+                setData(arrUtils.reverseArr(dataRes));
             }
             setIsLoading(false);
             //tmp.concat(json)

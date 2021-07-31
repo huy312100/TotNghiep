@@ -51,7 +51,7 @@ const ForumFacultyScreen =({navigation})=>{
                 for (const key in dataRes) {
                     if(dataRes[key].scope === "f"){
                         dataTmp.push({
-                            AvartaOwn:dataRes[key].AvartaOwn.replace(/\s/g,''),
+                            AvartaOwn:dataRes[key].AvartaOwn,
                             EmailOwn:dataRes[key].EmailOwn,
                             ID:dataRes[key].ID,
                             LikeByOwn:dataRes[key].LikeByOwn,

@@ -120,24 +120,24 @@ const MoodleConfigScreen = ({navigation}) => {
             <View style={{justifyContent:'center',alignItems: 'center',marginHorizontal:30}}>
                 <Text style={{marginVertical:30,fontWeight:'500',fontSize:25,color:'purple'}}>KẾT NỐI ỨNG DỤNG</Text>
                 <Text style={{textAlign:'center'}}>
-                    Thiết lập cài đặt Moodle giúp ứng dụng có thể lấy các thông tin cơ bản từ trang môn học như : Deadline, thông tin môn học ,diễn đàn ...
+                    Thiết lập cài đặt Moodle giúp ứng dụng có thể lấy các thông tin cơ bản từ trang môn học như: Deadline, thông tin môn học ,diễn đàn ...
                 </Text>
             </View>
             <Text style={styles.label}>
-                URL
+                URL Moodle
             </Text>
 
             <TextInput style={styles.input} onChangeText={(url)=>setUrl(url)}/>
 
             <Text style={styles.label}>
-                Username ứng dụng
+                Username Moodle
             </Text>
 
             <TextInput style={styles.input} keyboardType="default" 
                 onChangeText={(username)=>setUsername(username)}/>
 
             <Text style={styles.label}>
-                Password ứng dụng
+                Password Moodle
             </Text>
 
             <View style={styles.passInput}>

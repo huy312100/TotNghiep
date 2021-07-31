@@ -6,3 +6,7 @@ export const removeDuplicateName = (arr,str) =>{
         }
     }
 };
+
+export const reverseArr = (arr) => {
+    return arr.reverse();
+}

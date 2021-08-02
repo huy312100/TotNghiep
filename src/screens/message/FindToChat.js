@@ -5,6 +5,8 @@ import{useSelector} from 'react-redux';
 
 import { Ionicons } from '@expo/vector-icons';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import RoundedImage from '../../components/profile/main/RoundedImage';
 
 
@@ -16,11 +18,11 @@ const FindToChatScreen = ({navigation}) => {
 
     const socket = useSelector((state) => state.authen.socket);
 
-    const [roomID,setRoomID] = useState('x');
+    const [roomID,setRoomID] = useState('');
 
     const token = useSelector((state) => state.authen.token);
 
-    var abc='xxx';
+    var abc ;
 
     const getInfoFromName =(name) => {
         let details = {
@@ -48,7 +50,7 @@ const FindToChatScreen = ({navigation}) => {
               const dataRes = response.json();
               return Promise.all([statusCode, dataRes]);
           }).then(([statusCode, dataRes])=>{
-                console.log(statusCode,dataRes);
+                //console.log(statusCode,dataRes);
                 setData(dataRes);
           }).catch(error => console.log('error', error));
     };
@@ -57,7 +59,7 @@ const FindToChatScreen = ({navigation}) => {
     //   socket.once('Reply-Create-Room',(data)=>{
     //     setRoomID(data);
     //   });
-    // },[roomID]);
+    // },[]);
 
     const renderItem = ({ item }) => (
         <View>
@@ -66,22 +68,27 @@ const FindToChatScreen = ({navigation}) => {
             onPress={async () => {
               socket.emit('Create-Room',[token,item.Email]);
              
-              socket.once('Reply-Create-Room',(data)=>{
-                //console.log(data);
+              socket.once('Reply-Create-Room',async (data)=>{
                 setRoomID(data);
-                abc=data;
-                console.log(roomID)
+                console.log(data);
+                navigation.navigate("Chat", {
+                  email: item.Email,
+                  name:item.HoTen,
+                  idChatRoom:data
+                });
+                //console.log(roomID)
               });
-
+              
+              //abc = await AsyncStorage.getItem('IDChatRoom');
               //loadRoomID();
               //console.log(abc)
               //console.log(roomID);
 
-              navigation.navigate("Chat", {
-                email: item.Email,
-                name:item.HoTen,
-                idChatRoom:roomID
-              });
+              // navigation.navigate("Chat", {
+              //   email: item.Email,
+              //   name:item.HoTen,
+              //   idChatRoom:roomID
+              // });
             }}
           >
 
@@ -118,7 +125,7 @@ const FindToChatScreen = ({navigation}) => {
                 <Ionicons style={{marginTop:3}} name="search-outline" size={18} color="#888888" />
                 <TextInput keyboardType="default" placeholder="Tìm kiếm" style={{width:'95%'}}
                 onChangeText={(name)=>{
-                    console.log(name);
+                    //console.log(name);
                     if(name.trim().length!==0) {
                         getInfoFromName(name);
                     }

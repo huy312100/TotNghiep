@@ -75,6 +75,7 @@ const ChatScreen = ({route,navigation}) => {
 
   //call api load all messages  
   const loadMessage =() => {
+    console.log('aaaaaaaa')
     let details = {
       IDRoom:roomID,
       page: pageCurrent,

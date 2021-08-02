@@ -16,6 +16,7 @@ const NormalMessageScreen = ({navigation}) => {
   const[dataMsg,setDataMsg] = useState([]);
 
   const token = useSelector((state) => state.authen.token);
+  const profile = useSelector((state) => state.profile.profile);
   const [isLoading,setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const unmounted = useRef(false);
@@ -66,7 +67,8 @@ const NormalMessageScreen = ({navigation}) => {
                     TypeRoom: dataRes[key].TypeRoom,
                     text: dataRes[key].text,
                     time: dataRes[key].time,
-                    state:dataRes[key].state
+                    state:dataRes[key].state,
+                    EmailEnd: dataRes[key].EmailEnd,
                   });
               }
               setDataMsg(tmpMsg);
@@ -105,10 +107,12 @@ const NormalMessageScreen = ({navigation}) => {
         </View>
         <View style={styles.textSection}>
             <View style={styles.userInfoText}>
-            <Text style={styles.userName}>{item.name}</Text>
-            <Text style={styles.postTime}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
+              <Text style={styles.userName}>{item.name}</Text>
+              <Text style={styles.postTime}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
             </View>
-            <Text style={[styles.messageText,{fontWeight : (item.state) ? "normal":"bold"}]}>{item.text}</Text>
+            <Text style={[styles.messageText,{fontWeight : (item.state) ? "normal":"bold"}]}>{item.EmailEnd === profile[0].Email ? "Bạn: " :""}{item.text}</Text>
+
+
         </View>
         </View>
     </TouchableOpacity>

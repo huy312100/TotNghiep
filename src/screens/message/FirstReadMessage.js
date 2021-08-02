@@ -50,20 +50,26 @@ const FirstReadMessageScreen = ({navigation}) => {
       }).then(([statusCode, dataRes])=> {
           console.log(statusCode,dataRes);
           if (statusCode === 200) {
+            if(dataRes.message === "Message await is Empty"){
+              setDataAwaitMsg([]);
+            }
+            else{
               const tmpAwaitMsg =[];
-              for (const key in dataRes.awaittext) {
-                  tmpAwaitMsg.push(
-                  {
-                      state: dataRes.awaittext[key].state,
-                      _id: dataRes.awaittext[key]._id,
-                      idChatRoom: dataRes.awaittext[key].idChatRoom,
-                      from: dataRes.awaittext[key].from,
-                      text: dataRes.awaittext[key].text,
-                      time: dataRes.awaittext[key].time,
-
-                  });
+              for (const key in dataRes) {
+                tmpAwaitMsg.push(
+                {   
+                  Anh:dataRes[key].Anh,
+                  Email:dataRes[key].Email,
+                  state: dataRes[key].state,
+                  idChatRoom: dataRes[key].idChatRoom,
+                  name: dataRes[key].name,
+                  text: dataRes[key].text,
+                  time: dataRes[key].time,
+                  TypeRoom: dataRes[key].TypeRoom,
+                });
               }
               setDataAwaitMsg(tmpAwaitMsg);
+            }
           }
           
           else{
@@ -95,12 +101,14 @@ const FirstReadMessageScreen = ({navigation}) => {
                   {
                     text: "Cho phép",
                     onPress: () => {
-                        navigation.navigate("Chat",{
-                            name:item.from,
-                            idChatRoom:item.idChatRoom
-                        });
-                    
-                        socket.emit("Accepted",item.idChatRoom);
+                      //console.log(item.name,item.idChatRoom,item.Email,item.Anh);
+                      socket.emit("Accepted",item.idChatRoom);
+                      navigation.navigate("Chat",{
+                          name:item.name,
+                          idChatRoom:item.idChatRoom,
+                          email:item.Email,
+                          avatar:item.Anh
+                      });
 
                     }
                   },
@@ -113,7 +121,7 @@ const FirstReadMessageScreen = ({navigation}) => {
             </View>
             <View style={styles.textSection}>
                 <View style={styles.userInfoText}>
-                <Text style={styles.userName}>{item.from}</Text>
+                <Text style={styles.userName}>{item.name}</Text>
                 <Text style={styles.postTime}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
                 </View>
                 <Text style={styles.messageText}>{item.text}</Text>

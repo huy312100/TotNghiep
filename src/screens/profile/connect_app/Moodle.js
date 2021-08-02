@@ -7,47 +7,46 @@ import * as profileActions from '../../../../store/actions/Profile';
 import LoadingScreen from '../../LoadingScreen';
 
 
-
 const MoodleConnectScreen = ({navigation})=>{
 
     const [show,setShow]= useState(true);
     const [visible,setVisible]= useState(true);
-    const [url,setUrl]=useState('');
-    const [username,setUsername]=useState('');
-    const [password,setPassword]=useState('');
     const [isLoading,setLoading] = useState(false);
 
     const dispatch=useDispatch();
     const token = useSelector((state) => state.authen.token);
     const typeWebCustomed = useSelector((state) => state.profile.allWebCustomed);
 
-    var nameWebCustomed = typeWebCustomed.find(item => item.Type === 'Moodle');
+    const [nameWebCustomed,setNameWebCustomed]= useState(typeWebCustomed.find(item => item.Type === 'Moodle'));
 
-    const ConnectAppHandler =()=>{
-        setLoading(true);
+    const [url,setUrl]=useState(nameWebCustomed == undefined ? "" : nameWebCustomed.Url);
+    const [username,setUsername]=useState(nameWebCustomed == undefined ? "" : nameWebCustomed.Username);
+    const [password,setPassword]=useState('');
+
+    const ConnectAppHandler = async()=>{
         //console.log(token);
         let details = {
             typeUrl: 'Moodle',
             url:url,
             username: username,
             password: password,
-          };
-      
-          let formBody = [];
-      
-          for (let property in details) {
+        };
+    
+        let formBody = [];
+    
+        for (let property in details) {
             let encodedKey = encodeURIComponent(property);
             let encodedValue = encodeURIComponent(details[property]);
             formBody.push(encodedKey + "=" + encodedValue);
-          }
-          formBody = formBody.join("&");
+        }
+        formBody = formBody.join("&");
 
-          fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", {
+        await fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", {
             method: "POST",
             headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              "Authorization": `bearer ${token}`
-            },
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": `bearer ${token}`
+        },
             body: formBody,
         }).then((response) => {
             const statusCode = response.status;
@@ -56,30 +55,37 @@ const MoodleConnectScreen = ({navigation})=>{
         }).then(([statusCode, dataRes])=>{
             console.log(dataRes,statusCode); 
             if(statusCode === 201){
+                getWebCustomed();
                 dispatch(profileActions.connectApplication());
                 navigation.navigate("Profile");
-                setLoading(false);
+                
             }
-            else if(statusCode ===409){
-                setLoading(false);
+            else if(statusCode === 409){
                 Alert.alert(
                     "Lỗi",
-                    "Loại ứng dụng đã được kết nối trước đó . Vui lòng xoá kết nối trước khi tạo một kết nối ứng dụng mới !",
+                    "Loại ứng dụng đã được kết nối trước đó. Vui lòng xoá kết nối trước khi tạo một kết nối ứng dụng mới !",
                     [
-                      { text: "Xác nhận", 
+                        { text: "Xác nhận", 
                         style: "cancel"
-                      },
+                        },
                     ]
                 );
             }
             else{
-                setLoading(false);
-                alert("Lỗi.Xin vui lòng thử lại !!!");
+                Alert.alert(
+                    "Xảy ra lỗi",
+                    "Xin vui lòng thử lại !!!",
+                    [
+                        { text: "Xác nhận", 
+                        style: "cancel"
+                        },
+                    ]
+                );
             }
         }).catch(error => console.log('error', error));
     };
 
-    const getWebCustomed = () =>{
+    const getWebCustomed = async () =>{
         //console.log(token);
 
         var myHeaders = new Headers();
@@ -91,12 +97,13 @@ const MoodleConnectScreen = ({navigation})=>{
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
+        await fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
         .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
             const tmp =[];
             if (statusCode === 200){
                 for (const key in dataRes) {
@@ -104,6 +111,7 @@ const MoodleConnectScreen = ({navigation})=>{
                     {
                         Type: dataRes[key].Type,
                         Url:dataRes[key].Url,
+                        Username: dataRes[key].Username,
                     });
                 };
             }
@@ -113,11 +121,54 @@ const MoodleConnectScreen = ({navigation})=>{
         .catch((err) => console.log(err, "error"));
     };
 
-    const checkDisableButton = () => {
-        if(url.trim().length === 0 || username.trim().length === 0 || password.trim().length === 0) {
-            return true; 
+    const onDelete = async () => {
+        let details = {
+            typeUrl: "Moodle",
+        };
+
+        let formBody = [];
+
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
         }
-        return false;
+        formBody = formBody.join("&");
+
+        await fetch("https://hcmusemu.herokuapp.com/web/deleteaccount", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `bearer ${token}`,
+        },
+        body: formBody,
+        }).then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            if (statusCode === 200){
+                getWebCustomed();
+                navigation.navigate("Profile");
+            }
+        }).catch((error) => console.log("error", error));
+    };
+
+    const checkDisableButton = () => {
+        if(nameWebCustomed == undefined){
+            if(url.trim().length === 0 || username.trim().length === 0 || password.trim().length === 0) {
+                return true; 
+            }
+            return false;
+        }
+        return true;
+    };
+
+    const checkDisableDeleteButton = () => {
+        if(nameWebCustomed != undefined){
+            return false;
+        }
+        return true;
     }
 
     return (
@@ -125,21 +176,21 @@ const MoodleConnectScreen = ({navigation})=>{
             Keyboard.dismiss();
         }}>
             <View style={styles.container}>
-            {nameWebCustomed == undefined && <View style={styles.container}>
+            
                 {isLoading && LoadingScreen()}
                
                 <Text style={styles.label}>
                     URL
                 </Text>
 
-                <TextInput style={styles.input} onChangeText={(url)=>setUrl(url)}/>
+                <TextInput style={styles.input} onChangeText={(url)=>setUrl(url)}>{url}</TextInput>
 
                 <Text style={styles.label}>
                     Username ứng dụng
                 </Text>
 
                 <TextInput style={styles.input} keyboardType="default" 
-                    onChangeText={(username)=>setUsername(username)}/>
+                    onChangeText={(username)=>setUsername(username)}>{username}</TextInput>
 
                 <Text style={styles.label}>
                     Password ứng dụng
@@ -156,27 +207,33 @@ const MoodleConnectScreen = ({navigation})=>{
                     </TouchableOpacity>
                 </View>
 
-            <TouchableOpacity
-                disabled={checkDisableButton()}
-                style={[styles.button,{backgroundColor: checkDisableButton() ? "grey" : "green"}]}
-                onPress={() => {
-                    ConnectAppHandler();
-                    getWebCustomed();
-                }}>
-                <Text style={styles.textBtnConnect}>Kết nối</Text>
-            </TouchableOpacity>
-            </View>}
+            <View style={{flexDirection:'row',justifyContent: 'center'}}>
 
-        {nameWebCustomed != undefined && <View style={[styles.container,{justifyContent:'center',alignItems: 'center'}]}>
-            <Text style={{marginHorizontal:18,color:"black",fontWeight:'500',textAlign:"center",marginBottom:20}}>
-                Ứng dụng đã được kết nối với tài khoản Moodle : {nameWebCustomed.Username}
-            </Text>
+                <TouchableOpacity
+                    disabled={checkDisableDeleteButton()}
+                    style={[styles.button,{backgroundColor: checkDisableDeleteButton() ? "grey" : "red"}]}
+                    onPress={async() => {
+                        setLoading(true);
+                        await onDelete();
+                        setLoading(false);
+                    }}>
+                    <Text style={styles.textBtnConnect}>Xóa thông tin</Text>
+                </TouchableOpacity>
 
-            <Text style={{marginHorizontal:18}}>
-                Để huỷ kết nối ứng dụng cũ vui lòng vào <Text style={{fontWeight: 'bold'}}>Tài khoản &gt; Ứng dụng đã được kết nối</Text> 
-            </Text>
+                <TouchableOpacity
+                    disabled={checkDisableButton()}
+                    style={[styles.button,{backgroundColor: checkDisableButton() ? "grey" : "green"}]}
+                    onPress={async() => {
+                        setLoading(true);
+                        await ConnectAppHandler();
+                        setLoading(false);
+                    }}>
+                    <Text style={styles.textBtnConnect}>Kết nối</Text>
+                </TouchableOpacity>
+                    
+            </View>
+           
 
-        </View>}
 
         </View>
         </TouchableWithoutFeedback>
@@ -197,12 +254,13 @@ const styles = StyleSheet.create({
         backgroundColor:'#ccc',
         width:'100%',
     },
+
     passInput: {
         alignItems: "center",
         flexDirection:"row",
         marginHorizontal:15,
         
-      },
+    },
     
     eyeBtn: {
         position: 'absolute',
@@ -212,7 +270,8 @@ const styles = StyleSheet.create({
     },
 
     passInputText:{
-        backgroundColor: "#ccc",
+        borderWidth:1,
+        borderColor:'green',
         width: "100%",
         borderRadius:10,
         padding:10,
@@ -220,15 +279,18 @@ const styles = StyleSheet.create({
     },
 
     button:{
-        margin:60,
+        marginHorizontal:10,
+        marginVertical:40,
         borderRadius:20,
-        padding:10
+        paddingVertical:10,
+        paddingHorizontal:30
     },
     
     input:{
+        borderWidth:1,
+        borderColor:'green',
         marginLeft:15,
         marginRight:15,
-        backgroundColor:"#cccc",
         borderRadius:10,
         padding:10
     },

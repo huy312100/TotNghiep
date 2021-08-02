@@ -38,7 +38,6 @@ import AllCourseInfoScreen from '../screens/home/courses/AllCourse';
 import CurrentCourseInfoScreen from '../screens/home/courses/CurrentCourse';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse';
-import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
 import AddToCalendarScreen from '../screens/home/calendar/AddToCalendar';
 import ModifyCalendarScreen from '../screens/home/calendar/ModifyCalendar';
 import AddPeopleToCalendarScreen from '../screens/home/calendar/AddPeopleToCalendar';
@@ -239,10 +238,10 @@ function HomeStackNavigation({navigation}) {
 
           headerRight:()=>(
             <View style={{flexDirection:'row'}}>
-                <TouchableOpacity style={{marginRight:15}} onPress={() =>{
-                  navigation.navigate("My Forum");
-                  }}>
-<               MaterialCommunityIcons name="clipboard-account-outline" size={25} color="#444444" />
+              <TouchableOpacity style={{marginRight:15}} onPress={() =>{
+                navigation.navigate("My Forum");
+                }}>
+                <MaterialCommunityIcons name="clipboard-account-outline" size={25} color="#444444" />
               </TouchableOpacity>
 
                 <TouchableOpacity style={{marginRight:5}} onPress={() =>{
@@ -302,7 +301,15 @@ function HomeStackNavigation({navigation}) {
           title: "Diễn đàn của tôi",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
-
+          headerRight:()=>(
+            <View style={{flexDirection:'row'}}>
+              <TouchableOpacity style={{marginRight:5}} onPress={() =>{
+                navigation.navigate('Create Post Of Forum');
+                }}>
+                <MaterialIcons name="library-add" size={25} color="#444444"/>
+              </TouchableOpacity>
+            </View>
+          )
         }}
       />
 
@@ -456,23 +463,6 @@ function ProfileStackNavigation({navigation}) {
         }}
       />
 
-      <Stack.Screen
-        name="Web Customed"
-        component={WebCustomedScreen}
-        options={{ 
-          // title: "Ứng dụng đã được kết nối",
-          // headerTitleAlign: 'center',
-          // headerBackTitle:false,
-          // headerTruncatedBackTitle:false,
-          // headerTintColor:"#FFFFFF",
-          // headerStyle:{
-          //   backgroundColor:"#33CCFF"
-          // },
-
-          headerShown:false,
-          
-        }}
-      />
 
       <Stack.Screen
         name="Create Parent Account"
@@ -590,7 +580,7 @@ const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ;
 
   const arrHideBotTab=["Calendar","Chat","Course","Change Profile",
-  "Connect application","Content Course","Web Customed","Change Password",
+  "Connect application","Content Course","Change Password",
   "Add Event","Modify Event","Find to Chat","University Info",
   "Add people to calendar","Forum","Forum Of A Moodle Course","Content Forum",
   "Create Post Of Forum","Content Forum Of A Moodle Course","Forum Of A Course",
@@ -615,18 +605,30 @@ function BottomTabNavigator() {
 //Top tab of course screen
 function CourseInfoTopTab(){
   return (
-    <topTab.Navigator initialRouteName="Learning">
+    <topTab.Navigator initialRouteName="Learning"
+    tabBarOptions={{
+      activeTintColor: 'blue',
+      labelStyle: { fontSize: 10 }
+    }}>
       <topTab.Screen 
         name="Current Course" 
         component={CurrentCourseInfoScreen} 
         options={{
-          tabBarLabel:'Học kì gần nhất'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Học kì gần nhất
+            </Text>
+          )
         }}/>
       <topTab.Screen 
         name="All Course" 
         component={AllCourseInfoScreen}
         options={{
-          tabBarLabel:'Tất cả môn học'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Tất cả môn học
+            </Text>
+          )
         }}
         />
     </topTab.Navigator>
@@ -639,14 +641,18 @@ function UniversityInfoTopTab(){
     <topTab.Navigator initialRouteName="University New" 
     tabBarOptions={{
       activeTintColor: 'blue',
-      labelStyle: { fontSize: 11 },
+      labelStyle: { fontSize: 10 },
       }}>
   
       <topTab.Screen 
         name="University New" 
         component={UniversityNewScreen}
         options={{
-          tabBarLabel:'Tin tức trường'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Tin tức trường
+            </Text>
+          )
         }}
         />
 
@@ -654,7 +660,11 @@ function UniversityInfoTopTab(){
         name="Faculty New" 
         component={FacultyNewScreen}
         options={{
-          tabBarLabel:'Tin tức khoa'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Tin tức khoa
+            </Text>
+          )
         }}
         />
 
@@ -662,7 +672,11 @@ function UniversityInfoTopTab(){
         name="University Info" 
         component={UniversityInfoScreen} 
         options={{
-          tabBarLabel:'Thông tin'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Thông tin
+            </Text>
+          )
         }}
         />
     </topTab.Navigator>
@@ -737,7 +751,7 @@ function MessageTopTab(){
   return (
     <topTab.Navigator initialRouteName="Normal Message" 
     tabBarOptions={{
-      activeTintColor: 'green',
+      activeTintColor: 'blue',
       inactiveTintColor:'#CCCCCC',
       indicatorStyle:{
         backgroundColor: 'green',
@@ -750,14 +764,22 @@ function MessageTopTab(){
         name="Normal Message" 
         component={NormalMessageScreen} 
         options={{
-          tabBarLabel:'Chat'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 14, color: focused? 'green' : 'silver'}}>
+              Chat
+            </Text>
+          )
         }}/>
 
       <topTab.Screen 
         name="First Read Message" 
         component={FirstReadMessageScreen}
         options={{
-          tabBarLabel:'Tin nhắn chờ'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 14, color: focused? 'green' : 'silver'}}>
+              Tin nhắn chờ
+            </Text>
+          )
         }}
         />
 
@@ -884,7 +906,11 @@ function MyForumTopTab(){
         name="My Course Forum" 
         component={MyCourseForumScreen}
         options={{
-          tabBarLabel:'Môn học'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Môn học
+            </Text>
+          )
         }}
         />
 
@@ -892,7 +918,11 @@ function MyForumTopTab(){
         name="My Faculty Forum" 
         component={MyFacultyForumScreen}
         options={{
-          tabBarLabel:'Khoa'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Khoa
+            </Text>
+          )
         }}
         />
 
@@ -900,7 +930,11 @@ function MyForumTopTab(){
         name="My University Forum" 
         component={MyUniversityForumScreen}
         options={{
-          tabBarLabel:'Trường'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Trường
+            </Text>
+          )
         }}
         />
   

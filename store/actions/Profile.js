@@ -1,5 +1,4 @@
 export const CONNECT_APPLICATION = 'CONNECT_APPLICATION';
-export const DELETE_URL = 'DELETE_URL';
 export const GET_ALL_WEB_CUSTOMED = 'GET_ALL_WEB_CUSTOMED';
 export const GET_PROFILE = 'GET_PROFILE';
 
@@ -10,15 +9,6 @@ export const connectApplication = () =>{
     dispatch({
         type: CONNECT_APPLICATION,
     })    
-  }
-};
-
-export const deleteUrl = () =>{
-  return async dispatch =>{
-      //console.log(token);     
-          dispatch({
-            type: DELETE_URL,        
-        })
   }
 };
 

@@ -14,6 +14,7 @@ export function UsernameInput(props) {
 const styles = StyleSheet.create({
     input: {
         width:'100%',
-        marginLeft:-16
+        marginLeft:-16,
+        backgroundColor:'white',
     }
 })

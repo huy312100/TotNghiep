@@ -6,8 +6,6 @@ import {
   PasswordInput,
 } from "../../components/authentications/common/Index";
 
-import GmailInput from 'react-native-gmailtype-textinput';
-
 
 import { useDispatch } from 'react-redux';
 

@@ -187,7 +187,8 @@ const styles = StyleSheet.create({
     },
 
     passInputText:{
-        backgroundColor: "#ccc",
+        borderWidth:1,
+        borderColor:'green',
         width: "100%",
         borderRadius:10,
         padding:10,
@@ -202,9 +203,10 @@ const styles = StyleSheet.create({
     },
     
     input:{
+        borderWidth:1,
+        borderColor:'green',
         marginLeft:15,
         marginRight:15,
-        backgroundColor:"#cccc",
         borderRadius:10,
         padding:10
     },

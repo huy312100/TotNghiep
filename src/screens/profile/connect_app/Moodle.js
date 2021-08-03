@@ -114,9 +114,9 @@ const MoodleConnectScreen = ({navigation})=>{
                         Username: dataRes[key].Username,
                     });
                 };
+                dispatch(profileActions.getAllWebCustomed(tmp));
             }
             //setData(json);
-            dispatch(profileActions.getAllWebCustomed(tmp));
         })
         .catch((err) => console.log(err, "error"));
     };

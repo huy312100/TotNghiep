@@ -107,34 +107,20 @@ const PortalConnectScreen = ({navigation})=>{
                         Username:dataRes[key].Username,
                     });
                 };
+                dispatch(profileActions.getAllWebCustomed(tmp));
             }
             //setData(json);
-            dispatch(profileActions.getAllWebCustomed(tmp));
         })
         .catch((err) => console.log(err, "error"));
     };
 
     const onDelete = async () => {
-        let details = {
-            typeUrl: "Portal",
-        };
-
-        let formBody = [];
-
-        for (let property in details) {
-            let encodedKey = encodeURIComponent(property);
-            let encodedValue = encodeURIComponent(details[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-
-        await fetch("https://hcmusemu.herokuapp.com/web/deleteaccount", {
+        await fetch("https://hcmusemu.herokuapp.com/web/deleteaccountportal", {
         method: "DELETE",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": `bearer ${token}`,
         },
-        body: formBody,
         }).then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();

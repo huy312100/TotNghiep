@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
 
     card: {
         flex:1,
-        marginTop:10,
+        marginVertical:10,
         width: '100%',
         backgroundColor:'white',
         borderBottomWidth:1,

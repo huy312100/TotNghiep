@@ -222,7 +222,8 @@ const styles = StyleSheet.create({
     },
 
     passInputText:{
-        backgroundColor: "#ccc",
+        borderWidth:1,
+        borderColor:'green',
         width: "100%",
         borderRadius:10,
         padding:10,

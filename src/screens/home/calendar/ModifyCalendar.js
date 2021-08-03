@@ -102,8 +102,6 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
     const [labelRemindNoti,setLabelRemindNoti] = useState('');
 
-    const [defaultTitle,setDefaultTitle] = useState(route.params.nameEvent);
-
     const dispatch=useDispatch();
 
     const toggleOverlayAddPeople = () => {
@@ -300,7 +298,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
 
     //Handle for clickable add button
     const checkDisableAddButton =() =>{
-        if(checkTitle(title) && checkValidDate() && title !== defaultTitle){
+        if(checkTitle(title) && checkValidDate() && (title !== route.params.nameEvent || startTimestamp !== route.params.startTimestamp*1000 || endTimestamp !== route.params.endTimestamp*1000 || typeEvent !== route.params.typeEvent || colorEvent !== route.params.colorEvent || urlEvent !== route.params.urlEvent || decriptionEvent !== route.params.decriptionEvent)){
             return false;
         }
         return true;

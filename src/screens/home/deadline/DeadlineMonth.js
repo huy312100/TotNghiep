@@ -20,6 +20,8 @@ const DeadlineMonthScreen = ({navigation}) => {
     const [year,setYear] = useState(new Date().getFullYear());
     const [isLoading,setIsLoading] = useState(true);
 
+    const currentTimestamp = new Date().getTime();
+
     useEffect(() => {
         getAllDeadlineInMonth();
         return()=>{
@@ -83,7 +85,7 @@ const DeadlineMonthScreen = ({navigation}) => {
             </View>
             
             <View tyle={[styles.info,{marginBottom:20}]}>
-                <Text style={styles.date}>Hạn chót : {dateUtils.ConvertTimestampToVNTime(item.duedate)}</Text>
+                <Text style={[styles.date,{color: currentTimestamp > item.duedate ? "green" :"red"}]}>Hạn chót : {dateUtils.ConvertTimestampToVNTime(item.duedate)}</Text>
             </View>
                 
         </TouchableOpacity>
@@ -236,6 +238,7 @@ const styles = StyleSheet.create({
         paddingBottom:10,
         marginHorizontal:15,
         marginTop:15,
+        marginBottom:8,
         borderWidth:0.3,
         borderColor:'silver'
     },
@@ -257,10 +260,10 @@ const styles = StyleSheet.create({
     },
 
     date: {
-        color:'red',
         marginRight:30,
         marginLeft:15,
-        fontSize:12
+        fontSize:12,
+        fontWeight:'bold'
     },
 
 });

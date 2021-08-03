@@ -223,7 +223,7 @@ const CalendarScreen =({navigation})=> {
               start:dateUtils.ConvertTimestamp(dataRes[key].duedate-3600),
               end:dateUtils.ConvertTimestamp(dataRes[key].duedate),
               type:"Deadline",
-              color: '#99FF99',
+              color: '#66CCFF',
               url:dataRes[key].url,
               typeGuest:"Cá nhân",
               Notification:dataRes[key].duedate
@@ -746,6 +746,7 @@ const viewMonthItem = StyleSheet.create({
     paddingBottom:10,
     marginHorizontal:15,
     marginTop:15,
+    marginBottom:8,
     borderWidth:0.3,
     borderColor:'silver'
   },

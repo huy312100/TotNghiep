@@ -17,6 +17,7 @@ import * as calendarActions from '../../../../store/actions/Calendar';
 import LoadingScreen from '../../LoadingScreen';
 import TimelineCalendar from './timeline_calendar/TimelineCalendar';
 
+import * as arrUtils from '../../../utils/Array';
 import * as dateUtils from '../../../utils/Date';
 
 let { width } = Dimensions.get('window');
@@ -169,64 +170,65 @@ const CalendarScreen =({navigation})=> {
         return Promise.all([statusCode, dataRes]);
     }).then(([statusCode, dataRes])=>{
       console.log(dataRes,statusCode); 
+      let dataReversed = arrUtils.reverseArr(dataRes);
       if(statusCode === 200){
         const dataCalendar = [];
-        for (const key in dataRes) {
+        for (const key in dataReversed) {
         
-          if(dataRes[key].TypeCalendar !== undefined){
-            if(dataRes[key].ListGuest.length===0){
+          if(dataReversed[key].TypeCalendar !== undefined){
+            if(dataReversed[key].ListGuest.length===0){
               dataCalendar.push({
-                id:dataRes[key]._id,
-                type:dataRes[key].TypeEvent,
-                title:dataRes[key].Title,
-                summary:dataRes[key].Decription.text,
-                start:dateUtils.ConvertTimestamp(dataRes[key].StartHour),
-                end:dateUtils.ConvertTimestamp(dataRes[key].EndHour),
-                url:dataRes[key].Decription.url,
+                id:dataReversed[key]._id,
+                type:dataReversed[key].TypeEvent,
+                title:dataReversed[key].Title,
+                summary:dataReversed[key].Decription.text,
+                start:dateUtils.ConvertTimestamp(dataReversed[key].StartHour),
+                end:dateUtils.ConvertTimestamp(dataReversed[key].EndHour),
+                url:dataReversed[key].Decription.url,
                 typeGuest:"Cá nhân",
-                color:dataRes[key].Color,
-                startTimestamp:dataRes[key].StartHour,
-                endTimestamp:dataRes[key].EndHour,
+                color:dataReversed[key].Color,
+                startTimestamp:dataReversed[key].StartHour,
+                endTimestamp:dataReversed[key].EndHour,
                 ListGuest:[],
-                Notification:dataRes[key].Notification
+                Notification:dataReversed[key].Notification
             })}
             else{               
               const listAllPeopleChoose = [];
-              for(const pos in dataRes[key].ListGuest){
+              for(const pos in dataReversed[key].ListGuest){
                 listAllPeopleChoose.push({
-                  Email:dataRes[key].ListGuest[pos].Email,
-                  HoTen:dataRes[key].ListGuest[pos].name,
+                  Email:dataReversed[key].ListGuest[pos].Email,
+                  HoTen:dataReversed[key].ListGuest[pos].name,
                 })
               };
               dataCalendar.push({
-                id:dataRes[key]._id,
-                type:dataRes[key].TypeEvent,
-                title:dataRes[key].Title,
-                summary:dataRes[key].Decription.text,
-                start:dateUtils.ConvertTimestamp(dataRes[key].StartHour),
-                end:dateUtils.ConvertTimestamp(dataRes[key].EndHour),
-                url:dataRes[key].Decription.url,
+                id:dataReversed[key]._id,
+                type:dataReversed[key].TypeEvent,
+                title:dataReversed[key].Title,
+                summary:dataReversed[key].Decription.text,
+                start:dateUtils.ConvertTimestamp(dataReversed[key].StartHour),
+                end:dateUtils.ConvertTimestamp(dataReversed[key].EndHour),
+                url:dataReversed[key].Decription.url,
                 typeGuest:"Nhóm",
-                color:dataRes[key].Color,
-                startTimestamp:dataRes[key].StartHour,
-                endTimestamp:dataRes[key].EndHour,
+                color:dataReversed[key].Color,
+                startTimestamp:dataReversed[key].StartHour,
+                endTimestamp:dataReversed[key].EndHour,
                 ListGuest:listAllPeopleChoose,
-                Notification:dataRes[key].Notification
+                Notification:dataReversed[key].Notification
             })}
           }
           else{
             dataCalendar.push({
               id:"",
               //type:dataRes[0].TypeCalendar,
-              title:dataRes[key].nameCourese,
-              summary:dataRes[key].decription,
-              start:dateUtils.ConvertTimestamp(dataRes[key].duedate-3600),
-              end:dateUtils.ConvertTimestamp(dataRes[key].duedate),
+              title:dataReversed[key].nameCourese,
+              summary:dataReversed[key].decription,
+              start:dateUtils.ConvertTimestamp(dataReversed[key].duedate-3600),
+              end:dateUtils.ConvertTimestamp(dataReversed[key].duedate),
               type:"Deadline",
               color: '#66CCFF',
-              url:dataRes[key].url,
+              url:dataReversed[key].url,
               typeGuest:"Cá nhân",
-              Notification:dataRes[key].duedate
+              Notification:dataReversed[key].duedate
           })
           }
         }
@@ -244,14 +246,14 @@ const CalendarScreen =({navigation})=> {
     }).catch(error => console.log('error', error));
   };
 
-    useEffect(() => {
-      console.log(getCurrentDate());
-        //console.log(token);
-      getAllActivitiesInMonth();
-      return()=>{
-        unmounted.current=true;
-        //unsubscribe();
-      };
+  useEffect(() => {
+    console.log(getCurrentDate());
+      //console.log(token);
+    getAllActivitiesInMonth();
+    return()=>{
+      unmounted.current=true;
+      //unsubscribe();
+    };
   },[monthChanged,yearChanged]);
 
   useEffect(() => {
@@ -527,7 +529,7 @@ const CalendarScreen =({navigation})=> {
             <View style={overlayStyle.row}>
             {/* <Ionicons name="people-outline" size={23} color="red" /> */}
                 <Text style={overlayStyle.label}>Tên</Text>
-                <Text style={overlayStyle.onTheRight}>{nameEvent}</Text>
+                <Text numberOfLines={3} style={overlayStyle.onTheRight}>{nameEvent}</Text>
             </View>
           </View>
 
@@ -551,7 +553,7 @@ const CalendarScreen =({navigation})=> {
                 <View style={overlayStyle.row}>
                 {/* <Ionicons name="people-outline" size={23} color="red" /> */}
                     <Text style={overlayStyle.label}>Mô tả</Text>
-                    <Text style={overlayStyle.onTheRight}>{decriptionEvent}</Text>
+                    <Text numberOfLines={3} style={overlayStyle.onTheRight}>{decriptionEvent}</Text>
                 </View>
             </View>
 
@@ -571,30 +573,29 @@ const CalendarScreen =({navigation})=> {
                 </View>
             </View>
 
-            <View style={overlayStyle.bottomRow} >
-                <View style={overlayStyle.row}>
-                {/* <Ionicons name="people-outline" size={23} color="red" /> */}
-                    <Text style={overlayStyle.label}>URL</Text>
-                    <TouchableOpacity style={overlayStyle.onTheRight} onPress={() =>{ 
-                      Alert.alert(
-                        "Chuyển tiếp",
-                        "Ứng dụng muốn chuyển tiếp đến link này",
-                        [
-                          { text: "Từ chối", 
-                            style: "cancel"
-                          },
-                          {
-                            text: "Cho phép",
-                            onPress: () => Linking.openURL(urlEvent),
-                          },
-                        ]
-                      );}}>
-                      <Text style={{color:'blue',textDecorationLine:"underline"}}>
-                      {urlEvent}
-                      </Text>
-                    </TouchableOpacity>
-                </View>
+            <View style={overlayStyle.row}>
+            {/* <Ionicons name="people-outline" size={23} color="red" /> */}
+                <Text style={overlayStyle.label}>URL</Text>
+                <TouchableOpacity style={overlayStyle.onTheRight} onPress={() =>{ 
+                  Alert.alert(
+                    "Chuyển tiếp",
+                    "Ứng dụng muốn chuyển tiếp đến link này",
+                    [
+                      { text: "Từ chối", 
+                        style: "cancel"
+                      },
+                      {
+                        text: "Cho phép",
+                        onPress: () => Linking.openURL(urlEvent),
+                      },
+                    ]
+                  );}}>
+                  <Text numberOfLines={3} style={{color:'blue',textDecorationLine:"underline"}}>
+                  {urlEvent}
+                  </Text>
+                </TouchableOpacity>
             </View>
+            
 
             {typeEvent !=='Deadline' &&<View style={[{marginBottom:0}]} >
               <View style={overlayStyle.row}>
@@ -677,11 +678,11 @@ const CalendarScreen =({navigation})=> {
 const overlayStyle = StyleSheet.create({
 
   overlay:{
-    width:350
+    
   },
 
   bottomRow:{
-    marginBottom:35
+    marginBottom:18
   },
  
   headerStyle: {
@@ -693,8 +694,8 @@ const overlayStyle = StyleSheet.create({
 
   row:{
     flexDirection:'row',
-    marginHorizontal:20,
     marginVertical:10,
+    marginHorizontal:3
   },
 
   onTheRight: {
@@ -713,7 +714,7 @@ const overlayStyle = StyleSheet.create({
     borderRadius:30,
     paddingVertical:15,
     paddingHorizontal: 50,
-    marginVertical:30,
+    marginTop:40,
     marginHorizontal:15
   },
 

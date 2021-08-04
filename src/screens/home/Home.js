@@ -263,59 +263,60 @@ const HomeScreen = ({ navigation }) => {
         return Promise.all([statusCode, dataRes]);
       })
       .then(([statusCode, dataRes]) => {
+        let dataReversed = arrUtils.reverseArr(dataRes);
         if (statusCode === 200) {
           console.log(dataRes);
-          if (dataRes.length >= 5) {
-            dataRes = dataRes.slice(0, 5);
+          if (dataReversed.length >= 5) {
+            dataReversed = dataReversed.slice(0, 5);
           }
           const dataCalendar = [];
-          for (const key in dataRes) {
-            if (dataRes[key].TypeCalendar !== undefined) {
-              if (dataRes[key].ListGuest.length === 0) {
+          for (const key in dataReversed) {
+            if (dataReversed[key].TypeCalendar !== undefined) {
+              if (dataReversed[key].ListGuest.length === 0) {
                 dataCalendar.push({
-                  id: dataRes[key]._id,
-                  type: dataRes[key].TypeEvent,
-                  title: dataRes[key].Title,
-                  summary: dataRes[key].Decription.text,
-                  start: dateUtils.ConvertTimestamp(dataRes[key].StartHour),
-                  end: dateUtils.ConvertTimestamp(dataRes[key].EndHour),
-                  url: dataRes[key].Decription.url,
+                  id: dataReversed[key]._id,
+                  type: dataReversed[key].TypeEvent,
+                  title: dataReversed[key].Title,
+                  summary: dataReversed[key].Decription.text,
+                  start: dateUtils.ConvertTimestamp(dataReversed[key].StartHour),
+                  end: dateUtils.ConvertTimestamp(dataReversed[key].EndHour),
+                  url: dataReversed[key].Decription.url,
                   typeGuest: "Cá nhân",
-                  color: dataRes[key].Color,
-                  startTimestamp: dataRes[key].StartHour,
-                  endTimestamp: dataRes[key].EndHour,
-                  ListGuest: dataRes[key].ListGuest,
-                  Notification: dataRes[key].Notification,
+                  color: dataReversed[key].Color,
+                  startTimestamp: dataReversed[key].StartHour,
+                  endTimestamp: dataReversed[key].EndHour,
+                  ListGuest: dataReversed[key].ListGuest,
+                  Notification: dataReversed[key].Notification,
                 });
               } else {
                 dataCalendar.push({
-                  id: dataRes[key]._id,
-                  type: dataRes[key].TypeEvent,
-                  title: dataRes[key].Title,
-                  summary: dataRes[key].Decription.text,
-                  start: dateUtils.ConvertTimestamp(dataRes[key].StartHour),
-                  end: dateUtils.ConvertTimestamp(dataRes[key].StartHour),
-                  url: dataRes[key].Decription.url,
+                  id: dataReversed[key]._id,
+                  type: dataReversed[key].TypeEvent,
+                  title: dataReversed[key].Title,
+                  summary: dataReversed[key].Decription.text,
+                  start: dateUtils.ConvertTimestamp(dataReversed[key].StartHour),
+                  end: dateUtils.ConvertTimestamp(dataReversed[key].StartHour),
+                  url: dataReversed[key].Decription.url,
                   typeGuest: "Nhóm",
-                  color: dataRes[key].Color,
-                  startTimestamp: dataRes[key].StartHour,
-                  endTimestamp: dataRes[key].EndHour,
-                  ListGuest: dataRes[key].ListGuest,
-                  Notification: dataRes[key].Notification,
+                  color: dataReversed[key].Color,
+                  startTimestamp: dataReversed[key].StartHour,
+                  endTimestamp: dataReversed[key].EndHour,
+                  ListGuest: dataReversed[key].ListGuest,
+                  Notification: dataReversed[key].Notification,
                 });
               }
             } else {
               dataCalendar.push({
                 id: "",
-                title: dataRes[key].nameCourese,
-                summary: dataRes[key].decription,
-                start: dateUtils.ConvertTimestamp(dataRes[key].duedate - 3600),
-                end: dateUtils.ConvertTimestamp(dataRes[key].duedate),
+                title: dataReversed[key].nameCourese,
+                summary: dataReversed[key].decription,
+                start: dateUtils.ConvertTimestamp(dataReversed[key].duedate - 3600),
+                end: dateUtils.ConvertTimestamp(dataReversed[key].duedate),
                 type: "Deadline",
                 color: "#66CCFF",
-                url: dataRes[key].url,
+                url: dataReversed[key].url,
                 typeGuest: "Cá nhân",
-                Notification: dataRes[key].duedate,
+                Notification: dataReversed[key].duedate,
               });
             }
           }
@@ -601,77 +602,6 @@ const HomeScreen = ({ navigation }) => {
   };
 
   //Render
-
-
-
-  const renderEmptyCalendarInMonth = (
-    <View style={{ marginLeft: 50 }}>
-      <Text>Không có sự kiện nào trong tháng này</Text>
-    </View>
-  );
-
-  const renderEmptyUniversityNew = (
-    <View style={{ marginLeft: 50 }}>
-      <Text>Không có tin tức trường nào</Text>
-    </View>
-  );
-
-  const renderEmptyFacultyNew = (
-    <View style={{ marginLeft: 50 }}>
-      <Text>Không có tin tức khoa nào</Text>
-    </View>
-  );
-
-  const renderCalendarInMonth = ({ item }) => (
-    <TouchableOpacity style={calendarStyle.card}>
-      <View style={{ flexDirection: "row" }}>
-        {item.color === "" ? (
-          <View style={[calendarStyle.colorCalendar]} />
-        ) : (
-          <View
-            style={[
-              calendarStyle.colorCalendar,
-              { backgroundColor: item.color },
-            ]}
-          />
-        )}
-
-        <View style={{ width: 300 }}>
-          <View style={{ flexDirection: "row", marginBottom: 10 }}>
-            <Text style={calendarStyle.label} numberOfLines={1}>
-              {item.title}
-            </Text>
-            <Text style={{ position: "absolute", right: 0 }}>
-              {dateUtils.ConvertDateDDMMYY(item.start.slice(0, 10))}{" "}
-            </Text>
-          </View>
-
-          <View style={{ flexDirection: "row", marginBottom: 10 }}>
-            <Text>{item.start.slice(11)} - </Text>
-            <Text>{item.end.slice(11)}</Text>
-          </View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {item.typeGuest === "Nhóm" ? (
-              <FontAwesome name="group" size={22} color="black" />
-            ) : (
-              <Ionicons name="person" size={24} color="black" />
-            )}
-            <Text style={{ position: "absolute", right: 0 }}>{item.type}</Text>
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const renderNewsItem = ({ item }) => (
-    <TouchableOpacity style={newsStyle.card}>
-      <Text numberOfLines={2} style={newsStyle.title}>
-        {item.title}
-      </Text>
-      <Text>{item.date}</Text>
-    </TouchableOpacity>
-  );
 
   return (
     <SafeAreaView style={styles.container}>

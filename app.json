@@ -2,7 +2,7 @@
   "expo": {
     "name": "EMU ",
     "slug": "emu",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     
@@ -19,17 +19,17 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "fit.hcmus.emu",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.1"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#64a4dd"
       },
       "softwareKeyboardLayoutMode": "pan",
       "useNextNotificationsApi":true,
       "package": "fit.hcmus.emu",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"

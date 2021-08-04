@@ -45,6 +45,7 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
     })
       .then(([statusCode, dataRes]) => {
           if(statusCode === 200){
+            console.log(dataRes);
             setData(dataRes);
             dispatch(courseActions.getCurrentCourses(dataRes));
           }
@@ -57,7 +58,7 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() =>{
       navigation.navigate("Content Course",{
-        idCourse : item.idCourse,
+        idCourse : item.IDCourses,
         name : item.name
       });
     }}>
@@ -69,7 +70,7 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
           
            <View style={styles.teacherName}>
               {item.teacher.map((item,index)=>(
-                <Text key={index}>Giáo viên :{item}</Text>
+                <Text key={index}>Giáo viên: {item}</Text>
               ))}
             </View>
         </View>

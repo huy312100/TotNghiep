@@ -1,6 +1,10 @@
 import React,{ useState } from 'react';
 import { View,StyleSheet,Image,Text,TouchableOpacity,TextInput,TouchableWithoutFeedback,Keyboard } from 'react-native';
 
+import {
+    UsernameInput,
+  } from "../../components/authentications/common/Index";
+
 import LoadingScreen from '../LoadingScreen';
 
 import * as authenServies from '../../services/Authen';
@@ -32,15 +36,19 @@ const ForgetPasswordScreen = ({navigation}) => {
                 Đặt lại mật khẩu
             </Text>
 
-            <Text style={{fontSize:12,marginHorizontal:40,marginTop:20, marginBottom:30,textAlign:'center'}}>
+            <Text style={{fontSize:12,marginHorizontal:40,marginVertical:20,textAlign:'center'}}>
                 Điền thông tin email liên kết với tài khoản để chúng tôi có thể khôi phục tài khoản cho bạn
             </Text>
 
-            <View style={{width:'100%',marginBottom:30}}>
+            {/* <View style={{width:'100%',marginBottom:30}}>
                 <TextInput style={styles.input} placeholder={"Nhập địa chỉ email"}
                     onChangeText={(email) => setEmail(email)}
                 />
-            </View>
+            </View> */}
+
+            <UsernameInput label="Nhập địa chỉ email"
+                hideLabel={email !== ''}
+                onChangeText={(email) => setEmail(email)} />
 
             <TouchableOpacity style={[styles.buttonSend,{backgroundColor:checkBtnSendDisabled()?'silver':'#0066FF',}]} disabled={checkBtnSendDisabled()}
                 onPress={async()=>{
@@ -67,6 +75,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: 'white'
     },
 
     imageLogo: {
@@ -88,7 +98,8 @@ const styles = StyleSheet.create({
         width:'80%',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius:25
+        borderRadius:25,
+        marginTop:20
     }
 });
 

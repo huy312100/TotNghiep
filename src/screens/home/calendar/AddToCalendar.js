@@ -1,7 +1,8 @@
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView,Platform } from 'react-native';
+import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,ScrollView,Platform } from 'react-native';
 import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Overlay,Header } from 'react-native-elements';
 import { useDispatch,useSelector } from 'react-redux';
 
@@ -363,10 +364,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     };
 
     return(
-        <KeyboardAvoidingView
-        keyboardVerticalOffset = {20} // adjust the value here if you need more padding
-
-         style={styles.container}>
+        <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
           }}>
@@ -749,7 +747,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
                 </ScrollView>
             </View>
         </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
     )
 };
 

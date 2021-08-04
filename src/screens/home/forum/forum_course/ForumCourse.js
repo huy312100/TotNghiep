@@ -87,7 +87,7 @@ const ForumCourseScreen = ({navigation}) =>{
 
             {typeof(item.teacher.map) !== 'undefined' && <View tyle={[styles.info,{marginBottom:20,marginLeft:20}]}>
                 {item.teacher.map((item, index) => (
-                <Text key={index} style={styles.date}>Giáo viên : {item}</Text>
+                <Text key={index} style={styles.date}>Giáo viên: {item}</Text>
               ))
               }
             </View>}

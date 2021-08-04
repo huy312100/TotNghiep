@@ -73,19 +73,26 @@ export default function Khoa()
 
               <div key={index}>
                 <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer">
-              <div className={classes.news_page__news} style={{
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',}}>
-              <FiberNewIcon/>
-              <span className={classes.news_page__title}>
+              <div className={classes.news_page__news} >
+                        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',}}>
+              <FiberNewIcon style={{color:"red"}}/>
+              <span className={classes.news_page__title} >
                   {item.Title}
               </span>
+              </div>
               <br/>
-              <TimelapseIcon/>
-              <span TimelapseIcon className={classes.news_page__time}>
+              <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',}}>
+              <TimelapseIcon style={{color:"#3a4ca0"}} />
+              <span TimelapseIcon className={classes.news_page__time} >
                   {item.Date}
               </span>
+            </div>
             </div>
             </a>
               </div>

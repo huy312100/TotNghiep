@@ -9,7 +9,6 @@ import {
   Toolbar,
 
 } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
 import LanguageIcon from '@material-ui/icons/Language';
 import SchoolIcon from '@material-ui/icons/School';
 import MailIcon from '@material-ui/icons/Mail';
@@ -137,7 +136,7 @@ export default function UniversityInfo() {
   useEffect(() =>{
     getInfoUni();
   },[])
-  if (loading == true){
+  if (loading === true){
     return(
       <LoadingScreen/>
     )
@@ -160,7 +159,10 @@ export default function UniversityInfo() {
           </Typography>
           <br/>
           <Typography style={{fontSize: "25px"}}>
-            <LanguageIcon style={{fontSize: "25px"}}/> {info.WebSite}
+            <LanguageIcon style={{fontSize: "25px"}}/>  
+            <a href={info.WebSite} rel="noopener noreferrer" target="_blank">
+                      Website: {info.WebSite}
+            </a>
           </Typography>
           <br/>
           <Typography style={{fontSize: "25px"}}>
@@ -172,7 +174,10 @@ export default function UniversityInfo() {
           </Typography>
           <br/>
           <Typography style={{fontSize: "25px"}}>
-            <FacebookIcon style={{fontSize: "25px"}}/> {info.FanFage}
+            <FacebookIcon style={{fontSize: "25px"}}/> 
+            <a href={info.WebSite} rel="noopener noreferrer" target="_blank">
+                      Website: {info.FanFage}
+            </a>
           </Typography>
           <br/>
           <Typography style={{fontSize: "25px"}}>

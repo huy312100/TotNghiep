@@ -145,11 +145,32 @@ function Footer(props) {
              Thông tin liên lạc
             </Typography>
             <Typography style={{ color: "#1b2738" }} paragraph>
-                <BusinessIcon/>Trường: {info.TenTruongDH}
-                <br/><MailIcon/>Email:  {info.Email}
-                <br/><PhoneIcon/> SDT: {info.SDT}
-                <br/><HomeIcon/> Địa chỉ: {info.TenDiaChi}
-                <br/><WebIcon/> <a href={info.WebSite} rel="noopener noreferrer" target="_blank">Website: {info.WebSite}</a>
+            
+                <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',}}><BusinessIcon/>Trường: {info.TenTruongDH} </div>
+                <br/>    <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',}}><MailIcon/>Email:  {info.Email}</div>
+                <br/>    <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',}}><PhoneIcon/> SDT: {info.SDT}</div>
+                <br/>    <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',}}><HomeIcon/> Địa chỉ: {info.TenDiaChi}</div>
+                <br/>    <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',}}>
+                  <WebIcon/> 
+                    <a href={info.WebSite} rel="noopener noreferrer" target="_blank">
+                      Website: {info.WebSite}
+                    </a>
+                </div>
             </Typography>
             <Box display="Fill">
                   <IconButton

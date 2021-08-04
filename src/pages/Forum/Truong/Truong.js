@@ -17,8 +17,17 @@ import ConfirmDialog from "../../../components/shared/ConfirmDialog"
 import LoadingScreen from '../../../components/shared/LoadingScreen';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { green } from '@material-ui/core/colors';
+import PropTypes from 'prop-types';
+import clsx from 'clsx';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import defaultValue from "../../../images/default.png"
 import SendIcon from '@material-ui/icons/Send';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
+import { current } from 'immer';
+import { findAllByDisplayValue } from '@testing-library/dom';
 const useStyles = makeStyles((theme) => ({
   root: {
     margin:'auto',
@@ -74,9 +83,245 @@ const useStyles = makeStyles((theme) => ({
   uploadWrap: {
     position: "relative"
   },
-
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+  buttonSuccess: {
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[700],
+    },
+  },
 }));
 
+function isEmpty(object) { 
+  for(var i in object){ 
+    return true;
+  } 
+  return false; 
+}
+
+function CommentList({id,email}) {
+  const classes = useStyles();
+  const [comment,getComment] = useState([]); 
+  const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
+  const [list,setList] = useState([]);
+  const [currentComment,setCurrentComment] = useState(null);
+  const [openLike,setOpenLike] = useState({state: false,value: []});
+  const [openComment,setOpenComment] = useState(false);
+
+
+
+  const getPostComment = async() => {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("IDPost",id);
+      var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: 'follow'
+      };
+      await fetch("https://hcmusemu.herokuapp.com/forum/viewcmt", requestOptions)
+          .then((response) => {
+            return response.json()})
+          .then(result=>{
+              getComment(result);
+          })
+          .catch(error => console.log('error', error));
+    }
+  const getLikedUser = async() => {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("IDPost", id);
+
+      var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: 'follow'
+      };
+      await fetch("https://hcmusemu.herokuapp.com/forum/viewlike", requestOptions)
+          .then(response => {return response.json()})
+          .then((result)=>{
+            setList(result);
+            setOpenLike({state:true});
+          })
+          .catch(error => console.log('error', error));
+      
+    }
+  /*useEffect(()=>{
+    getPostComment();
+  },[comment])
+  useEffect(()=>{
+    getLikedUser();
+  },[list])*/
+  const handleOpenLike = () => {
+    setOpenLike({state:!openLike});
+  }
+  const handleDeleteComment = (id) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false
+  })
+  deleteComments(id);
+  }
+  const removeElementState =(id)=> {
+    var array = [...comment];
+    var index = array.findIndex(x=> x.ID === id);
+    if (index !== -1) {
+      array.splice(index, 1);
+      getComment([...array]);
+    }
+  }
+  const deleteComments = async(id) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+    
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("IDCmt", id);
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+    };
+    await fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", requestOptions)
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
+      if(statusCode === 200){
+        console.log("Xoá thành công");
+        removeElementState(id);
+      }
+      else{
+        console.log(statusCode);
+        console.log("loi");
+      }
+
+    }).catch((err) => console.log(err, "error"));
+  }
+  const renderImageUser = (item) =>{
+      if (item.image != "")
+      return(
+            <Zoom>
+              <img style={{height:"100px", width:"100px"}} src={item.image} alt="recipe thumbnail"/>  
+            </Zoom> 
+      )
+      else return(
+        <div>  
+        </div>
+      )
+     }
+  
+  
+  //const totalProps = comment.reduce((a, obj) => a + Object.keys(obj).length, 0)/3;
+ 
+
+  const renderUserLike = () =>{
+    //console.log(list);
+    const totalLike = isEmpty(list);
+    if (totalLike === true)
+    return(
+      <div><Typography>Hãy là người like bài viết đầu tiên</Typography></div>
+    )
+    else{
+      return list.map((item, index) => {
+        return (
+            <div key={index} style={{ display: 'flex', alignItems: 'center',flexWrap: 'wrap',}}>
+                  <Avatar src={item.Avart}/>  <span>&nbsp; {item.Name}</span>
+            </div>
+
+        )
+    })}}
+  const handleViewLike = async() =>{
+    console.log(id);
+      await getLikedUser();
+    renderUserLike();
+  }
+
+  const handleCloseLike = () =>{
+    setList(null);
+    setOpenLike({state: false});
+  }
+  
+  const renderLikeButton = () => {
+    if (openLike.state == true){
+      return(
+        <div>
+          <Button onClick={async () => handleViewLike()} >Xem người like bài viết </Button>
+        </div>
+      )
+    }
+    else{
+      return(
+       <div className={classes.wrapper}>
+        <Button disabled="true">
+            <i className="fa fa-circle-o-notch fa-spin">
+            </i>Loading
+        </Button>
+       </div>
+      )
+    }
+  }
+  const renderComment = () =>{
+    
+    return comment.map((item, index) => {
+      return (
+          <div key={index}>
+              <Box border={0.1} borderColor="black" borderRadius="5px" width="100%" height="50%">
+                <CardHeader avatar={<Avatar src= {item.AvartOwn}/>} title={item.NameOwn} 
+                 action={
+                  <Button aria-label="settings" disabled={email==item.EmailOwn?false:true} onClick={()=>{
+                    setCurrentComment(item.ID); 
+                    setConfirmDialog({
+                     isOpen: true,
+                     title: 'Bạn muốn xoá bình luận này chứ',
+                     subTitle: "Giao tác không thể hoàn",
+                     onConfirm: () => {handleDeleteComment(currentComment);setConfirmDialog({isOpen: false,}); }
+                 })}}>
+                    <DeleteIcon />
+                  </Button>               
+                }/>
+                {renderImageUser(item)}
+
+                  <div>
+                      <Typography style={{ marginLeft:"5%"}} >{item.comment}</Typography>
+                  </div>
+                  <ConfirmDialog
+            confirmDialog={confirmDialog}
+            setConfirmDialog={setConfirmDialog}
+            />
+              </Box>
+          </div>
+
+      )
+  })}
+
+ 
+  return null;
+}
+  
+
+
+CommentList.propTypes = {
+  id: PropTypes.any.isRequired,
+  email: PropTypes.string.isRequired
+};
 
 
 export default function Truong()
@@ -90,18 +335,16 @@ export default function Truong()
     const [userMail,setUserMail] = useState(null);
     const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
     const [image,setImage] = useState("")
-    const [upload,setUpload] = useState(null);
-    const [title,setTitle] = useState("")
-    const [previewComment,setPreViewComment] = useState({IDPost:"",Comment: "", Image:""})
-    const [sent,setSent] = useState(false);
+    const [upload,setUpload] = useState("");
+    const [title,setTitle] = useState("");
+    const [openLike,setOpenLike] = useState(false);
+    const [list,setList] = useState([]);
 
     const handleTitle = (event,id) => {
       setCurrentPost(id);
       setTitle(event.target.value);
     }
-    const handleCommentPosted = () =>{
-      setSent(true);
-    }
+ 
     const handleOptionsClick = (e,id) => {
       setCurrentPost(id);
       setAnchorEl(e.currentTarget);
@@ -118,6 +361,31 @@ export default function Truong()
 
     const handleDialogClose = () => {
       setIsOpen(false);
+    }
+
+    const getLikedUser = async(currentPostID) => {
+      console.log(currentPostID);
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("IDPost", currentPostID);
+
+      var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: 'follow'
+      };
+      await fetch("https://hcmusemu.herokuapp.com/forum/viewlike", requestOptions)
+          .then(response => {return response.json()})
+          .then((result)=>{
+            //console.log(result);
+            setList(result);
+            setOpenLike(false);
+          })
+          .catch(error => console.log('error', error));
+      
     }
 
     const getUserEmail = ()=>{
@@ -185,11 +453,7 @@ export default function Truong()
           return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
           if(statusCode === 200){
-            if(upload !== "" && upload !== null){
-            setPreViewComment({IDPost:currentPost,Comment:title,Image:image})}
-            else{
-              setPreViewComment({IDPost:currentPost,Comment:title,Image:""})}
-            }
+          }
           else{
             console.log(statusCode);
             console.log("loi");
@@ -353,15 +617,15 @@ export default function Truong()
       return "";
     }
 
-     const handleLike = (item) =>
+     const handleLike = async(item) =>
      {
         if (item.LikeByOwn != 0){
-          unLikePosts(item.ID);
-          updateNumberLike(item.ID,1)
+          await unLikePosts(item.ID);
+          await updateNumberLike(item.ID,1)
         }
         else{
-          likePosts(item.ID);
-          updateNumberLike(item.ID,0)
+          await likePosts(item.ID);
+          await updateNumberLike(item.ID,0)
         }
      }
 
@@ -421,10 +685,8 @@ export default function Truong()
                    
                 </CardActions>
                   {renderBoxPostComment(item)}
-                   <UserComment 
-                    id={item.ID} 
-                    email={userMail}
-                    />
+                  {renderLikeButton(item)}
+                  {openLike ? renderUserLike() : null}
                    <Menu
                   id="simple-menu"
                   anchorEl={anchorEl}
@@ -464,6 +726,7 @@ export default function Truong()
    }
    const handleImg = (event,id) => {
     setCurrentPost(id);
+    setImage(URL.createObjectURL(event.target.files[0]))
     setUpload(event.target.files[0]);
 }
   const renderImageUploadComment = (item)=>{
@@ -472,7 +735,7 @@ export default function Truong()
               <div>
               <div class={classes.imgContainer}>
                   <img src={image} style={{height:"80px",width:"80px"}}/>       
-                  <IconButton className={classes.close} onClick={resetImage}>
+                  <IconButton className={classes.close} onClick={()=>resetImage()}>
                       <HighlightOffIcon/>
                   </IconButton>
               </div>
@@ -482,16 +745,13 @@ export default function Truong()
       else{
           return(
               <div>
-                  <img style={{height:"80px",width:"80px"}} src={defaultValue}/>
               </div>
           )}
   }
 
-  const postMySelfComment = () =>{
-    postNewComment();
-    handleCommentPosted();
-    setPreViewComment({IDPost:"",Comment:"",Image:""});
-    resetImage();
+  const postMySelfComment = async() =>{
+    await postNewComment();
+    await resetImage();
     
     }
   const renderBoxPostComment = (item) =>{
@@ -513,12 +773,64 @@ export default function Truong()
                     </label>
                     {renderImageUploadComment(item)}
                   </div>
+                    <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',}}>
                 <TextField style={{width:"90%"}} className={classes.HeightTextField} required variant="outlined" value={title} onChange={(e)=>{handleTitle(e,item.ID)}} margin="normal"  fullWidth size="small" multiline placeholder="Nhập bình luận của bạn tại đây ^^"/>
-                <Button style={{height:50, width:50}} variant="contained"  onClick={postMySelfComment} >
+              
+                <Button style={{height:"10%", width:"10%",border: "none",background: "none"}} variant="contained"  onClick={()=>postMySelfComment()} >
                   <SendIcon  style={{color:"blue",width: 30,height: 30,}}/>
                 </Button>
+                </div>
         </Box>
       )
+    }
+    const renderLikeButton = (item) => {
+      if (openLike === false){
+        return(
+          <div>
+            <Button onClick={() => {setCurrentPost(item.ID) ;handleViewLike(item.ID)}} >Xem người like bài viết </Button>
+          </div>
+        )
+      }
+      else{
+        return(
+         <div className={classes.wrapper}>
+          <Button disabled="true">
+              <i className="fa fa-circle-o-notch fa-spin">
+              </i>Loading
+          </Button>
+         </div>
+        )
+      }
+    }
+    const renderUserLike = () =>{
+      const totalLike = isEmpty(list);
+      if (totalLike === true)
+      return(
+        <div><Typography>Hãy là người like bài viết đầu tiên</Typography></div>
+      )
+      else{
+        return list.map((item, index) => {
+          return (
+              <div key={index} style={{ display: 'flex', alignItems: 'center',flexWrap: 'wrap',}}>
+                    <Avatar src={item.Avart}/>  <span>&nbsp; {item.Name}</span>
+              </div>
+  
+          )
+      })}}
+    const handleViewLike = (id) =>{
+       getLikedUser(id);
+       renderUserLike();
+       console.log(list);
+       setCurrentPost(null);
+       setList(null);
+    }
+  
+    const handleCloseLike = () =>{
+      setList(null);
+      setOpenLike({state: false});
     }
   if (loading == true){
     return(
@@ -531,9 +843,9 @@ export default function Truong()
     return(
           <div>
             <Box style={{backgroundColor:"#b4cc37"}} className={classes.news_post} textAlign='center'>
-              <Button style={{backgroundColor:"#b7e0eb"}} variant='contained' onClick={handleDialogOpen} textAlign="center">Tạo bài thảo luận</Button>
+              <Button style={{backgroundColor:"#b7e0eb"}} variant='contained' onClick={()=>handleDialogOpen()} textAlign="center">Tạo bài thảo luận</Button>
             </Box>
-            <PostThread  isOpen={isOpen} handleClose={handleDialogClose}/>
+            <PostThread  isOpen={isOpen} handleClose={()=>handleDialogClose()}/>
             {renderForum()}
           </div>
   )}

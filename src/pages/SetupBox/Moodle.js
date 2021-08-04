@@ -4,8 +4,6 @@ import {Box, Button,TextField,Typography} from "@material-ui/core"
 import { Alert } from 'react-native';
 import VisibilityPasswordTextField from "../../components/shared/VisibilityPasswordTextField"
 import LoadingScreen from "../../components/shared/LoadingScreen"
-import { type } from 'language-tags';
-import { responsiveFontSizes } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
     root: {
       background: "#faf9e8", 
@@ -113,15 +111,13 @@ export default function Moodle()
                 .then(response => {
                     console.log(response.status)
                     if (response.status === 200) {
-                        console.log(response.text())
-
                         return response.text();
                     }
                     else {
                         throw new Error("Có lỗi không xoá được");
                     };
                 })
-                .then(setCancelBtnActive(true))
+                .then((result) => {setCancelBtnActive(true);Alert.alert("Huỷ kết nối thành công")})
                 .catch(error => {
                     console.log('error', error)
                 });
@@ -151,7 +147,6 @@ export default function Moodle()
             urlencoded.append("url", website);
             urlencoded.append("username", username);
             urlencoded.append("password", password);
-            console.log(website,username,password)
             var requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
@@ -169,7 +164,7 @@ export default function Moodle()
                         throw new Error('Lưu thất bại');
                     }
                 })
-                .then(setCancelBtnActive(false))
+                .then((result)=>{setCancelBtnActive(false);Alert.alert("Kết nối thành công")})
                 .catch(error => {
                     console.log('error', error)
                 });
@@ -237,10 +232,10 @@ export default function Moodle()
                     size="medium"  />
             <br/>
             <div className="btn-toolbar" style={{marginLeft:"5%"}}>
-                <Button style={{width:"auto",backgroundColor:"green",color:"white"}} onClick={hanldePostMoodle}>
+                <Button style={{width:"auto",backgroundColor: cancelBtnActive===true ? "green": "#bbf2ca" ,color:"white"}} disabled={!cancelBtnActive} onClick={hanldePostMoodle}>
                     Kết nối
                 </Button>
-                <Button onClick={handleDeleteMoodle} disabled={cancelBtnActive} style={{width:"auto",backgroundColor: cancelBtnActive==false?"red":"#f0b3b3",color:"white",marginLeft: 175}} >
+                <Button onClick={handleDeleteMoodle} disabled={cancelBtnActive} style={{width:"auto",backgroundColor: cancelBtnActive===false?"red":"#f0b3b3",color:"white",marginLeft: 175}} >
                    Huỷ kết nối
                 </Button>
             </div>

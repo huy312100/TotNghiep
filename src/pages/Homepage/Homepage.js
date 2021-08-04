@@ -8,6 +8,8 @@ import TimelapseIcon from '@material-ui/icons/Timelapse';
 import {useHistory} from "react-router-dom"
 import Footer from '../../components/footer/Footer';
 import LoadingScreen from '../../components/shared/LoadingScreen';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 const border = 200;
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -15,6 +17,12 @@ const useStyles = makeStyles((theme)=>({
     display: "flex",
     backgroundColor: "#faf9e8"
 
+  },
+  loadingIcon:{
+      display: 'flex',
+      '& > * + *': {
+        marginLeft: theme.spacing(2),
+      },
   },
   toolbar: {
     display: 'flex',
@@ -70,6 +78,8 @@ function Homepage() {
   const [newsfac,setNewsFac] = useState([]);
   const [newsuni,setNewsUni] = useState([]);
   const [loading,setLoading] = useState(true);
+  const [loaduni,setLoadUni] = useState(true);
+  const [loadfac,setLoadFac] = useState(true);
   const [info, setInfo] = useState([{
   TenTruongDH: "Trường Đại học Khoa học Tự nhiên - ĐHQG TPHCM",
   WebSite: "https://www.hcmus.edu.vn/",
@@ -92,7 +102,7 @@ function Homepage() {
 
       await fetch("https://hcmusemu.herokuapp.com/info/newsuniversity", requestOptions)
           .then(response => {return response.json()})
-          .then(result => {setNewsUni(result.slice(0,5))})
+          .then(result => {setNewsUni(result.slice(0,5));setLoadUni(false)})
           .catch(error => console.log('error', error));
   }
 
@@ -110,7 +120,7 @@ function Homepage() {
         await fetch("https://hcmusemu.herokuapp.com/info/newsfaculty", requestOptions)
             .then(response => {return response.json();})
             .then(result => {
-              setNewsFac(result.slice(0,5))
+              setNewsFac(result.slice(0,5)); setLoadFac(false);
             })
             .catch(error => console.log('error', error));
         }
@@ -127,7 +137,7 @@ function Homepage() {
           await fetch("https://hcmusemu.herokuapp.com/info/getinfo", requestOptions)
               .then(response => {return response.json();})
               .then(result => {
-               setInfo(result)
+               setInfo(result);
               })
               .catch(error => console.log('error', error));
           }
@@ -150,15 +160,25 @@ function Homepage() {
               <div key={index}>
                 <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer">
               <div className={classes.news_page__news}>
+              <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',}}>
               <FiberNewIcon/>
               <span className={classes.news_page__title}>
                   {item.Title}
               </span>
+              </div>
               <br/>
+              <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',}}>
               <TimelapseIcon/>
               <span TimelapseIcon className={classes.news_page__time}>
                   {item.Date}
               </span>
+              </div>
             </div>
             </a>
               </div>
@@ -180,15 +200,25 @@ function Homepage() {
               <div key={index}>
                 <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer">
               <div className={classes.news_page__news}>
+              <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',}}>
               <FiberNewIcon/>
               <span className={classes.news_page__title}>
                   {item.Title}
               </span>
+              </div>
               <br/>
+              <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',}}>
               <TimelapseIcon/>
               <span TimelapseIcon className={classes.news_page__time}>
                   {item.Date}
               </span>
+            </div>
             </div>
             </a>
               </div>
@@ -208,7 +238,7 @@ function Homepage() {
           </Typography>
           {renderNewsComponent(0)}
           <a>
-          <Button  width="80%" onClick={()=> history.push("/news")}>
+          <Button  width="80%" onClick={()=> history.push("/news?tag=1")}>
             <Typography variant="h6" color="blue"> Xem thêm</Typography>
           </Button>
           </a>
@@ -225,7 +255,7 @@ function Homepage() {
             </Typography>
             {renderNewsComponent(1)}
             <a>
-            <Button  width="80%" onClick={()=> history.push("/news")}>
+            <Button  width="80%" onClick={()=> history.push("/news?tag=0")}>
               <Typography variant="h6" color="blue"> Xem thêm</Typography>
             </Button>
             </a>
@@ -287,9 +317,9 @@ function Homepage() {
             <br/> <br/><br/>
             {renderCalendarEvent()}
             <br/> <br/><br/>
-            {renderNewsFac()}
+            {loadfac === true ?  <CircularProgress /> : renderNewsFac()}
             <br/><br/> <br/>
-            {renderNewsUni()}
+            {loaduni === true ? <CircularProgress/> : renderNewsUni()}
             <Footer/>
         </div>
       </main>

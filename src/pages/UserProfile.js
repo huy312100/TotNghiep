@@ -452,7 +452,7 @@ class Profile extends Component {
     }
     
     updateImage = () => {
-        if (this.state.notUpdatedProfile == ""){
+        if (this.state.notUpdatedProfile === ""){
             this.uploadIMG();
         }
         else{
@@ -512,7 +512,7 @@ class Profile extends Component {
                                 <td className={clsx(classes.info_profile_td,classes.info_profile__firstcol)}>Ảnh</td>
                                 <td className={classes.info_profile_td} style={{ color: "grey" }}>Thêm hình ảnh để cá nhân hóa tài khoản</td>
                                 <td className={classes.info_profile_td}>
-                                    <img className={classes.info_profile__image} width="80vw" height="80vh" src={this.state.picture}>
+                                    <img className={classes.info_profile__image} width="80vw" height="80vh" src={this.state.picture} alt="">
                                     </img>
                                 </td>
                             </tr>

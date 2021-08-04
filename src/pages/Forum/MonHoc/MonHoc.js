@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import {Grid} from "@material-ui/core"
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
+import LoadingScreen from "../../../components/shared/LoadingScreen"
+import Typography from 'material-ui/styles/typography';
 const useStyles = makeStyles((theme) => ({
     news_page: {
       margin: "10px 0 0 16vw", 
@@ -33,45 +35,70 @@ const useStyles = makeStyles((theme) => ({
 export default function MonHoc()
 {
     const classes = useStyles()
-    const [newsfac,setNewsFac] = useState([]);
+    const [forumCoursePosts,setForumCoursePosts] = useState([]);
+    const [loading,setLoading] = useState(true);
 
-    const getNewsFaculty = async() => {
+    const getAllCoursePosts = async() => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
     
         var requestOptions = {
-            method: 'GET',
+            method: 'POST',
             headers: myHeaders,
             redirect: 'follow'
         };
     
-        await fetch("https://hcmusemu.herokuapp.com/forum/courses/viewtop", requestOptions)
+        await fetch("https://hcmusemu.herokuapp.com/forum/courses/view", requestOptions)
             .then(response => {return response.json();})
             .then(result => {
-              setNewsFac(result)
+              setForumCoursePosts(result);
+              setLoading(false);
             })
             .catch(error => console.log('error', error));
         }
     useEffect(() => {
-        getNewsFaculty();
+      getAllCoursePosts();
      },[]);
-     if (newsfac.length != undefined)
-     {
-        return newsfac.map((item, index) => {
-            return (
-              <Grid container
-              justifyContent="center"
-              alignItems="left"
-              background="dark">
 
-              <div key={index}>
-                
-              </div>
-              </Grid>
-            )
-      })}
-      else return(
-        <div>
-        </div>
-      )
+     const isEmpty = (obj)=> {
+      for(var prop in obj) {
+          if(obj.hasOwnProperty(prop))
+              return false;
+      }
+      console.log(localStorage.getItem("token"));
+  
+      return true;
+    }
+
+     if (loading==true)
+     {
+       return (
+         <div>
+          <LoadingScreen/>
+         </div>
+       )
+     }
+     else
+     {
+         if(isEmpty(forumCoursePosts)===true){
+            return forumCoursePosts.map((item, index) => {
+                return (
+                  <Grid container
+                  justifyContent="center"
+                  alignItems="left"
+                  background="dark">
+
+                  <div key={index}>
+                    
+                  </div>
+                  </Grid>
+                )
+          })}
+        else{
+          return (
+          <div>
+              <Typography> Hiện tại chưa có bài viết môn học nào </Typography>
+          </div>
+          )}
+    }
 }

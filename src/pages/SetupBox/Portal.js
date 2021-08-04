@@ -215,7 +215,7 @@ export default function Moodle()
                     size="medium"  />
             <Typography   style={{fontWeight:"bold",marginLeft:"10%",color:"blue"}}> Nhập tài khoản Portal ở đây </Typography>
             <TextField 
-                    required
+                    
                     id = "user_name"
                     value={username}  
                     variant="outlined"   
@@ -225,7 +225,7 @@ export default function Moodle()
                     size="medium"  />
             <Typography style={{fontWeight:"bold",marginLeft:"10%",color:"blue"}}> Nhập mật khẩu Portal ở đây </Typography>
             <VisibilityPasswordTextField 
-                    required
+                    
                     isVisible={isVisible}
                     onVisibilityChange = {handleVisible}
                     id = "user_pass"
@@ -237,7 +237,7 @@ export default function Moodle()
                     size="medium"  />
             <br/>
             <div className="btn-toolbar" style={{marginLeft:"5%"}}>
-                <Button style={{width:"auto",backgroundColor:"green",color:"white"}} onClick={hanldePostMoodle}>
+                <Button style={{width:"auto",backgroundColor: cancelBtnActive===true ? "green": "#bbf2ca" ,color:"white"}} disabled={!cancelBtnActive} onClick={hanldePostMoodle}>
                     Kết nối
                 </Button>
                 <Button onClick={handleDeleteMoodle} disabled={cancelBtnActive} style={{width:"auto",backgroundColor: cancelBtnActive==false?"red":"#f0b3b3",color:"white",marginLeft: 175}} >

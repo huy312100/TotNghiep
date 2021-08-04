@@ -17,6 +17,7 @@ import logo from "../images/logo.jpg"
 //import NotificationsIcon from '../images/notification.jpg';
 import {useHistory} from "react-router-dom"
 import {List,Toolbar,Typography,ListItem,ListItemIcon,IconButton,ListItemText,Menu,Badge,Hidden,Drawer,Divider,CssBaseline,AppBar} from "@material-ui/core"
+import ScoreIcon from '@material-ui/icons/Score';
 
 
 const drawerWidth = 200;
@@ -217,6 +218,13 @@ useEffect(() => {
         <CalendarTodayIcon style={{ color: 'dark' }} />
       </ListItemIcon>
       <ListItemText primary="Lịch" />
+    </ListItem>
+    <Divider light />
+    <ListItem button onClick={()=> history.push("/score")}>
+      <ListItemIcon >
+        <ScoreIcon style={{ color: 'dark' }}/>
+      </ListItemIcon>
+      <ListItemText primary="Bảng điểm" />
     </ListItem>
     <Divider light />
     <ListItem button onClick={()=> history.push("/contact")}>

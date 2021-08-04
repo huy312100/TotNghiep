@@ -69,16 +69,25 @@ export default function Truong()
               <div key={index}>
                  <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer"> 
             <div className={classes.news_page__news}>
-              <FiberNewIcon/>
+            <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',}}>
+              <FiberNewIcon style={{color:"red"}}/>
               <span className={classes.news_page__title}>
                   {item.Title}
               </span>
+            </div>
               <div></div>
-              <TimelapseIcon/>
+              <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',}}>
+              <TimelapseIcon style={{color:"#3a4ca0"}} />
               <span className={classes.news_page__time}>
                   {item.Date}
               </span>
-      
+            </div>
             </div>{}
             </a>
               </div>

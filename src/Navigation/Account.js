@@ -36,9 +36,9 @@ const StyledMenuItem = withStyles((theme) => ({
           <MessageIcon style={{minWidth: '40px'}}/>
           <ListItemText primary="Thiết lập kết nối" />
         </StyledMenuItem>
-        <StyledMenuItem>
+        <StyledMenuItem onClick={()=> history.push("/changepassword")}>
           <HelpOutlineOutlinedIcon style={{minWidth: '40px'}}/>
-          <ListItemText primary="Trợ giúp" />
+          <ListItemText primary="Đổi mật khẩu" />
         </StyledMenuItem>
         <StyledMenuItem>
           <SettingsIcon style={{minWidth: '40px'}}/>

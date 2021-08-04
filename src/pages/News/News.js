@@ -5,6 +5,9 @@ import { Tab, Tabs, Typography, Box,Paper  } from '@material-ui/core';
 import PropTypes from "prop-types"
 import Truong from './Truong';
 import Khoa from "./Khoa"
+import {useLocation} from "react-router-dom";
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import SchoolIcon from '@material-ui/icons/School';
 const useStyles = makeStyles((theme) => ({
     root: {
       marginLeft: 200,
@@ -25,8 +28,13 @@ const useStyles = makeStyles((theme) => ({
   
 
 export default function News(){
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const paramValue = query.get('tag');
+   //const paramValue = query.get('value');
+   const valueParam = parseInt(paramValue)
   const classes = useStyles()
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(valueParam);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -45,8 +53,8 @@ export default function News(){
            textColor="primary"
             variant = "fullWidth"
           >
-        <Tab label="Tin tức trường"/>
-        <Tab  label="Tin tức khoa"/>
+        <Tab icon={<AccountBalanceIcon/>} label="Tin tức trường"/>
+        <Tab icon={<SchoolIcon/>} label="Tin tức khoa"/>
       </Tabs>
       {value === 0 && <Truong/>}  
       {value === 1 && <Khoa/>} 

@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
  
   }));
 function UserComment({id,email}) {
-    console.log(email);
     const classes = useStyles();
     const [comment,getComment] = useState([]); 
     const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  

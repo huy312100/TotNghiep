@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-
+import NavBar from '../../Navigation/NavBar';
+import { Button } from '@material-ui/core';
 const background = {
     display: "block",
     position: "absolute",
@@ -65,12 +66,12 @@ const button = {
 
 export default function Reset() {
 
-    const [pw, setPw] = useState(null)
-    const [rptpw, setRptpw] = useState(null)
+    const [oldPw, setOldPw] = useState(null)
+    const [newPw, setNewPw] = useState(null)
 
-    const location = useLocation()
-    const token = new URLSearchParams(location.search).get('token')
-
+   // const location = useLocation()
+    //const token = new URLSearchParams(location.search).get("token")
+    //onst token = localStorage.getItem("token");
     const history = useHistory()
 
     const resetPassword_API = () => {
@@ -78,8 +79,8 @@ export default function Reset() {
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         var urlencoded = new URLSearchParams();
-        urlencoded.append("tokenreset", token);
-        urlencoded.append("passwordreset", pw);
+        urlencoded.append("Oldpassword", oldPw);
+        urlencoded.append("Newpassword", newPw);
 
         var requestOptions = {
             method: 'POST',
@@ -87,13 +88,16 @@ export default function Reset() {
             body: urlencoded,
             redirect: 'follow'
         };
-
-        fetch("https://hcmusemu.herokuapp.com/account/resetpassword", requestOptions)
+        
+        fetch("https://hcmusemu.herokuapp.com/account/changepassword", requestOptions)
             .then(response => {
-
                 if (response.ok)
                     return response
-                throw Error("Đã xảy ra lỗi,vui lòng thử lại")
+                else{
+                    console.log(response.status);
+                    console.log(response.text());
+                    throw Error("Đã xảy ra lỗi,vui lòng thử lại")
+                }
             })
             .then(result => history.push("/"))
             .catch(error => { console.log('error', error) });
@@ -101,23 +105,23 @@ export default function Reset() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (pw !== rptpw) {
-            alert('Nhập lại mật khẩu không chính xác');
-            return false;
-        }
         resetPassword_API()
     }
 
-    return <div style={background}>
-        <form onSubmit={handleSubmit}>
-            <div style={header}>Khôi phục mật khẩu</div>
-            <div style={body}>
-                <div style={text}>Nhập mật khẩu mới</div>
-                <input style={input} type="password" required onChange={(event) => setPw(event.target.value)} />
-                <div style={text}>Nhập lại mật khẩu mới</div>
-                <input style={input} type="password" required onChange={(event) => setRptpw(event.target.value)} />
-                <input type="submit" style={button} value="Xác nhận"/>
-            </div>
-        </form>
+    return(
+        <div>
+        <NavBar/>
+        <div style={background}>
+            <form >
+                <div style={header}>Thay đổi mật khẩu </div>
+                <div style={body}>
+                    <div style={text}>Nhập mật khẩu cũ</div>
+                    <input style={input} type="password" required onChange={(event) => setOldPw(event.target.value)} />
+                    <div style={text}>Nhập mật khẩu mới</div>
+                    <input style={input} type="password" required onChange={(event) => setNewPw(event.target.value)} />
+                    <Button  onClick={(e)=>handleSubmit(e)} style={button}>Xác nhận </Button>
+                </div>
+            </form>
+        </div>
     </div>
-}
+    )}

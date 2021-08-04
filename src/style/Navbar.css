@@ -19,7 +19,7 @@ li.nav-item {
 
 .navbar {
     width: 100%;
-    z-index: 99;
+    z-index: 2;
     background: white;
     /* box-shadow: 0px 0.5px 3px gray; */
     box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);

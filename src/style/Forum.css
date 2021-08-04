@@ -10,6 +10,16 @@
     /* display: inline-block; */
 }
 
+.forum .btn-forum {
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    border-radius: .428rem;
+}
+
+.forum .btn-forum:hover {
+    background: #f0f2f5;
+}
+
 .forum .card {
     box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);
     border-radius: 7px;
@@ -24,7 +34,7 @@
     /* white-space: nowrap; */
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    /* -webkit-line-clamp: 4; */
     /* number of lines to show */
     -webkit-box-orient: vertical;
 }
@@ -32,7 +42,7 @@
 .forum .list-forums .time {
     /* width: 400px; */
     font-size: 13px;
-    color: #b9b9c3;
+    color: #808085;
     /* margin-left: 10px; */
     /* display: block; */
 }
@@ -56,8 +66,8 @@
 }
 
 .forum .list-forums .comment {
-    margin: 5px 5px;
-    font-size: 14px;
+    /* margin: 5px 5px; */
+    font-size: 12px;
     color: black;
 }
 
@@ -67,15 +77,15 @@
 
 .forum .title.comment {
     background: rgb(243, 243, 243);
-    padding: 5px;
+    padding: 5px 0;
     border-radius: 10px;
-    font-size: 14px;
+    /* font-size: 14px; */
 }
 
-.forum .comment.time{
-    margin:0 10px;
-    font-size: 12px;
-    color: #b9b9c3;
+.forum .comment.time {
+    margin: 0 10px;
+    font-size: 11px;
+    color: #000000;
 }
 
 .post-forum .btn-post {
@@ -87,20 +97,19 @@
 }
 
 .post-forum .popup {
+    display: fixed;
+    background: white;
     position: fixed;
-    width: 35vw;
-    height: 70vh;
     top: 50%;
     left: 50%;
-    margin-top: -30vh;
-    /* Negative half of height. */
-    margin-left: -17vw;
-    /* Negative half of width. */
-    background: rgb(255, 255, 255);
-    border: 1px solid black;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    border-radius: 7px;
     box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);
-    overflow: hidden;
-    padding: 20px
+    /* overflow: auto; */
+    padding: 20px;
+    z-index: 4;
+    box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);
 }
 
 .forum .input-comment {
@@ -126,27 +135,34 @@
 }
 
 .post-forum .popup .title {
-    border-width: 0 0 2px;
+    /* border-width: 0 0 2px; */
+    border: 0;
     outline: none;
     display: block;
-    width: 30vw;
-    margin: 10px;
+    /* width: 30vw; */
+    /* margin: 10px; */
 }
 
 .post-forum .popup .header {
-    padding: 10px;
+    padding: 5px;
     font-weight: 500;
+    font-size: 18px;
 }
 
 .post-forum .popup .select-scope {
-    width: 20vw;
+    /* width: 20vw; */
+    padding: 5px;
+    margin: 2px;
 }
 
 .post-forum .popup .btn-add-post {
-    background: #5eba7d;
-    width: 15vw;
+    background: rgb(24, 70, 139);
+    /* width: 15vw; */
     padding: 5px;
     text-align: center;
+    font-weight: 500;
+    color: white;
+    border-radius: 2px
 }
 
 a, a:hover {
@@ -160,37 +176,30 @@ a, a:hover {
 }
 
 .post-forum .popup .btn-cancel-post {
-    background: #ba5e5e;
-    width: 15vw;
+    background: #f1f2f4;
+    /* width: 15vw; */
     padding: 5px;
     text-align: center;
+    font-weight: 500;
+    color: rgb(24, 70, 139);
+    border-radius: 2px
 }
 
-.view .popup {
+.forum .dialog-popup {
+    display: fixed;
+    background: white;
     position: fixed;
-    /* width: 35vw; */
-    height: 70vh;
     top: 50%;
-    /* left: 50%; */
-    margin-top: -35vh;
-    /* Negative half of height. */
-    /* margin-left: -17vw; */
-    /* Negative half of width. */
-    background: rgb(255, 255, 255);
-    /* border: 1px solid black; */
-    border-radius: 7px;
-    box-shadow: 0 4px 24px 0 rgb(34 41 47 / 10%);
-    overflow: auto;
-    padding: 20px;
-    z-index: 3;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    z-index: 4;
 }
 
-#scrollbar1::-webkit-scrollbar-track {
-    /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
-    background-color: #F5F5F5;
-}
-
-#scrollbar1::-webkit-scrollbar-thumb {
-    background-color: #000000;
-    border: 2px solid #555555;
+.forum textarea {
+    display: block;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }

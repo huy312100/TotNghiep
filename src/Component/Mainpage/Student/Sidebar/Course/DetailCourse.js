@@ -137,7 +137,7 @@ class DetailCourse extends Component {
             return (
                 <div>
                     <div className="detail-course-page">
-                        <div className="name">Quản trị CSDL hiện đại - 17HTTT</div>
+                        <div className="name"></div>
                         {this.renderLabel()}
                         {this.renderAssign()}
                         {this.renderResource()}

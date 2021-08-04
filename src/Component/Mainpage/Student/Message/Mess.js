@@ -53,6 +53,7 @@ function Message() {
             dispatch(action);
         }
 
+        console.log(socket,"socket")
 
         if (socket !== null)
             socket.on('Private-Message-To-Client', (data) => {
@@ -68,7 +69,9 @@ function Message() {
             })
 
         return () => {
+            socket.emit('Return-Chat', [selected.room, selected.email]);
             socket.off('Private-Message-To-Client');
+            console.log("Socket off")
         }
     }, []);
 
@@ -146,7 +149,6 @@ function Message() {
 
     const selectUser = (room, email, name, image) => {
         // console.log(email)
-        socket.emit('Return-Chat', [selected.room, selected.email]);
         socket.emit('Return-Chat', [room, email]);
         setSelected({ email: email, room: room, name: name, image: image })
         setAcceptAwaitmess(false)
@@ -407,6 +409,9 @@ function Message() {
             console.log(selected.email)
             console.log(selectedawaitmess)
             socket.emit("Private-Message", [data, selected.email, selectedawaitmess]);
+            socket.once("Request-Accept",(data) => {
+                console.log(data)
+            })
 
         });
         setSelectedAwaitmess("")

@@ -23,6 +23,7 @@ class Course extends Component {
             tag: 0,
             allcourse: [],
             loadding: 1,
+            loaddingAll: 1,
             page: 0
         }
         this.handleScroll = this.handleScroll.bind(this);
@@ -54,7 +55,8 @@ class Course extends Component {
             .then(result => {
                 console.log(result)
                 this.setState({
-                    course: result
+                    course: result,
+                    loadding: 0
                 })
                 console.log("course:", this.state.course)
             })
@@ -85,7 +87,7 @@ class Course extends Component {
                 // console.log("temp:",temp)
                 this.setState({
                     allcourse: result,
-                    loadding: 0
+                    loaddingAll: 0
                 })
             })
             .catch(error => console.log('error', error));
@@ -115,7 +117,7 @@ class Course extends Component {
                 console.log("temp:", temp)
                 this.setState({
                     allcourse: temp,
-                    loadding: 0
+                    loaddingAll: 0
                 })
             })
             .catch(error => console.log('error', error));
@@ -130,12 +132,12 @@ class Course extends Component {
     checkPage = () => {
         if (this.state.tag === 0) {
             return (<div>
-                {this.state.course.map((c,index) => {
+                {this.state.course.map((c, index) => {
                     return (
                         <div key={index} className="course">
-                            <Link to={"/course/"+c.IDCourses} className="titlee direct">{c.name}</Link>
+                            <Link to={"/course/" + c.IDCourses} className="titlee direct">{c.name}</Link>
                             <div className="list-teacher">
-                                {c.teacher.map((tc,tindex) => (
+                                {c.teacher.map((tc, tindex) => (
                                     <div key={tindex} className="content">
                                         <span>Giáo viên: </span>
                                         <span>{tc}</span>
@@ -155,13 +157,19 @@ class Course extends Component {
             )
         }
         else {
+            if (this.state.allcourse.length < 1 || this.state.allcourse === null)
+                return <div className="text-center">
+                    <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
             return (<div>
-                {this.state.allcourse.map((c,index) => {
+                {this.state.allcourse.map((c, index) => {
                     return (
                         <div key={index} className="course">
-                            <Link to={"/course/"+c.IDCourses} className="titlee direct">{c.name}</Link>
+                            <Link to={"/course/" + c.IDCourses} className="titlee direct">{c.name}</Link>
                             <div className="list-teacher">
-                                {c.teacher.map((tc,tindex) => (
+                                {c.teacher.map((tc, tindex) => (
                                     <div key={tindex} className="content">
                                         <span>Giáo viên: </span>
                                         <span>{tc}</span>
@@ -177,7 +185,12 @@ class Course extends Component {
                     )
                 })
                 }
-                {this.LoaddingIcon()}
+                {/* {this.LoaddingIcon()} */}
+                {this.state.loaddingAll === 1 ? <div className="text-center">
+                    <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div> : null}
             </div>
             )
         }
@@ -195,14 +208,14 @@ class Course extends Component {
         const html = document.documentElement;
         const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
         const windowBottom = Math.round(windowHeight + window.pageYOffset);
-        if (windowBottom >= docHeight && this.state.loadding === 0 && this.state.tag === 1) {
+        if (windowBottom >= docHeight && this.state.loaddingAll === 0 && this.state.tag === 1) {
             console.log("bottom")
             this.setState({
-                loadding: 1,
+                loaddingAll: 1,
                 page: this.state.page + 1
             })
             this.getAllCourseScroll();
-            console.log("loadding:", this.state.loadding)
+            console.log("loadding:", this.state.loaddingAll)
         }
     }
 
@@ -210,24 +223,29 @@ class Course extends Component {
     render() {
         var curtag = this.state.tag === 0 ? "current" : "";
         var alltag = this.state.tag === 0 ? "" : "all";
-        if(this.state.loadding===0)
-        return (
-            <div onScroll={this.handleScroll} className="col col-12">
-                <Category current="Môn học" />
-                <div className="course-tag">
-                    <div className="tag">
-                        <div type="button" className={"btn-course " + curtag} onClick={(numtag) => this.clickTag(0)}>Môn học hiện tại
-                        </div>
-                        <div type="button" className={"btn-course " + alltag} onClick={(numtag) => this.clickTag(1)}>Tất cả môn học
+        if (this.state.loadding === 0)
+            return (
+                <div onScroll={this.handleScroll} className="col col-12">
+                    <Category current="Môn học" />
+                    <div className="course-tag">
+                        <div className="tag">
+                            <div type="button" className={"btn-course " + curtag} onClick={(numtag) => this.clickTag(0)}>Môn học hiện tại
+                            </div>
+                            <div type="button" className={"btn-course " + alltag} onClick={(numtag) => this.clickTag(1)}>Tất cả môn học
+                            </div>
                         </div>
                     </div>
+                    <div className="course-page">
+                        {this.checkPage()}
+                    </div>
                 </div>
-                <div className="course-page">
-                    {this.checkPage()}
-                </div>
+            );
+        else return <div className="text-center">
+            <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
+                <span className="sr-only">Loading...</span>
             </div>
-        );
-        else return null;
+        </div>
+
     }
 }
 

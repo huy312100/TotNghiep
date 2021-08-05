@@ -1,4 +1,4 @@
-export const login=async(username, password)=>{
+export const login = async(username, password)=>{
 
     let details = {
         'username': username,

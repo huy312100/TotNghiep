@@ -1,8 +1,9 @@
 import React,{useState,useEffect,useRef} from 'react'
 import { View,Text,StyleSheet,TouchableOpacity,TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch,useSelector} from "react-redux";
 
-import { DrawerContentScrollView,DrawerItem } from '@react-navigation/drawer';
+import { DrawerContentScrollView,DrawerItem,useIsDrawerOpen } from '@react-navigation/drawer';
 import {Drawer,Avatar} from 'react-native-paper';
 
 import { MaterialIcons,FontAwesome,Entypo } from '@expo/vector-icons';
@@ -12,18 +13,19 @@ import * as authActions from '../../../store/actions/Authen';
 
 const DrawerContentScreen =({navigation}) =>{
     const token = useSelector((state) => state.authen.token);
+    const profile = useSelector((state) => state.profile.profile);
+    const isDrawerOpen = useIsDrawerOpen();
 
     const dispatch =useDispatch();
 
     const unmounted = useRef(false);
 
-    const [dataProfile,setDataProfile] = useState([]);
 
     useEffect(()=>{
         const unsubscribe = navigation.addListener('focus', () => {
             getProfile();
         });
-
+        console.log(profile[0].HoTen);
         return()=>{
             unmounted.current = true;
             unsubscribe();
@@ -32,7 +34,9 @@ const DrawerContentScreen =({navigation}) =>{
 
     const SignOut =() =>{
         dispatch(authActions.logout());
-        navigation.navigate('Login');
+        navigation.reset({
+            routes: [{ name: "Login" }]
+        });
     };
 
     const getProfile = () =>{
@@ -50,31 +54,30 @@ const DrawerContentScreen =({navigation}) =>{
         fetch("https://hcmusemu.herokuapp.com/profile/view/parent",requestOptions)
           .then((response) => response.json())
           .then((json) => {
-            //console.log(json);
+            console.log('aaaaaaa');
     
-            dispatch(profileActions.getProfile(json));
-            setDataProfile(json);
-            
+            dispatch(profileActions.getProfile(json));            
           }).catch((err) => console.log(err, "error"));
     };
 
     return(
         <View style={styles.container}>
+            
             <DrawerContentScrollView>
             <View style={styles.container}>
                     {/* <Text>{dataProfile[0].HoTen}</Text> */}
-                    {dataProfile.length !== 0 && <View style={[styles.userInfoSection]}>
+                    {profile != undefined && <View style={[styles.userInfoSection]}>
                         <TouchableOpacity style={{flexDirection:'row',marginTop: 10,marginRight:10}}
                             onPress={() => {
                                 navigation.navigate('Change Profile')
                             }}>
                             <Avatar.Image 
-                                source={dataProfile[0].AnhSV !== '' && dataProfile[0].AnhSV != null ? {uri: dataProfile[0].AnhSV} : require("../../../assets/user.png")}
+                                source={profile[0].AnhSV !== '' && profile[0].AnhSV != null ? {uri: profile[0].AnhSV} : require("../../../assets/user.png")}
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Text numberOfLines={1} style={styles.title}>{dataProfile[0].HoTen}</Text>
-                                <Text numberOfLines={1} style={styles.caption}>{dataProfile[0].Email}</Text>
+                                <Text numberOfLines={1} style={styles.title}>{profile[0].HoTen}</Text>
+                                <Text numberOfLines={1} style={styles.caption}>{profile[0].Email}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>}
@@ -116,7 +119,11 @@ const DrawerContentScreen =({navigation}) =>{
                     )}
                     label="Đăng xuất"
                     labelStyle={{color:'red'}}
-                    onPress={() => {SignOut();}}
+                    onPress={() => {
+                        AsyncStorage.removeItem('tokenValue').then(async () => {
+                            SignOut();
+                        })
+                    }}
                 />
             </Drawer.Section>
         </View>

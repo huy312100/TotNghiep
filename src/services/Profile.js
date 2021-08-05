@@ -1,5 +1,4 @@
 
-
 //upload image api
 export const uploadImage = async ( token,image ) =>{
     var myHeaders = new Headers();
@@ -31,7 +30,7 @@ export const uploadImage = async ( token,image ) =>{
       return Promise.all([statusCode, dataRes]);
     }).then(([statusCode, dataRes]) => {
       if(statusCode === 200){
-        console.log(dataRes);
+        //console.log(dataRes);
         //editProfile();
       }
       else{
@@ -93,7 +92,7 @@ export const editProfile = async (token,fullname) => {
       }).then(([statusCode, dataRes])=>{
         console.log(dataRes);
         if(statusCode === 200){
-            console.log(dataRes);
+            //console.log(dataRes);
         }
       }).catch((err)=> console.log(err, "error"));
 };

@@ -4,11 +4,11 @@ import { TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator,useIsDrawerOpen } from '@react-navigation/drawer';
 import { DrawerActions,getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
-
+import SplashScreen from '../screens/authentication/Splash';
 import DrawerContentScreen from '../screens/main/DrawerContent';
 import LoginScreen from "../screens/authentication/Login";
 import HomeScreen from "../screens/main/Home";
@@ -34,7 +34,12 @@ const Drawer = createDrawerNavigator();
 
 export const MainStackNavigation =() => {
     return(
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="Splash screen">
+            <Stack.Screen
+              name="Splash screen"
+              component={SplashScreen}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
             <Stack.Screen name="Main" component={DrawerNavigation}                
                 options={{ 
@@ -65,8 +70,9 @@ export const MainStackNavigation =() => {
 };
 
 function DrawerNavigation() {
+  //const isDrawerOpen = useIsDrawerOpen();
     return(
-        <Drawer.Navigator drawerContent={props => <DrawerContentScreen {...props} />}>
+        <Drawer.Navigator drawerContent={props => <DrawerContentScreen {...props} options={{unmountOnBlur:true}} />}>
             <Drawer.Screen name="Drawer" component={BottomTabApp} />
         </Drawer.Navigator>
     )
@@ -99,7 +105,7 @@ function HomeStackNavigation({navigation}){
 
             <Stack.Screen name="Detail Calendar" component={DetailCalendarScreen}
                 options ={{
-                    title:'Lịch chi tiết',
+                    title:'Hoạt động trong tháng',
                     headerTruncatedBackTitle:false,
                     headerBackTitleVisible:false,
                 }}

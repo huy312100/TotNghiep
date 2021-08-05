@@ -1,11 +1,12 @@
 import React,{useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback, TextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {useDispatch} from 'react-redux';
 
-import * as authenServices from '../../services/Authen';
-
 import * as authActions from '../../../store/actions/Authen';
+import * as profileActions from '../../../store/actions/Profile';
 
 import LoadingScreen from '../LoadingScreen';
 
@@ -18,9 +19,36 @@ const LoginScreen =({navigation}) =>{
     const [username,setUsername] =useState('');
     const [password,setPassword] = useState('');
     const [isLoading,setLoading]=useState(false);
-
-
-    const loginAPI=async()=>{
+    
+    const getProfile = async (token) =>{
+      //setLoading(true);
+      //console.log(token);    
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `bearer ${token}`);
+    
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+    
+      await fetch("https://hcmusemu.herokuapp.com/profile/view/parent",requestOptions)
+      .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes]) => {  
+        if(statusCode === 200){
+            dispatch(profileActions.getProfile(dataRes));
+        }
+        else{
+          console.log("loi");
+        }
+                  
+      }).catch((err) => console.log(err, "error"));
+    };
+    
+    const loginAPI = async()=>{
         if(username!="" && password!=""){
           setLoading(true);
           let details = {
@@ -52,8 +80,12 @@ const LoginScreen =({navigation}) =>{
                 setLoading(false);
                 if(statusCode===200 && data.role==="3"){
                   const token = data.token + 'pR';
+                  await AsyncStorage.setItem('tokenValue',token);
                   dispatch(authActions.login(token));
-                  navigation.navigate("Main");
+                  await getProfile(token);
+                  navigation.reset({
+                    routes: [{ name: "Main" }]
+                  });
                   setLoading(false);
                 }else{
                   setLoading(false);

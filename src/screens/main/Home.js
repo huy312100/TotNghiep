@@ -6,7 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import {Calendar} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 
-import {useDispatch,useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
@@ -34,7 +34,6 @@ LocaleConfig.defaultLocale = 'fr';
 const HomeScreen =({navigation}) =>{
     const token = useSelector((state) => state.authen.token);
 
-    const dispatch = useDispatch();
     const unmounted = useRef(false);
 
     const currentDate =dateUtils.CurrentDateYYMMDD();
@@ -77,29 +76,31 @@ const HomeScreen =({navigation}) =>{
 
     //Get permission to notifications on iOS 
     const getPermissionNotifications = () =>{
-        setLoading(true);
-        Permissions.getAsync(Permissions.NOTIFICATIONS)
-        .then((statusObj) =>{
-          if(statusObj.status !== 'granted'){
-            return Permissions.askAsync(Permissions.NOTIFICATIONS);
-          }
-          return statusObj;
-        }).then((statusObj) =>{
-          if(statusObj.status !== 'granted'){
-            throw new Error('Permission not granted');
-          }
-        }).then(()=>{
-          return Notifications.getExpoPushTokenAsync();
-        }).then(async(res)=>{
-          setTokenNotification(res.data);
-          //console.log(tokenNotification);
-          await authenServices.postTokenNotification(token,res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
-      };
+      setLoading(true);
+      Permissions.getAsync(Permissions.NOTIFICATIONS)
+      .then((statusObj) =>{
+        if(statusObj.status !== 'granted'){
+          return Permissions.askAsync(Permissions.NOTIFICATIONS);
+        }
+        return statusObj;
+      }).then((statusObj) =>{
+        if(statusObj.status !== 'granted'){
+          throw new Error('Permission not granted');
+        }
+      }).then(()=>{
+        return Notifications.getExpoPushTokenAsync();
+      }).then(async(res)=>{
+        setTokenNotification(res.data);
+        //console.log(tokenNotification);
+        await authenServices.postTokenNotification(token,res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        return null;
+      });
+    };
+
+    
 
     return(
         <View style={styles.container}>
@@ -124,9 +125,9 @@ const HomeScreen =({navigation}) =>{
 
                 markedDates={{
                     //currentDate: {selectedColor:'blue',selected:true},
-                     '2021-07-08': {selected: true, marked: true, selectedColor: 'blue'},
+                     '2021-07-29': {selected: true, marked: true, selectedColor: 'blue'},
                     '2021-05-13': {marked: true,selected: true, selectedColor: 'red'},
-                    // '2012-05-18': {marked: true, dotColor: 'red', activeOpacity: 0},
+                    // '2012-05-29': {marked: true, dotColor: 'red', activeOpacity: 0},
                     // '2012-05-19': {disabled: true, disableTouchEvent: true}
                 }}
             />

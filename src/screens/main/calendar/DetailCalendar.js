@@ -1,104 +1,201 @@
-import React,{useState} from 'react';
-import { View,Text,StyleSheet,TouchableOpacity } from 'react-native';
+import React,{useState,useEffect,useRef} from 'react';
+import { View,Text,FlatList,StyleSheet,TouchableOpacity,Linking,ActivityIndicator } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import {Agenda} from 'react-native-calendars';
-import {LocaleConfig} from 'react-native-calendars';
+import { Entypo,AntDesign } from '@expo/vector-icons';
 
 import * as dateUtils from '../../../utils/Date';
 
-LocaleConfig.locales['fr'] = {
-  monthNames: ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'],
-  monthNamesShort: ['Thg 1','Thg 2','Thg 3','Thg 4','Thg 5','Thg 6','Thg 7','Thg 8','Thg 9','Thg 10','Thg 11','Thg 12'],
-  dayNames: ['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'],
-  dayNamesShort: ['T2','T3','T4','T5','T6','T7','CN'],
-  today: 'Hôm nay'
-};
-LocaleConfig.defaultLocale = 'fr';
 
-const DetailCalendarScreen =() =>{
-    
-  const [items, setItems] = useState({});
-  const currentDate =dateUtils.CurrentDateYYMMDD();
+const DetailCalendarScreen = ({ navigation }) => {
+  const token = useSelector((state) => state.authen.token);
+  const unmounted = useRef(false);
 
+  const [data, setData] = useState([]);
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [isLoading, setIsLoading] = useState(true);
 
-  const loadItems = (day) =>{
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = timeToString(time);
-        if (!items[strTime]) {
-          items[strTime] = [];
-          const numItems = Math.floor(Math.random() * 3 + 1);
-          for (let j = 0; j < numItems; j++) {
-            items[strTime].push({
-              //name: 'Item for ' + strTime + ' #' + j,
-              name:'',
-              height: 150
-            });
-          }
+  useEffect(() => {
+    getAllDeadlineInMonth();
+    return () => {
+      unmounted.current = true;
+    };
+  }, [month, year]);
+
+  const getAllDeadlineInMonth = async () => {
+    setIsLoading(true);
+    let details = {
+      month: month,
+      year: year,
+    };
+
+    let formBody = [];
+
+    for (let property in details) {
+      let encodedKey = encodeURIComponent(property);
+      let encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    console.log(formBody);
+
+    await fetch("https://hcmusemu.herokuapp.com/deadlinemoodle/month/parent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `bearer ${token}`,
+      },
+      body: formBody,
+    })
+      .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+      })
+      .then(([statusCode, dataRes]) => {
+        if (statusCode === 200) {
+          console.log(dataRes);
+          setData(dataRes);
         }
-      }
-      const newItems = {};
-      Object.keys(items).forEach(key => {
-        newItems[key] = items[key];
-      });
-      setItems(newItems);
-    }, 1000);
-  }
+        setIsLoading(false);
+        //tmp.concat(json)
+      })
+      .catch((err) => console.log(err, "error"));
+  };
 
-  const renderItem = (item) => {
-    return (
-      <TouchableOpacity
-        style={[styles.item, {height: item.height}]}
-        onPress={() => Alert.alert(item.name)}
-      >
-        <Text>{item.name}</Text>
-      </TouchableOpacity>
-    );
-  }
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => {
+        Linking.openURL(item.url);
+      }}
+    >
+      <View style={styles.info}>
+        <View>
+          <Text style={styles.title}>{item.nameCourese}</Text>
+          <Text style={[styles.title, { fontWeight: "normal", marginTop: 10 }]}>
+            {item.decription}
+          </Text>
+        </View>
 
-  const renderEmptyDate=() => {
-    return (
-      <View style={styles.emptyDate}>
-        <Text>This is empty date!</Text>
+        <Entypo
+          style={styles.onTheRight}
+          name="chevron-thin-right"
+          size={20}
+          color="blue"
+        />
       </View>
-    );
-  }
 
-  const rowHasChanged = (r1, r2) => {
-    return r1.name !== r2.name;
-  }
-
-  const timeToString = (time) =>{
-    const date = new Date(time);
-    return date.toISOString().split('T')[0];
-  }
+      <View tyle={[styles.info, { marginBottom: 20 }]}>
+        <Text style={styles.date}>
+          Hạn chót : {dateUtils.ConvertTimestampToVNTime(item.duedate)}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
-        <Agenda
-            items={items}
-            loadItemsForMonth={loadItems}
-            selected={currentDate}
-            renderItem={renderItem}
-        />
+    <View style={styles.container}>
+    
+      <View
+        style={{
+          flexDirection: "row",
+          paddingVertical: 15,
+          justifyContent: "center",
+          alignItems: "center",
+          borderBottomColor: "#222222",
+          borderBottomWidth: 0.5,
+          backgroundColor: "#f2f2f2",
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            const changed = dateUtils.PreviousMonth(month, year);
+            setMonth(changed[0]);
+            setYear(changed[1]);
+            setData([]);
+          }}
+        >
+          <AntDesign name="arrowleft" size={18} color="#006666" />
+        </TouchableOpacity>
 
-);
-}
+        <TouchableOpacity>
+          <Text style={{ marginHorizontal: 70, fontSize: 15, color: "#006666" }}>
+            Tháng {month} , {year}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            const changed = dateUtils.NextMonth(month, year);
+            setMonth(changed[0]);
+            setYear(changed[1]);
+            setData([]);
+          }}
+        >
+          <AntDesign name="arrowright" size={18} color="#006666" />
+        </TouchableOpacity>
+      </View>
+
+
+      {!isLoading && data.length === 0 && (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ color: "#BBBBBB" }}>
+            Không có deadline nào trong tháng này
+          </Text>
+        </View>
+      )}
+
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  item: {
-    backgroundColor: 'white',
+  container: {
     flex: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginRight: 10,
-    marginTop: 17
   },
-  emptyDate: {
-    height: 15,
-    flex: 1,
-    paddingTop: 30
-  }
+
+  card: {
+    borderRadius: 20,
+    backgroundColor: "white",
+    paddingBottom: 10,
+    marginHorizontal: 15,
+    marginTop: 15,
+    borderWidth: 0.3,
+    borderColor: "silver",
+  },
+
+  onTheRight: {
+    position: "absolute",
+    right: 5,
+  },
+
+  title: {
+    fontWeight: "bold",
+    marginRight: 30,
+    marginLeft: 15,
+  },
+
+  info: {
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+
+  date: {
+    color: "red",
+    marginRight: 30,
+    marginLeft: 15,
+    fontSize: 12,
+  },
 });
 
 export default DetailCalendarScreen;

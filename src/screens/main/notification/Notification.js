@@ -1,6 +1,7 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView } from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
+import { Badge } from 'react-native-paper';
 
 //import * as homeActions from "../../.";
 
@@ -14,6 +15,57 @@ import * as dateUtils from "../../../utils/Date";
 //   }),
 // });
 
+const dataTmp =[
+  {
+      "State": false,
+      "_id": "60fa9dfc29f1b50022d5dcbc",
+      "Title": "Tin Tức Khoa",
+      "Data": "CONTEMI TUYỂN DỤNG 25 INTERN/FRESHER",
+      "Date": "1627037180948"
+  },
+  {
+      "State": true,
+      "_id": "60fa9dfc29f1b50022d5dcba",
+      "Title": "Tin Tức Khoa",
+      "Data": "CONTEMI TUYỂN DỤNG 25 INTERN/FRESHER",
+      "Date": "1627037180913"
+  },
+  {
+      "State": false,
+      "_id": "60f906c8a45dee0022f3e410",
+      "Title": "Tin Tức Khoa",
+      "Data": "Thông báo về Quy định thi trực tuyến và Hướng dẫn sinh viên thi trực tuyến",
+      "Date": "1626932936850"
+  },
+  {
+      "State": false,
+      "_id": "60f906c8a45dee0022f3e40b",
+      "Title": "Tin Tức Khoa",
+      "Data": "Thông báo về Quy định thi trực tuyến và Hướng dẫn sinh viên thi trực tuyến",
+      "Date": "1626932936829"
+  },
+  {
+      "State": false,
+      "_id": "60f55501e0f10d0022bc7095",
+      "Title": "Tin Tức Khoa",
+      "Data": "[CQ] Danh sách sinh viên được duyệt vào lớp Khởi nghiệp - 18/1, HK3, NH 2020-2021",
+      "Date": "1626690817603"
+  },
+  {
+      "State": false,
+      "_id": "60f55501e0f10d0022bc7093",
+      "Title": "Tin Tức Khoa",
+      "Data": "[CQ] Danh sách sinh viên được duyệt vào lớp Khởi nghiệp - 18/1, HK3, NH 2020-2021",
+      "Date": "1626690817601"
+  },
+  {
+      "State": false,
+      "_id": "60f506919b63e00022cecbae",
+      "Title": "Tin Tức Khoa",
+      "Data": "CHÀO ĐÓN SỰ TRỞ LẠI CỦA KMS ONE-DAY HIRING THÁNG 7 NÀY",
+      "Date": "1626670737461"
+  }
+];
 const NotificationScreen=({navigation})=>{
 
   const token = useSelector((state) => state.authen.token);
@@ -178,16 +230,13 @@ const NotificationScreen=({navigation})=>{
           <View style={styles.imgWrapper}>
               <View >
                   <Image style={styles.img} source={require("../../../../assets/notification-icon.png")} />
-                  {!item.State && <Badge
-                      status="error"
-                      containerStyle={{ position: 'absolute', top: -4, right: -4 }}
-                  />}
+                  
               </View>
           </View>
 
           <View style={styles.textSection}>
             <View style={styles.infoText}>
-              <Text style={styles.titleName}>{item.Title}</Text>
+              <Text style={[styles.titleName,!item.State && styles.boldWhenNotRead]}>{item.Title}</Text>
               {/* <Text style={[styles.postTime,!item.State && styles.boldWhenNotRead]}>{dateUtils.ConvertToTimeAgoGeneral(parseInt(item.Date))}</Text> */}
             </View>
             <Text style={[styles.contentText,!item.State && styles.boldWhenNotRead]}>{item.Data}</Text>
@@ -216,21 +265,15 @@ const NotificationScreen=({navigation})=>{
     return(
         <SafeAreaView style={styles.container}>
 
-          {/* <Button
-            title="Trigger Notifications"
-            onPress={() => {
-              triggerNotifications();
-            }}
-          /> */}
-
-            {data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+            {/* {data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
                 
                 <Text style={{color:'#BBBBBB'}}>
                     Không có thông báo nào
                 </Text>
-             </View>}
+             </View>} */}
+
             <FlatList
-              data={data}
+              data={dataTmp}
               keyExtractor={item =>item._id}
               renderItem={renderItem}
               refreshControl={<RefreshControl
@@ -288,7 +331,6 @@ const styles = StyleSheet.create({
     
       titleName:{
         fontSize: 14,
-        fontWeight: "bold",
       },
     
       postTime: {

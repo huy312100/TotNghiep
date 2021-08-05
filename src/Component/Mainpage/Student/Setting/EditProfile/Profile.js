@@ -10,7 +10,7 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            avatar:"",
+            avatar: "",
             name: "",
             email: "",
             university: "",
@@ -56,7 +56,7 @@ class Profile extends Component {
                     email: result[0].Email,
                     university: result[0].TenTruongDH,
                     fac: result[0].TenKhoa,
-                    avatar:result[0].AnhSV,
+                    avatar: result[0].AnhSV,
                     loading: 1,
                     facselected: result[0].MaKhoa,
                     uniselected: result[0].MaTruong
@@ -283,12 +283,12 @@ class Profile extends Component {
             .catch(error => console.log('error', error));
     }
 
-    updateImage_API = async() => {
+    updateImage_API = async () => {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer "+localStorage.getItem("token"));
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
         var formdata = new FormData();
-        formdata.append("image",this.state.picture);
+        formdata.append("image", this.state.picture);
 
         var requestOptions = {
             method: 'POST',
@@ -301,7 +301,7 @@ class Profile extends Component {
             .then(response => response.text())
             .then(result => {
                 console.log(result)
-                this.setState({editimg:0})
+                this.setState({ editimg: 0 })
             })
             .catch(error => console.log('error', error));
     }
@@ -342,37 +342,39 @@ class Profile extends Component {
         }
         return (
             <div>
-                <Navbar />
-                <Sidebar />
-                {this.checkPopup()}
-                <div className="info-profile">
-                    <h3>Thông tin cá nhân</h3>
-                    <hr />
+                {/* <Navbar />
+                <Sidebar /> */}
+                <div className="col-12">
+                    {this.checkPopup()}
+                    <div className="info-profile">
+                        <h3>Thông tin cá nhân</h3>
+                        <hr />
 
-                    <table>
-                        <colgroup>
-                            <col style={{ width: "25%" }} />
-                            <col style={{ width: "65%" }} />
-                            <col style={{ width: "15%" }} />
-                        </colgroup>
-                        <tbody>
-                            <tr className="tb-row" onClick={this.changeIMG}>
-                                <td className="firstcol">Ảnh</td>
-                                <td style={{ color: "grey" }}>Thêm hình ảnh để cá nhân hóa tài khoản</td>
-                                <td><img className="image" width="50vw" height="50vh" src={this.state.avatar} alt=""></img></td>
-                            </tr>
+                        <table>
+                            <colgroup>
+                                <col style={{ width: "25%" }} />
+                                <col style={{ width: "65%" }} />
+                                <col style={{ width: "15%" }} />
+                            </colgroup>
+                            <tbody>
+                                <tr className="tb-row" onClick={this.changeIMG}>
+                                    <td className="firstcol">Ảnh</td>
+                                    <td style={{ color: "grey" }}>Thêm hình ảnh để cá nhân hóa tài khoản</td>
+                                    <td><img className="image" width="50vw" height="50vh" src={this.state.avatar} alt=""></img></td>
+                                </tr>
 
-                            {this.changeName()}
+                                {this.changeName()}
 
-                            <tr className="tb-row">
-                                <td className="firstcol">Email</td>
-                                <td>{this.state.email}</td>
-                                <td></td>
-                            </tr>
-                            {this.changeUni()}
-                            {this.changeFac()}
-                        </tbody>
-                    </table>
+                                <tr className="tb-row">
+                                    <td className="firstcol">Email</td>
+                                    <td>{this.state.email}</td>
+                                    <td></td>
+                                </tr>
+                                {this.changeUni()}
+                                {this.changeFac()}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         );

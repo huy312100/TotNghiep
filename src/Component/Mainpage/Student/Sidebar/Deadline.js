@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Navbar from '../Navbar';
 import Sidebar from '../Sidebar';
 import "../../../../style/Deadline.css";
+import Category from '../Category';
 // import { Link } from 'react-router-dom';
 
 class Deadline extends Component {
@@ -228,7 +229,7 @@ class Deadline extends Component {
         }
         if (this.state.empty === 1) {
             return <div className="deadline">
-                <div className="titlee">Không có deadline trong tháng này</div>
+                <div className="titlee">Không có sự kiện trong tháng này</div>
             </div>
         }
         else {
@@ -358,6 +359,7 @@ class Deadline extends Component {
         var faculty = this.state.tag === "2" ? "faculty" : "";
         return (
             <div className="col deadline" >
+                <Category current="Sự kiện" currrentlink={"/deadline"} />
                 <div className="deadline-tag">
                     <div className="row tag">
                         <div type="button" className={"col btn-deadline " + assign} onClick={() => this.clickTag(0)}><i class="fa fa-book" aria-hidden="true"></i> Bài tập

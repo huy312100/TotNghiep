@@ -27,7 +27,7 @@ function Message() {
 
     const [awaitmess, setAwaitmess] = useState(null)
     const [acceptawaitmess, setAcceptAwaitmess] = useState(false)
-    const [selectedawaitmess,setSelectedAwaitmess] = useState("")
+    const [selectedawaitmess, setSelectedAwaitmess] = useState("")
 
     const [tag, setTag] = useState("0")
 
@@ -35,6 +35,8 @@ function Message() {
 
     const socket = useSelector(state => state.authen.socket)
     const email = useSelector(state => state.authen.email)
+
+    const [loaddingChatBox, setloaddingChatBox] = useState(false)
 
     const dispatch = useDispatch()
     // console.log(email)
@@ -53,7 +55,7 @@ function Message() {
             dispatch(action);
         }
 
-        console.log(socket,"socket")
+        console.log(socket, "socket")
 
         if (socket !== null)
             socket.on('Private-Message-To-Client', (data) => {
@@ -178,18 +180,20 @@ function Message() {
     const Messages = () => {
         var listmess = usermessage;
         if (tag === "1") {
-            listmess = awaitmess.awaittext;
+            if (awaitmess === null)
+                return null
+            listmess = awaitmess;
 
         }
         if (listmess.length < 1 || listmess === null)
             return <div>Không có tin nhắn chờ</div>
 
         var list = listmess.map((messageList) => (
-            <div type="button" className="message-content" onClick={() => tag === "1" ? AcceptAwaitMessage(messageList, { email: "", room: messageList.idChatRoom, name: messageList.from }) : selectUser(messageList.idRoom, messageList.Email, messageList.name, messageList.Anh)}>
-                <img width="50px" height="50px" style={{ borderRadius: "50%", marginTop: "5px" }} src={messageList.Anh} alt=""></img>
+            <div type="button" className="message-content" onClick={() => tag === "0" ? selectUser(messageList.idRoom, messageList.Email, messageList.name, messageList.Anh) : AcceptAwaitMessage(messageList, { email: messageList.Email, room: messageList.idChatRoom, name: messageList.name, image: messageList.Anh })}>
+                {messageList.Anh === null ? null : <img width="50px" height="50px" style={{ borderRadius: "50%", marginTop: "5px" }} src={messageList.Anh} alt=""></img>}
                 <span className="message-content-text">
                     <div className="name">
-                        {tag === "0" ? messageList.name : messageList.from}
+                        {messageList.name}
                     </div>
                     <div className="text">
                         {messageList.text}
@@ -221,6 +225,7 @@ function Message() {
     }
 
     const viewChat = () => {
+        setloaddingChatBox(true)
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -243,6 +248,7 @@ function Message() {
                 var mess = result.reverse()
                 // console.log(mess)
                 setSelectedmessage(mess)
+                setloaddingChatBox(false)
             })
             .catch(error => console.log('error', error));
     }
@@ -272,13 +278,13 @@ function Message() {
             .catch(error => console.log('error', error));
     }
 
-    const searchUser = () => {
+    const searchUser = (value) => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         var urlencoded = new URLSearchParams();
-        urlencoded.append("HoTen", search);
+        urlencoded.append("HoTen", value);
 
         var requestOptions = {
             method: 'POST',
@@ -298,6 +304,12 @@ function Message() {
     }
 
     const renderChatSelected = () => {
+        // if (loaddingChatBox)
+        //     return <div class="text-center">
+        //         <div class="spinner-border" role="status">
+        //             <span class="sr-only">Loading...</span>
+        //         </div>
+        //     </div>
         return <div className="message">
             {selectedmessage.map(message => {
                 if (message.from === email) {
@@ -362,10 +374,13 @@ function Message() {
         }
     }
 
-    const handleSearch = (event) => {
-        if (event.key === 'Enter') {
-            searchUser()
+    const handleSearch = (e) => {
+        if (e.target.value !== "") {
+            setSearch(e.target.value)
+            searchUser(e.target.value)
         }
+
+        setSearch(e.target.value)
     }
 
     const SearchUserSelelected = (selecteduser) => {
@@ -373,7 +388,7 @@ function Message() {
     }
 
     const renderFoundedUser = () => {
-        if (loadingSearch === 1) {
+        if (loadingSearch === 1 && tag !== "1") {
             const list = foundedUser.map((user) => {
                 return <div type="button" className="message-content" onClick={() => SearchUserSelelected({ email: user.Email, name: user.HoTen, image: user.AnhSV })}>
                     <img width="50px" height="50px" style={{ borderRadius: "50%", marginTop: "5px" }} src={user.AnhSV} alt=""></img>
@@ -398,8 +413,10 @@ function Message() {
     const Btn_ClickAccept = () => {
         socket.emit("Accepted", selected.room)
         setAcceptAwaitmess(false)
-        setTag("0")
         getMessage();
+        setTag("0")
+        viewChatAwait();
+
     }
 
     const sendAwaitMessage = () => {
@@ -409,7 +426,7 @@ function Message() {
             console.log(selected.email)
             console.log(selectedawaitmess)
             socket.emit("Private-Message", [data, selected.email, selectedawaitmess]);
-            socket.once("Request-Accept",(data) => {
+            socket.once("Request-Accept", (data) => {
                 console.log(data)
             })
 
@@ -418,7 +435,7 @@ function Message() {
     }
 
     const renderMessage = () => {
-        if (loadingSearch === 1) {
+        if (loadingSearch === 1 && tag === "0") {
             return <div>
                 <div className="message"></div>
                 <div className="textbox-message">
@@ -438,11 +455,14 @@ function Message() {
         else if (!acceptawaitmess)
             return <div>
                 {renderChatSelected()}
-                <div className="textbox-message">
-                    <div>
-                        <input value={mess} className="box-chat" type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setMess(e.target.value)} onKeyDown={handleKeyDown} />
-                        <i type="button" className="enter fa fa-reply" onClick={sendMessage}></i>
+                <div className="row textbox-message" style={{alignItems:"center"}}>
+                    {/* <div className="col-12"> */}
+                    <input value={mess} className="col-10 box-chat" type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setMess(e.target.value)} onKeyDown={handleKeyDown} />
+                    {/* <i type="button" className="enter fa fa-reply" onClick={sendMessage}></i> */}
+                    <div className="col-2">
+                        <div type="button" className="enter" onClick={sendMessage}>Gửi</div>
                     </div>
+                    {/* </div> */}
                 </div>
             </div>
     }
@@ -462,18 +482,18 @@ function Message() {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-4 listfriend-box">
-                        {<div>
+                <div className="row" style={{ boxShadow: "0 4px 24px 0 rgb(34 41 47 / 10%)" }}>
+                    <div className="col-md-4 listfriend-box" style={{ padding: "10px", background: "white" }}>
+                        {<div style={{ overflowY: "auto", height: "80vh" }}>
                             <div>
-                                <input className="box-input" type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => setSearch(e.target.value)} onKeyDown={handleSearch} />
+                                <input className="box-input" type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => handleSearch(e)} />
                             </div>
                             {renderFoundedUser()}
                         </div>}
                     </div>
                     <div className="col-md-8 message-box">
                         <div className="selected-user">
-                            <img width="50px" height="50px" style={{ borderRadius: "50%" }} src={selected.image} alt=""></img>
+                            {selected.image === null ? null : <img width="50px" height="50px" style={{ borderRadius: "50%" }} src={selected.image} alt=""></img>}
                             <div className="infouser">
                                 <div className="name">{selected.name}</div>
                                 <div className="email">{selected.email}</div>

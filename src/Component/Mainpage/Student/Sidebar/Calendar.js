@@ -7,6 +7,7 @@ import Navbar from '../Navbar';
 import Sidebar from '../Sidebar';
 import "react-datepicker/dist/react-datepicker.css";
 import { CirclePicker } from 'react-color';
+import Category from '../Category';
 
 registerLocale('vi', vi)
 
@@ -630,7 +631,9 @@ class Calendar extends Component {
     render() {
         if (this.state.loadding === 0)
             return (
-                <div>
+                <div className="col-12">
+                    <Category current="Lịch" currrentlink={"/calendar"} />
+
                     <div className="calendar-page">
                         <div className="calendar">
                             <div className="title">LỊCH CÁ NHÂN</div>

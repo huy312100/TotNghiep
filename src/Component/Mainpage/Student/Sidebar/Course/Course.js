@@ -3,6 +3,7 @@ import Navbar from '../../Navbar';
 import Sidebar from '../../Sidebar';
 import { Link } from 'react-router-dom';
 import "../../../../../style/Course.css";
+import Category from '../../Category';
 
 class Course extends Component {
     constructor(props) {
@@ -212,6 +213,7 @@ class Course extends Component {
         if(this.state.loadding===0)
         return (
             <div onScroll={this.handleScroll} className="col col-12">
+                <Category current="Môn học" />
                 <div className="course-tag">
                     <div className="tag">
                         <div type="button" className={"btn-course " + curtag} onClick={(numtag) => this.clickTag(0)}>Môn học hiện tại

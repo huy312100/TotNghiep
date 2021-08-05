@@ -42,7 +42,21 @@ function RouterMD() {
             <Route exect path="/" render={() => {
                 // console.log(0)
                 if (!localStorage.getItem("token"))
-                    return <Login />
+                    // return <Login />
+                    return <Switch>
+                        <Route path="/newpassword" >
+                            <Reset />
+                        </Route>
+                        <Route path="/forgot" >
+                            <Forgot />
+                        </Route>
+                        <Route path="/signup">
+                            <Signup />
+                        </Route>
+                        <Route exect path="/" >
+                            <Login />
+                        </Route>
+                    </Switch>
                 else {
                     return <div>
                         <div>
@@ -54,7 +68,7 @@ function RouterMD() {
                                 <Route path="/newpassword" >
                                     <Reset />
                                 </Route>
-                                <Route exact path="/forgot" >
+                                <Route path="/forgot" >
                                     <Forgot />
                                 </Route>
                                 <Route exact path="/forum" >
@@ -75,9 +89,6 @@ function RouterMD() {
 
                                 <Route path="/profile">
                                     <Profile />
-                                </Route>
-                                <Route path="/signup">
-                                    <Signup />
                                 </Route>
                                 <Route path="/home">
                                     <Student />

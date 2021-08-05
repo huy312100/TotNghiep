@@ -24,9 +24,18 @@ class Student extends Component {
             <div>
                 <ConnectSocket />
                 <div className="col-12 home">
+                    <div style={{
+                        fontWeight: "500",
+                        color: "#636363",
+                        fontSize: "calc(12px + 1vw)",
+                        borderRight: "1px solid #d6dce1",
+                        paddingRight: "1vw",
+                        marginBottom:"-15px",
+                        paddingTop:"10px",
+                    }}>Trang chủ</div>
                     <Home />
-                    <NewsFac/>
-                    <CldAndDl/>
+                    <NewsFac />
+                    <CldAndDl />
                 </div>
             </div>
 

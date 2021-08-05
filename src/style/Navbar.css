@@ -26,7 +26,7 @@ li.nav-item {
 }
 
 .action-box {
-    width: 15vw;
+    width: 300px;
     position: fixed;
     right: 5px;
     top: 60px;
@@ -98,8 +98,10 @@ li.nav-item {
     padding: 10px;
     font-weight: 500;
     color: black;
-    display: block;
+    display: flex;
     border-radius: 10px;
+    align-items: center;
+    font-size: 14px;
 }
 
 .user-link:hover {

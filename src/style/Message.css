@@ -81,7 +81,7 @@
     border: none;
     background: wheat;
     padding: 10px;
-    width: 47vw;
+    /* width: 47vw; */
     font-size: 14px;
 }
 
@@ -91,16 +91,17 @@
 
 .message-box .enter {
     color: white;
-    height: 3vw;
+    /* height: 3vw; */
     background: rgb(230, 155, 85);
-    width: 3vw;
-    line-height: 3vw;
+    padding:2px;
+    /* width: 3vw; */
+    /* line-height: 3vw; */
     /* height: 7vw; */
     /* padding: 10px; */
     /* background: #1abc9c; */
-    border-radius: 50%;
+    border-radius: 9px;
     text-align: center;
-    margin: auto 0;
+    /* margin: auto 0; */
     font-size: 16px;
 }
 

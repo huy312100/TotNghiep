@@ -15,7 +15,7 @@ function CldAndDl() {
         var today = new Date();
         // today.getFullYear()
         // today.getMonth() + 1;      
-        getCalendar(2021, 7);
+        getCalendar(today.getFullYear(), today.getMonth() + 1);
     }
 
     const getCalendar = (year, month) => {

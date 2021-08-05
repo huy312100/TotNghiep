@@ -26,7 +26,6 @@ function ViewForumCourse() {
     const [loadingMoodleC, setLoadingMoodleC] = useState(1);
     const [popup, setPopup] = useState(null)
 
-    const [popupMoodle, setPopupMoodle] = useState(null)
     const [loadding, setLoadding] = useState(true)
 
     const email = useSelector(state => state.authen.email)
@@ -60,14 +59,17 @@ function ViewForumCourse() {
             .then(response => {
                 if (response.ok)
                     return response.json()
-                throw new Error("Không có môn bài viết")
+                throw new Error("Không có môn học bài viết")
             })
             .then(result => {
                 console.log(result[0])
                 setCourseMoodle(result[0])
                 setLoadingMoodleC(0)
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                setLoadingMoodleC(0)
+                console.log('error', error)
+            });
     }
 
     const getForumCourse = () => {
@@ -257,11 +259,14 @@ function ViewForumCourse() {
         let items
         let temp
         let scopeFunction
-        if (forum.IDCourses !== undefined) {
-            items = [...course];
-            temp = [...course];
-            scopeFunction = setCourse
-        }
+
+        // console.log(forum)
+
+        items = [...course];
+        temp = [...course];
+        scopeFunction = setCourse
+
+        // console.log(items)
 
         const index = items.findIndex(item => item.ID === forum.ID);
 
@@ -272,9 +277,9 @@ function ViewForumCourse() {
 
     }
 
-    const openPopup = ({ ...value }) => {
-        setPopupMoodle({ ...value })
-    }
+    // const openPopup = ({ ...value }) => {
+    //     setPopupMoodle({ ...value })
+    // }
 
     const convertTimeAgo = (UNIX_timestamp) => {
         // var a = new Date(UNIX_timestamp);
@@ -313,25 +318,25 @@ function ViewForumCourse() {
         }
     }
 
-    const renderPopupMoodle = () => {
-        if (popupMoodle === null)
-            return null;
-        return <div className=" view row justify-content-center" >
-            <div id="scrollbar1" className="col-8 col-md-4 popup" >
-                <div type="button" onClick={() => setPopup(false)} style={{ position: "absolute", right: "5px", top: "0" }}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
-                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                </svg>
-                </div>
-                <div>
-                    <div style={{ fontWeight: "600" }}>{popupMoodle.name}</div>
-                    <div style={{ fontSize: "15px", paddingBottom: "10px" }}>Người đăng : {popupMoodle.fullname}</div>
-                    <div className="content" dangerouslySetInnerHTML={{ __html: popupMoodle.mess }}></div>
-                </div>
-            </div >
+    // const renderPopupMoodle = () => {
+    //     if (popupMoodle === null)
+    //         return null;
+    //     return <div className="forum row justify-content-center" >
+    //         <div id="scrollbar1" className="col-8 col-md-4 dialog-popup" >
+    //             <div type="button" onClick={() => setPopupMoodle(false)} style={{ position: "absolute", right: "5px", top: "0" }}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+    //                 <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+    //                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+    //             </svg>
+    //             </div>
+    //             <div>
+    //                 <div style={{ fontWeight: "600" }}>{popupMoodle.name}</div>
+    //                 <div style={{ fontSize: "15px", paddingBottom: "10px" }}>Người đăng : {popupMoodle.fullname}</div>
+    //                 <div className="content" dangerouslySetInnerHTML={{ __html: popupMoodle.mess }}></div>
+    //             </div>
+    //         </div >
 
-        </div >
-    }
+    //     </div >
+    // }
 
 
     const renderPopup = () => {
@@ -427,7 +432,6 @@ function ViewForumCourse() {
                             </div>
                         </div>
                         {popup !== null ? renderPopup() : null}
-                        {popupMoodle !== null ? renderPopupMoodle() : null}
 
 
 
@@ -444,10 +448,12 @@ function ViewForumCourse() {
             return <div>
                 {courseMoodle.Forum.map((forum) => {
                     return <div class="row justify-content-center">
-                        <div type="button" className="col-md-6 list-forums" style={{ background: "white", padding: "15px", borderRadius: "7px", boxShadow: "0 4px 24px 0 rgb(34 41 47 / 10%)" }} onClick={() => openPopup({ fullname: forum.fullname, name: forum.name, mess: forum.message })}>
+                        <div className="col-md-6 list-forums" style={{ background: "white", padding: "15px", borderRadius: "7px", boxShadow: "0 4px 24px 0 rgb(34 41 47 / 10%)" }} >
                             {console.log(forum.name)}
                             <div style={{ fontWeight: "600" }}>{forum.name}</div>
                             <div style={{ fontSize: "15px" }}>Người đăng : {forum.fullname}</div>
+                            <div className="content" dangerouslySetInnerHTML={{ __html: forum.message }}></div>
+
                         </div>
                     </div>
                 })}
@@ -464,6 +470,11 @@ function ViewForumCourse() {
 
         return <div className="col col-12">
             <div className="forum">
+                <Link to="/forum" style={{background:"white",padding:"10px", boxShadow: "0 4px 24px 0 rgb(34 41 47 / 10%)",borderRadius:"7px"}}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 17">
+                        <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+                    </svg><span style={{margin:"0 10px"}}>Trở về</span>
+                </Link>
                 <Category current="Môn học" currentlink="/forum/courses" sub1="Diễn đàn" sub1link={"/forum"} />
                 <div className="deadline-tag">
                     <div className="row tag">
@@ -475,7 +486,7 @@ function ViewForumCourse() {
                 </div>
                 {/* <PostForum /> */}
                 {renderTag()}
-                {popup && renderPopup()}
+                {/* {popup && renderPopup()} */}
             </div>
         </div>
     }

@@ -33,6 +33,8 @@ function ViewForums() {
     const [loadingC, setLoadingC] = useState(1);
 
     const [loadingMoodleC, setLoadingMoodleC] = useState(1);
+    const [selfpost, setSelfpost] = useState("all")
+
 
 
     const [page, setPage] = useState(0)
@@ -459,6 +461,8 @@ function ViewForums() {
         return <div>
             {tag !== "1" &&
                 showforums.map((forum) => {
+                    if (selfpost === "self" && forum.EmailOwn !== email)
+                        return
 
                     return <div class="row justify-content-center" >
                         <div className="col-md-6 list-forums">
@@ -473,7 +477,7 @@ function ViewForums() {
                                             <div style={{ paddingLeft: "10px" }}>
 
                                                 <div className="own" style={{ display: "inline-block" }}>{forum.NameOwn}</div>
-                                                {forum.IDCourses !== undefined ? <span style={{marginRight:"10px"}}><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                                {forum.IDCourses !== undefined ? <span style={{ marginRight: "10px" }}><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
                                                     <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
                                                 </svg> {forum.NameCourses}</span> : null}
                                                 <div className="card-text" style={{ display: "inline-block" }}>
@@ -566,7 +570,19 @@ function ViewForums() {
         var faculty = tag === "3" ? "faculty" : "";
         return <div className="forum">
             <Category current="Diễn đàn" currentlink="/forum" />
-            <PostForum post={Btn_ClickTag} allcourse={allcourse} />
+            <div style={{ display: "flex", alignItems: "center" }}>
+
+                <PostForum post={Btn_ClickTag} allcourse={allcourse} />
+                <div type="button" onClick={() => setSelfpost("all")} style={{ margin: "5px 10px 0 10px" }}>
+                    <input type="radio" id="all" name="viewpost" value="all" checked={selfpost === "all"} />
+                    <label type="button" style={{ fontSize: "16px",margin:"0 5px" }} for="all">Tất cả bài viết</label>
+                </div>
+
+                <div type="button" onClick={() => setSelfpost("self")} style={{ margin: "5px 10px 0 10px" }}>
+                    <input type="radio" id="self" name="viewpost" value="self" checked={selfpost === "self"} />
+                    <label type="button" style={{ fontSize: "16px",margin:"0 5px" }} for="self">Bài viết của bản thân</label>
+                </div>
+            </div>
             <div className="deadline-tag">
                 <div className="row tag">
                     <div type="button" className={"col-6 col-md-3 btn-deadline " + assign} onClick={() => Btn_ClickTag("0")} style={{ fontSize: "14px" }}> Tất cả khóa học
@@ -582,7 +598,7 @@ function ViewForums() {
             {/* <PostForum /> */}
 
             {renderTag()}
-        </div>;
+        </div >;
     }
 
     return render();

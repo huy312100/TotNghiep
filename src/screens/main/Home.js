@@ -90,6 +90,7 @@ const HomeScreen =({navigation}) =>{
       }).then(()=>{
         return Notifications.getExpoPushTokenAsync();
       }).then(async(res)=>{
+        console.log(res);
         setTokenNotification(res.data);
         //console.log(tokenNotification);
         await authenServices.postTokenNotification(token,res.data);

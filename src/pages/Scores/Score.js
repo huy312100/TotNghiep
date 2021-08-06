@@ -2,7 +2,6 @@ import React , {useState, useEffect}from 'react';
 import NavBar from '../../Navigation/NavBar'
 import { makeStyles } from '@material-ui/core/styles';
 import {Typography,Button,Toolbar,Box } from '@material-ui/core';
-import { TrainOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,13 +34,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Score(){
 
   const classes = useStyles()
-  const [value, setValue] = useState(0);
-  const [loading,setLoading] = useState(TrainOutlined);
   const [website,setWebsite] = useState("");
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   const isEmpty = (obj)=> {
     for(var prop in obj) {
@@ -71,15 +64,14 @@ export default function Score(){
             else return [];
         })
         .then(result => {
-            result = result.filter(connection => connection.Type == 'Portal');
-            if (isEmpty(result)==false)
+            result = result.filter(connection => connection.Type === 'Portal');
+            if (isEmpty(result)===false)
             {
                 setWebsite(result[0].Url);
             }
             else{
                 setWebsite("");
             }
-            setLoading(false);
 
         })
         .catch(error => {
@@ -88,7 +80,7 @@ export default function Score(){
     }
   useEffect(()=>{
       getPortalInfo();
-  },[])
+  })
 
   return (
       <div className={classes.root}>

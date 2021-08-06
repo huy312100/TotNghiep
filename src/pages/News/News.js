@@ -11,7 +11,14 @@ import SchoolIcon from '@material-ui/icons/School';
 const useStyles = makeStyles((theme) => ({
     root: {
       marginLeft: 200,
-      backgroundColor: "#faf9e8"
+    },
+    indicator: {
+      background: "none"
+    },
+    tabs: {
+      "& button[aria-selected='true']": {
+        border: "3px solid red"
+      }
     },
     toolbar: {
       display: 'flex',
@@ -52,6 +59,8 @@ export default function News(){
            indicatorColor="primary"
            textColor="primary"
             variant = "fullWidth"
+            className={classes.tabs}
+          classes={{ indicator: classes.indicator }}
           >
         <Tab icon={<AccountBalanceIcon/>} label="Tin tức trường"/>
         <Tab icon={<SchoolIcon/>} label="Tin tức khoa"/>

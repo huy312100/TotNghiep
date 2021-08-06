@@ -26,8 +26,8 @@ import SendIcon from '@material-ui/icons/Send';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
-import { current } from 'immer';
-import { findAllByDisplayValue } from '@testing-library/dom';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin:'auto',
@@ -123,7 +123,7 @@ function CommentList({id,email}) {
 
   const getPostComment = async() => {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       var urlencoded = new URLSearchParams();
       urlencoded.append("IDPost",id);
       var requestOptions = {
@@ -142,7 +142,7 @@ function CommentList({id,email}) {
     }
   const getLikedUser = async() => {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       
       var urlencoded = new URLSearchParams();
       urlencoded.append("IDPost", id);
@@ -188,7 +188,7 @@ function CommentList({id,email}) {
   }
   const deleteComments = async(id) => {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     
     var urlencoded = new URLSearchParams();
     urlencoded.append("IDCmt", id);
@@ -366,7 +366,7 @@ export default function Truong()
     const getLikedUser = async(currentPostID) => {
       console.log(currentPostID);
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       
       var urlencoded = new URLSearchParams();
       urlencoded.append("IDPost", currentPostID);
@@ -390,7 +390,7 @@ export default function Truong()
 
     const getUserEmail = ()=>{
       var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") + "tC");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") );
 
         var requestOptions = {
             method: 'GET',
@@ -405,7 +405,7 @@ export default function Truong()
     }
     const getForumPosts = async() => {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     
         var requestOptions = {
             method: 'POST',
@@ -423,7 +423,7 @@ export default function Truong()
     
     const postNewComment = async() => {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       
       var formdata = new FormData();
       
@@ -513,7 +513,7 @@ export default function Truong()
 
     const likePosts = async(id) => {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       
       var urlencoded = new URLSearchParams();
       urlencoded.append("IDPost", id);
@@ -533,7 +533,7 @@ export default function Truong()
 
     const unLikePosts = async(id) => {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       
       var urlencoded = new URLSearchParams();
       urlencoded.append("IDPost", id);
@@ -552,7 +552,7 @@ export default function Truong()
 
     const deletePosts = async(id) => {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       
       var urlencoded = new URLSearchParams();
       urlencoded.append("IDPost", id);

@@ -9,7 +9,7 @@ import {useHistory} from "react-router-dom"
 import Footer from '../../components/footer/Footer';
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import checkTokenExpired from "../../ValidAccess/AuthToken"
 const border = 200;
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -90,9 +90,16 @@ function Homepage() {
   TenKhoa: "Khoa Địa chất",
   Website: "https://phys.hcmus.edu.vn/",
   Images: "https://www.hcmus.edu.vn/images/2020/04/07/bn2.jpg"}]);
+  //console.log(localStorage.getItem("token"));
+ 
   const getNewsUniversity = async() => {
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
       var requestOptions = {
           method: 'GET',
@@ -108,6 +115,11 @@ function Homepage() {
 
 
   const getNewsFaculty = async() => {
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
     
@@ -125,8 +137,13 @@ function Homepage() {
             .catch(error => console.log('error', error));
         }
     const getInfoUni = async() => {
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
           var myHeaders = new Headers();
-          myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
+          myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       
           var requestOptions = {
               method: 'GET',
@@ -142,7 +159,6 @@ function Homepage() {
               .catch(error => console.log('error', error));
           }
     useEffect(() => {
-
         getNewsFaculty();
         getNewsUniversity();
         getInfoUni();

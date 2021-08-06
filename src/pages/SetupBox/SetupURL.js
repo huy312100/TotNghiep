@@ -1,10 +1,10 @@
-import React , {useState, useEffect}from 'react';
+import React , {useState}from 'react';
 import NavBar from '../../Navigation/NavBar'
 import { makeStyles } from '@material-ui/core/styles';
-import { Tab, Tabs, Typography, Box,Paper  } from '@material-ui/core';
-import PropTypes from "prop-types"
+import { Tab, Tabs,Paper  } from '@material-ui/core';
 import Moodle from './Moodle';
 import Portal from './Portal';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 const useStyles = makeStyles((theme) => ({
     root: {
       marginLeft: 200,
@@ -20,6 +20,14 @@ const useStyles = makeStyles((theme) => ({
     content: {
       flexGrow: 1,
       padding: theme.spacing(3),
+    },
+    indicator: {
+      background: "none"
+    },
+    tabs: {
+      "& button[aria-selected='true']": {
+        border: "3px solid red"
+      }
     },
   }));
   
@@ -44,9 +52,11 @@ export default function SetupURL(){
            indicatorColor="primary"
            textColor="primary"
             variant = "fullWidth"
+            className={classes.tabs}
+            classes={{ indicator: classes.indicator }}
           >
-        <Tab  label="Moodle"/>
-        <Tab  label="Portal"/>
+        <Tab icon={<AccountCircleIcon/>} label="Moodle"/>
+        <Tab icon={<AccountCircleIcon/>} label="Portal"/>
       </Tabs>
       {value === 0 && <Moodle/>} 
       {value === 1 && <Portal/>} 

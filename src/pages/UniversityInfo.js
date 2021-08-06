@@ -17,6 +17,8 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import HomeIcon from '@material-ui/icons/Home';
 import BusinessIcon from '@material-ui/icons/Business';
 import LoadingScreen from '../components/shared/LoadingScreen';
+import {useHistory} from "react-router-dom";
+import checkTokenExpired from "../ValidAccess/AuthToken"
 let theme = createMuiTheme();
 theme.typography.h6 = {
   fontSize: "1rem",
@@ -105,7 +107,17 @@ export default function UniversityInfo() {
     Images:""
   }])
   const [loading,setLoading] = useState(true);
+  const history = useHistory();
+  useEffect(() =>{
+    getInfoUni();
+  })
+
   const getInfoUni = async() => {
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
 
@@ -133,9 +145,8 @@ export default function UniversityInfo() {
         })
         .catch(error => console.log('error', error));
     }
-  useEffect(() =>{
-    getInfoUni();
-  },[])
+ 
+
   if (loading === true){
     return(
       <LoadingScreen/>
@@ -161,7 +172,7 @@ export default function UniversityInfo() {
           <Typography style={{fontSize: "25px"}}>
             <LanguageIcon style={{fontSize: "25px"}}/>  
             <a href={info.WebSite} rel="noopener noreferrer" target="_blank">
-                      Website: {info.WebSite}
+                {info.WebSite}
             </a>
           </Typography>
           <br/>
@@ -176,7 +187,7 @@ export default function UniversityInfo() {
           <Typography style={{fontSize: "25px"}}>
             <FacebookIcon style={{fontSize: "25px"}}/> 
             <a href={info.WebSite} rel="noopener noreferrer" target="_blank">
-                      Website: {info.FanFage}
+              {info.FanFage}
             </a>
           </Typography>
           <br/>

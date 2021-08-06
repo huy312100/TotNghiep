@@ -4,6 +4,8 @@ import {Box, Button,TextField,Typography} from "@material-ui/core"
 import { Alert } from 'react-native';
 import VisibilityPasswordTextField from "../../components/shared/VisibilityPasswordTextField"
 import LoadingScreen from "../../components/shared/LoadingScreen"
+import { useHistory } from 'react-router-dom';
+import checkTokenExpired from '../../ValidAccess/AuthToken';
 const useStyles = makeStyles((theme) => ({
     root: {
       background: "#faf9e8", 
@@ -16,20 +18,24 @@ const useStyles = makeStyles((theme) => ({
       },
     is_grouped____button_not__last_child: {
         marginRight: "10px"
-    }
+    },
+
+    centerBox: {
+        justifyContent: "center",
+        alignItems: "center"
+      }
   }));
 
 export default function Moodle()
 {
     const classes = useStyles()
-    const [info,setInfo] = useState({url:"",username:"",password:""});
     const [website,setWebsite] = useState("");
     const [username,setUsername] = useState("");
     const [password,setPassword] = useState("");
     const [loading,setLoading] = useState(true)
     const [isVisible,setVisible] = useState(true);
     const [cancelBtnActive,setCancelBtnActive] = useState(false);
-
+    const history = useHistory();
     const handleVisible = () =>{
         setVisible(!isVisible);
     }
@@ -52,8 +58,13 @@ export default function Moodle()
             return true;
         }
     const getMoodleInfo = async() => {
+            if (checkTokenExpired()) {
+            localStorage.clear()
+            history.replace("/");
+            return null
+            }
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     
             var requestOptions = {
                 method: 'GET',
@@ -70,8 +81,8 @@ export default function Moodle()
                     else return [];
                 })
                 .then(result => {
-                    result = result.filter(connection => connection.Type == 'Moodle');
-                    if (isEmpty(result)==false)
+                    result = result.filter(connection => connection.Type === 'Moodle');
+                    if (isEmpty(result)===false)
                     {
                         setWebsite(result[0].Url);
                         setUsername(result[0].Username)
@@ -93,8 +104,13 @@ export default function Moodle()
     
         }
     const deleteMoodleInfo = async() => {
+        if (checkTokenExpired()) {
+            localStorage.clear()
+            history.replace("/");
+            return null
+            }
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
             myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
             var urlencoded = new URLSearchParams();
@@ -135,11 +151,16 @@ export default function Moodle()
     }
     useEffect(()=>{
         getMoodleInfo();
-    },[])
+    })
     const postMoodleLink = async() => {
+        if (checkTokenExpired()) {
+            localStorage.clear()
+            history.replace("/");
+            return null
+            }
             setLoading(false);
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
             myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     
             var urlencoded = new URLSearchParams();
@@ -156,6 +177,7 @@ export default function Moodle()
     
             fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", requestOptions)
                 .then(response => {
+                    console.log(response.status);
                     if (response.status === 201) {
                         return response.text();
                     }
@@ -178,10 +200,7 @@ export default function Moodle()
        
     }
 
-  
-
-    console.log(website,username,password);
-    if (loading == true){
+    if (loading === true){
         return(
         <div className={classes.root}>
             <LoadingScreen/>
@@ -196,6 +215,7 @@ export default function Moodle()
               alignItems="left"
               background="dark"
               marginLeft="25%"
+              className={classes.centerBox}
             >
                 
             <Typography  style={{fontWeight:"bold",marginLeft:"12.5%",color:"blue"}}> Nhập URL Moodle ở đây </Typography>

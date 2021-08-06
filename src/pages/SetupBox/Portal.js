@@ -1,11 +1,10 @@
 import React , {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Box, Button,TextField,Typography} from "@material-ui/core"
-import { Alert } from 'react-native';
 import VisibilityPasswordTextField from "../../components/shared/VisibilityPasswordTextField"
 import LoadingScreen from "../../components/shared/LoadingScreen"
-import { type } from 'language-tags';
-import { responsiveFontSizes } from '@material-ui/core';
+import {useHistory} from "react-router-dom"
+import checkTokenExpired from "../../ValidAccess/AuthToken"
 const useStyles = makeStyles((theme) => ({
     root: {
       background: "#faf9e8", 
@@ -24,14 +23,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Moodle()
 {
     const classes = useStyles()
-    const [info,setInfo] = useState({url:"",username:"",password:""});
     const [website,setWebsite] = useState("");
     const [username,setUsername] = useState("");
     const [password,setPassword] = useState("");
     const [loading,setLoading] = useState(true)
     const [isVisible,setVisible] = useState(true);
     const [cancelBtnActive,setCancelBtnActive] = useState(false);
-
+    const history = useHistory();
     const handleVisible = () =>{
         setVisible(!isVisible);
     }
@@ -54,8 +52,13 @@ export default function Moodle()
             return true;
         }
     const getMoodleInfo = async() => {
+        if (checkTokenExpired()) {
+            localStorage.clear()
+            history.replace("/");
+            return null
+            }
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     
             var requestOptions = {
                 method: 'GET',
@@ -72,8 +75,8 @@ export default function Moodle()
                     else return [];
                 })
                 .then(result => {
-                    result = result.filter(connection => connection.Type == 'Portal');
-                    if (isEmpty(result)==false)
+                    result = result.filter(connection => connection.Type === 'Portal');
+                    if (isEmpty(result)===false)
                     {
                         setWebsite(result[0].Url);
                         setUsername(result[0].Username)
@@ -95,27 +98,30 @@ export default function Moodle()
     
         }
     const deleteMoodleInfo = async() => {
+        if (checkTokenExpired()) {
+            localStorage.clear()
+            history.replace("/");
+            return null
+            }
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
-            myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+            //myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-            var urlencoded = new URLSearchParams();
-            urlencoded.append("typeUrl","Portal");
+            //var urlencoded = new URLSearchParams();
+            //urlencoded.append("typeUrl","Portal");
 
             var requestOptions = {
                 method: 'DELETE',
                 headers: myHeaders,
-                body: urlencoded,
                 redirect: 'follow'
             };
     
-            fetch("https://hcmusemu.herokuapp.com/web/deleteaccount", requestOptions)
+            fetch("https://hcmusemu.herokuapp.com/web/deleteaccountportal", requestOptions)
                 .then(response => {
-                    console.log(response.status)
+                    //console.log(response.status)
                     if (response.status === 200) {
-                        console.log(response.text())
 
-                        return response.text();
+                        return response.status;
                     }
                     else {
                         throw new Error("Có lỗi không xoá được");
@@ -139,11 +145,16 @@ export default function Moodle()
     }
     useEffect(()=>{
         getMoodleInfo();
-    },[])
+    })
     const postMoodleLink = async() => {
+        if (checkTokenExpired()) {
+            localStorage.clear()
+            history.replace("/");
+            return null
+            }
             setLoading(false);
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+            myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
             myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     
             var urlencoded = new URLSearchParams();
@@ -186,7 +197,7 @@ export default function Moodle()
   
 
     console.log(website,username,password);
-    if (loading == true){
+    if (loading === true){
         return(
         <div className={classes.root}>
             <LoadingScreen/>
@@ -215,7 +226,6 @@ export default function Moodle()
                     size="medium"  />
             <Typography   style={{fontWeight:"bold",marginLeft:"10%",color:"blue"}}> Nhập tài khoản Portal ở đây </Typography>
             <TextField 
-                    
                     id = "user_name"
                     value={username}  
                     variant="outlined"   
@@ -225,7 +235,6 @@ export default function Moodle()
                     size="medium"  />
             <Typography style={{fontWeight:"bold",marginLeft:"10%",color:"blue"}}> Nhập mật khẩu Portal ở đây </Typography>
             <VisibilityPasswordTextField 
-                    
                     isVisible={isVisible}
                     onVisibilityChange = {handleVisible}
                     id = "user_pass"
@@ -240,7 +249,7 @@ export default function Moodle()
                 <Button style={{width:"auto",backgroundColor: cancelBtnActive===true ? "green": "#bbf2ca" ,color:"white"}} disabled={!cancelBtnActive} onClick={hanldePostMoodle}>
                     Kết nối
                 </Button>
-                <Button onClick={handleDeleteMoodle} disabled={cancelBtnActive} style={{width:"auto",backgroundColor: cancelBtnActive==false?"red":"#f0b3b3",color:"white",marginLeft: 175}} >
+                <Button onClick={handleDeleteMoodle} disabled={cancelBtnActive} style={{width:"auto",backgroundColor: cancelBtnActive===false?"red":"#f0b3b3",color:"white",marginLeft: 175}} >
                    Huỷ kết nối
                 </Button>
             </div>

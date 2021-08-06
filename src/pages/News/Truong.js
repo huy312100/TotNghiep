@@ -3,7 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
 import LoadingScreen from '../../components/shared/LoadingScreen';
-
+import { useHistory } from 'react-router-dom';
+import checkTokenExpired from '../../ValidAccess/AuthToken';
+import {Box} from "@material-ui/core"
 const useStyles = makeStyles((theme) => ({
     news_page: {
       margin: "10px 0 0 16vw", 
@@ -36,10 +38,15 @@ export default function Truong()
     const classes = useStyles()
     const [newsuni,setNewsUni] = useState([]);
     const [loading,setLoading] = useState(true);
-
+    const history = useHistory();
     const getNewsUniversity = async() => {
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     
         var requestOptions = {
             method: 'GET',
@@ -49,16 +56,15 @@ export default function Truong()
     
         await fetch("https://hcmusemu.herokuapp.com/info/newsuniversity", requestOptions)
             .then(response => {return response.json()})
-            .then(result => {setNewsUni(result)})
+            .then(result => {setNewsUni(result);setLoading(false)})
             .catch(error => console.log('error', error), setLoading(false));
+
     }
 
     useEffect(() => {
-        getNewsUniversity();
-        setLoading(!loading);
-       
-     },[]);
-     if (loading == true) 
+        getNewsUniversity();       
+     });
+     if (loading === true) 
      return (
       <LoadingScreen/>
       )
@@ -66,6 +72,10 @@ export default function Truong()
      {
         return newsuni.map((item, index) => {
             return (
+              <Box container
+              justifyContent="center"
+              alignItems="left"
+              background="dark">
               <div key={index}>
                  <a classes={classes.news_page_a} href={item.Link} target="_blank" rel="noopener noreferrer"> 
             <div className={classes.news_page__news}>
@@ -78,7 +88,6 @@ export default function Truong()
                   {item.Title}
               </span>
             </div>
-              <div></div>
               <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -91,6 +100,8 @@ export default function Truong()
             </div>{}
             </a>
               </div>
+              <hr/>
+              </Box>
             )
       })}
     

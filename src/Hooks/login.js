@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import clsx from "clsx"
 import { makeStyles } from '@material-ui/core';
-import { Grid, FormControl,Input, FormGroup,Box,IconButton,endAdornment,InputAdornment,InputLabel } from '@material-ui/core';
+import { Grid, FormControl,Input, FormGroup,Box,IconButton,InputAdornment } from '@material-ui/core';
 import Logo from "../images/logo.png"
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
@@ -110,8 +110,9 @@ export default function LoginButton() {
             })
             .then(result => {
                 if (result.token !== undefined) {
-                    localStorage.setItem("token", result.token)
-                    console.log(result.token)
+                    localStorage.setItem("token", result.token+ "tC")
+                    localStorage.setItem("expired",(new Date).getTime()+7200000)
+                    //console.log(result.token)
                     history.replace("/");
                 }
             })
@@ -198,7 +199,7 @@ export default function LoginButton() {
                         </FormGroup>
                        <br/>
                             {loaddingButton()}
-                            <Link to="/resetaccount" className={classes.btnForgetPwd}>Quên mật khẩu?</Link>
+                            <Link to="/resetpassword" className={classes.btnForgetPwd}>Quên mật khẩu?</Link>
                 </Grid>
             </Grid>
         </div>

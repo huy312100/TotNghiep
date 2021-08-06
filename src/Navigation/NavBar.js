@@ -13,12 +13,12 @@ import AccountMenu from "./Account"
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MessageIcon from '@material-ui/icons/Message';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import logo from "../images/logo.jpg"
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 //import NotificationsIcon from '../images/notification.jpg';
 import {useHistory} from "react-router-dom"
 import {List,Toolbar,Typography,ListItem,ListItemIcon,IconButton,ListItemText,Menu,Badge,Hidden,Drawer,Divider,CssBaseline,AppBar} from "@material-ui/core"
 import ScoreIcon from '@material-ui/icons/Score';
-
+import checkTokenExpired from '../ValidAccess/AuthToken';
 
 const drawerWidth = 200;
 const AppBarHeight = 60
@@ -38,13 +38,6 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: 0,
       height: AppBarHeight
     },
-  },
-  toolbarIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
   },
   toolbarIcon: {
     display: 'flex',
@@ -93,7 +86,7 @@ const StyledMenu = withStyles({
 ));
 
 function NavBar() {
-  let history = useHistory();
+  const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -137,8 +130,13 @@ function NavBar() {
   };
 
   const getInfoUser = async() => {
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
+    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
     var requestOptions = {
         method: 'GET',
@@ -192,7 +190,7 @@ useEffect(() => {
       <ListItemText  primary="Trang chủ" />
     </ListItem>
     <Divider light />
-    <ListItem button onClick={()=> history.push("/news")}>
+    <ListItem button onClick={()=> history.push("/news?tag=0")}>
       <ListItemIcon>
         <DateRangeIcon style={{ color: 'dark' }} />
       </ListItemIcon>
@@ -218,6 +216,13 @@ useEffect(() => {
         <CalendarTodayIcon style={{ color: 'dark' }} />
       </ListItemIcon>
       <ListItemText primary="Lịch" />
+    </ListItem>
+    <Divider light />
+    <ListItem button onClick={()=> history.push("/course")}>
+      <ListItemIcon >
+        <LocalLibraryIcon style={{ color: 'dark' }}/>
+      </ListItemIcon>
+      <ListItemText primary="Môn học" />
     </ListItem>
     <Divider light />
     <ListItem button onClick={()=> history.push("/score")}>

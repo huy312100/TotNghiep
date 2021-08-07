@@ -6,6 +6,7 @@ import LoadingScreen from '../../components/shared/LoadingScreen';
 import checkTokenExpired from '../../ValidAccess/AuthToken';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
+import NavigationFullscreen from 'material-ui/svg-icons/navigation/fullscreen';
 const useStyles = makeStyles((theme) => ({
 
     course_tag: {
@@ -84,45 +85,60 @@ function AllCourses(){
   const [loadingAll,setLoadingAll] = useState(true);
   const [page,setPage] = useState(0);
   const history = useHistory();
+  const [finish,setFinish] = useState(false);
 
   useEffect(() => {
     
-    window.addEventListener("scroll", handleScroll);
+    //window.addEventListener("scroll", handleScroll);
     getAllCourse();
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+     // window.removeEventListener("scroll", handleScroll);
     };
-  }, [loadingAll])
+  }, [page])
   const getAllCourse = () => {
     if (checkTokenExpired()) {
       localStorage.clear()
       history.replace("/");
       return null
       }
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-    var urlencoded = new URLSearchParams();
-    urlencoded.append("page", page);
-
-    var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-    };
-
-    fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            //console.log(result)
-            setAllCourse(result);
-            setLoading(false);
-            setLoadingAll(false);
-            
+        setLoading(true);
+        let details = {
+          page: page,
+        };
+    
+        let formBody = [];
+    
+        for (let property in details) {
+          let encodedKey = encodeURIComponent(property);
+          let encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+    
+        console.log(formBody);
+    
+        fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `bearer ${localStorage.getItem("token")}`,
+          },
+          body: formBody,
         })
-        .catch(error => console.log('error', error));
+        .then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+        })
+          .then(([statusCode, dataRes]) => {
+            if(statusCode === 200){
+              console.log(dataRes);
+              setAllCourse(allCourse.concat(dataRes));
+              setPage(page+1);
+            }
+            setLoading(false);
+          })
+          .catch((err) => console.log(err, "error"));
   }
 
   const getAllCourseScroll = () => {
@@ -131,6 +147,7 @@ function AllCourses(){
       history.replace("/");
       return null
       }
+    
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -146,15 +163,21 @@ function AllCourses(){
     };
 
     fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            //console.log(result)
-            let temp = allCourse;
-            Array.prototype.push.apply(temp, result)
-            console.log("temp:", temp)
-            setAllCourse(temp);
+        .then(response => {
+                const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+          })
+        .then(([statusCode, dataRes]) => {
+          if(statusCode === 200){
+            console.log(dataRes);
+            //let temp = allCourse;
+            //temp.push.apply(result);
+            //setAllCourse(temp);
+            setAllCourse(allCourse.concat(dataRes));
+            console.log(allCourse);
             setLoadingAll(false);
-
+            }
         })
         .catch(error => console.log('error', error));
     }
@@ -175,15 +198,12 @@ function AllCourses(){
     );
 
     const windowBottom = Math.round(windowHeight + window.pageYOffset);
-    if (windowBottom >= docHeight && loadingAll === false) {
-      console.log("bottom")
+    if (windowBottom >= docHeight-60 && loadingAll === false) {
       setLoadingAll(true);
-      let newpage = page+1;
-      setPage(newpage);
+      setPage(page+1);
       getAllCourseScroll();
      }
     }
-
   if (loading === true){
     return(
         <div>
@@ -205,16 +225,15 @@ function AllCourses(){
                         <div key={index} className={classes.course}>
                             <Link to={"/course/" + c.IDCourses} className={clsx(classes.course__title,classes.course__direct)}>{c.name}</Link>
                             <div className={classes.list_teacher}>
-                                {c.teacher.map((tc, tindex) => (
+                                {c.teacher.length > 1 ? c.teacher.map((tc, tindex) => (
                                     <div key={tindex} className={classes.list_teacher__content}>
                                         <span>Giáo viên: </span>
                                         <span>{tc}</span>
-                                    </div>))}
+                                    </div>)) : null}
                             </div>
                         </div>
                     )
-                })
-                }
+                })}
                 {loadingAll === true ? <div className="text-center">
                     <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
                         <span className="sr-only">Loading...</span>

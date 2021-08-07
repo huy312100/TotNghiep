@@ -87,7 +87,6 @@ function CurrentCourse(){
     useEffect(()=>{
         getCurrentCourse()
     },[])
-
     const getCurrentCourse = () => {
       if (checkTokenExpired()) {
         localStorage.clear()

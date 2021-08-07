@@ -1,20 +1,13 @@
 import React , {useState, useEffect}from 'react';
 import NavBar from '../../Navigation/NavBar'
 import { makeStyles } from '@material-ui/core/styles';
-import { Tab, Tabs, Typography, Box,Paper  } from '@material-ui/core';
+import { Tab, Tabs, Typography, Box,Paper,Toolbar  } from '@material-ui/core';
 import CurrentCourse from './CurrentCourse';
 import AllCourses from './AllCourses';
 import Category from "./Category"
 const useStyles = makeStyles((theme) => ({
     root: {
       marginLeft: 200,
-    },
-    toolbar: {
-      display: 'flex',
-      alignItems: 'left',
-      justifyContent: 'flex-end',
-      padding: theme.spacing(0, 1),
-      ...theme.mixins.toolbar,
     },
     content: {
       flexGrow: 1,
@@ -35,8 +28,8 @@ export default function Courses(){
   return (
       <Paper className={classes.root}>
         <NavBar/>
+          <Toolbar/>
             <main className={classes.content}>
-            <div className={classes.toolbar} />
             <div style={{backgroundColor:"#c8d1db",borderRadius:"25px"}}>
             <Category current="Môn học"/>
             </div>

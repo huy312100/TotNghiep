@@ -85,7 +85,7 @@ const DeadlineMonthScreen = ({navigation}) => {
             </View>
             
             <View tyle={[styles.info,{marginBottom:20}]}>
-                <Text style={[styles.date,{color: currentTimestamp > item.duedate ? "green" :"red"}]}>Hạn chót : {dateUtils.ConvertTimestampToVNTime(item.duedate)}</Text>
+                <Text style={[styles.date,{color: currentTimestamp > item.duedate*1000 ? "blue" :"red"}]}>Hạn chót : {dateUtils.ConvertTimestampToVNTime(item.duedate)}</Text>
             </View>
                 
         </TouchableOpacity>

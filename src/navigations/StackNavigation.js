@@ -873,7 +873,11 @@ function ForumACourseTopTab(){
         name="Forum Of A Course By App" 
         component={ForumCourseOfAppScreen}
         options={{
-          tabBarLabel:'Ứng dụng'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Ứng dụng
+            </Text>
+          )
         }}
         />
   
@@ -881,7 +885,11 @@ function ForumACourseTopTab(){
         name="Forum Of A Moodle Course" 
         component={ForumOfCourseMoodleScreen} 
         options={{
-          tabBarLabel:'Trang môn học'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Trang môn học
+            </Text>
+          )
         }}/>
 
     </topTab.Navigator>

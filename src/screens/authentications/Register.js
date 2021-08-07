@@ -129,6 +129,20 @@ const RegisterScreen = ({ navigation }) => {
       return false;
     }
     return true;
+  };
+
+  const checkIdUni = () => {
+    if(idUni==="" || idUni == null){
+      return false;
+    }
+    return true;
+  };
+
+  const checkIdFaculty = () => {
+    if(idFaculty ==="" || idFaculty == null){
+      return false;
+    }
+    return true;
   }
 
   const checkPassword = () => {
@@ -232,11 +246,9 @@ const RegisterScreen = ({ navigation }) => {
           <View style={styles.dropdown}>
             <RNPickerSelect
               onValueChange={(value) => { 
-                if(value!=null){
-                  setIdUni(value);
-                  
-                  getAllFacultyName(value);
-                }
+                console.log(value);
+                setIdUni(value);
+                getAllFacultyName(value);
               }}
               //style={{...pickerSelectStyles}}
               useNativeAndroidPickerStyle={false}
@@ -252,6 +264,7 @@ const RegisterScreen = ({ navigation }) => {
                   fontWeight:"500",
                   color:'#b3b3b3'
                 },
+                inputAndroid: {color: 'black'}
               }}
               Icon={() => {
                 return <Ionicons style={pickerSelectStyles.iconDropdown} name="caret-down-outline" size={20} color="gray" />;
@@ -262,28 +275,23 @@ const RegisterScreen = ({ navigation }) => {
           <View style={styles.dropdown}>
             <RNPickerSelect
               onValueChange={(value) => {
-
-                if(value!=null){
                   console.log(value);
                   setIdFaculty(value);
-                }
-               
-               
               }}
-              //style={{ inputAndroid: { color: "black" } }}
+              //style={[styles.inputAndroid,{ color: "black" }]}
               useNativeAndroidPickerStyle={false}
               //fixAndroidTouchableBug={true}
               placeholder={{
                 label: "Chọn khoa",
                 value: null,
               }}
-
               style={{
                 placeholder: {
                   fontSize: 15.5,
                   fontWeight:"500",
                   color:'#b3b3b3'
                 },
+                inputAndroid: {color: 'black'}
               }}
               Icon={() => {
                 return <Ionicons style={pickerSelectStyles.iconDropdown} name="caret-down-outline" size={20} color="gray" />;
@@ -296,7 +304,7 @@ const RegisterScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.btnLoginTouchable}
               onPress={() => {
-                if(checkPassword() && checkUsername() && idUni!="" && idFaculty !="" && fullname.trim().length>0) {
+                if(checkPassword() && checkUsername() && checkIdUni() && checkIdFaculty() && fullname.trim().length>0) {
                   register();
                 }
                 else if(fullname.trim().length===0){
@@ -305,10 +313,10 @@ const RegisterScreen = ({ navigation }) => {
                 else if(!checkUsername()){
                   alert("Tên tài khoản không hợp lệ");
                 }
-                else if(idUni===""){
+                else if(!checkIdUni()){
                   alert("Xin vui lòng chọn trường");
                 }
-                else if(idFaculty ===""){
+                else if(!checkIdFaculty()){
                   alert("Xin vui lòng chọn khoa");
                 }
                 else{
@@ -415,6 +423,7 @@ const pickerSelectStyles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     marginVertical: 20,
+    color: 'black',
   },
 
   iconDropdown: {

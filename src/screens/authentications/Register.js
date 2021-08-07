@@ -1,5 +1,6 @@
 import React, { useState, useEffect,useRef  } from "react";
 import {
+  Dimensions,
   StyleSheet,
   Text,
   View,
@@ -371,7 +372,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
+    padding: Dimensions.get("window").height * 0.02,
     marginVertical: 20,
     borderRadius: 10,
   },

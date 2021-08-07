@@ -324,7 +324,7 @@ const CalendarScreen =({navigation})=> {
     >
       <View style={viewMonthItem.info}>
           <View style={{flexDirection:'row'}}>
-              <Text style={[viewMonthItem.title,{width:200}]} numberOfLines={1}>{item.title}</Text>
+              <Text style={[viewMonthItem.title,{width:Dimensions.get("window").width*0.56}]} numberOfLines={1}>{item.title}</Text>
               <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{dateUtils.ConvertDateDDMMYY(item.start.slice(0,10))}</Text>
           </View>
 
@@ -524,12 +524,12 @@ const CalendarScreen =({navigation})=> {
 
     <Overlay isVisible={visibleOverlay} onBackdropPress={toggleOverlay} >
       <View style={overlayStyle.overlay}>
-        <Text style={overlayStyle.headerStyle}>Chi tiết sự kiện</Text>
+        <Text style={[overlayStyle.headerStyle,overlayStyle.bottomRow]}>Chi tiết sự kiện</Text>
           <View style={overlayStyle.bottomRow} >
             <View style={overlayStyle.row}>
             {/* <Ionicons name="people-outline" size={23} color="red" /> */}
                 <Text style={overlayStyle.label}>Tên</Text>
-                <Text numberOfLines={3} style={overlayStyle.onTheRight}>{nameEvent}</Text>
+                <Text numberOfLines={2} style={overlayStyle.onTheRight}>{nameEvent}</Text>
             </View>
           </View>
 
@@ -590,7 +590,7 @@ const CalendarScreen =({navigation})=> {
                       },
                     ]
                   );}}>
-                  <Text numberOfLines={3} style={{color:'blue',textDecorationLine:"underline"}}>
+                  <Text numberOfLines={1} style={{color:'blue',textDecorationLine:"underline"}}>
                   {urlEvent}
                   </Text>
                 </TouchableOpacity>
@@ -678,11 +678,12 @@ const CalendarScreen =({navigation})=> {
 const overlayStyle = StyleSheet.create({
 
   overlay:{
-    
+    width:Dimensions.get("window").width*0.75,
+    //height:500,
   },
 
   bottomRow:{
-    marginBottom:18
+    marginBottom:Dimensions.get("window").height*0.022
   },
  
   headerStyle: {
@@ -694,14 +695,13 @@ const overlayStyle = StyleSheet.create({
 
   row:{
     flexDirection:'row',
-    marginVertical:10,
+    marginVertical:0,
     marginHorizontal:3
   },
 
   onTheRight: {
-    width:200,
-    position: 'absolute',
-    right: 0
+    width:Dimensions.get("window").width*0.48,
+    marginLeft: 'auto',
   },
 
   label: {
@@ -712,10 +712,10 @@ const overlayStyle = StyleSheet.create({
 
   button:{
     borderRadius:30,
-    paddingVertical:15,
-    paddingHorizontal: 50,
-    marginTop:40,
-    marginHorizontal:15
+    paddingVertical:Dimensions.get("window").width*0.036,
+    paddingHorizontal: Dimensions.get("window").width*0.1,
+    marginTop:10,
+    marginHorizontal:6
   },
 
   textBtnConnect: {
@@ -748,8 +748,6 @@ const viewMonthItem = StyleSheet.create({
     marginHorizontal:15,
     marginTop:15,
     marginBottom:8,
-    borderWidth:0.3,
-    borderColor:'silver'
   },
 
   onTheRight: {

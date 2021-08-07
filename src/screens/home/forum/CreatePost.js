@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,TextInput,TouchableWithoutFeedback,Keyboard,ImageBackground } from 'react-native';
+import { Dimensions,ScrollView,View,StyleSheet,Text,TouchableOpacity,TextInput,TouchableWithoutFeedback,Keyboard,ImageBackground } from 'react-native';
 import { Entypo,FontAwesome,MaterialCommunityIcons } from '@expo/vector-icons'
 import { Header,Overlay } from 'react-native-elements';
 
@@ -103,7 +103,7 @@ const CreatePostScreen = ({navigation}) => {
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
           }}>
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <Header
                     containerStyle={{
                         backgroundColor: 'white',
@@ -203,7 +203,7 @@ const CreatePostScreen = ({navigation}) => {
                                 setImageSelected(image)
                             }}
                         >
-                        <ImageBackground style={{width:200,height:200,borderStyle:'dashed',borderColor:'silver',borderWidth:2,justifyContent:'center',alignItems:'center'}}
+                        <ImageBackground style={{width:Dimensions.get("window").width*0.5,height:Dimensions.get("window").width*0.5,borderStyle:'dashed',borderColor:'silver',borderWidth:2,justifyContent:'center',alignItems:'center'}}
                              source={{uri: imageSelected.uri !=='' ? imageSelected.uri : null}}
                         >
                             <MaterialCommunityIcons name="image-plus" size={40} color="#0099CC" />
@@ -255,7 +255,7 @@ const CreatePostScreen = ({navigation}) => {
                         </View>
                     </TouchableOpacity>
                 </Overlay>
-            </View>
+            </ScrollView>
           </TouchableWithoutFeedback>
         
         
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        fontSize:18,
+        fontSize:16,
         marginLeft:5
     },
 

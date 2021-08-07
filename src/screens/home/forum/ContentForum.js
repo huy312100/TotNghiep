@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef,useCallback} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform,ActivityIndicator} from 'react-native';
+import { ScrollView,View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform,ActivityIndicator} from 'react-native';
 import { Fontisto,FontAwesome,Entypo,MaterialCommunityIcons,AntDesign,Ionicons } from '@expo/vector-icons';
 import { Header } from 'react-native-elements';
 

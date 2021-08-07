@@ -647,7 +647,7 @@ const HomeScreen = ({ navigation }) => {
               navigation.navigate("University Info")
             }}>
             <FontAwesome5 name="info-circle" size={40} color="red" />
-                <Text style={styles.textItem}>Thông tin trường</Text>
+                <Text style={styles.textItem}>Tin tức</Text>
             </TouchableOpacity> 
           </View>
 
@@ -940,7 +940,7 @@ const styles = StyleSheet.create({
   },
 
   courseName: {
-    width: '100%',
+    width: '90%',
     fontSize: 13,
     fontWeight: "bold",
   },
@@ -973,8 +973,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginBottom:10,
     backgroundColor: "white",
-    borderWidth: .2,
-    borderColor: "#cccccc",
+    borderColor:'#DDDDDD',
+    borderWidth:1,
     borderRadius: 10,
     paddingVertical:10
   },
@@ -998,13 +998,13 @@ const calendarStyle = StyleSheet.create({
     marginBottom: 10,
     padding: 15,
     backgroundColor: "white",
-    borderWidth: .2,
-    borderColor: "#cccccc",
+    borderColor:'#DDDDDD',
+    borderWidth:1,
     borderRadius: 10,
   },
 
   label: {
-    width: 200,
+    width: DeviceWidth*0.52,
     fontWeight: "bold",
     fontSize: 15,
   },
@@ -1022,8 +1022,8 @@ const newsStyle = StyleSheet.create({
     marginHorizontal: 8,
     marginBottom:10,
     backgroundColor: "white",
-    borderWidth: .2,
-    borderColor: "#cccccc",
+    borderColor:'#DDDDDD',
+    borderWidth:1,
     borderRadius: 10,
     padding:15
   },

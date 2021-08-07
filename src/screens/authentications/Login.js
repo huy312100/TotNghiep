@@ -1,5 +1,16 @@
 import React,{ useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback,Image} from "react-native";
+import { 
+  Dimensions,
+  StyleSheet, 
+  Text, 
+  View, 
+  TouchableOpacity,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Image
+}from "react-native";
+
 import {
   Heading,
   UsernameInput,
@@ -83,56 +94,55 @@ const LoginScreen = ({navigation}) => {
     }
  }
   return (
-    <TouchableWithoutFeedback onPress={()=>{
-      Keyboard.dismiss();
-    }}>
-      <View style={styles.container}>
+      <TouchableWithoutFeedback onPress={()=>{
+        Keyboard.dismiss();
+      }}>
+        <View style={styles.container}>
 
-        <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
-        <Heading>E M U</Heading>
+          <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
+          <Heading>E M U</Heading>
 
-        <UsernameInput label="Email"
-          hideLabel={username !== ''}
-          onChangeText={(username)=>setUsername(username)}/>
+          <UsernameInput label="Email"
+            hideLabel={username !== ''}
+            onChangeText={(username)=>setUsername(username)}/>
 
-        <PasswordInput label="Mật khẩu"
-          hideLabel={password !== ''}
-          onChangeText={(password)=>setPassword(password)}/>
+          <PasswordInput label="Mật khẩu"
+            hideLabel={password !== ''}
+            onChangeText={(password)=>setPassword(password)}/>
 
-        <View style={styles.viewForgetPassword}>
-          <TouchableOpacity
+          <View style={styles.viewForgetPassword}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Forget Password');
+              }}
+            >
+              <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
+            </TouchableOpacity>
+          </View>
+
+
+
+          <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
             onPress={() => {
-              navigation.navigate('Forget Password');
-            }}
-          >
-            <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
+              loginAPI();
+              }}>
+            <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
           </TouchableOpacity>
-        </View>
 
-
-
-        <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
-          onPress={() => {
-            loginAPI();
+          <View style={styles.bottomText}>
+            <Text>Chưa có tài khoản?</Text>
+            <TouchableOpacity onPress={() =>{
+              //dispatch(universityActions.getAllInfoUniversity());
+              navigation.navigate("Register");
+              
             }}>
-          <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
-        </TouchableOpacity>
+              <Text style={styles.signupText}>Đăng ký ngay</Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.bottomText}>
-          <Text>Chưa có tài khoản?</Text>
-          <TouchableOpacity onPress={() =>{
-            //dispatch(universityActions.getAllInfoUniversity());
-            navigation.navigate("Register");
-            
-          }}>
-            <Text style={styles.signupText}>Đăng ký ngay</Text>
-          </TouchableOpacity>
-        </View>
-
-        {isLoading && LoadingScreen()}
-        </View>
-    </TouchableWithoutFeedback>
-    
+          {isLoading && LoadingScreen()}
+          </View>
+      </TouchableWithoutFeedback>
   );
 };
 
@@ -142,12 +152,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     padding: 10,
-    paddingTop: 80,
+    paddingTop: 50,
   },
 
   imageLogo: {
-    width:175,
-    height:125,
+    width:Dimensions.get("window").width * 0.35,
+    height:Dimensions.get("window").height * 0.15,
   },
 
   passInput: {
@@ -159,7 +169,7 @@ const styles = StyleSheet.create({
     width:'100%',
     alignItems: 'flex-end',
     paddingRight:5,
-    marginTop:20
+    marginVertical:Dimensions.get("window").height * 0.018
   },
 
   forgetPassText: {
@@ -189,10 +199,8 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 20,
     borderRadius: 10,
-    paddingTop:20,
-    paddingBottom:20
+    paddingVertical:Dimensions.get("window").height * 0.02
   },
 
   textBtnLogIn: {

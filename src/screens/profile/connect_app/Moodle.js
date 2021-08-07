@@ -175,7 +175,7 @@ const MoodleConnectScreen = ({navigation})=>{
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
         }}>
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
             
                 {isLoading && LoadingScreen()}
                
@@ -235,7 +235,7 @@ const MoodleConnectScreen = ({navigation})=>{
            
 
 
-        </View>
+        </ScrollView>
         </TouchableWithoutFeedback>
         
     ); 

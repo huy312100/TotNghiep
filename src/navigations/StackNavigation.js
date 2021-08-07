@@ -637,32 +637,34 @@ function CourseInfoTopTab(){
 
 //Top tab of university info screen
 function UniversityInfoTopTab(){
+  const DeviceWidth = Dimensions.get('window').width;
+
   return (
-    <topTab.Navigator initialRouteName="University New" 
+    <topTab.Navigator initialRouteName="Faculty New" 
     tabBarOptions={{
       activeTintColor: 'blue',
       labelStyle: { fontSize: 10 },
       }}>
-  
-      <topTab.Screen 
-        name="University New" 
-        component={UniversityNewScreen}
-        options={{
-          tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
-              Tin tức trường
-            </Text>
-          )
-        }}
-        />
 
       <topTab.Screen 
         name="Faculty New" 
         component={FacultyNewScreen}
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:120}}>
               Tin tức khoa
+            </Text>
+          )
+        }}
+      />
+  
+      <topTab.Screen 
+        name="University New" 
+        component={UniversityNewScreen}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:120}}>
+              Tin tức trường
             </Text>
           )
         }}
@@ -673,8 +675,8 @@ function UniversityInfoTopTab(){
         component={UniversityInfoScreen} 
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
-              Thông tin
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-240)+20}}>
+              Thông tin trường
             </Text>
           )
         }}

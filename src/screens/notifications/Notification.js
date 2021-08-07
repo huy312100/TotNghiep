@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView } from 'react-native';
+import { Dimensions, Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { Badge } from 'react-native-elements';
 import {useDispatch,useSelector} from "react-redux";
@@ -179,7 +179,7 @@ const NotificationScreen=({navigation})=>{
                   <Image style={styles.img} source={require("../../../assets/notification-flat.png")} />
                   {!item.State && <Badge
                       status="error"
-                      containerStyle={{ position: 'absolute', top: -4, right: -4 }}
+                      containerStyle={{ position: 'absolute', top: -2, right: -2 }}
                   />}
               </View>
           </View>
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
       padding: 15,
       paddingLeft: 0,
       marginLeft: 10,
-      width: 300,
+      width: Dimensions.get("window").width*0.75,
       borderBottomWidth: 1,
       borderBottomColor: "#cccccc",
     },

@@ -1,5 +1,5 @@
 import React,{ useState } from 'react';
-import { View, Text,TouchableOpacity,Keyboard,TouchableWithoutFeedback,StyleSheet,TextInput,Alert} from 'react-native';
+import { ScrollView, View, Text,TouchableOpacity,Keyboard,TouchableWithoutFeedback,StyleSheet,TextInput,Alert} from 'react-native';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useDispatch,useSelector } from 'react-redux';
@@ -33,7 +33,7 @@ const CreateParentAccountScreen = ({navigation}) => {
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
         }}>
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
            
                 {isLoading && LoadingScreen()}
                
@@ -76,7 +76,7 @@ const CreateParentAccountScreen = ({navigation}) => {
                     }}>
                     <Text style={styles.textBtnConnect}>Tạo</Text>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
 
         
         </TouchableWithoutFeedback>

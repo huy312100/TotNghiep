@@ -239,8 +239,8 @@ const styles = StyleSheet.create({
         marginHorizontal:15,
         marginTop:15,
         marginBottom:8,
-        borderWidth:0.3,
-        borderColor:'silver'
+        borderColor:'#DDDDDD',
+        borderWidth:1.5
     },
 
     onTheRight: {

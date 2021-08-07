@@ -155,7 +155,7 @@ const PortalConnectScreen = ({navigation})=>{
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
         }}>
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 {isLoading && LoadingScreen()}
                 
                 <Text style={styles.label}>
@@ -188,7 +188,7 @@ const PortalConnectScreen = ({navigation})=>{
                         <Text style={styles.textBtnConnect}>Kết nối</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </ScrollView>
         </TouchableWithoutFeedback>
         
     ); 

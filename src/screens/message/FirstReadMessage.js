@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl,Alert } from 'react-native';
+import { Dimensions, View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl,Alert } from 'react-native';
 import { useSelector,useDispatch } from 'react-redux';
 
 import * as dateUtils from '../../utils/Date';
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         padding: 15,
         paddingLeft: 0,
         marginLeft: 10,
-        width: 300,
+        width: Dimensions.get("window").width*0.75,
         borderBottomWidth: 1,
         borderBottomColor: "#cccccc",
       },

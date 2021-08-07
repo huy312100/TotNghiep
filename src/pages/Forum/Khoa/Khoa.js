@@ -1,5 +1,5 @@
-import React , {useState, useEffect}from 'react';
-import { Typography,makeStyles, Button,Box,Menu,MenuItem,Input,TextField } from '@material-ui/core';
+import React , {useState, useEffect,useCallback}from 'react';
+import { Typography,makeStyles,Menu,MenuItem } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -10,15 +10,15 @@ import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CommentIcon from '@material-ui/icons/Comment';
-import UserComment from "../Comment"
-import { PostThread } from '../PostThread';
 import TimeAgo from '../../../components/functions/TimeAgo';
 import ConfirmDialog from "../../../components/shared/ConfirmDialog"
 import LoadingScreen from '../../../components/shared/LoadingScreen';
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import defaultValue from "../../../images/default.png"
-import SendIcon from '@material-ui/icons/Send';
+import { green } from '@material-ui/core/colors';
+import Zoom from 'react-medium-image-zoom'
+
+import ViewComment from '../ViewComment';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin:'auto',
@@ -74,52 +74,57 @@ const useStyles = makeStyles((theme) => ({
   uploadWrap: {
     position: "relative"
   },
-
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+  buttonSuccess: {
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[700],
+    },
+  },
 }));
 
+function isEmpty(object) { 
+  for(var i in object){ 
+    return true;
+  } 
+  return false; 
+}
 
 
-export default function Truong()
+export default function Khoa(props)
 {
     const classes = useStyles();
     const [forumPosts,setForumPosts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [isOpen,setIsOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [currentPost,setCurrentPost] = useState(null);
     const [userMail,setUserMail] = useState(null);
     const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
-    const [mounted, setMounted] = useState(false);
-    const [image,setImage] = useState("")
-    const [upload,setUpload] = useState(null);
-    const [title,setTitle] = useState("")
-    const [previewComment,setPreViewComment] = useState({IDPost:"",Comment: "", Image:""})
-    const [sent,setSent] = useState(false);
+    const self = props.self;
 
-    const handleTitle = (event,id) => {
-      setCurrentPost(id);
-      setTitle(event.target.value);
-    }
-    const handleCommentPosted = () =>{
-      setSent(true);
-    }
     const handleOptionsClick = (e,id) => {
       setCurrentPost(id);
       setAnchorEl(e.currentTarget);
     };
+  
     
     const handleOptionsClose = () => {
       setAnchorEl(null);
     };
 
-    const handleDialogOpen = () =>{
-      setIsOpen(true);
-    }
 
-    const handleDialogClose = () => {
-      setIsOpen(false);
-    }
-
+    
     const getUserEmail = ()=>{
       var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") );
@@ -148,64 +153,38 @@ export default function Truong()
             .then(response => {return response.json()})
             .then((result)=>{
               result = result.filter(forum => forum.scope == 'f');
+              if (self == "self"){
+                result = result.filter(forum => forum.EmailOwn == userMail);
+              }
               setForumPosts(result)
             })
             .catch(error => console.log('error', error));
     }
     
-    const postNewComment = async() => {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
-      
-      var formdata = new FormData();
-      
-      if(upload !== "" && upload !== null){
-
-
-          formdata.append("IDPost", currentPost);
-          formdata.append("comment", title);
-          formdata.append("image", upload);
-      }
-  
-      else{
-          formdata.append("IDPost", currentPost);
-          formdata.append("comment", title);
-      }
-      
-      var requestOptions = {
-          method: 'POST',
-          headers: myHeaders,
-          body: formdata,
-          redirect: 'follow'
-      };
-      await fetch("https://hcmusemu.herokuapp.com/forum/cmt", requestOptions)
-      .then((response) => {
-          const statusCode = response.status;
-          const dataRes = response.json();
-          return Promise.all([statusCode, dataRes]);
-        }).then(([statusCode, dataRes]) => {
-          if(statusCode === 200){
-            console.log("Comment thanh cong")
-            if(upload !== "" && upload !== null){
-            setPreViewComment({IDPost:currentPost,Comment:title,Image:image})}
-            else{
-              setPreViewComment({IDPost:currentPost,Comment:title,Image:""})}
-            }
-          else{
-            console.log(statusCode);
-            console.log("loi");
-          }
-        }).catch((err) => console.log(err, "error"));
-  }
+   
 
     useEffect(() => {
-       getForumPosts();
        getUserEmail();
+       getForumPosts();
        setLoading(false);
 
-     },[]);
+     },[self]);
 
     
+     const Btn_ClickShowComment = (forum) => {
+      let items = [...forumPosts];
+      let scopeFunction = setForumPosts
+  
+      const index = items.findIndex(item => item.ID === forum.ID);
+      if (items[index].showcomment === false){
+      items[index].showcomment = true;
+      }
+      else{
+        items[index].showcomment = false;
+      }
+      scopeFunction(items)
+    
+    }
     const updateNumberLike = (id,type) => {
       if (type==1){
           var index = forumPosts.findIndex(x=> x.ID === id);
@@ -283,7 +262,8 @@ export default function Truong()
       await fetch("https://hcmusemu.herokuapp.com/forum/unlike", requestOptions)
           .then(response => {return response.json()})
           .then(
-            updateState(id,"LikeByOwn",0))
+            updateState(id,"LikeByOwn",0)
+            )
           .catch(error => console.log('error', error));
     }
 
@@ -318,7 +298,7 @@ export default function Truong()
     const renderLike = (item) => {
       return(
         <div>
-          {item.LikeByOwn == 0 ? <FavoriteIcon/> :<FavoriteIcon style={{ color: 'red' }} />}
+          {item.LikeByOwn === 0 ? <FavoriteIcon/> :<FavoriteIcon style={{ color: 'red' }} />}
           {item.like}
         </div>
       )}
@@ -354,15 +334,15 @@ export default function Truong()
       return "";
     }
 
-     const handleLike = (item) =>
+     const handleLike = async(item) =>
      {
         if (item.LikeByOwn != 0){
-          unLikePosts(item.ID);
-          updateNumberLike(item.ID,1)
+          await unLikePosts(item.ID);
+          await updateNumberLike(item.ID,1)
         }
         else{
-          likePosts(item.ID);
-          updateNumberLike(item.ID,0)
+          await likePosts(item.ID);
+          await updateNumberLike(item.ID,0)
         }
      }
 
@@ -373,7 +353,32 @@ export default function Truong()
     })
     deletePosts(id);
     }
+    const getComments = useCallback((forum) => {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("IDPost", forum.ID);
+
+      var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: 'follow'
+      };
+
+      return fetch("https://hcmusemu.herokuapp.com/forum/viewcmt", requestOptions)
+    }, [])
+
     const renderForum = () =>{
+      if (forumPosts.length === 0){
+        return(
+          <Typography variant="h5" style={{textAlign:"center",marginTop:"5%"}}>
+            Không có bài viết
+          </Typography>
+        )
+      }
+      else{
       return forumPosts.map((item, index) => {
         return (
           <div key={index}>
@@ -393,10 +398,10 @@ export default function Truong()
                        <Typography variant="h6"></Typography>  
                       }
                       subheader= {
-                        <Typography textAlign="center" variant="h7">
+                        <Typography textAlign="center" variant="h6" style={{fontWeight:"bold"}}>
                           {item.NameOwn} 
                           <br/>
-                          {TimeAgo(item.time)}
+                          <span style={{fontWeight:"normal"}}>{TimeAgo(item.time)}</span>
                         </Typography>
                       }
                       
@@ -415,18 +420,13 @@ export default function Truong()
                     </IconButton>
                     <IconButton 
                     aria-label="Comment the post"
-                    onClick= ""
+                    onClick= {() => Btn_ClickShowComment(item)}
                     >
                       {renderCommentCount(item)}
                     </IconButton>
                    
                 </CardActions>
-                  {renderBoxPostComment(item)}
-                  {console.log(previewComment.IDPost)}
-                   <UserComment 
-                    id={item.ID} 
-                    email = {userMail}
-                    />
+                  {item.showcomment === true ? <ViewComment getComments={getComments} forum={item} email={userMail} /> : null}
                    <Menu
                   id="simple-menu"
                   anchorEl={anchorEl}
@@ -456,72 +456,9 @@ export default function Truong()
 
               <p/> <br/>
           </div>
-        )
-  })
-     }
-     const resetImage = () => {
-      setImage("");
-      setUpload("");
-      setTitle("");
-   }
-   const handleImg = (event,id) => {
-    setCurrentPost(id);
-    setUpload(event.target.files[0]);
-}
-  const renderImageUploadComment = (item)=>{
-      if (image!="" && item.ID == currentPost){
-          return(
-              <div>
-              <div class={classes.imgContainer}>
-                  <img src={image} style={{height:"80px",width:"80px"}}/>       
-                  <IconButton className={classes.close} onClick={resetImage}>
-                      <HighlightOffIcon/>
-                  </IconButton>
-              </div>
-              </div>
-          )
-      }
-      else{
-          return(
-              <div>
-                  <img style={{height:"80px",width:"80px"}} src={defaultValue}/>
-              </div>
-          )}
-  }
+        )})}
+    }
 
-  const postMySelfComment = () =>{
-    postNewComment();
-    handleCommentPosted();
-    setPreViewComment({IDPost:"",Comment:"",Image:""});
-    resetImage();
-    
-    }
-  const renderBoxPostComment = (item) =>{
-      return(
-        <Box border={0.1} borderColor="black" borderRadius="5px" width="100%" height="75%">
-           <div className={classes.uploadWrap}>
-             <label htmlFor="icon-button-file">
-                        <IconButton color="primary" aria-label="upload picture"  component="span"  >
-                            <PhotoCameraIcon />
-                        </IconButton>
-                        <Input   
-                                autoWidth
-                                type="file" 
-                                id="photo" 
-                                onChange={(e)=> {handleImg(e,item.ID)}} 
-                               className={classes.uploadBtn}
-                                accept=".png, .jpg, .jpeg, .gif"  
-                            />
-                    </label>
-                    {renderImageUploadComment(item)}
-                  </div>
-                <TextField style={{width:"90%"}} className={classes.HeightTextField} required variant="outlined" value={title} onChange={(e)=>{handleTitle(e,item.ID)}} margin="normal"  fullWidth size="small" multiline placeholder="Nhập bình luận của bạn tại đây ^^"/>
-                <Button style={{height:50, width:50}} variant="contained"  onClick={postMySelfComment} >
-                  <SendIcon  style={{color:"blue",width: 30,height: 30,}}/>
-                </Button>
-        </Box>
-      )
-    }
   if (loading == true){
     return(
       <div>
@@ -532,10 +469,6 @@ export default function Truong()
    else{
     return(
           <div>
-            <Box style={{backgroundColor:"#b4cc37"}} className={classes.news_post} textAlign='center'>
-              <Button style={{backgroundColor:"#b7e0eb"}} variant='contained' onClick={handleDialogOpen} textAlign="center">Tạo bài thảo luận</Button>
-            </Box>
-            <PostThread  isOpen={isOpen} handleClose={handleDialogClose}/>
             {renderForum()}
           </div>
   )}

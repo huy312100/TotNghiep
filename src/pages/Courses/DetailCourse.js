@@ -1,5 +1,5 @@
 
-import Category from "./Category";
+import Category from "../Category";
 import React,{useState,useEffect} from "react";
 import NavBar from "../../Navigation/NavBar";
 import { Link } from 'react-router-dom';
@@ -9,8 +9,6 @@ import { Toolbar } from "@material-ui/core";
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import checkTokenExpired from "../../ValidAccess/AuthToken"
 import { useHistory } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.js';
 const useStyles = makeStyles((theme) => ({
     root: {
         marginLeft: 200,

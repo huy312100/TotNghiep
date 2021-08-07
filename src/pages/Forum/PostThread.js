@@ -145,7 +145,7 @@ export const PostThread =  ({
         else{
             return(
                 <div>
-                    <img style={{height:"160px",width:"160px"}} src={defaultValue}/>
+                    
                 </div>
             )}
     }

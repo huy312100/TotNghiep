@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Tab, Tabs, Typography, Box,Paper,Toolbar  } from '@material-ui/core';
 import CurrentCourse from './CurrentCourse';
 import AllCourses from './AllCourses';
-import Category from "./Category"
+import Category from "../Category"
 const useStyles = makeStyles((theme) => ({
     root: {
       marginLeft: 200,

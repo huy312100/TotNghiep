@@ -1,12 +1,10 @@
 import React , {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import checkTokenExpired from '../../ValidAccess/AuthToken';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
-import NavigationFullscreen from 'material-ui/svg-icons/navigation/fullscreen';
 const useStyles = makeStyles((theme) => ({
 
     course_tag: {
@@ -85,14 +83,10 @@ function AllCourses(){
   const [loadingAll,setLoadingAll] = useState(true);
   const [page,setPage] = useState(0);
   const history = useHistory();
-  const [finish,setFinish] = useState(false);
 
   useEffect(() => {
-    
-    //window.addEventListener("scroll", handleScroll);
     getAllCourse();
     return () => {
-     // window.removeEventListener("scroll", handleScroll);
     };
   }, [page])
   const getAllCourse = () => {
@@ -141,7 +135,7 @@ function AllCourses(){
           .catch((err) => console.log(err, "error"));
   }
 
-  const getAllCourseScroll = () => {
+  /*const getAllCourseScroll = () => {
     if (checkTokenExpired()) {
       localStorage.clear()
       history.replace("/");
@@ -203,7 +197,7 @@ function AllCourses(){
       setPage(page+1);
       getAllCourseScroll();
      }
-    }
+    }*/
   if (loading === true){
     return(
         <div>

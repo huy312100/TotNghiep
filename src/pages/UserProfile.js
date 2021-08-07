@@ -173,7 +173,7 @@ class Profile extends Component {
 
     async componentDidMount() {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") + "tC");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") );
 
         var requestOptions = {
             method: 'GET',
@@ -203,18 +203,17 @@ class Profile extends Component {
 
     onChangePicture = e => {
         if (e.target.files[0]) {
+            console.log("picture: ", e.target.files);
             this.setState({
-                imgData:URL.createObjectURL(e.target.files[0])})
-            this.setState({
-                    picture: e.target.files[0]
-                });
-           /* const reader = new FileReader();
+                picture: e.target.files[0]
+            });
+            const reader = new FileReader();
             reader.addEventListener("load", () => {
                 this.setState({
-                    picture: reader.result
+                    imgData: reader.result
                 });
             });
-            reader.readAsDataURL(e.target.files[0]);*/
+            reader.readAsDataURL(e.target.files[0]);
         }
        
     };
@@ -229,7 +228,7 @@ class Profile extends Component {
 
     updateProfile = async () => {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
         var urlencoded = new URLSearchParams();
         urlencoded.append("HoTen", this.state.name);
@@ -410,55 +409,51 @@ class Profile extends Component {
             })
         }
         //var img = this.state.notUpdatedProfile;
-        this.setState({picture:this.state.notUpdatedProfile})
+        //this.setState({picture:this.state.notUpdatedProfile})
     }
     deleteIMG = async () => {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") + "tC");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
-       var requestOptions = {
-            method: 'GET',
+        var requestOptions = {
+            method: 'POST',
             headers: myHeaders,
             redirect: 'follow'
         };
 
         await fetch("https://hcmusemu.herokuapp.com/profile/deleteimg", requestOptions)
-            .then(response =>{response.json();console.log(response.status,response.text())})
+            .then(response => response.text())
             .then(result => console.log(result))
             .catch(error => console.log('error', error));
     }
 
-
     uploadIMG = async () => {
         var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/form-data");
-        console.log(this.state.picture)
-        let formdata = new FormData();
-        formdata.append("image",this.state.picture);
-       var requestOptions = {
-            method: 'GET',
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+        console.log(this.state.picture);
+        var formdata = new FormData();
+        formdata.append("image", this.state.picture);
+
+        var requestOptions = {
+            method: 'POST',
             headers: myHeaders,
             body: formdata,
             redirect: 'follow'
         };
 
         await fetch("https://hcmusemu.herokuapp.com/profile/uploadimg", requestOptions)
-            .then(response => {response.json();console.log(response.status,response.text())})
+            .then(response => response.text())
             .then(result => {
-                this.setState({editimg:0});
-                console.log(result);
+                console.log(result)
+                this.setState({ editimg: 0 })
             })
             .catch(error => console.log('error', error));
     }
     
-    updateImage = () => {
-        if (this.state.notUpdatedProfile === ""){
-            this.uploadIMG();
-        }
-        else{
-            this.uploadIMG();
-            this.deleteIMG();
-        }
+    updateImage = async() => {
+
+       await this.deleteIMG();
+        await this.uploadIMG();
         window.location.reload();
     }
     popupBox = () => 

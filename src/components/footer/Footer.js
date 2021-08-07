@@ -141,7 +141,7 @@ function Footer(props) {
       <div className={classes.footerInner}>
         <Grid container spacing={isWidthUp("md", width) ? 10 : 5}>
           <Grid item xs={12} md={12} lg={12}>
-            <Typography variant="h4" style={{ color: "red" }} paragraph className="text-white">
+            <Typography variant="h4" style={{ color: "red" }} paragraph>
              Thông tin liên lạc
             </Typography>
             <Typography style={{ color: "#1b2738" }} paragraph>
@@ -149,27 +149,26 @@ function Footer(props) {
                 <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                flexWrap: 'wrap',}}><BusinessIcon/>Trường: {info.TenTruongDH} </div>
+                flexWrap: 'wrap',
+                fontSize: "20px"}}>
+                <BusinessIcon/>Trường : {info.TenTruongDH} </div>
                 <br/>    <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                flexWrap: 'wrap',}}><MailIcon/>Email:  {info.Email}</div>
+                flexWrap: 'wrap',}}><MailIcon/>Email :  {info.Email}</div>
                 <br/>    <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                flexWrap: 'wrap',}}><PhoneIcon/> SDT: {info.SDT}</div>
+                flexWrap: 'wrap',}}><PhoneIcon/> SDT : {info.SDT}</div>
                 <br/>    <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                flexWrap: 'wrap',}}><HomeIcon/> Địa chỉ: {info.TenDiaChi}</div>
+                flexWrap: 'wrap',}}><HomeIcon/> Địa chỉ : {info.TenDiaChi}</div>
                 <br/>    <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 flexWrap: 'wrap',}}>
-                  <WebIcon/> 
-                    <a href={info.WebSite} rel="noopener noreferrer" target="_blank">
-                      Website: {info.WebSite}
-                    </a>
+                  <WebIcon/> Website : &nbsp; <a href={info.WebSite} rel="noopener noreferrer" target="_blank">{info.WebSite}</a>
                 </div>
             </Typography>
             <Box display="Fill">

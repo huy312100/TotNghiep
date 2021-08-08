@@ -7,65 +7,57 @@ import { Badge } from 'react-native-paper';
 
 import * as dateUtils from "../../../utils/Date";
 
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: true,
-//     shouldSetBadge: false,
-//   }),
-// });
-
-const dataTmp =[
-  {
-      "State": false,
-      "_id": "60fa9dfc29f1b50022d5dcbc",
-      "Title": "Tin Tức Khoa",
-      "Data": "CONTEMI TUYỂN DỤNG 25 INTERN/FRESHER",
-      "Date": "1627037180948"
-  },
-  {
-      "State": true,
-      "_id": "60fa9dfc29f1b50022d5dcba",
-      "Title": "Tin Tức Khoa",
-      "Data": "CONTEMI TUYỂN DỤNG 25 INTERN/FRESHER",
-      "Date": "1627037180913"
-  },
-  {
-      "State": false,
-      "_id": "60f906c8a45dee0022f3e410",
-      "Title": "Tin Tức Khoa",
-      "Data": "Thông báo về Quy định thi trực tuyến và Hướng dẫn sinh viên thi trực tuyến",
-      "Date": "1626932936850"
-  },
-  {
-      "State": false,
-      "_id": "60f906c8a45dee0022f3e40b",
-      "Title": "Tin Tức Khoa",
-      "Data": "Thông báo về Quy định thi trực tuyến và Hướng dẫn sinh viên thi trực tuyến",
-      "Date": "1626932936829"
-  },
-  {
-      "State": false,
-      "_id": "60f55501e0f10d0022bc7095",
-      "Title": "Tin Tức Khoa",
-      "Data": "[CQ] Danh sách sinh viên được duyệt vào lớp Khởi nghiệp - 18/1, HK3, NH 2020-2021",
-      "Date": "1626690817603"
-  },
-  {
-      "State": false,
-      "_id": "60f55501e0f10d0022bc7093",
-      "Title": "Tin Tức Khoa",
-      "Data": "[CQ] Danh sách sinh viên được duyệt vào lớp Khởi nghiệp - 18/1, HK3, NH 2020-2021",
-      "Date": "1626690817601"
-  },
-  {
-      "State": false,
-      "_id": "60f506919b63e00022cecbae",
-      "Title": "Tin Tức Khoa",
-      "Data": "CHÀO ĐÓN SỰ TRỞ LẠI CỦA KMS ONE-DAY HIRING THÁNG 7 NÀY",
-      "Date": "1626670737461"
-  }
-];
+// const dataTmp =[
+//   {
+//       "State": false,
+//       "_id": "60fa9dfc29f1b50022d5dcbc",
+//       "Title": "Tin Tức Khoa",
+//       "Data": "CONTEMI TUYỂN DỤNG 25 INTERN/FRESHER",
+//       "Date": "1627037180948"
+//   },
+//   {
+//       "State": true,
+//       "_id": "60fa9dfc29f1b50022d5dcba",
+//       "Title": "Tin Tức Khoa",
+//       "Data": "CONTEMI TUYỂN DỤNG 25 INTERN/FRESHER",
+//       "Date": "1627037180913"
+//   },
+//   {
+//       "State": false,
+//       "_id": "60f906c8a45dee0022f3e410",
+//       "Title": "Tin Tức Khoa",
+//       "Data": "Thông báo về Quy định thi trực tuyến và Hướng dẫn sinh viên thi trực tuyến",
+//       "Date": "1626932936850"
+//   },
+//   {
+//       "State": false,
+//       "_id": "60f906c8a45dee0022f3e40b",
+//       "Title": "Tin Tức Khoa",
+//       "Data": "Thông báo về Quy định thi trực tuyến và Hướng dẫn sinh viên thi trực tuyến",
+//       "Date": "1626932936829"
+//   },
+//   {
+//       "State": false,
+//       "_id": "60f55501e0f10d0022bc7095",
+//       "Title": "Tin Tức Khoa",
+//       "Data": "[CQ] Danh sách sinh viên được duyệt vào lớp Khởi nghiệp - 18/1, HK3, NH 2020-2021",
+//       "Date": "1626690817603"
+//   },
+//   {
+//       "State": false,
+//       "_id": "60f55501e0f10d0022bc7093",
+//       "Title": "Tin Tức Khoa",
+//       "Data": "[CQ] Danh sách sinh viên được duyệt vào lớp Khởi nghiệp - 18/1, HK3, NH 2020-2021",
+//       "Date": "1626690817601"
+//   },
+//   {
+//       "State": false,
+//       "_id": "60f506919b63e00022cecbae",
+//       "Title": "Tin Tức Khoa",
+//       "Data": "CHÀO ĐÓN SỰ TRỞ LẠI CỦA KMS ONE-DAY HIRING THÁNG 7 NÀY",
+//       "Date": "1626670737461"
+//   }
+// ];
 const NotificationScreen=({navigation})=>{
 
   const token = useSelector((state) => state.authen.token);
@@ -265,15 +257,15 @@ const NotificationScreen=({navigation})=>{
     return(
         <SafeAreaView style={styles.container}>
 
-            {/* {data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+            {data.length==0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
                 
                 <Text style={{color:'#BBBBBB'}}>
                     Không có thông báo nào
                 </Text>
-             </View>} */}
+             </View>}
 
             <FlatList
-              data={dataTmp}
+              data={data}
               keyExtractor={item =>item._id}
               renderItem={renderItem}
               refreshControl={<RefreshControl

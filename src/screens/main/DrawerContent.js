@@ -11,6 +11,8 @@ import { MaterialIcons,FontAwesome,Entypo } from '@expo/vector-icons';
 import * as profileActions from '../../../store/actions/Profile';
 import * as authActions from '../../../store/actions/Authen';
 
+import * as authenServices from '../../services/Authen';
+
 const DrawerContentScreen =({navigation}) =>{
     const token = useSelector((state) => state.authen.token);
     const profile = useSelector((state) => state.profile.profile);
@@ -32,7 +34,8 @@ const DrawerContentScreen =({navigation}) =>{
         }
     },[]);
 
-    const SignOut =() =>{
+    const SignOut = async() =>{
+        await authenServices.SignOutAndRemoveTokenNoti(token);
         dispatch(authActions.logout());
         navigation.reset({
             routes: [{ name: "Login" }]

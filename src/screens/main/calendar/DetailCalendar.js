@@ -90,7 +90,7 @@ const DetailCalendarScreen = ({ navigation }) => {
 
       <View tyle={[styles.info, { marginBottom: 20 }]}>
         <Text style={styles.date}>
-          Hạn chót : {dateUtils.ConvertTimestampToVNTime(item.duedate)}
+          Hạn chót: {dateUtils.ConvertTimestampToVNTime(item.duedate)}
         </Text>
       </View>
     </TouchableOpacity>

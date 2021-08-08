@@ -1,11 +1,11 @@
 .mess .row {
-    margin:0;
+    margin: 0;
 }
 
 .listfriend-box {
     /* display: inline-block; */
     /* width: 28vw; */
-    height: 85vh;
+    height: 75vh;
     background: rgb(255, 255, 255);
     /* margin-right: 5px; */
 }
@@ -13,19 +13,20 @@
 .box-input {
     display: block;
     margin: 1vw auto;
-    width: 25vw;
+    /* width: 25vw; */
     height: 40px;
 }
 
 .listfriend {
     /* width: 2vw; */
     /* background-color: blue; */
-    overflow: auto;
+    /* overflow-y: auto; */
+    /* overflow-x: auto;  */
 }
 
 .message-box {
     /* display: inline-block; */
-    height: 85vh;
+    height: 75vh;
     width: 53vw;
     /* background-color: blue; */
     background: white;
@@ -34,7 +35,7 @@
 
 .message-box .message {
     overflow: auto;
-    height: 65vh;
+    height: 55vh;
 }
 
 .message-box .message .box-friend {
@@ -93,7 +94,7 @@
     color: white;
     /* height: 3vw; */
     background: rgb(230, 155, 85);
-    padding:2px;
+    padding: 2px;
     /* width: 3vw; */
     /* line-height: 3vw; */
     /* height: 7vw; */
@@ -129,10 +130,11 @@
 }
 
 .listfriend-box .message-content {
-    padding: 5px 0 0px 5px;
-    margin: 5px 5px 10px 15px;
+    padding: 5px;
+    margin: 5px 15px 5px 15px;
     display: flex;
     align-items: flex-start;
+    overflow: hidden;
 }
 
 .listfriend-box .message-content:hover {
@@ -148,8 +150,8 @@
 }
 
 .listfriend-box .message-content-text .name {
-    /* font-weight: 100; */
-    /* font-size: 11px; */
+    font-weight: 500;
+    font-size: 15px;
 }
 
 .listfriend-box .message-content-text .time {
@@ -197,8 +199,7 @@
 
 .mess-tag .btn-mess {
     /* display: inline-block; */
-        /* background: white; */
-
+    /* background: white; */
     padding: 15px;
     font-size: 16px;
     font-weight: 500;
@@ -211,10 +212,10 @@
     /* color: #5e5873; */
 }
 
-.mess .btn-acceptawait{
+.mess .btn-acceptawait {
     background: #18468b;
     color: white;
-    padding:5px;
+    padding: 5px;
     margin: 10px;
     border-radius: 7px;
     text-align: center;

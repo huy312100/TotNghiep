@@ -190,8 +190,10 @@ function Message() {
 
         var list = listmess.map((messageList) => (
             <div type="button" className="message-content" onClick={() => tag === "0" ? selectUser(messageList.idRoom, messageList.Email, messageList.name, messageList.Anh) : AcceptAwaitMessage(messageList, { email: messageList.Email, room: messageList.idChatRoom, name: messageList.name, image: messageList.Anh })}>
-                {messageList.Anh === null ? null : <img width="50px" height="50px" style={{ borderRadius: "50%", marginTop: "5px" }} src={messageList.Anh} alt=""></img>}
-                <span className="message-content-text">
+                <div className="col-auto" style={{padding:0}}>
+                    {messageList.Anh === null || messageList.Anh === "" ? <div style={{ width: "50px", height: "50px", display: "block", borderRadius: "100%", border: "1px solid rgb(223, 223, 223)", marginTop: "5px", background: "white" }}></div> : <img width="50px" height="50px" style={{ borderRadius: "100%", border: "1px solid rgb(223, 223, 223)", marginTop: "5px" }} src={messageList.Anh} alt=""></img>}
+                </div>
+                <div className="col message-content-text" style={{padding:0}}>
                     <div className="name">
                         {messageList.name}
                     </div>
@@ -202,7 +204,7 @@ function Message() {
                         {/* {console.log(convertTime(messageList.time))} */}
                         {convertTimeAgo(messageList.time)}
                     </div>
-                </span>
+                </div>
             </div>
         ))
         return list;
@@ -391,7 +393,7 @@ function Message() {
         if (loadingSearch === 1 && tag !== "1") {
             const list = foundedUser.map((user) => {
                 return <div type="button" className="message-content" onClick={() => SearchUserSelelected({ email: user.Email, name: user.HoTen, image: user.AnhSV })}>
-                    <img width="50px" height="50px" style={{ borderRadius: "50%", marginTop: "5px" }} src={user.AnhSV} alt=""></img>
+                    <img width="50px" height="50px" style={{ borderRadius: "100%", border: "1px solid rgb(223, 223, 223)", marginTop: "5px" }} src={user.AnhSV} alt=""></img>
                     <span className="message-content-text">
                         <div className="name">
                             {user.HoTen}
@@ -455,7 +457,7 @@ function Message() {
         else if (!acceptawaitmess)
             return <div>
                 {renderChatSelected()}
-                <div className="row textbox-message" style={{alignItems:"center"}}>
+                <div className="row textbox-message" style={{ alignItems: "center" }}>
                     {/* <div className="col-12"> */}
                     <input value={mess} className="col-10 box-chat" type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setMess(e.target.value)} onKeyDown={handleKeyDown} />
                     {/* <i type="button" className="enter fa fa-reply" onClick={sendMessage}></i> */}
@@ -468,14 +470,14 @@ function Message() {
     }
 
 
-    var messtag = tag === "0" ? "selected" : "";
+    var messtag = tag === "0" ? "selected" : "btn-mess";
     var messawaittag = tag === "1" ? "selected" : "";
     return (
         <div className="mess">
             <div className="col-12">
                 <Category current="Tin nhắn" />
-                <div className="col-md-4 mess-tag">
-                    <div className="row tag">
+                <div className="col-md-6 mess-tag" style={{ padding: 0, background: "white" }}>
+                    <div className="row">
                         <div type="button" className={"col-md-6 btn-mess " + messtag} onClick={() => setTag("0")}>Tin nhắn hiện tại
                         </div>
                         <div type="button" className={"col-md-6 btn-mess " + messawaittag} onClick={() => setTag("1")}>Tin nhắn chờ
@@ -483,17 +485,17 @@ function Message() {
                     </div>
                 </div>
                 <div className="row" style={{ boxShadow: "0 4px 24px 0 rgb(34 41 47 / 10%)" }}>
-                    <div className="col-md-4 listfriend-box" style={{ padding: "10px", background: "white" }}>
-                        {<div style={{ overflowY: "auto", height: "80vh" }}>
-                            <div>
-                                <input className="box-input" type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => handleSearch(e)} />
-                            </div>
+                    <div className="col-md-4 listfriend-box" style={{ padding: "10px 10px 10px 0px", background: "white" }}>
+                        {<div style={{ overflowY: "auto", overflowX: "hidden", height: "70vh" }}>
+                            {tag === "0" && <div>
+                                <input className="col-11 box-input" type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => handleSearch(e)} />
+                            </div>}
                             {renderFoundedUser()}
                         </div>}
                     </div>
                     <div className="col-md-8 message-box">
                         <div className="selected-user">
-                            {selected.image === null ? null : <img width="50px" height="50px" style={{ borderRadius: "50%" }} src={selected.image} alt=""></img>}
+                            {selected.image === null || selected.image === "" ? null : <img width="50px" height="50px" style={{ width: "50px", height: "50px", borderRadius: "100%", border: "1px solid rgb(223, 223, 223)" }} src={selected.image} alt=""></img>}
                             <div className="infouser">
                                 <div className="name">{selected.name}</div>
                                 <div className="email">{selected.email}</div>

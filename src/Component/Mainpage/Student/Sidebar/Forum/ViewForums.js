@@ -52,9 +52,9 @@ function ViewForums() {
 
     }, [])
 
-    // useEffect(() => {
-    //     getAllCourse()
-    // }, [page])
+    useEffect(() => {
+        getAllCourse()
+    }, [page])
 
     const getAllCourse = () => {
         if (page === 0)

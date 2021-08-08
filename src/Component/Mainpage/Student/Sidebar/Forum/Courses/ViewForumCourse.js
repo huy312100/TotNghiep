@@ -480,7 +480,7 @@ function ViewForumCourse() {
                     <div className="row tag">
                         <div type="button" className={"col-6 btn-deadline " + assign} onClick={() => setTag("0")} style={{ fontSize: "14px" }}> Tất cả khóa học
                         </div>
-                        <div type="button" className={"col-6 btn-deadline " + moodle} onClick={() => setTag("1")}> Môn học
+                        <div type="button" className={"col-6 btn-deadline " + moodle} onClick={() => setTag("1")}> Trang môn học
                         </div>
                     </div>
                 </div>

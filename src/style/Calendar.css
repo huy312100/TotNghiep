@@ -61,7 +61,7 @@
 
 .calendar-page .dayofweek li {
     display: inline-block;
-    width: 7vw;
+    width: 6vw;
     /* color: #666; */
     text-align: center;
     font-weight: 500;
@@ -70,7 +70,7 @@
 .calendar-page .days li {
     /* list-style-type: none; */
     display: inline-block;
-    width: 7vw;
+    width: 6vw;
     /* text-align: center; */
     margin: 10px 0;
     font-size: 12px;
@@ -189,7 +189,7 @@
 .calendar-page .popup-event {
     position: fixed;
     width: 35vw;
-    height: 70vh;
+    /* height: 70vh; */
     top: 50%;
     left: 50%;
     margin-top: -30vh;

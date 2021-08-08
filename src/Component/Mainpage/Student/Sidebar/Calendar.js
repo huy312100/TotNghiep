@@ -600,7 +600,7 @@ class Calendar extends Component {
                         <input onChange={this.setParams} name="add_noti" value={this.state.add_noti}></input>
                     </div> */}
                     <div className="btn-box">
-                        <div class="btn add" type="button" onClick={this.addEvent}>Thêm thông báo</div>
+                        <div class="btn add" type="button" onClick={this.addEvent}>Thêm sự kiện</div>
                         <div class="btn cancel" type="button" onClick={this.closePopup}>Hủy</div>
                     </div>
                 </div>

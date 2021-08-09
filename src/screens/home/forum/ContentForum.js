@@ -1,7 +1,8 @@
 import React,{useState,useEffect,useRef,useCallback} from 'react';
-import { ScrollView,View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform,ActivityIndicator} from 'react-native';
+import { ScrollView,View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform,ActivityIndicator,Linking} from 'react-native';
 import { Fontisto,FontAwesome,Entypo,MaterialCommunityIcons,AntDesign,Ionicons } from '@expo/vector-icons';
 import { Header } from 'react-native-elements';
+import Hyperlink from 'react-native-hyperlink';
 
 import {useSelector} from 'react-redux';
 
@@ -219,9 +220,11 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 </TouchableOpacity>}
             </View>
 
-            <View tyle={[styles.info,{marginBottom:20}]}>
-                <Text style={[styles.content]}>{dataOfForum.title}</Text>
-            </View>
+            <Hyperlink linkStyle={{ color: 'blue',textDecorationLine:'underline' }} onPress={ (url) =>  Linking.openURL(url)}>
+                <View tyle={[styles.info,{marginBottom:20}]}>      
+                    <Text style={[styles.content]}>{dataOfForum.title}</Text>                
+                </View>
+            </Hyperlink>
 
             {dataOfForum.image !== "" && <Image style={styles.imagePost} source={{uri:dataOfForum.image}}/>}
 

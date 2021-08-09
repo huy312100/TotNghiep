@@ -1,6 +1,7 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,Linking } from 'react-native';
 import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
+import Hyperlink from 'react-native-hyperlink';
 
 import {useSelector} from 'react-redux';
 
@@ -71,10 +72,12 @@ const ForumAllCourseScreen =({navigation})=>{
 
                 </View>
                 
-                <View tyle={[styles.info,{marginBottom:20}]}>      
-                    <Text style={[styles.content]}>{item.title}</Text>                
-                </View>
-
+                <Hyperlink linkStyle={{ color: 'blue',textDecorationLine:'underline' }} onPress={ (url) =>  Linking.openURL(url)}>
+                    <View tyle={[styles.info,{marginBottom:20}]}>      
+                        <Text style={[styles.content]}>{item.title}</Text>                
+                    </View>
+                </Hyperlink>
+                
                 {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
 
                  <View style={styles.footerCard}>

@@ -328,9 +328,9 @@ const CalendarScreen =({navigation})=> {
               <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{dateUtils.ConvertDateDDMMYY(item.start.slice(0,10))}</Text>
           </View>
 
+          <Text style={[viewMonthItem.title,{fontSize:12,marginTop:10,textAlign:'right',marginRight:20,fontStyle:'italic'}]}>{item.start.slice(11)} - {item.end.slice(11)}</Text>
           <Text style={[viewMonthItem.title,{fontWeight:'normal',marginTop:10}]} numberOfLines={4}>{item.summary}</Text>
-          <Text style={[viewMonthItem.title,{fontSize:12,marginTop:10}]}>{item.start.slice(11)} - {item.end.slice(11)}</Text>
-          
+
       </View>
       
       <View style={[{marginBottom:10,flexDirection:'row',alignItems: 'center'}]}>

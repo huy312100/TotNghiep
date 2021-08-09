@@ -3,6 +3,8 @@ import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,
 import { Fontisto,FontAwesome } from '@expo/vector-icons';
 import Hyperlink from 'react-native-hyperlink';
 
+import Lightbox from 'react-native-lightbox';
+
 import {useSelector} from 'react-redux';
 
 import * as forumServices from '../../../../services/Forum';
@@ -17,6 +19,8 @@ const ForumFacultyScreen =({navigation})=>{
     const [dataForum,setDataForum] = useState([]);
     const [isLoading,setIsLoading] = useState(true);
     const [refresh,setRefresh] = useState(false);
+    const [visibleImageView, setIsVisibleImageView] = useState(false);
+
 
     useEffect(() => {
         getForum();
@@ -95,7 +99,11 @@ const ForumFacultyScreen =({navigation})=>{
                 </Hyperlink>
                
 
-                {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
+                {item.image !== "" && 
+                    <Lightbox>
+                        <Image style={styles.imagePost} source={{uri:item.image}}/>
+                    </Lightbox>
+                }
 
                 <View style={styles.footerCard}>
                     {item.LikeByOwn === 1 ?
@@ -195,6 +203,7 @@ const styles = StyleSheet.create({
     imagePost:{
         width:'100%',
         backgroundColor:'grey',
+        height: 'auto',
         aspectRatio: 1
     },
 

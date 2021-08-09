@@ -3,6 +3,8 @@ import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,
 import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
 import Hyperlink from 'react-native-hyperlink';
 
+import Lightbox from 'react-native-lightbox';
+
 import {useSelector} from 'react-redux';
 
 import * as forumServices from '../../../../services/Forum';
@@ -90,7 +92,11 @@ const ForumCourseOfAppScreen =({navigation})=>{
                     </View>
                 </Hyperlink>
 
-                {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
+                {item.image !== "" && 
+                    <Lightbox>
+                        <Image style={styles.imagePost} source={{uri:item.image}}/>
+                    </Lightbox>
+                }
 
                 <View style={styles.footerCard}>
                 {item.LikeByOwn === 1 ? <TouchableOpacity style={styles.buttonFooter}

@@ -179,9 +179,15 @@ const MoodleConnectScreen = ({navigation})=>{
             
                 {isLoading && LoadingScreen()}
                
-                <Text style={styles.label}>
-                    URL
-                </Text>
+                <View style={{flexDirection:'row',alignItems: 'center' }}>
+                    <Text style={[styles.label,{marginRight:0}]}>
+                        URL
+                    </Text>
+                    <Text style={{color:'grey'}}>
+                        (https://courses.fit.hcmus.edu.vn)
+                    </Text>
+                </View>
+                
 
                 <TextInput style={styles.input} onChangeText={(url)=>setUrl(url)}>{url}</TextInput>
 

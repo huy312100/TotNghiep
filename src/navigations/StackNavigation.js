@@ -222,7 +222,7 @@ function HomeStackNavigation({navigation}) {
         name="University Info"
         component={UniversityInfoTopTab}
         options={{ 
-          title: "Thông tin trường",
+          title: "Tin tức",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
         }}
@@ -260,7 +260,16 @@ function HomeStackNavigation({navigation}) {
         options={{ 
           title:infoCourseChoose.nameCourse,
           headerBackTitle:false,
-          headerTruncatedBackTitle:false
+          headerTruncatedBackTitle:false,
+          headerRight:()=>(
+            <View style={{flexDirection:'row'}}>
+              <TouchableOpacity style={{marginRight:5}} onPress={() =>{
+                navigation.navigate('Create Post Of Forum');
+              }}>
+                <MaterialIcons name="library-add" size={25} color="#444444"/>
+              </TouchableOpacity>
+            </View>
+          )
         }}
       />
 

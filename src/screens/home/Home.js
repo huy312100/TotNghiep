@@ -70,6 +70,8 @@ const HomeScreen = ({ navigation }) => {
 
   var countMsgNotRead = 0;
 
+  const currentTimestamp = new Date().getTime();
+
   useEffect(() => {
     console.log(token);
     getPermissionNotifications();
@@ -712,11 +714,11 @@ const HomeScreen = ({ navigation }) => {
               "Chuyển tiếp",
               "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
               [
-                { text: "Từ chối", style: "cancel" },
                 {
-                  text: "Cho phép",
+                  text: "Đồng ý",
                   onPress: () => Linking.openURL(item.url),
                 },
+                { text: "Từ chối"},
               ]
             );
           }}
@@ -735,8 +737,8 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </View>
               <Text numberOfLines={2} style={styles.contentDeadline}>{item.decription}</Text>
-              <Text style={styles.timeDeadline}>
-                Hạn chót: {dateUtils.ConvertTimestamp(item.duedate)}
+              <Text style={[styles.timeDeadline,{color: currentTimestamp > item.duedate * 1000 ? "blue" :"red"}]}>
+                Hạn chót: {dateUtils.ConvertTimestampToVNTime(item.duedate)}
               </Text>
             </View>
           </View>
@@ -768,7 +770,12 @@ const HomeScreen = ({ navigation }) => {
       </View>}
 
       {calendar.map((item, index) => ( 
-         <TouchableOpacity key={index} style={calendarStyle.card}>
+         <TouchableOpacity key={index} style={calendarStyle.card}
+            onPress={() =>{
+              dispatch(calendarActions.getModeOfCalendar('month'));
+              navigation.navigate('Calendar');
+            }}
+        >
          <View style={{ flexDirection: "row" }}>
            {item.color === "" ? (
              <View style={[calendarStyle.colorCalendar]} />
@@ -791,9 +798,8 @@ const HomeScreen = ({ navigation }) => {
                </Text>
              </View>
    
-             <View style={{ flexDirection: "row", marginBottom: 10 }}>
-               <Text>{item.start.slice(11)} - </Text>
-               <Text>{item.end.slice(11)}</Text>
+             <View style={{marginRight:10,marginBottom: 8}}>
+               <Text style={{textAlign: "right",fontStyle:'italic',fontWeight:'400'}}>{item.start.slice(11)} - {item.end.slice(11)}</Text>
              </View>
    
              <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -808,40 +814,6 @@ const HomeScreen = ({ navigation }) => {
          </View>
         </TouchableOpacity>
       ))}
-
-      <View style={styles.labelRowTitle}>
-          <Text style={styles.label}>Top 5 tin tức trường mới nhất</Text>
-          <TouchableOpacity style={styles.detailInfoBtn}
-              onPress={() =>{
-                  navigation.navigate('University Info');
-              }}>
-              <Text style={{fontSize:12,color:'blue'}}>Xem thêm</Text>
-              <MaterialIcons name="keyboard-arrow-right" size={15.5} color="blue" />
-          </TouchableOpacity>
-          
-      </View>
-
-      {/* <FlatList
-        data={uniNews.slice(0,5)}
-        horizontal={true}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderNewsItem}
-        ListEmptyComponent={renderEmptyUniversityNew}
-      /> */}
-
-      {uniNews.slice(0,5).length ===0 && <View style={{ marginLeft: 50 }}>
-        <Text>Không có tin tức trường nào</Text>
-      </View>}
-
-      {uniNews.slice(0,5).map((item, index) => ( 
-         <TouchableOpacity key={index} style={newsStyle.card}>
-          <Text numberOfLines={2} style={newsStyle.title}>
-            {item.title}
-          </Text>
-          <Text>{item.date}</Text>
-        </TouchableOpacity>
-      ))}
-
 
       <View style={styles.labelRowTitle}>
         <Text style={styles.label}>Top 5 tin tức khoa mới nhất</Text>
@@ -869,7 +841,49 @@ const HomeScreen = ({ navigation }) => {
       </View>}
 
       {facultNews.slice(0,5).map((item, index) => ( 
-         <TouchableOpacity key={index} style={newsStyle.card}>
+         <TouchableOpacity key={index} style={newsStyle.card}
+          onPress={() =>{
+            Linking.openURL(item.link)
+          }}>
+          <Text numberOfLines={2} style={newsStyle.title}>
+            {item.title}
+          </Text>
+          <Text>{item.date}</Text>
+        </TouchableOpacity>
+      ))}
+
+      <View style={styles.labelRowTitle}>
+        <Text style={styles.label}>Top 5 tin tức trường mới nhất</Text>
+        <TouchableOpacity style={styles.detailInfoBtn}
+            onPress={() =>{
+              navigation.navigate('University Info',{
+                screen:'University New'
+              });
+            }}>
+            <Text style={{fontSize:12,color:'blue'}}>Xem thêm</Text>
+            <MaterialIcons name="keyboard-arrow-right" size={15.5} color="blue" />
+        </TouchableOpacity>
+          
+      </View>
+
+      {/* <FlatList
+        data={uniNews.slice(0,5)}
+        horizontal={true}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderNewsItem}
+        ListEmptyComponent={renderEmptyUniversityNew}
+      /> */}
+
+      {uniNews.slice(0,5).length ===0 && <View style={{ marginLeft: 50 }}>
+        <Text>Không có tin tức trường nào</Text>
+      </View>}
+
+      {uniNews.slice(0,5).map((item, index) => ( 
+         <TouchableOpacity key={index} style={newsStyle.card}
+            onPress={() =>{
+              Linking.openURL(item.link)
+          }}>
+            
           <Text numberOfLines={2} style={newsStyle.title}>
             {item.title}
           </Text>
@@ -947,7 +961,7 @@ const styles = StyleSheet.create({
 
   timeDeadline: {
     fontSize: 11,
-    color: "#666",
+    fontWeight: "bold",
     marginTop:10
   },
 

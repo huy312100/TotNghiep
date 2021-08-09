@@ -32,6 +32,7 @@
     "react-native-gmailtype-textinput": "^1.0.6",
     "react-native-hyperlink": "0.0.19",
     "react-native-keyboard-aware-scroll-view": "^0.9.4",
+    "react-native-lightbox": "^0.8.1",
     "react-native-modal-datetime-picker": "^9.2.3",
     "react-native-picker-select": "^8.0.4",
     "react-native-popup-menu": "^0.15.11",

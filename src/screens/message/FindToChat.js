@@ -91,7 +91,7 @@ const FindToChatScreen = ({navigation}) => {
           >
 
             <View style={{marginVertical:10,borderRadius:25}}>
-              <Image style={{width:70, height:70,borderRadius:40}} source={{ uri:`https://ui-avatars.com/api/?background=random&color=ffffff&name=${item.HoTen}`}}/>
+              <Image style={{width:70, height:70,borderRadius:40}} source={{ uri:`https://ui-avatars.com/api/?background=888888&color=fff&name=${item.HoTen}`}}/>
             </View>
             
             {/* <View style={styles.courseInfo}>

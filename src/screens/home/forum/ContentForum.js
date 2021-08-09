@@ -4,6 +4,8 @@ import { Fontisto,FontAwesome,Entypo,MaterialCommunityIcons,AntDesign,Ionicons }
 import { Header } from 'react-native-elements';
 import Hyperlink from 'react-native-hyperlink';
 
+import Lightbox from 'react-native-lightbox';
+
 import {useSelector} from 'react-redux';
 
 import * as dateUtils from '../../../utils/Date';
@@ -226,7 +228,11 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 </View>
             </Hyperlink>
 
-            {dataOfForum.image !== "" && <Image style={styles.imagePost} source={{uri:dataOfForum.image}}/>}
+            {dataOfForum.image !== "" && 
+                <Lightbox>
+                    <Image style={styles.imagePost} source={{uri:dataOfForum.image}}/>
+                </Lightbox>
+            }
 
             {dataDetail.length !== 0 && <View style={styles.footerCard}>
                 {dataDetail[0].LikeByOwn === 0 ? <TouchableOpacity style={styles.buttonFooter}

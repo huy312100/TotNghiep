@@ -366,6 +366,8 @@ const HomeScreen = ({ navigation }) => {
         } else if (statusCodeNewUni === 500) {
         } else if (statusCodeNewUni === 503) {
         } else {
+          setUniNews([]);
+          dispatch(newsActions.getUniNews([]));
         }
       })
       .catch((err) => console.log(err, "error"));
@@ -389,18 +391,30 @@ const HomeScreen = ({ navigation }) => {
         return Promise.all([statusCode, dataRes]);
       })
       .then(([statusCode, dataRes]) => {
-        console.log(statusCode, dataRes);
+        //console.log(statusCode, dataRes);
         if (statusCode === 200) {
           const tmpNew = [];
           for (const key in dataRes) {
             tmpNew.push({
               title: dataRes[key].Title,
               link: dataRes[key].Link,
-              date: dataRes[key].Date,
+              date: dateUtils.ParseDDMMYYYYToTimestamp(dataRes[key].Date),
             });
-          }
-          setFacultNews(tmpNew);
-          dispatch(newsActions.getFacultNews(tmpNew));
+          };
+          tmpNew.sort((a, b) => b.date - a.date);
+
+          console.log(tmpNew);
+
+          const tmpNew2 = [] ;
+          for (const key in tmpNew) {
+            tmpNew2.push({
+              title: tmpNew[key].title,
+              link: tmpNew[key].link,
+              date: dateUtils.ConvertTimestampToVNTimeWithoutTime(tmpNew[key].date),
+            });
+          };
+          setFacultNews(tmpNew2);
+          dispatch(newsActions.getFacultNews(tmpNew2));
         }
         // else if (statusCode === 500){
         //     setStatusCode(statusCode);
@@ -409,7 +423,8 @@ const HomeScreen = ({ navigation }) => {
         //     setStatusCode(statusCode)
         // }
         else {
-          //setStatusCode(statusCode);
+          setFacultNews([]);
+          dispatch(newsActions.getFacultNews([]));
         }
       })
       .catch((err) => console.log(err, "error"));
@@ -890,6 +905,8 @@ const HomeScreen = ({ navigation }) => {
           <Text>{item.date}</Text>
         </TouchableOpacity>
       ))}
+
+      <View>{console.log(dateUtils.ParseDDMMYYYYToTimestamp('02/08/2021'))}</View>
 
       </ScrollView>
     }

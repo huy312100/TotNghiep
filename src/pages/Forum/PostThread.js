@@ -8,6 +8,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import Select from '@material-ui/core/Select';
 import defaultValue from "../../images/default.png"
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import { render } from '@testing-library/react';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +64,7 @@ export const PostThread =  ({
     const [type,setType] = useState("");
     const [title,setTitle] = useState("");
     const [post, setPost] = useState(false);
+    const [success,setSuccess] = useState(null);
     const handlePostClick = () => {
         setPost(true);
     };
@@ -74,7 +76,7 @@ export const PostThread =  ({
     }
     const postNewThread = async() => {
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+ "tC");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         
         var formdata = new FormData();
         
@@ -102,9 +104,12 @@ export const PostThread =  ({
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
           }).then(([statusCode, dataRes]) => {
+            console.log(statusCode);
             if(statusCode === 200){
+                setSuccess(true);
             }
             else{
+                setSuccess(false);
               console.log("loi");
             }
             setPost(true);
@@ -148,6 +153,26 @@ export const PostThread =  ({
                     
                 </div>
             )}
+    }
+    const renderSuccess = () =>{
+        if (success === true){
+            return(
+                <Snackbar open={post} autoHideDuration={3000} onClose={()=>{handleClose();setSuccess(null)}}>
+                    <Alert oonClose={()=>{handleClose();setSuccess(null)}} severity="success">
+                        Đăng bài viết thành công
+                    </Alert>
+                </Snackbar>
+            )
+        }
+        else{
+            return(
+                <Snackbar open={post} autoHideDuration={3000} onClose={()=>{handleClose();setSuccess(null)}}>
+                    <Alert onClose={()=>{handleClose();setSuccess(null)}} severity="error">
+                        Đăng bài viết không thàn thành công. Vui lóng thử lại 
+                    </Alert>
+                </Snackbar>
+            )
+        }
     }
     return(
         <Dialog
@@ -211,14 +236,11 @@ export const PostThread =  ({
                 <Button onClick={handleClose} onChange={()=>{resetImage();handlePostClose()}} color="primary">
                     Huỷ
                 </Button>
-                <Snackbar open={post} autoHideDuration={3000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="success">
-                        Đăng bài viết thành công
-                    </Alert>
-                </Snackbar>
-                <Button onClick={()=>{postNewThread();handlePostClick()}}>
+              
+                <Button onClick={()=>{postNewThread();handlePostClick();}}>
                     Đăng bài viết
                 </Button>
+                {success === true ? renderSuccess() : null}
             </DialogActions>
         </Dialog>      
     )

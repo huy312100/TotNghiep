@@ -7,7 +7,6 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import SchoolIcon from '@material-ui/icons/School';
 import ForumIcon from '@material-ui/icons/Forum';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import Notifications from "react-notifications-menu";
 import AlignItemsList from "./Message"
 import AccountMenu from "./Account"
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -19,6 +18,8 @@ import {useHistory} from "react-router-dom"
 import {List,Toolbar,Typography,ListItem,ListItemIcon,IconButton,ListItemText,Menu,Badge,Hidden,Drawer,Divider,CssBaseline,AppBar} from "@material-ui/core"
 import ScoreIcon from '@material-ui/icons/Score';
 import checkTokenExpired from '../ValidAccess/AuthToken';
+import NotifyListItem from "./NotifyListItem"
+import formatDistance from "date-fns/formatDistance";
 
 const drawerWidth = 200;
 const AppBarHeight = 60
@@ -31,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
       width: drawerWidth,
       flexShrink: 0,
     },
+  },
+  inline: {
+    display: 'inline',
   },
   appBar: {
     [theme.breakpoints.up('sm')]: {
@@ -90,6 +94,8 @@ function NavBar() {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [listNoti,setListNoti] = useState([]);
+
   const [userInfo, setUserInfo] = useState([{
     HoTen: "",
     AnhSV: "",
@@ -105,10 +111,8 @@ function NavBar() {
   };
   
 
-
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const isMenuOpen = Boolean(anchorEl);
 
   const handleMenuProfileOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -118,8 +122,7 @@ function NavBar() {
     setAnchorEl(null);
   };
 
-  const [message_anchorEl, message_setAnchorEl] = React.useState(null);
-  const isMessageOpen = Boolean(message_anchorEl);
+  const [message_anchorEl, message_setAnchorEl] = useState(null);
 
   const handleMessageOpen = (event) => {
     message_setAnchorEl(event.currentTarget);
@@ -151,10 +154,79 @@ function NavBar() {
         })
         .catch(error => console.log('error', error));
     }
-useEffect(() => {
-  getInfoUser();
-},[]);
 
+    const getNofiData = async() => {
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+  
+      var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+      };
+  
+      await fetch("https://hcmusemu.herokuapp.com/notification", requestOptions)
+      .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes]) => {
+        if(statusCode === 200){
+          setListNoti(dataRes);
+          //console.log(listNoti)
+        }
+        else{
+          console.log("loi");
+        }
+  
+      }).catch((err) => console.log(err, "error"));
+    }
+    
+    const changeNotiState = async(id) => {
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+      
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("IDNotification",id);
+      var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: 'follow'
+      };
+  
+      await fetch("https://hcmusemu.herokuapp.com/notification/changestate", requestOptions)
+      .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes]) => {
+        console.log(statusCode);
+        if(statusCode === 200){
+          updateStateNoti(id,"State",true);
+        }
+        else{
+          console.log("loi");
+        }
+  
+      }).catch((err) => console.log(err, "error"));
+    }
+    
+    useEffect(() => {
+      getInfoUser();
+      getNofiData();
+    },[]);
+  
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <StyledMenu
@@ -168,15 +240,114 @@ useEffect(() => {
       <AccountMenu/>
       </StyledMenu>
   );
+  const getLength = () =>{
+    let temp = 0;
+    for (var i=0;i < listNoti.length;i++){
+      if (listNoti[i].State === false){
+        temp++;
+      }
+    }
+    return temp;
+  }
+
+  const updateStateNoti =(id, whichvalue, newvalue)=> {
+    var index = listNoti.findIndex(x=> x._id === id);
+  
+    let g = listNoti[index]
+    g[whichvalue] = newvalue
+    if (index === -1){
+      console.log('no match')
+    }
+    else
+      setListNoti([
+        ...listNoti.slice(0,index),
+        g,
+        ...listNoti.slice(index+1)
+      ]);
+  }
+
+  const convertTimeAgo = (UNIX_timestamp) => {
+    var msPerMinute = 60 * 1000;
+    var msPerHour = msPerMinute * 60;
+    var msPerDay = msPerHour * 24;
+    var msPerMonth = msPerDay * 30;
+    var msPerYear = msPerDay * 365;
+
+    var elapsed = Date.now() - UNIX_timestamp;
+
+    if (elapsed < msPerMinute) {
+        return '1 phút trước';
+    }
+
+    else if (elapsed < msPerHour) {
+        return Math.round(elapsed / msPerMinute) + ' phút trước';
+    }
+
+    else if (elapsed < msPerDay) {
+        return Math.round(elapsed / msPerHour) + ' giờ trước';
+    }
+
+    else if (elapsed < msPerMonth) {
+        return Math.round(elapsed / msPerDay) + ' ngày trước';
+    }
+
+    else if (elapsed < msPerYear) {
+        return Math.round(elapsed / msPerMonth) + ' tháng trước';
+    }
+
+    else {
+        return Math.round(elapsed / msPerYear) + ' năm trước';
+    }
+  }
+  const handleNotiClick = (item) =>{
+    changeNotiState(item._id);
+    if (item.Title ===  "Tin Tức Khoa"){
+     // history.push("/news?tag=1")
+    }
+    else if  (item.Title ===  "Tin Tức Trường"){
+     // history.push("/news?tag=0")
+    }
+  }
+  const renderNotify = () =>{
+    return(
+      <List >
+      {listNoti.map((item,index) => {
+        return (
+          <div key={index}>
+              <ListItem button onClick={()=>handleNotiClick(item)} divider= "true" alignItems="flex-start">
+                  <ListItemText
+                      primary={<div  style={{fontWeight:item.State === true ? "normal" : "750", }}>
+                                <span style={{color:"red"}}>
+                                    {item.Title} 
+                                </span>
+                                &nbsp;- &nbsp;
+                                <span style={{color:"blue"}}>
+                                  {convertTimeAgo(item.Date)}
+                                </span>
+                              </div>
+                            } 
+                      secondary= {<Typography>{item.Data.slice(0,30)+"..."} </Typography> }
+
+                />
+              </ListItem>
+              <Divider variant="inset" component="li" />
+          </div>
+        )})}
+      </List>
+    )
+    }
+  
   const messageMenu = (<StyledMenu
-    id="customized-menu"
+    id="customized-notification"
     anchorEl={message_anchorEl}
     keepMounted
     open={Boolean(message_anchorEl)}
     onClose={handleMessageClose}
     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
   >
-    <AlignItemsList/>
+
+    {renderNotify()}
+    {/*<AlignItemsList/>*/}
     </StyledMenu>);
   const drawer = (
     <div>
@@ -244,8 +415,6 @@ useEffect(() => {
       
     </div>
   );
-
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -266,27 +435,15 @@ useEffect(() => {
           <div className={classes.grow} />
           <div className={classes.toolbarButtons}>
             <IconButton 
-            edge="end"
-            aria-label="message of current user"
-            className = "message_btn"
-            aria-haspopup="true"
-            onClick={handleMessageOpen}
-            color="inherit"
-            >
-              <Badge badgeContent={5} color="secondary">
-                <MessageIcon />
-              </Badge>
-            </IconButton>
-            <IconButton 
             color="inherit"
             edge="end"
             aria-label="notification of current user"
             className = "notifi_btn"
             aria-haspopup="true"
+            onClick={handleMessageOpen}
             >
-              <Badge badgeContent={5} color="secondary">
-                <NotificationsActiveIcon />
-               
+              <Badge badgeContent={getLength()} color="secondary">
+                <NotificationsActiveIcon />       
               </Badge>
             </IconButton>
           

@@ -1,5 +1,5 @@
 import React , {useState, useEffect,useCallback}from 'react';
-import { Typography,makeStyles,Menu,MenuItem } from '@material-ui/core';
+import { Typography,makeStyles,Menu,MenuItem, Box } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -14,6 +14,8 @@ import TimeAgo from '../../../components/functions/TimeAgo';
 import ConfirmDialog from "../../../components/shared/ConfirmDialog"
 import LoadingScreen from '../../../components/shared/LoadingScreen';
 import { green } from '@material-ui/core/colors';
+import Zoom from 'react-medium-image-zoom'
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ViewComment from '../ViewComment';
 
 
@@ -90,10 +92,27 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: green[700],
     },
   },
+  like_dialog_popup: {
+    display: "fixed", 
+    background: "#e4e7af", 
+    position: "fixed", 
+    top: "50%", 
+    left: "55%", 
+    transform: "translate(-50%, -50%)", 
+    width: "50%", 
+    borderColor: "black"
+  }
 }));
 
+function isEmpty(object) { 
+  for(var i in object){ 
+    return true;
+  } 
+  return false; 
+}
 
-export default function Truong(props)
+
+export default function Khoa(props)
 {
     const classes = useStyles();
     const [forumPosts,setForumPosts] = useState([]);
@@ -102,8 +121,10 @@ export default function Truong(props)
     const [currentPost,setCurrentPost] = useState(null);
     const [userMail,setUserMail] = useState(null);
     const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
+    const [popup,setPopUp] = useState(false);
+    const [listLike,setListLike] = useState([]);
     const self = props.self;
- 
+
     const handleOptionsClick = (e,id) => {
       setCurrentPost(id);
       setAnchorEl(e.currentTarget);
@@ -115,7 +136,7 @@ export default function Truong(props)
     };
 
 
-
+    
     const getUserEmail = ()=>{
       var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") );
@@ -152,12 +173,14 @@ export default function Truong(props)
             .catch(error => console.log('error', error));
     }
     
+   
+
     useEffect(() => {
        getUserEmail();
        getForumPosts();
        setLoading(false);
 
-     },[self]);
+     },[self,forumPosts]);
 
     
      const Btn_ClickShowComment = (forum) => {
@@ -175,19 +198,21 @@ export default function Truong(props)
     
     }
     const updateNumberLike = (id,type) => {
-      if (type==1){
+      if (type===1){
           var index = forumPosts.findIndex(x=> x.ID === id);
           let g = forumPosts[index]
           g['like']-=1
           let value = g['like'];
           updateState(id,"like",value)
+          updateState(id,"LikeByOwn",0);
       }
       else{
         var index = forumPosts.findIndex(x=> x.ID === id);
         let g = forumPosts[index]
         g['like']+=1
         let value = g['like'];
-        updateState(id,"like",value)
+        updateState(id,"like",value);
+        updateState(id,"LikeByOwn",1);
       }
     }
     const updateState =(id, whichvalue, newvalue)=> {
@@ -291,14 +316,75 @@ export default function Truong(props)
           {item.like}
         </div>
       )}
-    const renderCommentCount = (item) => {
-       return(
-         <div>
-            <CommentIcon/>
-            {item.comment}
-         </div>
+    const getPostLiked = async(id) => {
+        let details = {
+          IDPost: id
+      }
+      let formBody = [];
+  
+      for (let property in details) {
+          let encodedKey = encodeURIComponent(property);
+          let encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+      fetch("https://hcmusemu.herokuapp.com/forum/viewlike", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `bearer ${localStorage.getItem("token")}`,
+          },
+          body: formBody,
+      }) .then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes]) => {
+          console.log(statusCode,dataRes);
+          if(statusCode === 200){
+              setListLike(dataRes);
+          }
+      }).catch(error => console.log('error', error));
+    }
+
+    const renderListUserLike = () =>{
+      if (listLike.length === 0){
+        return(<div>
+        <div>
+          <Box style={{ padding: "20px", borderRadius: "7px",borderColor:"black" }} className={classes.like_dialog_popup}>
+            <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}><HighlightOffIcon/></IconButton>
+            <Typography>Bạn hãy là người like bài viết đầu tiên ^^</Typography>
+          </Box>
+          </div>
+        </div>
+        )
+
+      }
+      else{
+        return(
+          <div  onClick={() => setPopUp(false)}>
+            <div style={{ padding: "20px", borderRadius: "10px" }} className={classes.like_dialog_popup}>
+              {listLike.map((item, index) => {
+                  return (
+                    <div key={index}>
+                        <CardHeader
+                            avatar={
+                              <Avatar
+                                src={item.Avart}
+                              />
+                            }
+                            title={item.Name}
+                          />
+                    </div>
+              )})}
+            </div>
+          </div>
        )
-     }
+    }}
+    const renderLikePopup = async(id) => {
+        await getPostLiked(id);
+        setPopUp(true);
+    }
     const renderImage = (item) =>{
       if (item.image != "")
       return(
@@ -307,12 +393,7 @@ export default function Truong(props)
         image={item.image}
         />
       )
-      else return(
-        <div>
-          
-        </div>
-      )
-     }
+    }
      
     const getCurrentMail = (id) => {
       var array = [...forumPosts];
@@ -411,13 +492,10 @@ export default function Truong(props)
                     aria-label="Comment the post"
                     onClick= {() => Btn_ClickShowComment(item)}
                     >
-                      {renderCommentCount(item)}
+                      <CommentIcon/>
                     </IconButton>
                    
                 </CardActions>
-                  {/*renderBoxPostComment(item)*/}
-                  {/*renderLikeButton(item)*/}
-                  {/*openLike ? renderUserLike() : null*/}
                   {item.showcomment === true ? <ViewComment getComments={getComments} forum={item} email={userMail} /> : null}
                    <Menu
                   id="simple-menu"
@@ -435,21 +513,21 @@ export default function Truong(props)
                         onConfirm: () => { handleDeletePost(currentPost);setConfirmDialog({isOpen: false,});setAnchorEl(null); }
                     })
                   }}>Xoá post</MenuItem>
-                  :
-                 <MenuItem> </MenuItem>
-                }
-                
+                  : null
+                  }
+                  <MenuItem onClick={()=>{renderLikePopup(currentPost);setAnchorEl(null)}}> Người đã thích bài viết </MenuItem>  
+                                
                 </Menu>
               <ConfirmDialog
               confirmDialog={confirmDialog}
               setConfirmDialog={setConfirmDialog}
               />
               </Card>
-
+              {popup === true ? renderListUserLike() : null}
               <p/> <br/>
           </div>
         )})}
-     }
+    }
 
   if (loading == true){
     return(
@@ -461,7 +539,6 @@ export default function Truong(props)
    else{
     return(
           <div>
-           
             {renderForum()}
           </div>
   )}

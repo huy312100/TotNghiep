@@ -26,6 +26,14 @@ const useStyles = makeStyles((theme) => ({
     news_post:{
       marginTop:"30px",
     },
+    indicator: {
+      background: "none"
+    },
+    tabs: {
+      "& button[aria-selected='true']": {
+        border: "3px solid red"
+      }
+    },
   }));
   
 
@@ -72,6 +80,8 @@ export default function Forum(){
            indicatorColor="primary"
            textColor="primary"
             variant = "fullWidth"
+            className={classes.tabs}
+            classes={{ indicator: classes.indicator }}
           >
         <Tab label="Diễn đàn trường"/>
         <Tab  label="Diễn đàn khoa"/>

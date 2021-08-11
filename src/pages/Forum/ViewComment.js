@@ -2,24 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import Category from '../Category';
+import { Button,makeStyles } from '@material-ui/core';
+import Zoom from 'react-medium-image-zoom'
 
 const backCover = {
     backgroundColor: 'rgba(52, 52, 52, 0.2)',
     position: 'fixed',
-    // marginTop: 20,
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
     zIndex: 3
-    // opacity: 0.5,
 }
 
+const useStyles = makeStyles((theme) => ({
+    forum__dialog_popup: {
+        display: "fixed", 
+        background: "white", 
+        position: "fixed", 
+        top: "50%", 
+        left: "50%", 
+        transform: "translate(-50%, -50%)", 
+        width: "40%", 
+        zIndex: "4"
+      }
+}))
+
 function ViewComment(props) {
+    const classes = useStyles();
     const [loadding, setLoadding] = useState(false)
     const [comments, setComments] = useState(null)
     const [imgData, setimgData] = useState(null);
     const [image, setImage] = useState(null);
+    const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
 
     const [newcomment, SetNewcomment] = useState("");
 
@@ -39,13 +54,9 @@ function ViewComment(props) {
         props.getComments(props.forum)
             .then(response => response.json())
             .then(result => {
-                // items[index].comments = result;
-                // items[index].loadcomment = false;
-                // console.log(items[index])
-
+        
                 setComments(result)
                 setLoadding(false)
-                // setLoading(0)
             })
             .catch(error => console.log('error', error));
     }
@@ -106,9 +117,14 @@ function ViewComment(props) {
             });
 
 
-        // getTopic()
     }
-
+    const handleDeleteComment = (id) => {
+        setConfirmDialog({
+          ...confirmDialog,
+          isOpen: false
+      })
+      RemoveComment_API(id);
+      }
     const RemoveComment_API = (removeid) => {
         setPopup(null)
         var myHeaders = new Headers();
@@ -130,8 +146,6 @@ function ViewComment(props) {
         const j = items.findIndex(item => item.ID === removeid);
 
         items.splice([j], 1);
-
-        // rm company node if it have no items
 
         setComments(items)
 
@@ -162,9 +176,6 @@ function ViewComment(props) {
     }
 
     const convertTimeAgo = (UNIX_timestamp) => {
-        // var a = new Date(UNIX_timestamp);
-        // var time = a.getHours() + ":" + a.getMinutes();
-        // return time;
         var msPerMinute = 60 * 1000;
         var msPerHour = msPerMinute * 60;
         var msPerDay = msPerHour * 24;
@@ -201,12 +212,13 @@ function ViewComment(props) {
     const renderPopup = () => {
         return <div>
             <div style={backCover} onClick={() => setPopup(null)}></div>
-            <div style={{ padding: "20px", borderRadius: "7px" }} className="dialog-popup">
+            <div style={{ padding: "20px", borderRadius: "7px" }} className={classes.forum__dialog_popup}>
                 <p style={{ textAlign: "center", fontWeight: "500" }}>Bạn có muốn xóa bình luận không?</p>
                 <div className="row" style={{ justifyContent: "space-around" }}>
-                    <div type="button" className="col-4" style={{ textAlign: "center", fontWeight: "500", background: "#f1f2f4", color: "rgb(24, 70, 139)", padding: "5px" ,borderRadius:"2px"}} onClick={() => setPopup(null)}>Hủy</div>
-                    <div type="button" className="col-4" style={{ textAlign: "center", fontWeight: "500", background: "rgb(24, 70, 139)", color: "white", padding: "5px" ,borderRadius:"2px"}} onClick={() => RemoveComment_API(popup)}>Có</div>
+                    <Button className="col-4" style={{ textAlign: "center", fontWeight: "500", background: "#f1f2f4", color: "rgb(24, 70, 139)", padding: "5px" ,borderRadius:"2px"}} onClick={() => setPopup(null)}>Hủy</Button>
+                    <Button className="col-4" style={{ textAlign: "center", fontWeight: "500", background: "rgb(24, 70, 139)", color: "white", padding: "5px" ,borderRadius:"2px"}} onClick={() =>  RemoveComment_API(popup)}>Có</Button>
                 </div>
+                   
             </div>
         </div>
     }

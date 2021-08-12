@@ -19,6 +19,7 @@ import CategoryIcon from '@material-ui/icons/Category';
 import LinkIcon from '@material-ui/icons/Link';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ColorLensIcon from '@material-ui/icons/ColorLens';
+import LoadingScreen from '../../components/shared/LoadingScreen';
 const useStyles = makeStyles(() => ({
   "calendar_page": {
     "width": "81vw",
@@ -939,7 +940,12 @@ class Calendar extends Component {
 
                 </div>
             );
-        else return null;
+        else return (
+            <div style={{marginLeft: 200}}>
+                <NavBar/>
+                <LoadingScreen/>
+            </div>
+        );
 
     }
 }

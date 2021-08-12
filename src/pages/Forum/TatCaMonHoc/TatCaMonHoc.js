@@ -1,7 +1,7 @@
-import React , {useState, useEffect,useCallback,useRef}from 'react';
+import React , {useState, useEffect,useCallback}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import LoadingScreen from "../../../components/shared/LoadingScreen"
-import { Typography,Card,CardHeader,CardActions,CardContent,CardMedia,Avatar,Box,Menu,MenuItem,Select  } from '@material-ui/core';
+import { Typography,Card,CardHeader,CardActions,CardContent,CardMedia,Avatar,Box,Menu,MenuItem } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
 import ConfirmDialog from "../../../components/shared/ConfirmDialog"
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
       }
   }));
 
-export default function MonHoc(props)
+export default function TatCaMonHoc(props)
 {
     const classes = useStyles();
     const [forumPosts,setForumPosts] = useState([]);
@@ -110,79 +110,23 @@ export default function MonHoc(props)
     const [popup,setPopUp] = useState(false);
     const [listLike,setListLike] = useState([]);
     const self = props.self;
-    const unmounted = useRef(false);
-    const [pageCurrent,setPageCurrent] = useState(0);
-    const [data,setData] = useState([]);
-    const [selectedCourse,setSelectedCourse] = useState("");
-    const [section,setSection] = useState("Ứng dụng");
 
-    const handleChangeSelectedCourse = (event) => {
-       setSelectedCourse(event.currentTarget.value);
-      };
-    
-    const handleSectionChange = (event) =>{
-        setSection(event.currentTarget.value);
-    }
-
-    const getAllCourses = async () => {
-        setLoading(true);
-        let details = {
-          page: pageCurrent,
-        };
-    
-        let formBody = [];
-    
-        for (let property in details) {
-          let encodedKey = encodeURIComponent(property);
-          let encodedValue = encodeURIComponent(details[property]);
-          formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-    
-        console.log(formBody);
-    
-        fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization: `bearer ${localStorage.getItem("token")}`,
-          },
-          body: formBody,
-        })
-        .then((response) => {
-          const statusCode = response.status;
-          const dataRes = response.json();
-          return Promise.all([statusCode, dataRes]);
-        })
-          .then(([statusCode, dataRes]) => {
-            if(statusCode === 200){
-              setData(data.concat(dataRes));
-              setPageCurrent(pageCurrent+1);
-            }
-            setLoading(false);
-          })
-          .catch((err) => console.log(err, "error"));
-      };
-
-    
-    const getAllCoursePosts = async(id) => {
+    const getAllCoursePosts = async() => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
-        var formdata = new FormData();
-        formdata.append("IDCourses",id);
+    
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
             redirect: 'follow'
         };
     
-        await fetch("https://hcmusemu.herokuapp.com/forum/courses/viewone", requestOptions)
+        await fetch("https://hcmusemu.herokuapp.com/forum/courses/view", requestOptions)
         .then((response) => {
           const statusCode = response.status;
           const dataRes = response.json();
           return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-              console.log(dataRes);
               if(statusCode === 200){
                 if (self == "self"){
                     dataRes = dataRes.filter(forum => forum.EmailOwn == userMail);
@@ -221,14 +165,11 @@ export default function MonHoc(props)
                   .then(result => {setUserMail(result[0].Email)})
                   .catch(error => console.log('error', error));
           }
-    useEffect(async() => {
-        await getUserEmail();
-        await getAllCourses();
-        await getAllCoursePosts(selectedCourse);
-        return()=>{
-            unmounted.current = true;
-        }
-      }, [self,pageCurrent,selectedCourse,section]);
+    useEffect(() => {
+        getUserEmail();
+      getAllCoursePosts();
+     },[self,forumPosts]);
+
      const Btn_ClickShowComment = (forum) => {
         let items = [...forumPosts];
         let scopeFunction = setForumPosts
@@ -352,7 +293,7 @@ export default function MonHoc(props)
     
         }).catch((err) => console.log(err, "error"));
       }
-      
+  
       const renderLike = (item) => {
         return(
           <div>
@@ -390,35 +331,7 @@ export default function MonHoc(props)
             }
         }).catch(error => console.log('error', error));
       }
-      const renderSelectedCourse = () =>{
-          return(
-            <Select
-            native
-            value={selectedCourse}
-            onChange={handleChangeSelectedCourse}
-          >
-              {data.map((item, index) => {
-                    return (
-                        <option key={index} value={item.IDCourses}>{item.name}</option>
-                )})}
-          
-          </Select>
-          )
-      }
-      
-      const renderSection = ()=>{
-        return(
-        <Select
-        native
-        value={section}
-        onChange={handleSectionChange}
-      
-      >
-        <option value="Ứng dụng">Ứng dụng</option>
-        <option value="Moodle">Moodle</option>
-      </Select>)
-      }
-
+  
       const renderListUserLike = () =>{
         if (listLike.length === 0){
           return(<div>
@@ -608,15 +521,7 @@ export default function MonHoc(props)
      else{
       return(
             <div>
-                <span>
-                {renderSelectedCourse()}
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                {renderSection()}
-                </span>
-
-                <div>
-                    <Typography>Bạn đang chọn courseID: {selectedCourse} thuộc khu vực: {section}</Typography>
-                </div>
+              {renderForum()}
             </div>
     )}
 }

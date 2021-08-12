@@ -1,11 +1,11 @@
 import React , {useState, useEffect}from 'react';
 import NavBar from '../../Navigation/NavBar'
 import { makeStyles } from '@material-ui/core/styles';
-import { Tab, Tabs, Typography, Box,Paper,Button  } from '@material-ui/core';
-import PropTypes from "prop-types"
+import { Tab, Tabs, Box,Paper,Button  } from '@material-ui/core';
 import Truong from './Truong/Truong';
-import MonHoc from "./MonHoc/MonHoc"
+import TatCaMonHoc from "./TatCaMonHoc/TatCaMonHoc"
 import Khoa from "./Khoa/Khoa"
+import MonHoc from './MonHoc/MonHoc';
 import { PostThread } from './PostThread';
 import Category from '../Category';
 const useStyles = makeStyles((theme) => ({
@@ -83,13 +83,15 @@ export default function Forum(){
             className={classes.tabs}
             classes={{ indicator: classes.indicator }}
           >
-        <Tab label="Diễn đàn trường"/>
-        <Tab  label="Diễn đàn khoa"/>
-        <Tab  label="Diễn đàn môn học"/>
+        <Tab label="Trường"/>
+        <Tab  label="Khoa"/>
+        <Tab  label="Tất cả môn học"/>
+        <Tab label= "Môn học"/>
       </Tabs>
       {value === 0 && <Truong self={selfpost}/>} 
       {value === 1 && <Khoa self={selfpost}/>} 
-      {value === 2 && <MonHoc self={selfpost}/>} 
+      {value === 2 && <TatCaMonHoc self={selfpost}/>} 
+      {value === 3 && <MonHoc self={selfpost}/>}
       </main>
       </Paper>
   )};

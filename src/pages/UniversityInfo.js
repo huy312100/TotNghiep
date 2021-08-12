@@ -149,7 +149,11 @@ export default function UniversityInfo() {
 
   if (loading === true){
     return(
-      <LoadingScreen/>
+      <div className={classes.root}>
+         <NavBar className = {classes.floatingMenu}/>
+          <Toolbar /> 
+         <LoadingScreen/>
+      </div>
     )
   }
   else{

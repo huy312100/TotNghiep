@@ -14,7 +14,6 @@ import TimeAgo from '../../../components/functions/TimeAgo';
 import ConfirmDialog from "../../../components/shared/ConfirmDialog"
 import LoadingScreen from '../../../components/shared/LoadingScreen';
 import { green } from '@material-ui/core/colors';
-import Zoom from 'react-medium-image-zoom'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ViewComment from '../ViewComment';
 
@@ -104,12 +103,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function isEmpty(object) { 
-  for(var i in object){ 
-    return true;
-  } 
-  return false; 
-}
 
 
 export default function Khoa(props)
@@ -168,11 +161,28 @@ export default function Khoa(props)
               if (self == "self"){
                 result = result.filter(forum => forum.EmailOwn == userMail);
               }
-              setForumPosts(result)
+              let data = [];
+              for (var i=0;i< result.length;i++){
+                data.push({ID: result[i].ID,
+                  EmailOwn: result[i].EmailOwn,
+                  AvartaOwn: result[i].AvartaOwn,
+                  LikeByOwn: result[i].LikeByOwn,
+                  NameOwn: result[i].NameOwn,
+                  comment: result[i].comment,
+                  image: result[i].image,
+                  like: result[i].like,
+                  scope: result[i].scope,
+                  time: result[i].time,
+                  title: result[i].title,
+                  showcomment: false
+                })
+              }
+              setForumPosts(data);
+
             })
             .catch(error => console.log('error', error));
     }
-    
+
    
 
     useEffect(() => {
@@ -180,7 +190,7 @@ export default function Khoa(props)
        getForumPosts();
        setLoading(false);
 
-     },[self,forumPosts]);
+     },[self]);
 
     
      const Btn_ClickShowComment = (forum) => {
@@ -198,21 +208,19 @@ export default function Khoa(props)
     
     }
     const updateNumberLike = (id,type) => {
-      if (type===1){
+      if (type==1){
           var index = forumPosts.findIndex(x=> x.ID === id);
           let g = forumPosts[index]
           g['like']-=1
           let value = g['like'];
           updateState(id,"like",value)
-          updateState(id,"LikeByOwn",0);
       }
       else{
         var index = forumPosts.findIndex(x=> x.ID === id);
         let g = forumPosts[index]
         g['like']+=1
         let value = g['like'];
-        updateState(id,"like",value);
-        updateState(id,"LikeByOwn",1);
+        updateState(id,"like",value)
       }
     }
     const updateState =(id, whichvalue, newvalue)=> {
@@ -350,20 +358,18 @@ export default function Khoa(props)
     const renderListUserLike = () =>{
       if (listLike.length === 0){
         return(<div>
-        <div>
           <Box style={{ padding: "20px", borderRadius: "7px",borderColor:"black" }} className={classes.like_dialog_popup}>
-            <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}><HighlightOffIcon/></IconButton>
-            <Typography>Bạn hãy là người like bài viết đầu tiên ^^</Typography>
+          <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}><HighlightOffIcon/></IconButton>
+          <Typography>Bạn hãy là người like bài viết đầu tiên ^^</Typography>
           </Box>
-          </div>
-        </div>
-        )
+        </div>)
 
       }
       else{
         return(
-          <div  onClick={() => setPopUp(false)}>
+          <div>
             <div style={{ padding: "20px", borderRadius: "10px" }} className={classes.like_dialog_popup}>
+            <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}><HighlightOffIcon/></IconButton>
               {listLike.map((item, index) => {
                   return (
                     <div key={index}>
@@ -489,10 +495,10 @@ export default function Khoa(props)
                       {renderLike(item)}
                     </IconButton>
                     <IconButton 
-                    aria-label="Comment the post"
-                    onClick= {() => Btn_ClickShowComment(item)}
-                    >
-                      <CommentIcon/>
+                      aria-label="Comment the post"
+                      onClick= {() => Btn_ClickShowComment(item)}
+                      >
+                      <CommentIcon/> {item.comment}
                     </IconButton>
                    
                 </CardActions>

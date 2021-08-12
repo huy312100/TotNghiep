@@ -100,7 +100,7 @@ function ViewComment(props) {
         }
         else return
 
-        fetch(url, requestOptions)
+        await fetch(url, requestOptions)
             .then(response => {
                 if (response.ok)
                     return response
@@ -118,13 +118,7 @@ function ViewComment(props) {
 
 
     }
-    const handleDeleteComment = (id) => {
-        setConfirmDialog({
-          ...confirmDialog,
-          isOpen: false
-      })
-      RemoveComment_API(id);
-      }
+  
     const RemoveComment_API = (removeid) => {
         setPopup(null)
         var myHeaders = new Headers();
@@ -148,8 +142,15 @@ function ViewComment(props) {
         items.splice([j], 1);
 
         setComments(items)
-
-        fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", requestOptions)
+        var url
+        if (props.forum.scope !== undefined) {
+            url = "https://hcmusemu.herokuapp.com/forum/deletecmt"
+        }
+        else if (props.forum.IDCourses !== undefined) {
+            url = "https://hcmusemu.herokuapp.com/forum/courses/deletecmt"
+        }
+        else return
+        fetch(url, requestOptions)
             .then(response => {
                 if (response.ok)
                     return response.text()
@@ -277,10 +278,6 @@ function ViewComment(props) {
             <div class="row justify-content-center" >
                 <div className="col-md-12">
                     <div class="row" style={{ background: "white", margin: "0", justifyContent: "space-start", alignItems: "center" }}>
-                        {/* <div style={{border: "1px solid #DDD"}}>
-                                    <img src="icon.png" />
-                                    <input style={{border: "none"}} />
-                                </div> */}
                         <label style={{ width: "35px", padding: 0, margin: 0, textAlign: "center", borderRadius: "100%" }} for="files" class="col-auto btn"><i className="fa fa-file-image-o"></i></label>
                         <input width="0vw" id="files" type="file" hidden accept="image/png, image/jpeg" onChange={(e) => onChangePicture(e)} />
 

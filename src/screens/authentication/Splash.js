@@ -1,5 +1,5 @@
 import React,{useEffect} from 'react';
-import { View,StyleSheet,} from 'react-native';
+import { View,StyleSheet,Image} from 'react-native';
 
 import { useDispatch } from 'react-redux';
 
@@ -105,7 +105,7 @@ const SplashScreen = ({navigation}) =>{
 
     return (
         <View style={styles.container}>
-
+            <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
 
         </View>
     )
@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     },
 
     imageLogo: {
-        width:175,
-        height:125,
+        width:225,
+        height:225,
     },
 });
 

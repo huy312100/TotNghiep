@@ -1,5 +1,6 @@
 import React,{ useState } from 'react';
-import { View,StyleSheet,Image,Text,TouchableOpacity,TextInput,TouchableWithoutFeedback,Keyboard } from 'react-native';
+import { View,StyleSheet,Image,Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard } from 'react-native';
+import { TextInput } from 'react-native-paper';
 
 import LoadingScreen from '../LoadingScreen';
 
@@ -37,8 +38,13 @@ const ForgetPasswordScreen = ({navigation}) => {
             </Text>
 
             <View style={{width:'100%',marginBottom:30}}>
-                <TextInput style={styles.input} placeholder={"Nhập địa chỉ email"}
-                    onChangeText={(email) => setEmail(email)}
+
+                <TextInput
+                    style={styles.input}
+                    mode="outlined"
+                    label="Nhập địa chỉ email"
+                    value={email}
+                    onChangeText={(email) =>setEmail(email)}
                 />
             </View>
 
@@ -77,7 +83,6 @@ const styles = StyleSheet.create({
 
     input:{
         marginHorizontal:15,
-        backgroundColor:"#cccc",
         borderRadius:10,
         paddingVertical:15,
         paddingHorizontal:10,

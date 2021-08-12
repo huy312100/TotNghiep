@@ -80,3 +80,28 @@ export const ConvertTimestampToDate = (timestamp) => {
   time = yyyy + "-" + mm + "-" + dd ;
   return time;
 };
+
+export const ConvertTimestampToVNTimeWithoutTime = (timestamp) => {
+  var d;
+  // Convert the passed timestamp to milliseconds
+  if(timestamp.toString().length === 10){
+    d= new Date(timestamp * 1000);
+  }  
+  else if(timestamp.toString().length === 13){
+    d=new Date(timestamp);
+  }
+
+  var yyyy = d.getFullYear();
+  var mm = ('0' + (d.getMonth() + 1)).slice(-2);  // Months are zero based. Add leading 0.
+  var dd = ('0' + d.getDate()).slice(-2);         // Add leading 0.
+
+  time = dd + '-' + mm + '-' + yyyy ;
+  return time;
+};
+
+export const ParseDDMMYYYYToTimestamp = (str) =>{
+  var initial = str.split(/\//);
+  var yyyymmdd = [ initial[2], initial[1], initial[0] ].join('-'); //=> 'mm/dd/yyyy'
+
+  return new Date(yyyymmdd).getTime();
+};

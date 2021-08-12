@@ -16,6 +16,8 @@ const DetailCalendarScreen = ({ navigation }) => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [isLoading, setIsLoading] = useState(true);
 
+  const currentTimestamp = new Date().getTime();
+
   useEffect(() => {
     getAllDeadlineInMonth();
     return () => {
@@ -84,12 +86,12 @@ const DetailCalendarScreen = ({ navigation }) => {
           style={styles.onTheRight}
           name="chevron-thin-right"
           size={20}
-          color="blue"
+          color="silver"
         />
       </View>
 
       <View tyle={[styles.info, { marginBottom: 20 }]}>
-        <Text style={styles.date}>
+        <Text style={[styles.date,{color: currentTimestamp > item.duedate * 1000 ? "silver" :"red"}]}>
           Hạn chót: {dateUtils.ConvertTimestampToVNTime(item.duedate)}
         </Text>
       </View>
@@ -98,7 +100,7 @@ const DetailCalendarScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-    
+
       <View
         style={{
           flexDirection: "row",
@@ -139,13 +141,16 @@ const DetailCalendarScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
+      {isLoading && data.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="orange"/>
+      </View>}
 
       {!isLoading && data.length === 0 && (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           <Text style={{ color: "#BBBBBB" }}>
-            Không có deadline nào trong tháng này
+            Không có sự kiện nào trong tháng này
           </Text>
         </View>
       )}
@@ -191,7 +196,6 @@ const styles = StyleSheet.create({
   },
 
   date: {
-    color: "red",
     marginRight: 30,
     marginLeft: 15,
     fontSize: 12,

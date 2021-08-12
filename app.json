@@ -1,12 +1,11 @@
 {
   "expo": {
-    "name": "TotNghiep",
-    "slug": "TotNghiep",
-    "version": "1.0.0",
+    "name": "EMU Parent",
+    "slug": "emu-parent",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,13 +16,28 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "fit.hcmus.emuparent",
+      "buildNumber": "1.0.1",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "You need to provide photo album access to upload profile image.",
+        "NSCameraUsageDescription": "You need to provide camera access to scanning the QR Code.",
+        "NSMicrophoneUsageDescription": "You need to provide microphone access to continue voice chat"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundImage": "./assets/adaptive-background.png"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "fit.hcmus.emuparent",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"

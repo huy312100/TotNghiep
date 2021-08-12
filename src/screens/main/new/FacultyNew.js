@@ -5,7 +5,7 @@ import { Entypo,FontAwesome } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
-
+import * as dateUtils from '../../../utils/Date';
 
 const FacultyNewScreen = ({navigation}) =>{
 
@@ -42,10 +42,20 @@ const FacultyNewScreen = ({navigation}) =>{
                     {
                         title: dataRes[key].Title,
                         link:dataRes[key].Link,
-                        date:dataRes[key].Date,
+                        date: dateUtils.ParseDDMMYYYYToTimestamp(dataRes[key].Date),
                     });
-                }
-                setFacultNews(tmpNew);
+                };
+                tmpNew.sort((a, b) => b.date - a.date);
+
+                const tmpNew2 = [] ;
+                for (const key in tmpNew) {
+                    tmpNew2.push({
+                    title: tmpNew[key].title,
+                    link: tmpNew[key].link,
+                    date: dateUtils.ConvertTimestampToVNTimeWithoutTime(tmpNew[key].date),
+                    });
+                };
+                setFacultNews(tmpNew2);
             }
 
             else{
@@ -61,7 +71,7 @@ const FacultyNewScreen = ({navigation}) =>{
 
             <View style={styles.info}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Entypo style={styles.onTheRight} name="chevron-thin-right" size={20} color="blue" />
+                <Entypo style={styles.onTheRight} name="chevron-thin-right" size={20} color="silver" />
             </View>
             
             <View tyle={[styles.info,{marginBottom:20}]}>

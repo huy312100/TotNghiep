@@ -59,7 +59,7 @@ const UniversityNewScreen = ({navigation}) =>{
 
             <View style={styles.info}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Entypo style={styles.onTheRight} name="chevron-thin-right" size={20} color="blue" />
+                <Entypo style={styles.onTheRight} name="chevron-thin-right" size={20} color="silver" />
             </View>
             
             <View tyle={[styles.info,{marginBottom:20}]}>

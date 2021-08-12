@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,Text,StyleSheet,TouchableOpacity,Linking } from 'react-native';
+import { View,Text,StyleSheet,TouchableOpacity,Linking, ScrollView, ActivityIndicator } from 'react-native';
 
 import { MaterialIcons,Entypo } from '@expo/vector-icons';
 
@@ -39,12 +39,13 @@ const HomeScreen =({navigation}) =>{
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [year, setYear] = useState(new Date().getFullYear());
     const currentDate = dateUtils.CurrentDateYYMMDD();
-    const [isLoading,setLoading]=useState(false);
+    const [isLoading,setLoading]=useState(true);
     const [allDeadlineOfMonth,setAllDeadlineOfMonth] = useState([]);
     const [deadlineThisMonth,setDeadlineThisMonth] = useState([]);
     const [tokenNotification,setTokenNotification] = useState('');
     const [markDate,setMarkDate] = useState({});
 
+    const currentTimestamp = new Date().getTime();
 
     useEffect(()=>{
         getPermissionNotifications();
@@ -151,7 +152,7 @@ const HomeScreen =({navigation}) =>{
     
 
     return(
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={{marginVertical:10,marginHorizontal:10,justifyContent:'center'}}>
                 <Text style={styles.label}>Hoạt động trong tháng </Text>
                 <TouchableOpacity style={styles.detailCalendarBtn}
@@ -174,6 +175,7 @@ const HomeScreen =({navigation}) =>{
                 onMonthChange={(obj) => {
                   setMonth(obj.month);
                   setYear(obj.year);
+                  setDeadlineThisMonth([]);
                 }}
 
                 
@@ -185,9 +187,14 @@ const HomeScreen =({navigation}) =>{
 
             <Text style={[styles.label,{marginVertical:10,marginHorizontal:10}]}>Các sự kiện trong tháng</Text>
 
-            {deadlineThisMonth.length === 0 && <View style={{alignItems: 'center'}}>
+            {isLoading && deadlineThisMonth.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="orange"/>
+            </View>}
+
+            {!isLoading && deadlineThisMonth.length === 0 && <View style={{alignItems: 'center'}}>
                 <Text style={{marginVertical:10}}>Không có sự kiện nào </Text>
             </View>}
+
 
             {deadlineThisMonth.map((item, index)=>( 
             <TouchableOpacity key={index}
@@ -208,17 +215,17 @@ const HomeScreen =({navigation}) =>{
                   style={styles.onTheRight}
                   name="chevron-thin-right"
                   size={20}
-                  color="blue"
+                  color="silver"
                 />
               </View>
 
               <View tyle={[styles.info, { marginBottom: 20 }]}>
-                <Text style={styles.date}>
+                <Text style={[styles.date,{color: currentTimestamp > item.duedate * 1000 ? "silver" :"red"}]}>
                   Hạn chót: {dateUtils.ConvertTimestampToVNTime(item.duedate)}
                 </Text>
               </View>
             </TouchableOpacity>))}
-            </View>
+            </ScrollView>
     )
 };
 
@@ -266,10 +273,10 @@ const styles = StyleSheet.create({
     },
   
     date: {
-      color: "red",
       marginRight: 30,
       marginLeft: 15,
       fontSize: 12,
+      fontWeight: "bold",
     },
 });
 

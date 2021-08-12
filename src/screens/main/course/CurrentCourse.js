@@ -68,7 +68,7 @@ const CurrentCourseScreen = () =>{
     return(
         <View style={styles.container}>
             {isLoading && data.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
-                <ActivityIndicator size="large" color="blue"/>
+                <ActivityIndicator size="large" color="orange"/>
             </View>}
 
             {!isLoading && data.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>

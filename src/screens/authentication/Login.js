@@ -1,7 +1,9 @@
 import React,{useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { TextInput } from 'react-native-paper';
 
 import {useDispatch} from 'react-redux';
 
@@ -107,14 +109,25 @@ const LoginScreen =({navigation}) =>{
       
                 <Text style={styles.header}>Bắt đầu ngay</Text>
 
-                <TextInput placeholder={"Tên đăng nhập"} style={styles.input}
+                <TextInput
+                    style={styles.input}
+                    mode="outlined"
+                    label="Email"
+                    value={username}
                     onChangeText={(username)=>setUsername(username)}
                 />
 
                 <View style={styles.passInput} >
-                    <TextInput testID = "Form.PasswordInput"  secureTextEntry={visible} style={styles.input} placeholder="Mật khẩu"
+
+                    <TextInput
+                        style={styles.input}
+                        mode="outlined"
+                        label="Mật khẩu"
+                        value={password}
                         onChangeText={(password)=>setPassword(password)}
+                        secureTextEntry={visible}
                     />
+
                     <TouchableOpacity style={styles.eyeBtn}  onPress={()=>{
                         setVisible(!visible);
                         setShow(!show);
@@ -166,11 +179,8 @@ const styles = StyleSheet.create({
     },
 
     input:{
-        backgroundColor:'#ccc',
         width:'100%',
-        marginVertical:20,
-        padding:20,
-        borderRadius:10,
+        marginBottom:10
     },
     
     passInput: {

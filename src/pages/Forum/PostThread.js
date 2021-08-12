@@ -118,7 +118,7 @@ export const PostThread =  ({
 
     const handleImg = (event) => {
         setImage(URL.createObjectURL(event.target.files[0]))
-          console.log(event.target.files[0])
+          //console.log(event.target.files[0])
         setUpload({uri:event.target.files[0]});
     }
     const resetImage = () => {

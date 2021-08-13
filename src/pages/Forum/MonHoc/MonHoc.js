@@ -103,6 +103,7 @@ export default function MonHoc(props)
     const classes = useStyles();
     const [forumPosts,setForumPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingAll,setLoadingAll] = useState(true);
     const [anchorEl, setAnchorEl] = useState(null);
     const [currentPost,setCurrentPost] = useState(null);
     const [userMail,setUserMail] = useState(null);
@@ -159,6 +160,9 @@ export default function MonHoc(props)
               setData(data.concat(dataRes));
               setPageCurrent(pageCurrent+1);
             }
+            else if (statusCode === 500){
+              setLoadingAll(false);
+            }
             setLoading(false);
           })
           .catch((err) => console.log(err, "error"));
@@ -182,14 +186,13 @@ export default function MonHoc(props)
           const dataRes = response.json();
           return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-              console.log(dataRes);
-              if(statusCode === 200){
+              console.log(statusCode,dataRes);
+              /*if(statusCode === 200){
                 if (self == "self"){
                     dataRes = dataRes.filter(forum => forum.EmailOwn == userMail);
                 }
                 setForumPosts(dataRes);
-              }
-              setLoading(false);
+              }*/
               
             })
             .catch(error => console.log('error', error));
@@ -221,10 +224,14 @@ export default function MonHoc(props)
                   .then(result => {setUserMail(result[0].Email)})
                   .catch(error => console.log('error', error));
           }
-    useEffect(async() => {
-        await getUserEmail();
-        await getAllCourses();
-        await getAllCoursePosts(selectedCourse);
+    useEffect(()=>{
+      if (loadingAll === false){
+        getUserEmail();
+        getAllCoursePosts(selectedCourse);
+      }
+    })
+    useEffect(() => {
+        getAllCourses();
         return()=>{
             unmounted.current = true;
         }
@@ -423,7 +430,7 @@ export default function MonHoc(props)
         if (listLike.length === 0){
           return(<div>
             <Box style={{ padding: "20px", borderRadius: "7px",borderColor:"black" }} className={classes.like_dialog_popup}>
-            <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}><HighlightOffIcon/></IconButton>
+            <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => {setListLike([]);setPopUp(false)}}><HighlightOffIcon/></IconButton>
             <Typography>Bạn hãy là người like bài viết đầu tiên ^^</Typography>
             </Box>
           </div>)
@@ -598,7 +605,7 @@ export default function MonHoc(props)
           )})}
       }
   
-    if (loading === true){
+    if (loadingAll === true){
       return(
         <div>
           <LoadingScreen/>

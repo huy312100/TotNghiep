@@ -13,7 +13,6 @@ import News from "../pages/News/News"
 import Homepage from "../pages/Homepage/Homepage"
 import CalendarSchedule from '../pages/Calendar/Calendar';
 import Forum from '../pages/Forum/Forum';
-import Notifications from "../pages/Notifications/Notification"
 import DetailCourse from '../pages/Courses/DetailCourse';
 import Chat from "../pages/Chat/Chat"
 import SetupURL from '../pages/SetupBox/SetupURL';
@@ -48,7 +47,6 @@ class ReactRouter extends Component {
             <Route exact path = "/news" > <News/> /</Route>
             <Route exact path = "/calendar"> <CalendarSchedule/></Route>
             <Route exact path = "/forum"> <Forum/></Route>
-            <Route exact path = "/notifications"> <Notifications/> </Route>
             <Route exact path = "/chat"> <Chat/> </Route>
             <Route exact path = "/connection"><SetupURL/></Route>
             <Route exact path = "/changepassword"><Reset/></Route>

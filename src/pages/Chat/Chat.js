@@ -1,25 +1,28 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {makeStyles, Toolbar,Typography} from "@material-ui/core"
+import {makeStyles, Toolbar} from "@material-ui/core"
 import NavBar from "../../Navigation/NavBar"
 import { useSelector } from 'react-redux';
-import clsx from "clsx"
-const border = 200;
+import clsx from "clsx";
+import io from "socket.io-client";
+import { Tab,Tabs,Typography,Input,InputAdornment,TextField,IconButton,Box  } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import LoadingScreen from "../../components/shared/LoadingScreen"
+import { useHistory } from 'react-router-dom';
+import checkTokenExpired from '../../ValidAccess/AuthToken';
 const useStyles = makeStyles((theme)=>({
   root: {
-    marginLeft: `${border}`,
-    display: "flex",
-    width: `100%-${border}`,
-  },
-  toolbar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
+    marginLeft: "200px"
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+  },
+  toolbar: {
+    display: 'flex',
+    alignItems: 'left',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
   },
   info: {
     width: 0,
@@ -34,7 +37,6 @@ const useStyles = makeStyles((theme)=>({
   wrap: {
     display: "flex", 
     width: "82vw", 
-    //margin: "66px 0 0 16vw", 
     justifyContent: "space-between",
   },
   listfriend_box: {
@@ -44,9 +46,9 @@ const useStyles = makeStyles((theme)=>({
     marginRight: "5px"
   },
   box_input: {
-    display: "block", 
+    flexGrow: 1,
+    display: "table-cell", 
     margin: "1vw auto", 
-    width: "25vw", 
     height: "40px"
   },
   listfriend: {
@@ -55,6 +57,12 @@ const useStyles = makeStyles((theme)=>({
   wrap__message_box: {
     height: "85vh", 
     width: "53vw", 
+    background: "white", 
+    padding: "0 10px"
+  },
+  wrap__message_tab: {
+    height: "10vh", 
+    width: "35vw", 
     background: "white", 
     padding: "0 10px"
   },
@@ -175,29 +183,58 @@ const useStyles = makeStyles((theme)=>({
   search_user__email: {
     fontSize: "12px"
   },
+  box: {
+    display: "flex",
+    border: "1px solid black",
+    padding: 8
+  },
+  centerBox: {
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  indicator: {
+    background: "none"
+  },
+  tabs: {
+    "& button[aria-selected='true']": {
+      border: "3px solid red"
+    }
+  },
 }));
 function Chat() {
   const classes = useStyles();
+  const history = useHistory();
   const [search, setSearch] = useState("");
-  const [loadingSearch, setLoadingSearch] = useState(0)
+  const [loadingSearch, setLoadingSearch] = useState(0);
+  const [userMail,setUserMail] = useState(null);
+  const [value, setValue] = useState(0);
+
   const [foundedUser, setFoundedUser] = useState(null)
 
   const [usermessage, setUsermessage] = useState([""]);
+  const [awaitMessage,setAwaitMessage] = useState([""])
   const [selected, setSelected] = useState({ email: "", room: "", name: "" });
 
   const [selectedmessage, setSelectedmessage] = useState([]);
   const [newmessage, setNewmessage] = useState({ text: null, time: null });
   const [mess, setMess] = useState("");
-
+  const [avatar,setAvatar] = useState("");
   const divRef = useRef(null);
 
-  const socket = useSelector(state => state.authen.socket)
-  const email = useSelector(state => state.authen.email)
+  const socket = io.connect('/');
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  useEffect(()=>{
+    getUserEmail();
+  })
   useEffect(() => {
     getMessage();
+    getAwaitMessage();
 
-    /*socket.on('Private-Message-To-Client', (data) => {
+    socket.on('Private-Message-To-Client', (data) => {
         setSelectedmessage(selectedmessage => [...selectedmessage, {
             state: false,
             _id: data[0],
@@ -206,14 +243,33 @@ function Chat() {
             time: data[3]
         }]);
         setNewmessage({ text: data[2], time: data[3] })
-        console.log(data)
     })
-*/
+
     return () => {
         socket.off('Private-Message-To-Client');
     }
   }, []);
 
+  const getUserEmail = async()=>{
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
+    var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+
+      var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+      };
+
+      await fetch("https://hcmusemu.herokuapp.com/profile/view", requestOptions)
+          .then(response => response.json())
+          .then(result => {setUserMail(result[0].Email)})
+          .catch(error => console.log('error', error));
+  }
   useEffect(() => {
       if (search === "")
           setLoadingSearch(0)
@@ -232,21 +288,25 @@ function Chat() {
       }
   }, [usermessage]);
 
+  useEffect(() => {
+    if (awaitMessage !== [""]) {
+        awaitMessage.sort((a, b) => {
+            var keyA = a.time,
+                keyB = b.time;
+
+            if (keyA < keyB) return 1;
+            if (keyA > keyB) return -1;
+            return 0;
+        })
+    }
+  }, [awaitMessage]); 
 
   useEffect(() => {
       divRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [selectedmessage]);
 
-  const convertTime = (UNIX_timestamp) => {
-      var d = new Date(UNIX_timestamp);
-      var time = d.getHours() + ":" + d.getMinutes();
-      return time;
-  }
 
   const convertTimeAgo = (UNIX_timestamp) => {
-      // var a = new Date(UNIX_timestamp);
-      // var time = a.getHours() + ":" + a.getMinutes();
-      // return time;
       var msPerMinute = 60 * 1000;
       var msPerHour = msPerMinute * 60;
       var msPerDay = msPerHour * 24;
@@ -308,27 +368,51 @@ function Chat() {
   const Messages = () => {
 
       var list = usermessage.map((messageList) => (
-          <div type="button" className={classes.listfriend_box__message_content} onClick={() => selectUser(messageList.idRoom, messageList.Email, messageList.name)}>
-              <img width="50vw" style={{ borderRadius: "50%", marginTop: "5px" }} src="https://1.bp.blogspot.com/-r8taaC_nv5U/XngOYFjbRVI/AAAAAAAAZnc/QjGkkHS78GMm6CocQ1OqrWGgQTkG1oQNACLcBGAsYHQ/s1600/Avatar-Facebook%2B%25281%2529.jpg" alt=""></img>
+        <Box borderRadius="10px" border={1} color="black">
+          <div type="button" className={classes.listfriend_box__message_content} onClick={() => {setAvatar(messageList.Anh);selectUser(messageList.idRoom, messageList.Email, messageList.name)}}>
+              <img width="50vw" style={{ borderRadius: "50%", marginTop: "5px" }} src={messageList.Anh} alt=""></img>
               <span className={classes.listfriend_box__message_content_text}>
-                  <div className={classes.listfriend_box__message_content_text__name}>
+                  <div style={{fontSize: "18px"}} className={classes.listfriend_box__message_content_text__name}>
                       {messageList.name}
                   </div>
-                  <div className={classes.listfriend_box__message_content_text__text}>
-                      {messageList.text}
-                  </div>
-                  <div className={classes.listfriend_box__message_content_text__time}>
+                  <div style={{fontSize:"13px"}} className={classes.listfriend_box__message_content_text__time}>
                       {convertTimeAgo(messageList.time)}
                   </div>
               </span>
           </div>
+        </Box>
       ))
       return list;
   }
 
-  const viewChat = () => {
+  const renderAwaitUser = () => {
+
+    var list = awaitMessage.map((messageList) => (
+      <Box borderRadius="10px" border={1} color="black">
+        <div type="button" className={classes.listfriend_box__message_content} onClick={() => {setAvatar(messageList.Anh);selectUser(messageList.idRoom, messageList.Email, messageList.name)}}>
+            <img width="50vw" style={{ borderRadius: "50%", marginTop: "5px" }} src={messageList.Anh} alt=""></img>
+            <span className={classes.listfriend_box__message_content_text}>
+                <div style={{fontSize: "18px"}} className={classes.listfriend_box__message_content_text__name}>
+                    {messageList.name}
+                </div>
+                <div style={{fontSize:"13px"}} className={classes.listfriend_box__message_content_text__time}>
+                    {convertTimeAgo(messageList.time)}
+                </div>
+            </span>
+        </div>
+      </Box>
+    ))
+    return list;
+  }
+
+  const viewChat = async() => {
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
       var urlencoded = new URLSearchParams();
@@ -342,47 +426,88 @@ function Chat() {
           redirect: 'follow'
       };
 
-      fetch("https://hcmusemu.herokuapp.com/chat/loadmessage", requestOptions)
+      await fetch("https://hcmusemu.herokuapp.com/chat/loadmessage", requestOptions)
           .then(response => response.json())
           .then(result => {
-
-              var mess = result.reverse()
-              // console.log(mess)
+               var mess = [];
+               if (result.length > 0){
+                 mess = result.reverse();
+               }             
               setSelectedmessage(mess)
           })
           .catch(error => console.log('error', error));
   }
 
-  const getMessage = () => {
+  const getMessage = async() => {
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
       var requestOptions = {
           method: 'GET',
           headers: myHeaders,
           redirect: 'follow'
       };
-      console.log(localStorage.getItem("token"))
-      fetch("https://hcmusemu.herokuapp.com/chat/findchat", requestOptions)
-          .then(response => response.json())
-          .then(result => {
-              console.log(result)
-              setUsermessage(result);
-
+      await fetch("https://hcmusemu.herokuapp.com/chat/findchat", requestOptions)
+      .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
+              if (statusCode === 200){
+              setUsermessage(dataRes);
               setSelected({
-                  room: result[0].idRoom,
-                  email: result[0].Email,
-                  name: result[0].name
+                  room: dataRes[0].idRoom,
+                  email: dataRes[0].Email,
+                  name: dataRes[0].name
               })
+              }
           })
           .catch(error => console.log('error', error));
   }
 
-  const searchUser = () => {
+  const getAwaitMessage = async() => {
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
+      var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+      };
+      await fetch("https://hcmusemu.herokuapp.com/chat/findchatawait", requestOptions)
+      .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes]) => {
+              console.log(dataRes);
+              if (statusCode === 200){
+                setAwaitMessage(dataRes);
+              }
+          })
+          .catch(error => console.log('error', error));
+    }
+
+  const searchUser = async() => {
+    if (checkTokenExpired()) {
+      localStorage.clear()
+      history.replace("/");
+      return null
+      }
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+      console.log(search);
       var urlencoded = new URLSearchParams();
       urlencoded.append("username", search);
 
@@ -393,7 +518,7 @@ function Chat() {
           redirect: 'follow'
       };
 
-      fetch("https://hcmusemu.herokuapp.com/profile/findname", requestOptions)
+      await fetch("https://hcmusemu.herokuapp.com/profile/findname", requestOptions)
           .then(response => response.json())
           .then(result => {
               console.log(result)
@@ -406,15 +531,11 @@ function Chat() {
   const renderChatSelected = () => {
       return <div className={classes.message_box__message}>
           {selectedmessage.map(message => {
-              if (message.from === email) {
+              if (message.from === userMail) {
                   return <div className={classes.message_box__message__box_user}>
-                      {}
                       <div className={classes.message_box__user}>{message.text}</div>
-                      {}
-
                   </div>
               }
-
               else {
 
                   return <div className={classes.message_box__message__box_friend}>
@@ -430,25 +551,14 @@ function Chat() {
 
   const sendMessage = () => {
       if (mess !== "") {
-          console.log("Send message");
           socket.emit("Private-Message", [selected.room, selected.email, mess]);
-          // var newm = selectedmessage;
-          // Array.prototype.push.apply(newm, [{
-          //     state: false,
-          //     _id: selected.room,
-          //     from: email,
-          //     text: mess,
-          //     time: Date.now()
-          // }]);
-          // console.log(newm)
           setSelectedmessage([...selectedmessage, {
               state: false,
               _id: selected.room,
-              from: email,
+              from: userMail,
               text: mess,
               time: Date.now()
           }]);
-          console.log(selectedmessage)
           setNewmessage({ text: mess, time: Date.now() })
           setMess("");
       }
@@ -462,55 +572,99 @@ function Chat() {
 
   const handleSearch = (event) => {
       if (event.key === 'Enter') {
-          searchUser()
-      }
+              searchUser()
+          }
+      
+  }
+
+  const handleSearchClicked = ()=>{
+    searchUser();
   }
 
   const renderFoundedUser = () => {
       if (loadingSearch === 1) {
           const list = foundedUser.map((user) => {
-              return <div className={classes.search_user}>
+              return( 
+              <Box border={1} borderColor="red" textAlign="center" className={classes.search_user}>
                   <div className={classes.search_user__name}>{user.HoTen}</div>
                   <div className={classes.search_user__email}>({user.Email})</div>
-              </div>
+              </Box>
+              )
           })
           return list;
       }
       return <div className={classes.listfriend}>
           <div>
-              {Messages()}
+              {value === 0 && Messages()}
+              {value === 1 && renderAwaitUser() }
           </div>
       </div>;
   }
+
+
   return (
     <div className = {classes.root}> 
         <NavBar/>
-        
-            <div className={classes.toolbar} />
+        <main className={classes.content}>
+        <div className={classes.toolbar} />
             <div className={classes.wrap}>
+              
                 <div className={classes.listfriend_box}>
-                    <div>
-                        <input className={classes.box_input} type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => setSearch(e.target.value)} onKeyDown={handleSearch} />
-                    </div>
+                    <Box className={classes.box_input} textAlign="center" justifyContent="center" border={1} borderColor="blue">
+                        <TextField    
+                          style = {{width: "28vw"}}                   
+                          label="Nhập tên người dùng"
+                          name = "search"
+                          value = {search}
+                          required
+                          onChange = {(e) => setSearch(e.target.value)}
+                          onKeyDown={handleSearch}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment>
+                                <IconButton onClick={handleSearchClicked}>
+                                  <SearchIcon />
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                    </Box>
+                    <br/>
+                    <Tabs
+                              variant="fullWidth"
+                              value={value}
+                              onChange={handleChange}
+                              indicatorColor="primary"
+                              textColor="primary"
+                              className={classes.tabs}
+                              classes={{ indicator: classes.indicator }}
+                              >
+                            <Tab fullWidth label="Tin nhắn"/>
+                            <Tab fullWidth label="Tin nhắn chờ"/>
+                      </Tabs>
                     {renderFoundedUser()}
                 </div>
+                 
                 <div className={classes.wrap__message_box}>
-                    <div className={classes.message_box__selected_user}>
-                        <img width="40vw" height="40vw" style={{ borderRadius: "50%" }} src="https://1.bp.blogspot.com/-r8taaC_nv5U/XngOYFjbRVI/AAAAAAAAZnc/QjGkkHS78GMm6CocQ1OqrWGgQTkG1oQNACLcBGAsYHQ/s1600/Avatar-Facebook%2B%25281%2529.jpg" alt=""></img>
-                        <div className={classes.message_box__selected_user__infouser}>
-                            <div className={classes.message_box__selected_user__infouser__name}>{selected.name}</div>
-                            <div className={classes.message_box__selected_user__infouser__email}>{selected.email}</div>
-                        </div>
-                    </div>
-                    <hr />
-                    {renderChatSelected()}
-                    <div className={classes.message_box__textbox_message}>
-                        <input value={mess} className={classes.message_box__box_chat} type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setMess(e.target.value)} onKeyDown={handleKeyDown} />
-                        <i type="button" className={clsx(classes.message_box__enter,"fa","fa-reply")} onClick={sendMessage}></i>
+                   <div className={classes.message_box__selected_user}>
 
+                    <img width="40vw" height="40vw" style={{ borderRadius: "50%" }} src={avatar} alt=""></img>
+                    <div className={classes.message_box__selected_user__infouser}>
+                        <div className={classes.message_box__selected_user__infouser__name}>{selected.name}</div>
+                        <div className={classes.message_box__selected_user__infouser__email}>{selected.email}</div>
                     </div>
+                    </div>
+                <hr />
+                  {renderChatSelected()}
+                  <div className={classes.message_box__textbox_message}>
+                      <input value={mess} className={classes.message_box__box_chat} type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setMess(e.target.value)} onKeyDown={handleKeyDown} />
+                      <i type="button" className={clsx(classes.message_box__enter,"fa","fa-reply")} onClick={sendMessage}></i>
+
+                  </div>
                 </div>
             </div>
+            </main>
     </div>
   );
 }

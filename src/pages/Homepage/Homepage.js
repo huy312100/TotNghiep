@@ -2,7 +2,7 @@
 
 import React,{useState,useEffect} from 'react';
 import NavBar from '../../Navigation/NavBar'
-import {makeStyles, Toolbar,Typography, Grid,Box, Button,Paper} from "@material-ui/core"
+import {makeStyles,Typography, Grid,Box, Button} from "@material-ui/core"
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import TimelapseIcon from '@material-ui/icons/Timelapse'; 
 import {useHistory} from "react-router-dom"

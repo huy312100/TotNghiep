@@ -125,80 +125,22 @@ function AllCourses(){
           return Promise.all([statusCode, dataRes]);
         })
           .then(([statusCode, dataRes]) => {
+            console.log(statusCode);
             if(statusCode === 200){
               console.log(dataRes);
               setAllCourse(allCourse.concat(dataRes));
               setPage(page+1);
+            }
+            if (statusCode === 500){
+              setLoadingAll(false);
             }
             setLoading(false);
           })
           .catch((err) => console.log(err, "error"));
   }
 
-  /*const getAllCourseScroll = () => {
-    if (checkTokenExpired()) {
-      localStorage.clear()
-      history.replace("/");
-      return null
-      }
-    
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-    var urlencoded = new URLSearchParams();
-    urlencoded.append("page", page);
-
-    var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-    };
-
-    fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", requestOptions)
-        .then(response => {
-                const statusCode = response.status;
-            const dataRes = response.json();
-            return Promise.all([statusCode, dataRes]);
-          })
-        .then(([statusCode, dataRes]) => {
-          if(statusCode === 200){
-            console.log(dataRes);
-            //let temp = allCourse;
-            //temp.push.apply(result);
-            //setAllCourse(temp);
-            setAllCourse(allCourse.concat(dataRes));
-            console.log(allCourse);
-            setLoadingAll(false);
-            }
-        })
-        .catch(error => console.log('error', error));
-    }
-    
-    const handleScroll = () => {
-      const windowHeight =
-        'innerHeight' in window
-            ? window.innerHeight
-            : document.documentElement.offsetHeight;
-    const body = document.body;
-    const html = document.documentElement;
-    const docHeight = Math.max(
-        body.scrollHeight,
-        body.offsetHeight,
-        html.clientHeight,
-        html.scrollHeight,
-        html.offsetHeight
-    );
-
-    const windowBottom = Math.round(windowHeight + window.pageYOffset);
-    if (windowBottom >= docHeight-60 && loadingAll === false) {
-      setLoadingAll(true);
-      setPage(page+1);
-      getAllCourseScroll();
-     }
-    }*/
-  if (loading === true){
+ 
+  if (loadingAll === true){
     return(
         <div>
             <LoadingScreen/>
@@ -228,11 +170,11 @@ function AllCourses(){
                         </div>
                     )
                 })}
-                {loadingAll === true ? <div className="text-center">
+                {/*loadingAll === true ? <div className="text-center">
                     <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
                         <span className="sr-only">Loading...</span>
                     </div>
-                </div> : null}
+              </div> : null*/}
             </div>
             )
   }

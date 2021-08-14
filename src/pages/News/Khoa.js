@@ -91,7 +91,6 @@ export default function Khoa()
                   {item.Title}
               </span>
               </div>
-              <br/>
               <div style={{
             display: 'flex',
             alignItems: 'center',

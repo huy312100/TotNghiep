@@ -8,6 +8,7 @@ import Khoa from "./Khoa"
 import {useLocation} from "react-router-dom";
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import SchoolIcon from '@material-ui/icons/School';
+import Footer from '../../components/footer/Footer';
 const useStyles = makeStyles((theme) => ({
     root: {
       marginLeft: 200,
@@ -67,6 +68,7 @@ export default function News(){
       </Tabs>
       {value === 0 && <Truong/>}  
       {value === 1 && <Khoa/>} 
+      <Footer/>
       </main>
       </Paper>
   )};

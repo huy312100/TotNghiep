@@ -97,7 +97,7 @@ export default function Truong()
                   {item.Date}
               </span>
             </div>
-            </div>{}
+            </div>
             </a>
               </div>
               <hr/>

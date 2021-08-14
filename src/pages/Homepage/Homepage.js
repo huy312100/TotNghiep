@@ -108,8 +108,23 @@ function Homepage() {
       };
 
       await fetch("https://hcmusemu.herokuapp.com/info/newsuniversity", requestOptions)
-          .then(response => {return response.json()})
-          .then(result => {setNewsUni(result.slice(0,5));setLoadUni(false)})
+          .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+          })
+          .then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if (statusCode === 200){
+              setNewsUni(dataRes.slice(0,5));
+            }
+            else if (statusCode === 401){
+              localStorage.clear()
+              history.replace("/");
+              return;
+            }
+            setLoadUni(false)
+          })
           .catch(error => console.log('error', error));
   }
 
@@ -121,7 +136,7 @@ function Homepage() {
       return null
       }
         var myHeaders = new Headers();
-        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     
         var requestOptions = {
             method: 'GET',
@@ -130,9 +145,21 @@ function Homepage() {
         };
     
         await fetch("https://hcmusemu.herokuapp.com/info/newsfaculty", requestOptions)
-            .then(response => {return response.json();})
-            .then(result => {
-              setNewsFac(result.slice(0,5)); setLoadFac(false);
+        .then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+        })
+        .then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if (statusCode === 200){
+                setNewsFac(dataRes.slice(0,5)); setLoadFac(false);
+            }
+            else if (statusCode === 401){
+              localStorage.clear()
+              history.replace("/");
+              return;
+            }
             })
             .catch(error => console.log('error', error));
         }
@@ -152,16 +179,28 @@ function Homepage() {
           };
       
           await fetch("https://hcmusemu.herokuapp.com/info/getinfo", requestOptions)
-              .then(response => {return response.json();})
-              .then(result => {
-               setInfo(result);
+          .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+          })
+          .then(([statusCode, dataRes]) => {
+              console.log(statusCode,dataRes);
+              if (statusCode === 200){
+               setInfo(dataRes);
+              }   
+              else if (statusCode === 401){
+                localStorage.clear()
+                history.replace("/");
+                return;
+              }
               })
               .catch(error => console.log('error', error));
           }
     useEffect(() => {
+        getInfoUni();
         getNewsFaculty();
         getNewsUniversity();
-        getInfoUni();
         setLoading(false);
      },[]);
      const renderNewsComponent = (id) => {
@@ -313,7 +352,7 @@ function Homepage() {
             </Box>
             )
           }
-    if (loading == true){
+    if (loading === true){
       return (
         <LoadingScreen/>
       )

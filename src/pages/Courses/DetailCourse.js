@@ -5,10 +5,15 @@ import NavBar from "../../Navigation/NavBar";
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { Toolbar } from "@material-ui/core";
+import { Toolbar, Typography } from "@material-ui/core";
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import checkTokenExpired from "../../ValidAccess/AuthToken"
 import { useHistory } from 'react-router-dom';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import WorkIcon from '@material-ui/icons/Work';
+import DevicesOtherIcon from '@material-ui/icons/DevicesOther';
 const useStyles = makeStyles((theme) => ({
     root: {
         marginLeft: 200,
@@ -54,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 
 function DetailCourse(props){
     const classes = useStyles();
-    const [loadding,setLoading] = useState(1);
+    const [loading,setLoading] = useState(true);
     const [content,setContent] = useState([]);
     const [assign,setAssign] = useState([]);
     const [resource,setResource] = useState([]);
@@ -84,13 +89,13 @@ function DetailCourse(props){
         fetch("https://hcmusemu.herokuapp.com/coursescontent", requestOptions)
             .then(response => response.json())
             .then(result => {
-                console.log(result);
+                //console.log(result);
                 setContent(result.listLabel);
                 setAssign(result.listAssign);
                 setResource(result.listResource);
                 setUrl(result.listUrl);
                 setFolder(result.listFolder)
-                setLoading(0);
+                setLoading(false);
             })
             .catch(error => console.log('error', error));
     }
@@ -118,11 +123,16 @@ function DetailCourse(props){
     const renderResource = () => {
         if (resource.length > 1) {
             var label = resource.map((resource) => {
-                return <div className={classes.detail_course_page__content}><a href={resource.url} target="_blank" rel="noopener noreferrer">{resource.name}</a></div>
+                return(
+                <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__content}>
+                    <FiberManualRecordIcon fontSize="inherit"/>
+                    <a href={resource.url} target="_blank" rel="noopener noreferrer">{resource.name}
+                    </a>
+                </div>)
             })
             return (
                 <div>
-                    <div className={classes.detail_course_page__title}>TÀI LIỆU</div>
+                    <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__title}><InsertDriveFileIcon/>TÀI LIỆU</div>
                     <hr />
                     {label}
                 </div>
@@ -134,49 +144,77 @@ function DetailCourse(props){
     const renderAssign = () => {
         if (assign.length > 1) {
             var label = assign.map((assign) => {
-                return <div className={classes.detail_course_page__content}><a href={assign.url} target="_blank" rel="noopener noreferrer">{assign.name}</a></div>
+                return <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__content}>
+                    <FiberManualRecordIcon fontSize="inherit" />
+                    <a href={assign.url} target="_blank" rel="noopener noreferrer">
+                        {assign.name}
+                    </a>
+                </div>
             })
             return (
                 <div>
-                    <div className={classes.detail_course_page__title}>BÀI TẬP</div>
+                    <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__title}><AssignmentIcon/>BÀI TẬP</div>
                     <hr />
                     {label}
                 </div>
             )
         }
-        return null
+        return(
+            <div>
+                <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__title}><AssignmentIcon/>BÀI TẬP</div>
+                <hr />
+                <Typography>Nội dung không tìm thấy</Typography>
+            </div>
+        )
     }
 
     const renderURL = () => {
         if (url.length > 1) {
             var label = url.map((url) => {
-                return <div className={classes.detail_course_page__content}><a href={url.url} target="_blank" rel="noopener noreferrer">{url.name}</a></div>
+                return <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__content}>
+                    <FiberManualRecordIcon fontSize="inherit"/>
+                    <a href={url.url} target="_blank" rel="noopener noreferrer">
+                        {url.name}
+                    </a>
+                </div>
             })
             return (
                 <div>
-                    <div className={classes.detail_course_page__title}>ĐƯỜNG DẪN</div>
+                    <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__title}><WorkIcon/>THỰC HÀNH</div>
                     <hr />
                     {label}
                 </div>
             )
         }
-        return null
+        return(
+        <div>
+             <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__title}><WorkIcon/>THỰC HÀNH</div>
+            <hr />
+            <Typography>Nội dung không tìm thấy</Typography>
+        </div>
+        )
     }
 
     const renderFolder = () => {
         if (folder.length > 1) {
             var label = folder.map((folder) => {
-                return <div className={classes.detail_course_page__content}><a href={folder.url} target="_blank" rel="noopener noreferrer">{folder.name}</a></div>
+                return <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__content}><FiberManualRecordIcon fontSize="inherit" /><a href={folder.url} target="_blank" rel="noopener noreferrer">{folder.name}</a></div>
             })
             return (
                 <div>
-                    <div className={classes.detail_course_page__title}>ĐƯỜNG DẪN</div>
+                    <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__title}><DevicesOtherIcon/> KHÁC</div>
                     <hr />
                     {label}
                 </div>
             )
         }
-        return null
+        return(
+            <div>
+                <div style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}} className={classes.detail_course_page__title}><DevicesOtherIcon/>KHÁC</div>
+                <hr />
+                <Typography>Nội dung không tìm thấy</Typography>
+            </div>
+        )
     }
 
     if (folder.length === 0 && content.length === 0 && resource.length === 0 && assign.length === 0 && url.length === 0){
@@ -204,7 +242,7 @@ function DetailCourse(props){
             </main>
             </div>
             )}
-        if (loadding === 0) {
+        if (loading === false) {
             return (
                 <div className={classes.root}>
                 <NavBar/>
@@ -230,7 +268,11 @@ function DetailCourse(props){
                 </div>
             );
         }
-        return <></>
+        return (
+            <div>
+                <LoadingScreen/>
+            </div>
+        )
 }
 
 export default DetailCourse;

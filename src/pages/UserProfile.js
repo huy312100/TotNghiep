@@ -328,6 +328,7 @@ export default function Profile() {
                     return <option key={index} value={value.MaTruong}>{value.TenTruongDH}</option>;
                 })
                 setListUni(uni);
+                
             })
             .catch(error => console.log('error', error));
     }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import clsx from "clsx"
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import { Grid, FormControl,Input, FormGroup,Box,IconButton,InputAdornment ,Button} from '@material-ui/core';
 import Logo from "../images/logo.png"
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -49,6 +49,11 @@ const useStyles = makeStyles(() => ({
         fontWeight: "600", 
         textDecoration: "none", 
         paddingLeft: "10%"
+      },
+      btnSignUp: {
+        color: "blue", 
+        textDecoration: "none", 
+        paddingLeft: "5px"
       },
       btnForgetPwd_hover: {
         textDecoration: "none", 
@@ -111,7 +116,7 @@ export default function LoginButton() {
             .then(result => {
                 if (result.token !== undefined) {
                     localStorage.setItem("token", result.token+ "tC")
-                    localStorage.setItem("expired",(new Date).getTime()+7200000)
+                    localStorage.setItem("expired",(new Date().getTime()+7200000))
                     //console.log(result.token)
                     history.replace("/");
                 }
@@ -198,9 +203,18 @@ export default function LoginButton() {
                             </FormControl>
                         </FormGroup>
                        <br/>
-                            {loaddingButton()}
-                            <Link to="/resetpassword" className={classes.btnForgetPwd}>Quên mật khẩu?</Link>
+                          {loaddingButton()}
+                          <Link to="/resetpassword" className={classes.btnForgetPwd}>Quên mật khẩu?</Link>
+                      <br/>
+                      {/*<div style={{textAlign:"center"}}>
+                      <Typography>Bạn chưa có tài khoản?
+                        <Link to="/signup" className={classes.btnSignUp}>
+                          Đăng ký ngay
+                        </Link>
+                        </Typography>
+                      </div>*/}
                 </Grid>
+               
             </Grid>
         </div>
         </Box>

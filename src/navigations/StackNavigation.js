@@ -961,9 +961,3 @@ function MyForumTopTab(){
     </topTab.Navigator>
   )
 };
-
-
-
-
-
-

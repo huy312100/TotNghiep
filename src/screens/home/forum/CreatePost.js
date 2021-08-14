@@ -160,7 +160,7 @@ const CreatePostScreen = ({navigation}) => {
                     />}
 
                 {!isLoading && <View style={styles.card}>
-                    <TextInput multiline style={styles.titleName} placeholder='Thêm nội dung cho bài viết'
+                    <TextInput multiline style={[styles.titleName,{textAlignVertical:"top"}]} placeholder='Thêm nội dung cho bài viết'
                     onChangeText={(title)=>{
                         //console.log(checkTitle(title));
                         setTitle(title);

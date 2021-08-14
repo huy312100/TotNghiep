@@ -511,7 +511,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
                 <View style={[styles.card,{marginTop:0,marginBottom:10}]}>
                     <View style={styles.date}>
                         <SimpleLineIcons name="note" size={20} color="red" />
-                        <TextInput style={[styles.label,{width:"95%",marginTop:-5,height:100}]} placeholder="Mô tả" multiline={true}
+                        <TextInput style={[styles.label,{width:"95%",marginTop:-5,height:300,textAlignVertical:"top"}]} placeholder="Mô tả" multiline={true} 
                         onChangeText={(decription) => setDecriptionEvent(decription)}>{decriptionEvent}</TextInput>
                     </View>
                 </View> 

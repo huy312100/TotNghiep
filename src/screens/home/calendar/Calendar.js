@@ -222,16 +222,20 @@ const CalendarScreen =({navigation})=> {
               //type:dataRes[0].TypeCalendar,
               title:dataReversed[key].nameCourese,
               summary:dataReversed[key].decription,
+              startTimestamp: dataReversed[key].duedate-3600,
+              endTimestamp: dataReversed[key].duedate,
               start:dateUtils.ConvertTimestamp(dataReversed[key].duedate-3600),
               end:dateUtils.ConvertTimestamp(dataReversed[key].duedate),
               type:"Deadline",
               color: '#66CCFF',
               url:dataReversed[key].url,
               typeGuest:"Cá nhân",
+              ListGuest: [],
               Notification:dataReversed[key].duedate
           })
           }
         }
+        dataCalendar.sort((a, b) => b.startTimestamp - a.startTimestamp);
         setEvent(dataCalendar);
         dispatch(calendarActions.getCalendarOfMonth(dataCalendar));
         console.log(dataCalendar);
@@ -298,7 +302,6 @@ const CalendarScreen =({navigation})=> {
       console.log(dataRes,statusCode); 
       if(statusCode === 200){
         getAllActivitiesInMonth();
-        toggleOverlay();
         setLoading(false);
       }
     }).catch(error => console.log('error', error));
@@ -579,15 +582,13 @@ const CalendarScreen =({navigation})=> {
                 <TouchableOpacity style={overlayStyle.onTheRight} onPress={() =>{ 
                   Alert.alert(
                     "Chuyển tiếp",
-                    "Ứng dụng muốn chuyển tiếp đến link này",
+                    "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
                     [
-                      { text: "Từ chối", 
-                        style: "cancel"
-                      },
                       {
-                        text: "Cho phép",
+                        text: "Đồng ý",
                         onPress: () => Linking.openURL(urlEvent),
                       },
+                      { text: "Từ chối"},
                     ]
                   );}}>
                   <Text numberOfLines={1} style={{color:'blue',textDecorationLine:"underline"}}>
@@ -602,6 +603,7 @@ const CalendarScreen =({navigation})=> {
               {/* <Ionicons name="people-outline" size={23} color="red" /> */}
                 <TouchableOpacity style={[overlayStyle.button,{backgroundColor:'red'}]}
                 onPress={() =>{
+                  toggleOverlay();
                   deleteEventInCalendar();
                 }}>
                     <Text style={overlayStyle.textBtnConnect}>Xóa</Text>
@@ -632,8 +634,6 @@ const CalendarScreen =({navigation})=> {
 
               </View>
             </View>}
-
-            {isLoading && LoadingScreen()}
           </View>
         </Overlay>
 
@@ -669,7 +669,7 @@ const CalendarScreen =({navigation})=> {
             // }}
           />
         }
-         
+        {isLoading && LoadingScreen()}
     </View>
   );
 };

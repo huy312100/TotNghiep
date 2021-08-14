@@ -539,10 +539,10 @@ const ModifyCalendarScreen = ({navigation,route}) => {
                    onChangeText={(url) => setUrlEvent(url)}>{urlEvent}</TextInput>
                 </View>
             </View> 
-            <View style={[styles.card,{marginTop:0,height:"25%"}]}>
+            <View style={[styles.card,{marginTop:0,marginBottom:10}]}>
                 <View style={styles.date}>
                     <SimpleLineIcons name="note" size={20} color="red" />
-                    <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}
+                    <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:300,textAlignVertical:"top"}]} placeholder="Mô tả" multiline={true}
                     onChangeText={(decription) => setDecriptionEvent(decription)}>{decriptionEvent}</TextInput>
                 </View>
             </View> 

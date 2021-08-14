@@ -267,7 +267,6 @@ const HomeScreen = ({ navigation }) => {
       .then(([statusCode, dataRes]) => {
         let dataReversed = arrUtils.reverseArr(dataRes);
         if (statusCode === 200) {
-          console.log(dataRes);
           if (dataReversed.length >= 5) {
             dataReversed = dataReversed.slice(0, 5);
           }
@@ -312,16 +311,20 @@ const HomeScreen = ({ navigation }) => {
                 id: "",
                 title: dataReversed[key].nameCourese,
                 summary: dataReversed[key].decription,
+                startTimestamp: dataReversed[key].duedate-3600,
+                endTimestamp: dataReversed[key].duedate,
                 start: dateUtils.ConvertTimestamp(dataReversed[key].duedate - 3600),
                 end: dateUtils.ConvertTimestamp(dataReversed[key].duedate),
                 type: "Deadline",
                 color: "#66CCFF",
                 url: dataReversed[key].url,
                 typeGuest: "Cá nhân",
+                ListGuest: [],
                 Notification: dataReversed[key].duedate,
               });
             }
           }
+          dataCalendar.sort((a, b) => b.startTimestamp - a.startTimestamp);
           console.log(dataCalendar);
           dispatch(calendarActions.getCalendarOfMonth(dataCalendar));
           setCalendar(dataCalendar);
@@ -752,6 +755,7 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </View>
               <Text numberOfLines={2} style={styles.contentDeadline}>{item.decription}</Text>
+              
               <Text style={[styles.timeDeadline,{color: currentTimestamp > item.duedate * 1000 ? "blue" :"red"}]}>
                 Hạn chót: {dateUtils.ConvertTimestampToVNTime(item.duedate)}
               </Text>
@@ -971,7 +975,7 @@ const styles = StyleSheet.create({
   },
 
   courseName: {
-    width: '90%',
+    width: Dimensions.get("window").width*0.7,
     fontSize: 13,
     fontWeight: "bold",
   },
@@ -983,7 +987,7 @@ const styles = StyleSheet.create({
   },
 
   contentDeadline: {
-    width: '67%',
+    width: Dimensions.get("window").width*0.75,
     fontSize: 15,
     color: "#333333",
     

@@ -167,8 +167,11 @@ const NotificationScreen=({navigation})=>{
             screen:'Faculty New'
           });
         }
+        else if(item.Title === 'Môn Học Mới'){
+          navigation.navigate("Course");
+        }
         else{
-          
+          navigation.navigate("Course");
         }
         changeStateNoti(item._id);
 

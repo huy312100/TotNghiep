@@ -6,8 +6,6 @@ import { useDispatch,useSelector } from 'react-redux';
 
 import LoadingScreen from '../LoadingScreen';
 
-import * as authenServices from '../../services/Authen';
-
 const CreateParentAccountScreen = ({navigation}) => {
 
     const [show,setShow]= useState(true);
@@ -26,6 +24,66 @@ const CreateParentAccountScreen = ({navigation}) => {
             return true;
         }
         return false;
+    };
+
+    const CreateParentAccount = async() => {
+        setLoading(true);
+        let details = {
+            username: username,
+            password: password,
+            HoTen: nameParent,
+            Email: profile[0].Email
+        };
+      
+        let formBody = [];
+    
+        for (let property in details) {
+            let encodedKey = encodeURIComponent(property);
+            let encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+    
+        await fetch("https://hcmusemu.herokuapp.com/account/signupparent", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": `bearer ${token}`,
+            },
+            body: formBody,
+        }) .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if(statusCode === 201){
+                Alert.alert(
+                    "Thành công",
+                    "Tạo tài khoản cho phụ huynh thành công",
+                    [
+                      {
+                        text: "Xác nhận",
+                        onPress: () => navigation.navigate("Profile"),
+                      },
+                    ]
+                  );
+                setLoading(false);
+            }
+            else if(statusCode === 500){
+                Alert.alert(
+                    "Lỗi",
+                    "Tài khoản cho phụ huynh đã được tạo trước đó",
+                    [
+                      {
+                        text: "Xác nhận",
+                      },
+                    ]
+                  );
+                setLoading(false);
+            }
+        }).catch(error => console.log('error', error));
+    
     }
 
     
@@ -47,7 +105,7 @@ const CreateParentAccountScreen = ({navigation}) => {
                     Email 
                 </Text>
 
-                <TextInput style={styles.input} keyboardType="default" 
+                <TextInput style={styles.input} keyboardType="email-address" 
                     onChangeText={(username)=>setUsername(username)}/>
 
                 <Text style={styles.label}>
@@ -69,10 +127,7 @@ const CreateParentAccountScreen = ({navigation}) => {
                     disabled={checkDisableAddButton()}
                     style={[styles.button,{backgroundColor: checkDisableAddButton() ? 'silver' : 'green'}]}
                     onPress={async () => {
-                        setLoading(true);
-                        await authenServices.CreateParentAccount(token,username,password,nameParent,profile[0].Email);
-                        setLoading(false);
-                        navigation.navigate("Profile");
+                        await CreateParentAccount();
                     }}>
                     <Text style={styles.textBtnConnect}>Tạo</Text>
                 </TouchableOpacity>

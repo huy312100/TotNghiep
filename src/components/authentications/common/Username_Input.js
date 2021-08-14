@@ -6,7 +6,7 @@ import GmailInput from 'react-native-gmailtype-textinput';
 export function UsernameInput(props) {
     return(
         <View style={styles.input}>
-            <GmailInput testID="Form.UsernameInput" {...props} keyboardType="default"/>
+            <GmailInput testID="Form.UsernameInput" {...props} keyboardType="email-address"/>
         </View> 
     );
 }

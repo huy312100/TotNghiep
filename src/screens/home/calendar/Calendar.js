@@ -308,7 +308,7 @@ const CalendarScreen =({navigation})=> {
   };
 
   const renderItemViewMonth = ({ item }) => (
-    <TouchableOpacity style={[viewMonthItem.card,{backgroundColor: item.color === '' || item.color == null ? '#f4f6ff' : item.color}]}
+    <TouchableOpacity style={calendarStyle.card}
         onPress={() => {
           toggleOverlay();
           setIdEvent(item.id);
@@ -325,21 +325,68 @@ const CalendarScreen =({navigation})=> {
           setAllMembers(item.ListGuest);
         }}
     >
-      <View style={viewMonthItem.info}>
-          <View style={{flexDirection:'row'}}>
-              <Text style={[viewMonthItem.title,{width:Dimensions.get("window").width*0.56}]} numberOfLines={1}>{item.title}</Text>
-              <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{dateUtils.ConvertDateDDMMYY(item.start.slice(0,10))}</Text>
-          </View>
+      {/* <View style={{flexDirection:'row'}}>
+       <View>
+        <View style={viewMonthItem.info}>
+            <View style={{flexDirection:'row'}}>
+                <Text style={[viewMonthItem.title,{width:Dimensions.get("window").width*0.56}]} numberOfLines={1}>{item.title}</Text>
+                <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{dateUtils.ConvertDateDDMMYY(item.start.slice(0,10))}</Text>
+            </View>
 
-          <Text style={[viewMonthItem.title,{fontSize:12,marginTop:10,textAlign:'right',marginRight:20,fontStyle:'italic'}]}>{item.start.slice(11)} - {item.end.slice(11)}</Text>
-          <Text style={[viewMonthItem.title,{fontWeight:'normal',marginTop:10}]} numberOfLines={4}>{item.summary}</Text>
+            <Text style={[viewMonthItem.title,{fontSize:12,marginTop:10,textAlign:'right',marginRight:20,fontStyle:'italic'}]}>{item.start.slice(11)} - {item.end.slice(11)}</Text>
+            <Text style={[viewMonthItem.title,{fontWeight:'normal',marginTop:10}]} numberOfLines={4}>{item.summary}</Text>
 
-      </View>
+        </View>
+        
+        <View style={[{marginBottom:10,flexDirection:'row',alignItems: 'center'}]}>
+          <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{item.type}</Text>
+          {item.typeGuest === 'Nhóm' ? <FontAwesome style={{marginHorizontal:15}} name="group" size={22} color="#817c8f" /> : <Ionicons style={{marginHorizontal:15}} name="person" size={24} color="#817c8f" />}
+        </View>
+      </View> 
+      </View> */}
+
+
+
+      <View style={{ flexDirection: "row" }}>
+           {item.color === '' || item.color == null ? (
+             <View style={[calendarStyle.colorCalendar]} />
+           ) : (
+             <View
+               style={[
+                 calendarStyle.colorCalendar,
+                 { backgroundColor: item.color },
+               ]}
+             />
+           )}
+   
+           <View style={{ width: '100%'}}>
+             <View style={{ flexDirection: "row", marginBottom: 10 }}>
+               <Text style={calendarStyle.label} numberOfLines={1}>
+                 {item.title}
+               </Text>
+               <Text style={{ position: "absolute", right: 10 }}>
+                 {dateUtils.ConvertDateDDMMYY(item.start.slice(0, 10))}
+               </Text>
+             </View>
+   
+             <View style={{marginRight:10,marginBottom: 8}}>
+               <Text style={{textAlign: "right",fontStyle:'italic',fontWeight:'400'}}>{item.start.slice(11)} - {item.end.slice(11)}</Text>
+             </View>
+
+             <Text style={[{fontWeight:'normal',marginTop:0,marginBottom:10}]} numberOfLines={4}>{item.summary}</Text>
+   
+             <View style={{ flexDirection: "row", alignItems: "center" }}>
+               {item.typeGuest === "Nhóm" ? (
+                 <FontAwesome name="group" size={22} color="black" />
+               ) : (
+                 <Ionicons name="person" size={24} color="black" />
+               )}
+               <Text style={{ position: "absolute", right: 10 }}>{item.type}</Text>
+             </View>
+           </View>
+         </View>
       
-      <View style={[{marginBottom:10,flexDirection:'row',alignItems: 'center'}]}>
-        <Text style={[viewMonthItem.title,viewMonthItem.onTheRight,{fontWeight:'normal'}]}>{item.type}</Text>
-        {item.typeGuest === 'Nhóm' ? <FontAwesome style={{marginHorizontal:15}} name="group" size={22} color="#817c8f" /> : <Ionicons style={{marginHorizontal:15}} name="person" size={24} color="#817c8f" />}
-      </View>
+      
             
     </TouchableOpacity>
 );
@@ -504,7 +551,7 @@ const CalendarScreen =({navigation})=> {
 
       </View>}
 
-      {mode === 'month' && <View style={{flex:1,backgroundColor:'white'}}>
+      {mode === 'month' && <View style={{flex:1,backgroundColor:'#EEEEEE'}}>
         {loadingWhenLoadData && allEvents.length ===0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
             <ActivityIndicator size="large" color="blue"/>
         </View>}
@@ -515,6 +562,7 @@ const CalendarScreen =({navigation})=> {
           </Text>
         </View>}
 
+        <View style={{height:15}}></View>
         <FlatList 
           data={allEvents}
           renderItem={renderItemViewMonth}
@@ -730,7 +778,10 @@ const headerCalendar = StyleSheet.create({
     flexDirection:'row',
     paddingVertical:15,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderBottomColor:'#DDDDDD',
+    borderBottomWidth:1,
+    
   },
 
   labelDate:{
@@ -772,6 +823,31 @@ const viewMonthItem = StyleSheet.create({
       marginLeft:15,
       fontSize:12
   },
-})
+});
+
+const calendarStyle = StyleSheet.create({
+  card: {
+    marginHorizontal: 8,
+    marginBottom: 10,
+    padding: 15,
+    backgroundColor: "white",
+    borderColor:'#DDDDDD',
+    borderWidth:1,
+    borderRadius: 10,
+  },
+
+  label: {
+    width: width*0.52,
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+
+  colorCalendar: {
+    height: "100%",
+    width: 8,
+    backgroundColor: "#EEEEEE",
+    marginRight: 8,
+  },
+});
 
 export default CalendarScreen;

@@ -549,7 +549,7 @@ const HomeScreen = ({ navigation }) => {
       .then((res) => {
         setTokenNotification(res.data);
         dispatch(authActions.storeTokenNotification(res.data));
-        //console.log(tokenNotification);
+        console.log(tokenNotification);
         postTokenNotification(res.data);
       })
       .catch((err) => {
@@ -590,7 +590,7 @@ const HomeScreen = ({ navigation }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `bearer ${token}`,
+        "Authorization": `bearer ${token}`,
       },
       body: formBody,
     })

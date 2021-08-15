@@ -136,7 +136,7 @@ export default function UniversityInfo() {
            Email: result[0].Email,
            SDT: result[0].SDT,
            FanFage: result[0].FanFage,
-           TenDiaChi: result[0].TenDiaChi,
+           TenDiaChi: result[0].TenDiaChi.split(";")[0],
            TenKhoa: result[0].TenKhoa,
            Website: result[0].WebSite,
            Images: result[0].Images}

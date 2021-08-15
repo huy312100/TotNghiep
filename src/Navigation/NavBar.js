@@ -221,7 +221,7 @@ function NavBar() {
         const dataRes = response.json();
         return Promise.all([statusCode, dataRes]);
       }).then(([statusCode, dataRes]) => {
-        console.log(statusCode);
+        //console.log(statusCode);
         if(statusCode === 200){
           updateStateNoti(id,"State",true);
         }

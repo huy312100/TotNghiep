@@ -100,6 +100,7 @@ function Footer(props) {
     Images: "https://www.hcmus.edu.vn/images/2020/04/07/bn2.jpg"}]);
 
     const getInfoUni = async() => {
+      console.log(localStorage.getItem("token"))
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
   
@@ -118,7 +119,7 @@ function Footer(props) {
              Email: result[0].Email,
              SDT: result[0].SDT,
              FanFage: result[0].FanFage,
-             TenDiaChi: result[0].TenDiaChi,
+             TenDiaChi: result[0].TenDiaChi.split(";")[0],
              TenKhoa: result[0].TenKhoa,
              Website: result[0].WebSite,
              Images: result[0].Images}
@@ -130,7 +131,6 @@ function Footer(props) {
       getInfoUni();
     },[])
 
-    
   return (
     <footer className="lg-p-top">
       <WaveBorder
@@ -152,19 +152,23 @@ function Footer(props) {
                 flexWrap: 'wrap',
                 fontSize: "20px"}}>
                 <BusinessIcon/>Trường : {info.TenTruongDH} </div>
-                <br/>    <div style={{
+                <br/>    
+                <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 flexWrap: 'wrap',}}><MailIcon/>Email :  {info.Email}</div>
-                <br/>    <div style={{
+                <br/>    
+                <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 flexWrap: 'wrap',}}><PhoneIcon/> SDT : {info.SDT}</div>
-                <br/>    <div style={{
+                <br/>    
+                <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 flexWrap: 'wrap',}}><HomeIcon/> Địa chỉ : {info.TenDiaChi}</div>
-                <br/>    <div style={{
+                <br/>    
+                <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 flexWrap: 'wrap',}}>

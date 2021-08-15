@@ -1,4 +1,4 @@
-import React, {useState,useEffect,Image} from 'react';
+import React, {useState,useEffect,useRef} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {Button,Dialog,DialogActions,DialogContent,InputLabel,MenuItem,DialogTitle,IconButton,TextField,Input } from '@material-ui/core'
@@ -65,15 +65,82 @@ export const PostThread =  ({
     const [title,setTitle] = useState("");
     const [post, setPost] = useState(false);
     const [success,setSuccess] = useState(null);
+    const [visible,setVisible] = useState("none");
+    const [loading,setLoading] = useState(true);
+    const [loadingAll,setLoadingAll] = useState(true);
+    const [pageCurrent,setPageCurrent] = useState(0);
+    const [dataCourse,setDataCourse] = useState([]);
+    const [courseSelected,setCourseSelected] = useState("");
+    const unmounted = useRef(false);
+
+
+    useEffect(()=>{
+        if (type=== "c" && loadingAll === true){
+            getAllCourses();
+            return()=>{
+                unmounted.current = true;
+            }
+        }
+    },[pageCurrent])
+
     const handlePostClick = () => {
         setPost(true);
     };
     const handlePostClose = () => {
         setPost(false);
     };
+
+    const handleChangeSelectedCourse = (e) =>{
+        setCourseSelected(e.target.value)
+    }
     function Alert(props) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
+
+    const getAllCourses = async () => {
+        setLoading(true);
+        let details = {
+          page: pageCurrent,
+        };
+    
+        let formBody = [];
+    
+        for (let property in details) {
+          let encodedKey = encodeURIComponent(property);
+          let encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+    
+        //console.log(formBody);
+    
+        fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `bearer ${localStorage.getItem("token")}`,
+          },
+          body: formBody,
+        })
+        .then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+        })
+          .then(([statusCode, dataRes]) => {
+            console.log(statusCode);
+            if(statusCode === 200){
+            setDataCourse(dataCourse.concat(dataRes));
+              setPageCurrent(pageCurrent+1);
+            }
+            else if (statusCode === 500){
+              setLoadingAll(false);
+            }
+            setLoading(false);
+          })
+          .catch((err) => console.log(err, "error"));
+      };
+
     const postNewThread = async() => {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
@@ -84,21 +151,37 @@ export const PostThread =  ({
 
             formdata.append("title", title);
             formdata.append("image", upload.uri);
+            if (type === "f" || type === "u"){
             formdata.append("scope", type);
+            }
+            else if (type === "c"){
+                formdata.append("IDCourses", courseSelected);
+            }
         }
     
         else{
             formdata.append("title", title);
-            formdata.append("scope", type);
+            if (type === "f" || type === "u"){
+                formdata.append("scope", type);
+            }
+            else if (type === "c"){
+                    formdata.append("IDCourses", courseSelected);
+            }
         }
-        
+        let url;
+        if (type === "c"){
+            url = "https://hcmusemu.herokuapp.com/forum/courses/post";
+        }
+        else if (type === "f" || type ===  "u"){
+            url = "https://hcmusemu.herokuapp.com/forum/post";
+        }
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: formdata,
             redirect: 'follow'
         };
-        await fetch("https://hcmusemu.herokuapp.com/forum/post", requestOptions)
+        await fetch(url, requestOptions)
         .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
@@ -132,6 +215,12 @@ export const PostThread =  ({
     }
     
     const handleChangeType = (event) => {
+        if (event.target.value !== "c"){
+            setVisible("none");
+        }
+        else{
+            setVisible("flex");
+        }
         setType(event.target.value);
     }
     const renderImage = ()=>{
@@ -174,6 +263,24 @@ export const PostThread =  ({
             )
         }
     }
+
+    const renderListCourse = ()=>{
+        if (dataCourse.length === 0){
+            return(
+                <MenuItem></MenuItem>
+            )
+        }
+        else{
+            return(
+                dataCourse.map((item,index)=>{
+                    return(
+                        <MenuItem key={index} value={item.IDCourses}>{item.name}</MenuItem>
+                    )
+                }
+            ))
+        }
+    }
+
     return(
         <Dialog
             className={classes.root}
@@ -189,8 +296,8 @@ export const PostThread =  ({
                 <InputLabel id="demo-simple-select-label">Nơi đăng</InputLabel>
                     <Select
                     style={{width:"150px"}}
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                    labelId="demo-type-select-label"
+                    id="demo-type-select"
                     value={type}
                     onChange={handleChangeType}
                     required
@@ -199,6 +306,20 @@ export const PostThread =  ({
                     >
                     <MenuItem value={'u'}>Trường</MenuItem>
                     <MenuItem value={'f'}>Khoa</MenuItem>
+                    <MenuItem value={'c'}>Môn học</MenuItem>
+                    </Select>
+
+                    <Select
+                    style={{width:"150px"}}
+                    labelId="course-select"
+                    id="demo-course-select"
+                    value={courseSelected}
+                    onChange={handleChangeSelectedCourse}
+                    required
+                    width= "200px"
+                    style = {{display: visible}}
+                    >
+                        {renderListCourse()}
                     </Select>
                
                 <TextField 
@@ -236,7 +357,7 @@ export const PostThread =  ({
                 <Button onClick={handleClose} onChange={()=>{resetImage();handlePostClose()}} color="primary">
                     Huỷ
                 </Button>
-              
+
                 <Button onClick={()=>{postNewThread();handlePostClick();}}>
                     Đăng bài viết
                 </Button>

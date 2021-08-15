@@ -514,15 +514,22 @@ const HomeScreen = ({ navigation }) => {
       })
       .then(([statusCode, dataRes]) => {
         //console.log(json);
-        let dataReversed = arrUtils.reverseArr(dataRes);
-        if (dataReversed.length >= 5) {
-          dataReversed = dataReversed.slice(0, 5);
-        }
-        console.log(statusCode,dataReversed);
+        console.log(statusCode,dataRes);
         if (statusCode === 200) {
+          let dataReversed = arrUtils.reverseArr(dataRes);
+          if (dataReversed.length >= 5) {
+            dataReversed = dataReversed.slice(0, 5);
+          }
           dispatch(homeActions.NewestDeadline(dataReversed));
           console.log(dataReversed);
           setNewDeadline(dataReversed);
+        }
+        else if (statusCode === 500) {
+          dispatch(homeActions.NewestDeadline([]));
+          setNewDeadline([]);
+        }
+        else{
+          setNewDeadline([]);
         }
       })
       .catch((err) => console.log(err, "error"));

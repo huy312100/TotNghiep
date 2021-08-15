@@ -116,6 +116,12 @@ const MoodleConnectScreen = ({navigation})=>{
                 };
                 dispatch(profileActions.getAllWebCustomed(tmp));
             }
+            else if (statusCode === 500){
+                dispatch(profileActions.getAllWebCustomed(tmp));
+            }
+            else{
+                
+            }
             //setData(json);
         })
         .catch((err) => console.log(err, "error"));
@@ -175,7 +181,7 @@ const MoodleConnectScreen = ({navigation})=>{
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
         }}>
-            <ScrollView style={styles.container}>
+            <View style={styles.container}>
             
                 {isLoading && LoadingScreen()}
                
@@ -241,7 +247,7 @@ const MoodleConnectScreen = ({navigation})=>{
            
 
 
-        </ScrollView>
+        </View>
         </TouchableWithoutFeedback>
         
     ); 

@@ -109,6 +109,12 @@ const PortalConnectScreen = ({navigation})=>{
                 };
                 dispatch(profileActions.getAllWebCustomed(tmp));
             }
+            else if (statusCode === 500){
+                dispatch(profileActions.getAllWebCustomed(tmp));
+            }
+            else{
+                
+            }
             //setData(json);
         })
         .catch((err) => console.log(err, "error"));
@@ -155,7 +161,7 @@ const PortalConnectScreen = ({navigation})=>{
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
         }}>
-            <ScrollView style={styles.container}>
+            <View style={styles.container}>
                 {isLoading && LoadingScreen()}
                 
                 <Text style={styles.label}>
@@ -188,7 +194,7 @@ const PortalConnectScreen = ({navigation})=>{
                         <Text style={styles.textBtnConnect}>Kết nối</Text>
                     </TouchableOpacity>
                 </View>
-            </ScrollView>
+            </View>
         </TouchableWithoutFeedback>
         
     ); 

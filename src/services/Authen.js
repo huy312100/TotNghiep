@@ -72,39 +72,3 @@ export const ForgetPassword = async (email) =>{
     }).catch(error => console.log('error', error));
 };
 
-export const CreateParentAccount = async(token,username,password,HoTen,Email) => {
-    let details = {
-        username: username,
-        password: password,
-        HoTen: HoTen,
-        Email: Email
-    };
-  
-    let formBody = [];
-
-    for (let property in details) {
-        let encodedKey = encodeURIComponent(property);
-        let encodedValue = encodeURIComponent(details[property]);
-        formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    await fetch("https://hcmusemu.herokuapp.com/account/signupparent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": `bearer ${token}`,
-        },
-        body: formBody,
-    }) .then((response) => {
-        const statusCode = response.status;
-        const dataRes = response.json();
-        return Promise.all([statusCode, dataRes]);
-    }).then(([statusCode, dataRes]) => {
-        console.log(statusCode,dataRes);
-        if(statusCode === 200){
-            console.log(dataRes);
-        }
-    }).catch(error => console.log('error', error));
-
-}

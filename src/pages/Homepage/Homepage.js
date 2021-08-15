@@ -119,8 +119,8 @@ function Homepage() {
               setNewsUni(dataRes.slice(0,5));
             }
             else if (statusCode === 401){
-              localStorage.clear()
-              history.replace("/");
+              //localStorage.clear()
+              //history.replace("/");
               return;
             }
             setLoadUni(false)
@@ -156,8 +156,8 @@ function Homepage() {
                 setNewsFac(dataRes.slice(0,5)); setLoadFac(false);
             }
             else if (statusCode === 401){
-              localStorage.clear()
-              history.replace("/");
+              //localStorage.clear()
+              //history.replace("/");
               return;
             }
             })
@@ -190,8 +190,8 @@ function Homepage() {
                setInfo(dataRes);
               }   
               else if (statusCode === 401){
-                localStorage.clear()
-                history.replace("/");
+                //localStorage.clear()
+                //history.replace("/");
                 return;
               }
               })

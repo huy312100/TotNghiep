@@ -47,7 +47,7 @@ export default function Score(){
 
   const getPortalInfo = async() => {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token")+"tC");
+    myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
     var requestOptions = {
         method: 'GET',

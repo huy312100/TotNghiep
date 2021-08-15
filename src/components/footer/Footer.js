@@ -102,7 +102,7 @@ function Footer(props) {
     const getInfoUni = async() => {
       console.log(localStorage.getItem("token"))
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") +"tC");
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
   
       var requestOptions = {
           method: 'GET',

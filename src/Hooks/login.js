@@ -115,9 +115,14 @@ export default function LoginButton() {
             })
             .then(result => {
                 if (result.token !== undefined) {
-                    localStorage.setItem("token", result.token+ "tC")
+                    console.log(result.role);
+                    if (result.role === "1"){
+                      localStorage.setItem("token", result.token+ "sT")
+                    }
+                    else{
+                      localStorage.setItem("token", result.token+ "tC")
+                    }
                     localStorage.setItem("expired",(new Date().getTime()+7200000))
-                    //console.log(result.token)
                     history.replace("/");
                 }
             })

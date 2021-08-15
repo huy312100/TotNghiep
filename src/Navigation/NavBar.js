@@ -7,7 +7,6 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import SchoolIcon from '@material-ui/icons/School';
 import ForumIcon from '@material-ui/icons/Forum';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import AlignItemsList from "./Message"
 import AccountMenu from "./Account"
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MessageIcon from '@material-ui/icons/Message';
@@ -158,8 +157,8 @@ function NavBar() {
            setUserInfo(dataRes)
           }
           else if (statusCode === 401){
-            localStorage.clear()
-            history.replace("/");
+            //localStorage.clear()
+            //history.replace("/");
             return null
           }
         })
@@ -357,7 +356,6 @@ function NavBar() {
   >
 
     {renderNotify()}
-    {/*<AlignItemsList/>*/}
     </StyledMenu>);
   const drawer = (
     <div>

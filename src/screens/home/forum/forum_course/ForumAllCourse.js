@@ -3,7 +3,7 @@ import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,
 import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
 import Hyperlink from 'react-native-hyperlink';
 
-import Lightbox from 'react-native-lightbox';
+import Lightbox from 'react-native-lightbox-v2';
 
 import {useSelector} from 'react-redux';
 

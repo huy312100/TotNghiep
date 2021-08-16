@@ -4,7 +4,7 @@ import { Fontisto,FontAwesome,Entypo,MaterialCommunityIcons,AntDesign,Ionicons }
 import { Header } from 'react-native-elements';
 import Hyperlink from 'react-native-hyperlink';
 
-import Lightbox from 'react-native-lightbox';
+import Lightbox from 'react-native-lightbox-v2';
 
 import {useSelector} from 'react-redux';
 

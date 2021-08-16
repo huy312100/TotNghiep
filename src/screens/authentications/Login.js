@@ -8,7 +8,8 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  Image
+  Image,
+  Alert
 }from "react-native";
 
 import {
@@ -85,8 +86,16 @@ const LoginScreen = ({navigation}) => {
              
             }else{
               setLoading(false);
-              alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")
+              Alert.alert(
+                "Lỗi",
+                "Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại",
+                [
+                    {
+                        text: "OK",
+                    }
+                ]);
             }
+
         }).done();
     }
     else{

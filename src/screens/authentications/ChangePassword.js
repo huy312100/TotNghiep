@@ -94,7 +94,7 @@ const ChangePasswordScreen = ({navigation}) => {
                                 style: "cancel"
                             }
                         ])
-                }
+                    }
             }
           }).done();
     }

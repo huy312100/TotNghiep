@@ -568,7 +568,7 @@ function MyBottomTabs() {
         options={({route})=>({
           tabBarLabel: 'Tin nhắn',
           tabBarVisible: getTabBarVisibility(route),
-          tabBarBadge: msgNotRead >0 ? msgNotRead :null,
+          tabBarBadge: msgNotRead > 0 ? msgNotRead :null,
         })}
       />
  

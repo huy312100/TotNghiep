@@ -7,9 +7,7 @@ import { useSelector,useDispatch } from 'react-redux';
 
 import * as dateUtils from '../../utils/Date';
 
-import {Header,SearchBar} from 'react-native-elements';
-import { MaterialCommunityIcons} from '@expo/vector-icons';
-
+import * as homeActions from '../../../store/actions/Home';
 
 const NormalMessageScreen = ({navigation}) => {
 
@@ -17,9 +15,14 @@ const NormalMessageScreen = ({navigation}) => {
 
   const token = useSelector((state) => state.authen.token);
   const profile = useSelector((state) => state.profile.profile);
+
+  const dispatch = useDispatch();
+
   const [isLoading,setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const unmounted = useRef(false);
+
+  var countMsgNotRead = 0;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -29,60 +32,68 @@ const NormalMessageScreen = ({navigation}) => {
       unmounted.current = true;
       unsubscribe();
     };
-  },[])
+  },[]);
 
-    //call api get all message screen
-    const getAllMessage =() => {
-      setIsLoading(true);
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", `bearer ${token}`);
+  //call api get all message screen
+  const getAllMessage =() => {
+    setIsLoading(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
 
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-      };
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
 
-      
-      fetch("https://hcmusemu.herokuapp.com/chat/findchat",requestOptions)
-      .then((response) => {
-          const statusCode = response.status;
-          const dataRes = response.json();
-          return Promise.all([statusCode, dataRes]);
-      }).then(([statusCode, dataRes])=> {
-          console.log(statusCode,dataRes);
-          if (statusCode === 200) {
-            if(dataRes.message==='Message is Empty'){
-              setDataMsg([]);
-            }
-            else{
-              const tmpMsg =[];
-              for (const key in dataRes) {
-                  tmpMsg.push(
-                  {
-                    idRoom: dataRes[key].idRoom,
-                    name: dataRes[key].name,
-                    Email: dataRes[key].Email,
-                    Anh: dataRes[key].Anh,
-                    TypeRoom: dataRes[key].TypeRoom,
-                    text: dataRes[key].text,
-                    time: dataRes[key].time,
-                    state:dataRes[key].state,
-                    EmailEnd: dataRes[key].EmailEnd,
-                  });
-              }
-              setDataMsg(tmpMsg);
-            }
+    
+    fetch("https://hcmusemu.herokuapp.com/chat/findchat",requestOptions)
+    .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=> {
+        console.log(statusCode,dataRes);
+        if (statusCode === 200) {
+          if(dataRes.message==='Message is Empty'){
+            setDataMsg([]);
           }
-         
           else{
-              console.log(statusCode)
+            const tmpMsg =[];
+            for (const key in dataRes) {
+              tmpMsg.push(
+              {
+                idRoom: dataRes[key].idRoom,
+                name: dataRes[key].name,
+                Email: dataRes[key].Email,
+                Anh: dataRes[key].Anh,
+                TypeRoom: dataRes[key].TypeRoom,
+                text: dataRes[key].text,
+                time: dataRes[key].time,
+                state:dataRes[key].state,
+                EmailEnd: dataRes[key].EmailEnd,
+              });
+
+              if(dataRes[key].EmailEnd !== profile[0].Email){
+                if (!dataRes[key].state) {
+                  countMsgNotRead++;
+                }
+              }
+            }
+            setDataMsg(tmpMsg);
           }
-          // setLoadingFacultScreen(false);
-          setIsLoading(false);
-          setRefreshing(false);
-      })
-      .catch((err) => console.log(err, "error"));
+        }
+        
+        else{
+            console.log(statusCode)
+        }
+        // setLoadingFacultScreen(false);
+        dispatch(homeActions.MessageNotRead(countMsgNotRead));
+        countMsgNotRead = 0;
+        setIsLoading(false);
+        setRefreshing(false);
+    })
+    .catch((err) => console.log(err, "error"));
   };
 
   //refresh control trigger
@@ -108,9 +119,9 @@ const NormalMessageScreen = ({navigation}) => {
         <View style={styles.textSection}>
             <View style={styles.userInfoText}>
               <Text style={styles.userName}>{item.name}</Text>
-              <Text style={styles.postTime}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
+              <Text style={[styles.postTime,{fontWeight : (!item.state && item.EmailEnd !== profile[0].Email) ? "bold" : "normal"}]}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
             </View>
-            <Text style={[styles.messageText,{fontWeight : (item.state) ? "normal":"bold"}]}>{item.EmailEnd === profile[0].Email ? "Bạn: " :""}{item.text}</Text>
+            <Text style={[styles.messageText,{fontWeight : (!item.state && item.EmailEnd !== profile[0].Email) ? "bold" : "normal"}]}>{item.EmailEnd === profile[0].Email ? "Bạn: " :""}{item.text}</Text>
 
 
         </View>

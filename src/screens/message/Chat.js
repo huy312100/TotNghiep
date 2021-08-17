@@ -50,7 +50,8 @@ const ChatScreen = ({route,navigation}) => {
           createdAt: new Date(data[3]),
           user:{
             _id:2,
-            name:data[1], 
+            name:data[1],
+            avatar: route.params.avatar == null ? `https://ui-avatars.com/api/?background=random&color=fff&name=${route.params.name}` : route.params.avatar,
           }
         }));
       });
@@ -70,6 +71,11 @@ const ChatScreen = ({route,navigation}) => {
     // return () => {
     //   socket.close();
     // }
+
+    return () => {
+      socket.off('Private-Message-To-Client');
+      console.log("Socket off")
+    }
   },[pageCurrent]);
 
 
@@ -108,7 +114,7 @@ const ChatScreen = ({route,navigation}) => {
         const tmpAttrMsg =[];
         for (const key in dataRes) {
           if(dataRes[key].from !== profile[0].Email){
-            if(route.params.avatar === undefined || route.params.avatar === "" || route.params.avatar === null ){
+            if(route.params.avatar === undefined || route.params.avatar === "" || route.params.avatar == null ){
               tmpAttrMsg.push(
                 {
                   _id: uuid.v4(),
@@ -194,8 +200,8 @@ const ChatScreen = ({route,navigation}) => {
 
   const renderInputToolbar= (props) => {
     return (
-          <InputToolbar {...props} 
-            placeholder="Nhập tin nhắn ..."/>
+      <InputToolbar {...props} 
+        placeholder="Nhập tin nhắn ..."/>
     )
   }
 
@@ -294,9 +300,6 @@ const ChatScreen = ({route,navigation}) => {
         scrollToBottomComponent={scrollToBottomComponent}
     />
 
-  {
-      Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />
-   }
     </View>
     
 

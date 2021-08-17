@@ -3,8 +3,6 @@ import DatePicker from 'react-datepicker';
 import { registerLocale } from "react-datepicker";
 import vi from 'date-fns/locale/vi';
 import "../../../../style/Calendar.css";
-import Navbar from '../Navbar';
-import Sidebar from '../Sidebar';
 import "react-datepicker/dist/react-datepicker.css";
 import { CirclePicker } from 'react-color';
 import Category from '../Category';

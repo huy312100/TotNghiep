@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -28,6 +28,8 @@ import ViewForumCourse from '../Component/Mainpage/Student/Sidebar/Forum/Courses
 import checkTokenExpired from '../auth/auth';
 import Logout from '../Component/Login/Logout';
 import Parent from '../Component/Mainpage/Student/Setting/Config/Parent';
+import MoodleRequest from '../hook/connectMoodleRequest';
+import FirsttimeLogin from '../hook/FirsttimeLogin';
 
 
 
@@ -36,13 +38,15 @@ import Parent from '../Component/Mainpage/Student/Setting/Config/Parent';
 function RouterMD() {
     const open = useSelector(state => state.sidebar.open)
     const role = useSelector(state => state.authen.role)
+    const moodle = useSelector(state => state.info.moodle)
+    const socket = useSelector(state => state.authen.socket)
     // localStorage.clear()
 
     return (
         <Router>
 
 
-            {!checkTokenExpired() ? <ConnectSocket /> : null}
+            {/* {!checkTokenExpired() ? <ConnectSocket /> : null} */}
 
             <Route exect path="/" render={() => {
                 // console.log(0)
@@ -70,6 +74,7 @@ function RouterMD() {
                         <div>
                             <Navbar />
                             <Sidebar />
+                            <FirsttimeLogin />
                         </div>
                         {role !== null && <div className="main" style={{ margin: `66px 0 20px ${open ? '260px' : '80px'}` }}>
                             <Switch>
@@ -95,7 +100,8 @@ function RouterMD() {
                                 </Route>}
                                 <Route path="/course/:id" component={DetailCourse} />
                                 <Route path="/course">
-                                    <Course />
+                                    {moodle === true && <Course />}
+                                    {moodle === false && <MoodleRequest />}
                                 </Route>
                                 <Route path="/deadline" component={Deadline} />
 

@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import Navbar from '../../Navbar';
 import "../../../../../style/Profile.css";
-import Sidebar from '../../Sidebar';
-// import PopupAddIMG from './Popup/PopupAddIMG';
 import "../../../../../style/PopupAddIMG.css";
 
 

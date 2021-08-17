@@ -45,9 +45,9 @@ function Home() {
                 {/* <hr/> */}
 
                 {
-                    uni.slice(0, 5).map((news) => {
+                    uni.slice(0, 5).map((news,index) => {
                         return (
-                            <div className="news">
+                            <div key={index} className="news">
                                 <a href={news.Link} target="_blank" rel="noopener noreferrer">
                                     <div className="title">
                                         {news.Title}

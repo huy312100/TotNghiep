@@ -5,7 +5,8 @@ const initialState = {
     uniID: null,
     uniName: null,
     facID: null,
-    facName: null
+    facName: null,
+    moodle:null
 }
 
 const infoReducer = (state = initialState, action) => {
@@ -15,6 +16,12 @@ const infoReducer = (state = initialState, action) => {
                 ...state,
                 name: action.payload.HoTen,
                 image: action.payload.AnhSV
+            }
+
+        case 'STORE_MOODLE':
+            return {
+                ...state,
+                moodle:action.payload
             }
 
         default:

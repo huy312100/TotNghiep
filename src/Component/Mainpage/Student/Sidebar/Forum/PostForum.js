@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const backCover = {
     backgroundColor: 'rgba(52, 52, 52, 0.2)',
@@ -19,6 +20,7 @@ function PostForum(props) {
     const [scope, setScope] = useState("u");
     const [title, setTitle] = useState("");
     const [course, setCourse] = useState(null)
+    const moodle = useSelector(state => state.info.moodle)
 
     const onChangePicture = e => {
         if (e.target.files[0]) {
@@ -103,11 +105,11 @@ function PostForum(props) {
                     <div style={{ borderRadius: "7px", border: "1px solid rgb(216, 214, 222)", padding: "10px" }}>
                         <label className="header">Hình ảnh</label>
                         <div>
-                            {imgData !== null ? <img style={{ borderRadius: "7px" }} width="150vw" height="100vw" src={imgData}></img> : <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                            {imgData !== null ? <img alt="" style={{ borderRadius: "7px" }} width="150vw" height="100vw" src={imgData}></img> : <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
                                 <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
                                 <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
                             </svg>}
-                            <label style={{ border: "1px solid #18468b", padding: 0, margin: 0, textAlign: "center", borderRadius: "7px", color: "#18468b", fontSize: "14px", padding: "5px", margin: "5px" }} for="forumfile" className="btn">Chọn ảnh</label>
+                            <label style={{ border: "1px solid #18468b", textAlign: "center", borderRadius: "7px", color: "#18468b", fontSize: "14px", padding: "5px", margin: "5px" }} for="forumfile" className="btn">Chọn ảnh</label>
                             {image !== null ? <div onClick={() => RemoveImage()} style={{ border: "1px solid #a9a7b0", padding: 0, margin: 0, textAlign: "center", borderRadius: "7px", color: "#a9a7b0", fontSize: "14px", padding: "5px", margin: "5px" }} className="btn">Xóa ảnh</div> : null}
 
                             <input id="forumfile" hidden type="file" accept="image/png, image/jpeg" onChange={(e) => onChangePicture(e)} />
@@ -121,7 +123,7 @@ function PostForum(props) {
                             <select className="col select-scope" value={scope} onChange={(e) => setScope(e.target.value)} >
                                 <option value="u">Trường</option>
                                 <option value="f">Khoa</option>
-                                <option value="c">Môn học</option>
+                                {moodle===true?<option value="c">Môn học</option>:null}
                             </select>
                             {scope === "c" ? <select className="col select-scope" value={course} onChange={(e) => setCourse(e.target.value)} >
                                 {props.allcourse.map((element) => {

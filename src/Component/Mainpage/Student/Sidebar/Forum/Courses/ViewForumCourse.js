@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import "../../../../../../style/Forum.css";
 import Category from '../../../Category';
 import ViewComment from '../ViewComment';
-import Forum from './../Forum';
-import PostForum from './../PostForum';
+
 
 const backCover = {
     backgroundColor: 'rgba(52, 52, 52, 0.2)',

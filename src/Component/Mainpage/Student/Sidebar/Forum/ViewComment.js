@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
-import Category from '../../Category';
 
 const backCover = {
     backgroundColor: 'rgba(52, 52, 52, 0.2)',
@@ -217,7 +215,7 @@ function ViewComment(props) {
             var showcomment = comments.map((comment) => {
                 // const user = comment.EmailOwn === email ? " own" : "";
                 // const remove = comment.EmailOwn === email ? <div type="button" onClick={() => RemoveComment_API(comment.ID)}>Xóa bình luận</div> : null;
-                return <div class="row justify-content-center" >
+                return <div key={comment.ID} className="row justify-content-center" >
                     <div className="col-md-12">
                         <div className="row list-forum" style={{ background: "white", padding: "10px 0", justifyContent: "space-start" }}>
                             {/* <div className={"list-forums"}> */}
@@ -231,7 +229,7 @@ function ViewComment(props) {
                                             <span style={{ fontWeight: "500", fontSize: "14px" }}>{comment.NameOwn}</span>
                                             <span className="comment time">{convertTimeAgo(comment.time)}</span>
                                             {comment.EmailOwn === email ? <span type="button" onClick={() => setPopup(comment.ID)}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-x-circle-fill" viewBox="0 0 16 16">
                                                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
                                                 </svg>
                                             </span> : null}
@@ -258,22 +256,22 @@ function ViewComment(props) {
     }
 
     if (loadding)
-        return <div class="text-center" style={{ padding: "10px" }}>
-            <div class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
+        return <div className="text-center" style={{ padding: "10px" }}>
+            <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
             </div>
         </div>
 
     else return <div className="col-md-12">
         <div>
-            <div class="row justify-content-center" >
+            <div className="row justify-content-center" >
                 <div className="col-md-12">
-                    <div class="row" style={{ background: "white", margin: "0", justifyContent: "space-start", alignItems: "center" }}>
+                    <div className="row" style={{ background: "white", margin: "0", justifyContent: "space-start", alignItems: "center" }}>
                         {/* <div style={{border: "1px solid #DDD"}}>
                                     <img src="icon.png" />
                                     <input style={{border: "none"}} />
                                 </div> */}
-                        <label style={{ width: "35px", padding: 0, margin: 0, textAlign: "center", borderRadius: "100%" }} for="files" class="col-auto btn"><i className="fa fa-file-image-o"></i></label>
+                        <label style={{ width: "35px", padding: 0, margin: 0, textAlign: "center", borderRadius: "100%" }} for="files" className="col-auto btn"><i className="fa fa-file-image-o"></i></label>
                         <input width="0vw" id="files" type="file" hidden accept="image/png, image/jpeg" onChange={(e) => onChangePicture(e)} />
 
                         <input className="col-11 input-comment" type="text" placeholder="Nhập bình luận" value={newcomment} required onChange={(e) => SetNewcomment(e.target.value)} onKeyDown={handleNewcomment} />

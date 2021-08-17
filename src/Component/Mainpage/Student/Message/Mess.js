@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 // import Footer from '../../../Footer';
-import Navbar from './../Navbar';
 import "../../../../style/Message.css"
-import Sidebar from '../Sidebar';
 import { useDispatch, useSelector } from 'react-redux';
 import Category from '../Category';
-import { connectSocket } from '../../../../store/actions/authen';
+// import ConnectSocket from '../../../../hook/socket';
 import { io } from 'socket.io-client';
+
+// import { io } from 'socket.io-client';
 
 
 // var socket = io("https://hcmusemu.herokuapp.com", { transports: ['websocket', 'polling', 'flashsocket'] });
@@ -33,10 +33,10 @@ function Message() {
 
     const divRef = useRef(null);
 
-    const socket = useSelector(state => state.authen.socket)
+    const [socket, setSocket] = useState(null)
     const email = useSelector(state => state.authen.email)
 
-    const [loaddingChatBox, setloaddingChatBox] = useState(false)
+    // const [loaddingChatBox, setloaddingChatBox] = useState(false)
 
     const typing = useRef(null)
 
@@ -59,33 +59,42 @@ function Message() {
 
         // console.log(socket, "socket")
 
-        if (socket !== null)
-            socket.on('Private-Message-To-Client', (data) => {
-                console.log(data)
+        // if (socket !== null)
 
-                setSelectedmessage(selectedmessage => [...selectedmessage, {
-                    state: false,
-                    _id: data[0],
-                    from: selected.room,
-                    text: data[2],
-                    time: data[3]
-                }]);
-                setNewmessage({ text: data[2], time: data[3] })
-                // let temp = [...usermessage];
-                // temp.forEach((user, index) => {
-                //     if ((user.Email).match(selected.email)) {
-                //         user.text = newmessage.text;
-                //         user.time = newmessage.time;
-                //         [temp[0], temp[index]] = [temp[index], temp[0]];
-                //     }
-                // })
-                // setUsermessage(temp);
-            })
+
+        var newsocket = io("https://hcmusemu.herokuapp.com", {
+            transports: ['websocket']
+        });
+        newsocket.emit("Start", localStorage.getItem("token"))
+
+        setSocket(newsocket)
+
+        newsocket.on('Private-Message-To-Client', (data) => {
+            console.log(data)
+
+            setSelectedmessage(selectedmessage => [...selectedmessage, {
+                state: false,
+                _id: data[0],
+                from: data[0],
+                text: data[2],
+                time: data[3]
+            }]);
+            setNewmessage({ text: data[2], time: data[3] })
+            // let temp = [...usermessage];
+            // temp.forEach((user, index) => {
+            //     if ((user.Email).match(selected.email)) {
+            //         user.text = newmessage.text;
+            //         user.time = newmessage.time;
+            //         [temp[0], temp[index]] = [temp[index], temp[0]];
+            //     }
+            // })
+            // setUsermessage(temp);
+        })
 
         return () => {
             if (selected !== null)
-                socket.emit('Return-Chat', [selected.room, selected.email]);
-            socket.off('Private-Message-To-Client');
+                newsocket.emit('Return-Chat', [selected.room, selected.email]);
+            newsocket.off('Private-Message-To-Client');
             console.log("Socket off")
         }
     }, []);
@@ -245,7 +254,7 @@ function Message() {
     }
 
     const viewChat = () => {
-        setloaddingChatBox(true)
+        // setloaddingChatBox(true)
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -268,7 +277,7 @@ function Message() {
                 var mess = result.reverse()
                 // console.log(mess)
                 setSelectedmessage(mess)
-                setloaddingChatBox(false)
+                // setloaddingChatBox(false)
             })
             .catch(error => console.log('error', error));
     }
@@ -510,6 +519,7 @@ function Message() {
     var messawaittag = tag === "1" ? "selected" : "";
     return (
         <div className="mess">
+            {/* <ConnectSocket /> */}
             <div className="col-12">
                 <Category current="Tin nhắn" />
                 <div className="col-md-6 mess-tag" style={{ padding: 0, background: "white" }}>

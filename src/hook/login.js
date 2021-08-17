@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
-import { StoreRole } from '../store/actions/authen';
+import { FirstSign, StoreRole } from '../store/actions/authen';
 
-export default function     LoginButton() {
+export default function LoginButton() {
     const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loadding, setLoadding] = useState(0);
@@ -56,6 +56,12 @@ export default function     LoginButton() {
                     else localStorage.setItem("token", result.token + "pR")
                     localStorage.setItem("role", result.role)
                     localStorage.setItem("expired", (new Date).getTime() + 7200000)
+                    // console.log("trueeeeeeee",result.firstsign)
+                    if (result.firstsign === true) {
+                        console.log("trueeeeeeee")
+                        const action = FirstSign(true);
+                        dispatch(action);
+                    }
                     const action = StoreRole(result.role);
                     dispatch(action);
                     // localStorage.setItem("username", this.state.username)

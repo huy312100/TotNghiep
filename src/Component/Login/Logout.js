@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 function Logout() {
@@ -7,7 +7,7 @@ function Logout() {
     useEffect(() => {
         localStorage.clear();
         history.replace("/");
-        console.log(localStorage.getItem("token"))
+        // console.log(localStorage.getItem("token"))
     }, [])
 
     return null

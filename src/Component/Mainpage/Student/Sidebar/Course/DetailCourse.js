@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Navbar from '../../Navbar';
-import Sidebar from '../../Sidebar';
 import "../../../../../style/DetailCourse.css";
 import Category from '../../Category';
 import { Link } from 'react-router-dom';
@@ -55,7 +53,7 @@ class DetailCourse extends Component {
     renderLabel = () => {
         if (this.state.content.length > 1) {
             var label = this.state.content.map((content) => {
-                return <div className="content">{content.name}</div>
+                return <div className="content" dangerouslySetInnerHTML={{ __html: content.label }}></div>
             })
             return (
                 <div>

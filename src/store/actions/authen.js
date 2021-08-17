@@ -18,3 +18,10 @@ export const StoreRole = (value) => {
         payload:value
     }
 }
+
+export const FirstSign = (value) => {
+    return {
+        type: 'FIRST_SIGN',
+        payload:value
+    }
+}

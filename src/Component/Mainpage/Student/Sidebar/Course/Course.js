@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Navbar from '../../Navbar';
-import Sidebar from '../../Sidebar';
 import { Link } from 'react-router-dom';
 import "../../../../../style/Course.css";
 import Category from '../../Category';
@@ -180,7 +178,7 @@ class Course extends Component {
                 {this.state.allcourse.map((c, index) => {
                     return (
                         <div key={index} className="course">
-                            <Link to={"/course/" + c.IDCourses} className="titlee direct">{c.name}</Link>
+                            {localStorage.getItem("role")==="3"?<div className="titlee direct">{c.name}</div>:<Link to={"/course/" + c.IDCourses} className="titlee direct">{c.name}</Link>}
                             <div className="list-teacher">
                                 {c.teacher.map((tc, tindex) => (
                                     <div key={tindex} className="content">

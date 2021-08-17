@@ -4,3 +4,10 @@ export const storedInfo = (info) => {
         payload:info
     }
 }
+
+export const storedMoodle = (md) => {
+    return {
+        type: 'STORE_MOODLE',
+        payload:md
+    }
+}

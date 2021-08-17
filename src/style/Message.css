@@ -5,8 +5,9 @@
 .listfriend-box {
     /* display: inline-block; */
     /* width: 28vw; */
-    height: 75vh;
+    height: 76vh;
     background: rgb(255, 255, 255);
+    border:1px solid rgb(228, 228, 228);
     /* margin-right: 5px; */
 }
 
@@ -26,7 +27,9 @@
 
 .message-box {
     /* display: inline-block; */
-    height: 75vh;
+    border:1px solid rgb(228, 228, 228);
+
+    height: 76vh;
     width: 53vw;
     /* background-color: blue; */
     background: white;
@@ -34,6 +37,7 @@
 }
 
 .message-box .message {
+    background: #f2f0f6;
     overflow: auto;
     height: 55vh;
 }
@@ -54,7 +58,9 @@
 
 .message-box .friend {
     display: inline-block;
-    background: rgb(214, 214, 214);
+    background: white;
+    box-shadow: 0 4px 8px 0 rgb(34 41 47 / 12%);
+
     /* border: 1px solid black; */
     border-radius: 5px;
     font-size: 14px;
@@ -64,6 +70,8 @@
 .message-box .user {
     display: inline-block;
     background: #18468b;
+    box-shadow: 0 4px 8px 0 rgb(34 41 47 / 12%);
+
     /* border: 1px solid white; */
     border-radius: 5px;
     font-size: 14px;
@@ -78,29 +86,32 @@
 }
 
 .message-box .box-chat {
-    border-radius: 20px;
+    border-radius: 10px;
     border: none;
-    background: wheat;
+    background: rgb(255, 255, 255);
     padding: 10px;
     /* width: 47vw; */
     font-size: 14px;
+    border:0.05px solid rgb(206, 206, 206);
 }
 
 .message-box .box-chat:focus {
     outline: none;
+    border:0.05px solid #0c63dc;
 }
 
 .message-box .enter {
     color: white;
     /* height: 3vw; */
-    background: rgb(230, 155, 85);
-    padding: 2px;
+    background: #0c63dc;
+    padding: 5px;
+    /* height: 40px; */
     /* width: 3vw; */
     /* line-height: 3vw; */
     /* height: 7vw; */
     /* padding: 10px; */
     /* background: #1abc9c; */
-    border-radius: 9px;
+    border-radius: 5px;
     text-align: center;
     /* margin: auto 0; */
     font-size: 16px;

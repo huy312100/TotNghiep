@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Navbar from '../Navbar';
-import Sidebar from '../Sidebar';
 import "../../../../style/Deadline.css";
 import Category from '../Category';
 // import { Link } from 'react-router-dom';
@@ -295,7 +293,7 @@ class Deadline extends Component {
             this.getCurrentDeadline();
         if (this.state.tag === "1" && this.state.loaddingnewsuni === 1)
             this.getNewsUniversity();
-        if (this.state.tag == "2" && this.state.loaddingnewsfac === 1)
+        if (this.state.tag === "2" && this.state.loaddingnewsfac === 1)
             this.getNewsFaculty();
 
     }

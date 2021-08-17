@@ -1,7 +1,8 @@
 const initialState = {
     socket:null,
     email:null,
-    role:null
+    role:null,
+    fisrtsign:null
 }
 
 const authenReducer = (state=initialState,action) =>{
@@ -23,6 +24,13 @@ const authenReducer = (state=initialState,action) =>{
             return {
                 ...state,
                 role:action.payload
+            }
+        }
+
+        case 'FIRST_SIGN':{
+            return {
+                ...state,
+                fisrtsign:action.payload
             }
         }
 

@@ -585,13 +585,17 @@ function Chat() {
       if (loadingSearch === 1) {
           const list = foundedUser.map((user) => {
               return( 
-              <Box border={1} borderColor="red" textAlign="center" className={classes.search_user}>
+              <Box border={1} background="white" borderColor="red" textAlign="center" className={classes.search_user}>
                   <div className={classes.search_user__name}>{user.HoTen}</div>
                   <div className={classes.search_user__email}>({user.Email})</div>
               </Box>
               )
           })
-          return list;
+          return(
+            <div style={{backgroundColor: "white"}}>
+              {list}
+            </div>
+          );
       }
       return <div className={classes.listfriend}>
           <div>
@@ -643,7 +647,7 @@ function Chat() {
                             <Tab fullWidth label="Tin nhắn"/>
                             <Tab fullWidth label="Tin nhắn chờ"/>
                       </Tabs>
-                    {renderFoundedUser()}
+                    {search.length > 0 && renderFoundedUser()}
                 </div>
                  
                 <div className={classes.wrap__message_box}>

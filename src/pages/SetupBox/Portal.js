@@ -20,29 +20,18 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-export default function Moodle()
+export default function Portal()
 {
     const classes = useStyles()
     const [website,setWebsite] = useState("");
-    const [username,setUsername] = useState("");
-    const [password,setPassword] = useState("");
     const [loading,setLoading] = useState(true)
-    const [isVisible,setVisible] = useState(true);
     const [cancelBtnActive,setCancelBtnActive] = useState(false);
     const history = useHistory();
-    const handleVisible = () =>{
-        setVisible(!isVisible);
+  
+    const handleChangeURL = (event) => {
+        setWebsite(event.target.value)
     }
-    const handleURL = (event) => {
-            setWebsite(event.target.value)
-        }
-    const handleUsername = (event) => {
-            setUsername(event.target.value);
-        }
-    const handlePassword = (event) => {
-            setPassword(event.target.value);
-        }
-    
+   
     const isEmpty = (obj)=> {
             for(var prop in obj) {
                 if(obj.hasOwnProperty(prop))
@@ -51,7 +40,7 @@ export default function Moodle()
         
             return true;
         }
-    const getMoodleInfo = async() => {
+    const getPortalInfo = async() => {
         if (checkTokenExpired()) {
             localStorage.clear()
             history.replace("/");
@@ -66,30 +55,28 @@ export default function Moodle()
                 redirect: 'follow'
             };
     
-            fetch("https://hcmusemu.herokuapp.com/web/getcustomlink", requestOptions)
-                .then(response => {
-                    console.log(response.status);
-                    if (response.status === 200) {
-                        return response.json();
-                    }
-                    else return [];
-                })
-                .then(result => {
-                    result = result.filter(connection => connection.Type === 'Portal');
-                    if (isEmpty(result)===false)
+            await fetch("https://hcmusemu.herokuapp.com/web/getcustomlink", requestOptions)
+            .then((response) => {
+                const statusCode = response.status;
+                const dataRes = response.json();
+                return Promise.all([statusCode, dataRes]);
+              }).then(([statusCode, dataRes]) => {
+                if (statusCode === 200){
+                    dataRes = dataRes.filter(connection => connection.Type === 'Portal');
+                    if (isEmpty(dataRes)===false)
                     {
-                        setWebsite(result[0].Url);
-                        setUsername(result[0].Username)
+                        setWebsite(dataRes[0].Url);
                         setCancelBtnActive(false);
                     }
                     else{
-                        setWebsite("");
-                        setUsername("")
                         setCancelBtnActive(true);
                     }
+                }
+                else{
+                    setCancelBtnActive(true);
+                }
 
-                    setLoading(false);
-
+            setLoading(false);   
                 })
                 .catch(error => {
                     console.log('error', error)
@@ -97,7 +84,7 @@ export default function Moodle()
     
     
         }
-    const deleteMoodleInfo = async() => {
+    const deletePortalInfo = async() => {
         if (checkTokenExpired()) {
             localStorage.clear()
             history.replace("/");
@@ -105,48 +92,48 @@ export default function Moodle()
             }
             var myHeaders = new Headers();
             myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
-            //myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-            //var urlencoded = new URLSearchParams();
-            //urlencoded.append("typeUrl","Portal");
-
+            
+            //let urlencoded = new URLSearchParams();
+            //urlencoded.append("typeUrl","Portal")
             var requestOptions = {
                 method: 'DELETE',
                 headers: myHeaders,
                 redirect: 'follow'
             };
     
-            fetch("https://hcmusemu.herokuapp.com/web/deleteaccountportal", requestOptions)
-                .then(response => {
-                    //console.log(response.status)
-                    if (response.status === 200) {
-
-                        return response.status;
+            await fetch("https://hcmusemu.herokuapp.com/web/deleteaccountportal", requestOptions)
+            .then((response) => {
+                const statusCode = response.status;
+                const dataRes = response.json();
+                return Promise.all([statusCode, dataRes]);
+              }).then(([statusCode, dataRes]) => {
+                  console.log(statusCode);
+                    if (statusCode === 200) {
+                        afterDelete();
+                        setCancelBtnActive(true);
+                        alert("Xoá Portal thành công");
                     }
                     else {
+                        alert("Xoá Portal không thành công");
                         throw new Error("Có lỗi không xoá được");
                     };
                 })
-                .then(setCancelBtnActive(true))
                 .catch(error => {
                     console.log('error', error)
                 });
     
     
     }
-    const handleDeleteMoodle = () =>{
-        deleteMoodleInfo();
-        afterDelete();
+    const handleDeletePortal = () =>{
+        deletePortalInfo();
     }
     const afterDelete = () =>{
         setWebsite("");
-        setUsername("");
-        setPassword("");
     }
     useEffect(()=>{
-        getMoodleInfo();
-    })
-    const postMoodleLink = async() => {
+        getPortalInfo();
+    },[])
+    const postPortalLink = async() => {
         if (checkTokenExpired()) {
             localStorage.clear()
             history.replace("/");
@@ -160,9 +147,8 @@ export default function Moodle()
             var urlencoded = new URLSearchParams();
             urlencoded.append("typeUrl","Portal");
             urlencoded.append("url", website);
-            urlencoded.append("username", username);
-            urlencoded.append("password", password);
-            console.log(website,username,password)
+            urlencoded.append("username","");
+            urlencoded.append("password","");
             var requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
@@ -170,17 +156,21 @@ export default function Moodle()
                 redirect: 'follow'
             };
     
-            fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", requestOptions)
+            await fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", requestOptions)
                 .then(response => {
+                    console.log(response.status);
                     if (response.status === 201) {
+                        alert("Custom link Portal thành công")
+                        setCancelBtnActive(false);
                         return response.text();
                     }
                     else {
                         console.log(response.status,response.statusText)
+                        alert("Custom link Portal không thành công. Xin thử lại sau.")
                         throw new Error('Lưu thất bại');
                     }
                 })
-                .then(setCancelBtnActive(false))
+                .then()
                 .catch(error => {
                     console.log('error', error)
                 });
@@ -189,14 +179,11 @@ export default function Moodle()
         }
  
 
-    const hanldePostMoodle = ()=>{
-        postMoodleLink();
+    const handlePostPortal = ()=>{
+        postPortalLink();
        
     }
 
-  
-
-    console.log(website,username,password);
     if (loading === true){
         return(
         <div className={classes.root}>
@@ -216,15 +203,15 @@ export default function Moodle()
                 
             <Typography  style={{fontWeight:"bold",marginLeft:"12.5%",color:"blue"}}> Nhập URL Portal ở đây </Typography>
             <TextField 
-                    required
                     id = "user_link"
                     value={website}  
                     variant="outlined"   
                     margin="normal"  
                     style={{width:"50%"}}
-                    onChange={handleURL}
-                    size="medium"  />
-            <Typography   style={{fontWeight:"bold",marginLeft:"10%",color:"blue"}}> Nhập tài khoản Portal ở đây </Typography>
+                    onChange={(e)=>setWebsite(e.target.value)}
+                    size="medium"  
+            />
+            {/*<Typography   style={{fontWeight:"bold",marginLeft:"10%",color:"blue"}}> Nhập tài khoản Portal ở đây </Typography>
             <TextField 
                     id = "user_name"
                     value={username}  
@@ -244,12 +231,12 @@ export default function Moodle()
                     style={{width:"50%"}}
                     onChange={handlePassword}
                     size="medium"  />
-            <br/>
+            <br/>*/}
             <div className="btn-toolbar" style={{marginLeft:"5%"}}>
-                <Button style={{width:"auto",backgroundColor: cancelBtnActive===true ? "green": "#bbf2ca" ,color:"white"}} disabled={!cancelBtnActive} onClick={hanldePostMoodle}>
+                <Button style={{width:"auto",backgroundColor: cancelBtnActive===true ? "green": "#bbf2ca" ,color:"white"}} disabled={!cancelBtnActive} onClick={handlePostPortal}>
                     Kết nối
                 </Button>
-                <Button onClick={handleDeleteMoodle} disabled={cancelBtnActive} style={{width:"auto",backgroundColor: cancelBtnActive===false?"red":"#f0b3b3",color:"white",marginLeft: 175}} >
+                <Button onClick={handleDeletePortal} disabled={cancelBtnActive} style={{width:"auto",backgroundColor: cancelBtnActive===false?"red":"#f0b3b3",color:"white",marginLeft: 175}} >
                    Huỷ kết nối
                 </Button>
             </div>

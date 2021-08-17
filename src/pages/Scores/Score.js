@@ -92,6 +92,8 @@ export default function Score(){
                 m={1} 
                 className={`${classes.centerBox} ${classes.box}`}
                 >
+                {
+                website !== "" ? 
                 <Button 
                     variant="contained" 
                     color="primary" 
@@ -103,6 +105,9 @@ export default function Score(){
                 >
                     <Typography variant="h4">Xem bảng điểm</Typography>
                 </Button>
+                :
+                <Typography>Bạn chưa custom Portal. Vui lòng custom link Portal và thử lại sau</Typography>
+                }
                 </Box>
             </main>
       </div>

@@ -72,30 +72,28 @@ export default function Moodle()
                 redirect: 'follow'
             };
     
-            fetch("https://hcmusemu.herokuapp.com/web/getcustomlink", requestOptions)
-                .then(response => {
-                    console.log(response.status);
-                    if (response.status === 200) {
-                        return response.json();
-                    }
-                    else return [];
-                })
-                .then(result => {
-                    result = result.filter(connection => connection.Type === 'Moodle');
-                    if (isEmpty(result)===false)
+            await fetch("https://hcmusemu.herokuapp.com/web/getcustomlink", requestOptions)
+            .then((response) => {
+                const statusCode = response.status;
+                const dataRes = response.json();
+                return Promise.all([statusCode, dataRes]);
+              }).then(([statusCode, dataRes]) => {
+                if (statusCode === 200){
+                    dataRes = dataRes.filter(connection => connection.Type === 'Moodle');
+                    if (isEmpty(dataRes)===false)
                     {
-                        setWebsite(result[0].Url);
-                        setUsername(result[0].Username)
+                        setWebsite(dataRes[0].Url);
+                        setUsername(dataRes[0].Username)
                         setCancelBtnActive(false);
                     }
                     else{
-                        setWebsite("");
-                        setUsername("")
                         setCancelBtnActive(true);
                     }
-
-                    setLoading(false);
-
+                }
+                else{
+                   setCancelBtnActive(true);
+                }
+                setLoading(false);
                 })
                 .catch(error => {
                     console.log('error', error)
@@ -123,10 +121,11 @@ export default function Moodle()
                 redirect: 'follow'
             };
     
-            fetch("https://hcmusemu.herokuapp.com/web/deleteaccount", requestOptions)
+            await fetch("https://hcmusemu.herokuapp.com/web/deleteaccount", requestOptions)
                 .then(response => {
                     console.log(response.status)
                     if (response.status === 200) {
+                        afterDelete();
                         return response.text();
                     }
                     else {
@@ -142,7 +141,6 @@ export default function Moodle()
     }
     const handleDeleteMoodle = () =>{
         deleteMoodleInfo();
-        afterDelete();
     }
     const afterDelete = () =>{
         setWebsite("");
@@ -151,7 +149,7 @@ export default function Moodle()
     }
     useEffect(()=>{
         getMoodleInfo();
-    })
+    },[])
     const postMoodleLink = async() => {
         if (checkTokenExpired()) {
             localStorage.clear()
@@ -175,14 +173,16 @@ export default function Moodle()
                 redirect: 'follow'
             };
     
-            fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", requestOptions)
+            await fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", requestOptions)
                 .then(response => {
                     console.log(response.status);
                     if (response.status === 201) {
+                        alert("Custom link Moodle thành công")
                         return response.text();
                     }
                     else {
                         console.log(response.status,response.statusText)
+                        alert("Custom link Moodle không thành công. Xin thử lại ")
                         throw new Error('Lưu thất bại');
                     }
                 })

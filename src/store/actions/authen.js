@@ -11,3 +11,10 @@ export const StoreEmail = (e) => {
         email:e
     }
 }
+
+export const StoreRole = (value) => {
+    return {
+        type: 'STORE_ROLE',
+        payload:value
+    }
+}

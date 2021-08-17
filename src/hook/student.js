@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 
 function Home() {
     const [uni, setUni] = useState(null);
     const [loading, setLoading] = useState(1)
+    const role = useSelector(state => state.authen.role)
 
     useEffect(() => {
         getNewsUniversity();
@@ -19,7 +21,12 @@ function Home() {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/info/newsuniversity", requestOptions)
+        var url
+        if (role === "3")
+            url = "https://hcmusemu.herokuapp.com/info/newsuniversity/parent"
+        else url = "https://hcmusemu.herokuapp.com/info/newsuniversity"
+
+        fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

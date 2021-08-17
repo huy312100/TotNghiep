@@ -30,12 +30,23 @@ class Student extends Component {
                         fontSize: "calc(12px + 1vw)",
                         borderRight: "1px solid #d6dce1",
                         paddingRight: "1vw",
-                        marginBottom:"-15px",
-                        paddingTop:"10px",
+                        marginBottom: "-15px",
+                        paddingTop: "10px",
                     }}>Trang chủ</div>
                     <Home />
                     <NewsFac />
-                    <CldAndDl />
+                    {/* <CldAndDl /> */}
+                    <div className="news-page-uni">
+                        <div className="header">Thông tin liên lạc</div>
+                        {/* <div ><img className="col" src="https://www.hcmus.edu.vn/images/2020/04/07/bn2.jpg"></img></div> */}
+                        <div>Trường : Trường Đại học Khoa học Tự nhiên - ĐHQG TPHCM</div>
+                        <div>Email : bantin@hcmus.edu.vn</div>
+                        <div>SDT : 02838962823</div>
+                        <div>Địa chỉ : 227 Đường Nguyễn Văn Cừ, Phường 4, Quận 5, TP HCM</div>
+                        <div>Website:
+                            <a rel="noopener noreferrer" target="_blank" href="https://www.hcmus.edu.vn/">https://www.hcmus.edu.vn/</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 

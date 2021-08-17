@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 
 function NewsFac() {
     const [fac, setFac] = useState(null);
     const [loading, setLoading] = useState(1)
+    const role = useSelector(state => state.authen.role)
+
 
     useEffect(() => {
         getNewsFaculty();
@@ -19,7 +22,12 @@ function NewsFac() {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/info/newsfaculty", requestOptions)
+        var url
+        if (role === "3")
+            url = "https://hcmusemu.herokuapp.com/info/newsfaculty/parent"
+        else url = "https://hcmusemu.herokuapp.com/info/newsfaculty"
+
+        fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

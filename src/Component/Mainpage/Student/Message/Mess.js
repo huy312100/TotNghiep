@@ -18,8 +18,8 @@ function Message() {
     const [loadingSearch, setLoadingSearch] = useState(0)
     const [foundedUser, setFoundedUser] = useState(null)
 
-    const [usermessage, setUsermessage] = useState([""]);
-    const [selected, setSelected] = useState({ email: "", room: "", name: "" });
+    const [usermessage, setUsermessage] = useState(null);
+    const [selected, setSelected] = useState(null);
 
     const [selectedmessage, setSelectedmessage] = useState([]);
     const [newmessage, setNewmessage] = useState({ text: null, time: null });
@@ -38,6 +38,8 @@ function Message() {
 
     const [loaddingChatBox, setloaddingChatBox] = useState(false)
 
+    const typing = useRef(null)
+
     const dispatch = useDispatch()
     // console.log(email)
 
@@ -45,20 +47,22 @@ function Message() {
         getMessage();
         viewChatAwait();
 
-        if (socket === null) {
-            var newsocket = io("https://hcmusemu.herokuapp.com", { transports: ['websocket'] });
-            newsocket.emit("Start", localStorage.getItem("token"));
+        // if (socket === null) {
+        //     var newsocket = io("https://hcmusemu.herokuapp.com", { transports: ['websocket'] });
+        //     newsocket.emit("Start", localStorage.getItem("token"));
 
-            console.log("Connect socket");
+        //     console.log("Connect socket");
 
-            const action = connectSocket(newsocket)
-            dispatch(action);
-        }
+        //     const action = connectSocket(newsocket)
+        //     dispatch(action);
+        // }
 
-        console.log(socket, "socket")
+        // console.log(socket, "socket")
 
         if (socket !== null)
             socket.on('Private-Message-To-Client', (data) => {
+                console.log(data)
+
                 setSelectedmessage(selectedmessage => [...selectedmessage, {
                     state: false,
                     _id: data[0],
@@ -67,11 +71,20 @@ function Message() {
                     time: data[3]
                 }]);
                 setNewmessage({ text: data[2], time: data[3] })
-                console.log(data)
+                // let temp = [...usermessage];
+                // temp.forEach((user, index) => {
+                //     if ((user.Email).match(selected.email)) {
+                //         user.text = newmessage.text;
+                //         user.time = newmessage.time;
+                //         [temp[0], temp[index]] = [temp[index], temp[0]];
+                //     }
+                // })
+                // setUsermessage(temp);
             })
 
         return () => {
-            socket.emit('Return-Chat', [selected.room, selected.email]);
+            if (selected !== null)
+                socket.emit('Return-Chat', [selected.room, selected.email]);
             socket.off('Private-Message-To-Client');
             console.log("Socket off")
         }
@@ -83,7 +96,7 @@ function Message() {
     }, [search])
 
     useEffect(() => {
-        if (usermessage !== [""]) {
+        if (usermessage !== null) {
             usermessage.sort((a, b) => {
                 var keyA = a.time,
                     keyB = b.time;
@@ -97,7 +110,8 @@ function Message() {
 
 
     useEffect(() => {
-        divRef.current.scrollIntoView({ behavior: 'smooth' });
+        if (selected !== null)
+            divRef.current.scrollIntoView({ behavior: 'smooth' });
     }, [selectedmessage]);
 
     const convertTime = (UNIX_timestamp) => {
@@ -145,7 +159,7 @@ function Message() {
     }
 
     useEffect(() => {
-        if (selected.room !== "" && acceptawaitmess === false)
+        if (selected !== null && selected.room !== "" && acceptawaitmess === false)
             viewChat();
     }, [selected])
 
@@ -160,10 +174,11 @@ function Message() {
     useEffect(() => {
         if (newmessage.time !== null) {
             let temp = [...usermessage];
-            temp.forEach(user => {
+            temp.forEach((user, index) => {
                 if ((user.Email).match(selected.email)) {
                     user.text = newmessage.text;
                     user.time = newmessage.time;
+                    [temp[0], temp[index]] = [temp[index], temp[0]];
                 }
             })
             setUsermessage(temp);
@@ -178,6 +193,9 @@ function Message() {
 
 
     const Messages = () => {
+
+        // if (tag === "0" && usermessage === null)
+        //     return null;
         var listmess = usermessage;
         if (tag === "1") {
             if (awaitmess === null)
@@ -185,15 +203,15 @@ function Message() {
             listmess = awaitmess;
 
         }
-        if (listmess.length < 1 || listmess === null)
-            return <div>Không có tin nhắn chờ</div>
+        if (!(Array.isArray(listmess) && listmess.length > 0))
+            return <div style={{ textAlign: 'center' }}>Không có tin nhắn</div>
 
         var list = listmess.map((messageList) => (
             <div type="button" className="message-content" onClick={() => tag === "0" ? selectUser(messageList.idRoom, messageList.Email, messageList.name, messageList.Anh) : AcceptAwaitMessage(messageList, { email: messageList.Email, room: messageList.idChatRoom, name: messageList.name, image: messageList.Anh })}>
-                <div className="col-auto" style={{padding:0}}>
+                <div className="col-auto" style={{ padding: 0 }}>
                     {messageList.Anh === null || messageList.Anh === "" ? <div style={{ width: "50px", height: "50px", display: "block", borderRadius: "100%", border: "1px solid rgb(223, 223, 223)", marginTop: "5px", background: "white" }}></div> : <img width="50px" height="50px" style={{ borderRadius: "100%", border: "1px solid rgb(223, 223, 223)", marginTop: "5px" }} src={messageList.Anh} alt=""></img>}
                 </div>
-                <div className="col message-content-text" style={{padding:0}}>
+                <div className="col message-content-text" style={{ padding: 0 }}>
                     <div className="name">
                         {messageList.name}
                     </div>
@@ -269,13 +287,15 @@ function Message() {
             .then(response => response.json())
             .then(result => {
                 // console.log(result)
-                setUsermessage(result);
-
-                setSelected({
-                    room: result[0].idRoom,
-                    email: result[0].Email,
-                    name: result[0].name
-                })
+                if (Array.isArray(result) && result.length > 0) {
+                    setUsermessage(result);
+                    setSelected({
+                        image: result[0].Anh,
+                        room: result[0].idRoom,
+                        email: result[0].Email,
+                        name: result[0].name
+                    })
+                }
             })
             .catch(error => console.log('error', error));
     }
@@ -296,11 +316,12 @@ function Message() {
         };
 
         fetch("https://hcmusemu.herokuapp.com/profile/findinfofromfullname", requestOptions)
-            .then(response => response.json())
+            .then(response => {
+                return response.json()
+            })
             .then(result => {
                 console.log(result)
                 setFoundedUser(result);
-                setLoadingSearch(1);
             })
             .catch(error => console.log('error', error));
     }
@@ -377,12 +398,22 @@ function Message() {
     }
 
     const handleSearch = (e) => {
-        if (e.target.value !== "") {
-            setSearch(e.target.value)
-            searchUser(e.target.value)
+        setSearch(e.target.value)
+
+        if (e.target.value === "")
+            setLoadingSearch(0);
+        if (typing.current) {
+            clearTimeout(typing.current)
         }
 
-        setSearch(e.target.value)
+        typing.current = setTimeout(() => {
+            console.log(e.target.value)
+            if (e.target.value !== "") {
+                setLoadingSearch(1);
+                searchUser(e.target.value)
+            }
+        }, 300)
+
     }
 
     const SearchUserSelelected = (selecteduser) => {
@@ -391,6 +422,8 @@ function Message() {
 
     const renderFoundedUser = () => {
         if (loadingSearch === 1 && tag !== "1") {
+            if (!Array.isArray(foundedUser) || foundedUser.length < 1)
+                return <div style={{ textAlign: 'center' }}>Không tìm thấy người dùng</div>
             const list = foundedUser.map((user) => {
                 return <div type="button" className="message-content" onClick={() => SearchUserSelelected({ email: user.Email, name: user.HoTen, image: user.AnhSV })}>
                     <img width="50px" height="50px" style={{ borderRadius: "100%", border: "1px solid rgb(223, 223, 223)", marginTop: "5px" }} src={user.AnhSV} alt=""></img>
@@ -440,12 +473,15 @@ function Message() {
         if (loadingSearch === 1 && tag === "0") {
             return <div>
                 <div className="message"></div>
-                <div className="textbox-message">
-                    <div>
-                        <input value={selectedawaitmess} className="box-chat" type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setSelectedAwaitmess(e.target.value)} onKeyDown={handleKeyDownAwaitmess} />
-                        <i type="button" className="enter fa fa-reply" onClick={() => sendAwaitMessage()}></i>
+                {/* <div className="textbox-message"> */}
+                <div className="row textbox-message" style={{ alignItems: "center" }}>
+                    <input value={mess} className="col-10 box-chat" type="text" placeholder="Nội dung tin nhắn" name="mess" onChange={(e) => setMess(e.target.value)} onKeyDown={handleKeyDown} />
+                    {/* <i type="button" className="enter fa fa-reply" onClick={sendMessage}></i> */}
+                    <div className="col-2">
+                        <div type="button" className="enter" onClick={() => sendAwaitMessage()}>Gửi</div>
                     </div>
                 </div>
+                {/* </div> */}
             </div>
         }
         if (acceptawaitmess)
@@ -488,21 +524,24 @@ function Message() {
                     <div className="col-md-4 listfriend-box" style={{ padding: "10px 10px 10px 0px", background: "white" }}>
                         {<div style={{ overflowY: "auto", overflowX: "hidden", height: "70vh" }}>
                             {tag === "0" && <div>
-                                <input className="col-11 box-input" type="text" placeholder="Tìm kiếm" name="search" value={search} required onChange={(e) => handleSearch(e)} />
+                                <input className="col-11 box-input" type="text" placeholder="Tìm kiếm người dùng" name="search" value={search} required onChange={(e) => handleSearch(e)} />
                             </div>}
                             {renderFoundedUser()}
                         </div>}
                     </div>
                     <div className="col-md-8 message-box">
-                        <div className="selected-user">
-                            {selected.image === null || selected.image === "" ? null : <img width="50px" height="50px" style={{ width: "50px", height: "50px", borderRadius: "100%", border: "1px solid rgb(223, 223, 223)" }} src={selected.image} alt=""></img>}
-                            <div className="infouser">
-                                <div className="name">{selected.name}</div>
-                                <div className="email">{selected.email}</div>
+                        {selected !== null && <div>
+                            <div className="selected-user">
+                                {selected.image === null || selected.image === "" ? null : <img width="50px" height="50px" style={{ borderRadius: "100%", border: "1px solid rgb(223, 223, 223)" }} src={selected.image} alt=""></img>}
+                                <div className="infouser">
+                                    <div className="name">{selected.name}</div>
+                                    <div className="email">{selected.email}</div>
+                                </div>
                             </div>
+                            <hr />
+                            {renderMessage()}
                         </div>
-                        <hr />
-                        {renderMessage()}
+                        }
                     </div>
                 </div>
                 {/* <Footer /> */}

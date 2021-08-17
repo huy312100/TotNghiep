@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
+import { StoreRole } from '../store/actions/authen';
 
-export default function LoginButton() {
+export default function     LoginButton() {
     const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loadding, setLoadding] = useState(0);
     const [success, setSuccess] = useState(0);
+    const dispatch = useDispatch();
 
     let history = useHistory();
     useEffect(() => {
@@ -46,8 +49,15 @@ export default function LoginButton() {
             .then(result => {
                 console.log(result.token)
                 if (result.token !== undefined) {
-                    localStorage.setItem("token", result.token + "sT")
-                    localStorage.setItem("expired",(new Date).getTime()+7200000)
+                    if (result.role === "1")
+                        localStorage.setItem("token", result.token + "sT")
+                    else if (result.role === "2")
+                        localStorage.setItem("token", result.token + "tC")
+                    else localStorage.setItem("token", result.token + "pR")
+                    localStorage.setItem("role", result.role)
+                    localStorage.setItem("expired", (new Date).getTime() + 7200000)
+                    const action = StoreRole(result.role);
+                    dispatch(action);
                     // localStorage.setItem("username", this.state.username)
                     // console.log(result.token)
 

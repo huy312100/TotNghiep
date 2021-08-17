@@ -1,5 +1,5 @@
 const initialState = {
-    open:false
+    open:true
 }
 
 const sidebarReducer = (state = initialState, action) => {

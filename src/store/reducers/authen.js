@@ -1,6 +1,7 @@
 const initialState = {
     socket:null,
-    email:null
+    email:null,
+    role:null
 }
 
 const authenReducer = (state=initialState,action) =>{
@@ -15,6 +16,13 @@ const authenReducer = (state=initialState,action) =>{
             return {
                 ...state,
                 socket:action.socket
+            }
+        }
+
+        case 'STORE_ROLE':{
+            return {
+                ...state,
+                role:action.payload
             }
         }
 

@@ -50,7 +50,11 @@ class Course extends Component {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/studycourses/currentcourses", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/studycourses/currentcourses/parent"
+        else url = "https://hcmusemu.herokuapp.com/studycourses/currentcourses"
+        fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -78,7 +82,12 @@ class Course extends Component {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/studycourses/allcourses/parent"
+        else url = "https://hcmusemu.herokuapp.com/studycourses/allcourses"
+
+        fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -107,8 +116,12 @@ class Course extends Component {
             body: urlencoded,
             redirect: 'follow'
         };
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/studycourses/allcourses/parent"
+        else url = "https://hcmusemu.herokuapp.com/studycourses/allcourses"
 
-        fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", requestOptions)
+        fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -135,7 +148,7 @@ class Course extends Component {
                 {this.state.course.map((c, index) => {
                     return (
                         <div key={index} className="course">
-                            <Link to={"/course/" + c.IDCourses} className="titlee direct">{c.name}</Link>
+                            {localStorage.getItem("role")==="3"?<div className="titlee direct">{c.name}</div>:<Link to={"/course/" + c.IDCourses} className="titlee direct">{c.name}</Link>}
                             <div className="list-teacher">
                                 {c.teacher.map((tc, tindex) => (
                                     <div key={tindex} className="content">

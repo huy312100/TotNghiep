@@ -47,7 +47,11 @@ class Profile extends Component {
             mode: 'cors'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/profile/view", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/profile/view/parent"
+        else url = "https://hcmusemu.herokuapp.com/profile/view"
+        fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -88,6 +92,34 @@ class Profile extends Component {
 
     CancelEdit = () => {
         this.setState({ editname: 0, edituni: 0, editfac: 0 })
+    }
+
+    updateProfileParent = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("HoTen", this.state.name);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        await fetch("https://hcmusemu.herokuapp.com/profile/editparent", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            if (result.message === "profile edited") {
+                window.location.reload();
+                // alert("Đổi thành công");
+            }
+            this.CancelEdit();
+        })
+        .catch(error => console.log('error', error));
     }
 
     updateProfile = async () => {
@@ -133,7 +165,7 @@ class Profile extends Component {
             return <tr>
                 <td className="firstcol">Tên</td>
                 <td><input name="name" value={this.state.name} onChange={this.setParams}></input></td>
-                <td><span className="confirm" type="button" onClick={this.updateProfile}>Xác nhận</span><span className="cancel" type="button" onClick={this.CancelEdit}>Hủy</span></td>
+                <td><span className="confirm" type="button" onClick={localStorage.getItem("role")==="3"?this.updateProfileParent:this.updateProfile}>Xác nhận</span><span className="cancel" type="button" onClick={this.CancelEdit}>Hủy</span></td>
             </tr>
         }
     }
@@ -201,10 +233,10 @@ class Profile extends Component {
 
     changeUni = () => {
         if (this.state.edituni === 0) {
-            return <tr className="tb-row" onClick={this.EditUni}>
+            return <tr className="tb-row" onClick={localStorage.getItem("role")==="3"?null:this.EditUni}>
                 <td className="firstcol">Trường</td>
                 <td>{this.state.university}</td>
-                <td className="edit" >Chỉnh sửa</td>
+                {localStorage.getItem("role")==="3"?null:<td className="edit" >Chỉnh sửa</td>}
             </tr>
         }
         else {
@@ -221,10 +253,10 @@ class Profile extends Component {
 
     changeFac = () => {
         if (this.state.editfac === 0) {
-            return <tr className="tb-row" onClick={this.EditFac}>
+            return <tr className="tb-row" onClick={localStorage.getItem("role")==="3"?null:this.EditFac}>
                 <td className="firstcol">Khoa</td>
                 <td>{this.state.fac}</td>
-                <td className="edit" >Chỉnh sửa</td>
+                {localStorage.getItem("role")==="3"?null:<td className="edit" >Chỉnh sửa</td>}
             </tr>
         }
         else {
@@ -277,7 +309,11 @@ class Profile extends Component {
             redirect: 'follow'
         };
 
-        await fetch("https://hcmusemu.herokuapp.com/profile/deleteimg", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/profile/deleteimgparent"
+        else url = "https://hcmusemu.herokuapp.com/profile/deleteimg"
+        await fetch(url, requestOptions)
             .then(response => response.text())
             .then(result => console.log(result))
             .catch(error => console.log('error', error));
@@ -297,7 +333,11 @@ class Profile extends Component {
             redirect: 'follow'
         };
 
-        await fetch("https://hcmusemu.herokuapp.com/profile/uploadimg", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/profile/uploadimgparent"
+        else url = "https://hcmusemu.herokuapp.com/profile/uploadimg"
+        await fetch(url, requestOptions)
             .then(response => response.text())
             .then(result => {
                 console.log(result)

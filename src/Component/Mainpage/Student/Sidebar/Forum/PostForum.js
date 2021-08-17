@@ -45,6 +45,7 @@ function PostForum(props) {
 
         var tag
         var url
+        console.log(scope)
         if (scope === "u" || scope === "u") {
             formdata.append("scope", scope);
             url = "https://hcmusemu.herokuapp.com/forum/post"

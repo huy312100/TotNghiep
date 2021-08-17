@@ -44,7 +44,12 @@ class Deadline extends Component {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/info/newsuniversity", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/info/newsuniversity/parent"
+        else url = "https://hcmusemu.herokuapp.com/info/newsuniversity"
+
+        fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -66,7 +71,12 @@ class Deadline extends Component {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/info/newsfaculty", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/info/newsfaculty/parent"
+        else url = "https://hcmusemu.herokuapp.com/info/newsfaculty"
+
+        fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -88,8 +98,11 @@ class Deadline extends Component {
             headers: myHeaders,
             redirect: 'follow'
         };
-
-        await fetch("https://hcmusemu.herokuapp.com/deadlinemoodle/month", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/deadlinemoodle/month/parent"
+        else url = "https://hcmusemu.herokuapp.com/deadlinemoodle/month"
+        await fetch(url, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result);
@@ -169,7 +182,12 @@ class Deadline extends Component {
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/deadlinemoodle/month", requestOptions)
+        var url
+        if (localStorage.getItem("role") === "3")
+            url = "https://hcmusemu.herokuapp.com/deadlinemoodle/month/parent"
+        else url = "https://hcmusemu.herokuapp.com/deadlinemoodle/month"
+
+        fetch(url, requestOptions)
             .then(response => {
                 console.log(response)
                 return response.json()

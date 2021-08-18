@@ -355,7 +355,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
                 navigation.navigate('Calendar');
                 setLoading(false);
             }
-            else if(statusCode ===500){
+            else if(statusCode === 500){
                 if(dataRes.message === 'No your calendar in db'){
                     Alert.alert(
                         "Lỗi",
@@ -374,29 +374,19 @@ const ModifyCalendarScreen = ({navigation,route}) => {
                             ),
                         }
                     );
-                    navigation.navigate('Calendar');
+                    navigation.goBack();
                     setLoading(false);
                 }
                 else{
                     Alert.alert(
                         "Lỗi",
-                        "Đã xảy ra lỗi .Vui lòng thử lại sau",
+                        "Đã xảy ra lỗi vui lòng thử lại sau",
                         [
-                          {
-                            text: "Xác nhận",
-                            style: "cancel",
-                          },
-                        ],
-                        {
-                          cancelable: true,
-                          onDismiss: () =>
-                            Alert.alert(
-                              "This alert was dismissed by tapping outside of the alert dialog."
-                            ),
-                        }
+                            { text: "OK"},
+                        ]
                     );
-                    navigation.navigate('Calendar');
                     setLoading(false);
+                    navigation.goBack();
                 }
             }  
         })

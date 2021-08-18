@@ -49,7 +49,9 @@ const FindToChatScreen = ({navigation}) => {
               return Promise.all([statusCode, dataRes]);
           }).then(([statusCode, dataRes])=>{
                 //console.log(statusCode,dataRes);
-                setData(dataRes);
+                if(statusCode === 200){
+                  setData(dataRes);
+                }
           }).catch(error => console.log('error', error));
     };
 

@@ -1,11 +1,17 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,Linking } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,Linking,Alert } from 'react-native';
 import { Fontisto,FontAwesome } from '@expo/vector-icons';
 import Hyperlink from 'react-native-hyperlink';
 
 import Lightbox from 'react-native-lightbox-v2';
 
-import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from "expo-notifications";
+
+import * as authActions from '../../../../../store/actions/Authen';
+import * as homeActions from '../../../../../store/actions/Home';
+
+import {useSelector,useDispatch} from 'react-redux';
 
 import * as forumServices from '../../../../services/Forum';
 
@@ -14,6 +20,7 @@ import * as dateUtils from '../../../../utils/Date';
 const ForumFacultyScreen =({navigation})=>{
 
     const token = useSelector((state) => state.authen.token);
+    const dispatch = useDispatch();
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
@@ -70,6 +77,26 @@ const ForumFacultyScreen =({navigation})=>{
                     }
                 }
                 setDataForum(dataTmp);
+            }
+            else if (statusCode === 401) {
+                Alert.alert(
+                    "Phiên đăng nhập đã hết hạn",
+                    "Vui lòng tiến hành đăng nhập lại",
+                    [
+                        { text: "OK", 
+                        onPress: () => {
+                            AsyncStorage.removeItem('tokenValue').then(async () => {
+                            dispatch(authActions.logout);
+                            dispatch(homeActions.VisibleBotTab(false));
+                            Notifications.cancelAllScheduledNotificationsAsync();
+                            navigation.reset({
+                                routes: [{ name: "Login" }]
+                            });
+                            })
+                        }
+                        },
+                    ]
+                );
             }
             setIsLoading(false);
         }).catch(error => console.log('error', error));

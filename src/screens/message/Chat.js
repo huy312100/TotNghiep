@@ -102,7 +102,7 @@ const ChatScreen = ({route,navigation}) => {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `bearer ${token}`,
+        "Authorization": `bearer ${token}`,
       },
       body: formBody,
     }).then((response) => {

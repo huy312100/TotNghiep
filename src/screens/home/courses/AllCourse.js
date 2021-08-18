@@ -2,9 +2,14 @@ import React, { useEffect, useState,useRef } from "react";
 import { View, Text, TouchableOpacity, StyleSheet,FlatList,ActivityIndicator  } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from "expo-notifications";
+
 import LoadingWithSkeletonScreen from "./LoadingSkeleton";
 
 import * as courseActions from "../../../../store/actions/Course";
+import * as authActions from '../../../../store/actions/Authen';
+import * as homeActions from '../../../../store/actions/Home';
 
 const AllCourseInfoScreen = ({navigation}) => {
   const [pageCurrent,setPageCurrent] = useState(0);
@@ -39,7 +44,7 @@ const AllCourseInfoScreen = ({navigation}) => {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `bearer ${token}`,
+        "Authorization": `bearer ${token}`,
       },
       body: formBody,
     })
@@ -54,9 +59,29 @@ const AllCourseInfoScreen = ({navigation}) => {
           setData(data.concat(dataRes));
           dispatch(courseActions.getAllCourses(data.concat(dataRes)));
           setPageCurrent(pageCurrent+1);
+          setIsLoading(false);
+        }
+        else if(status === 401){
+          Alert.alert(
+            "Phiên đăng nhập đã hết hạn",
+            "Vui lòng tiến hành đăng nhập lại",
+            [
+              { text: "OK", 
+                onPress: () => {
+                  AsyncStorage.removeItem('tokenValue').then(async () => {
+                    dispatch(authActions.logout);
+                    dispatch(homeActions.VisibleBotTab(false));
+                    Notifications.cancelAllScheduledNotificationsAsync();
+                    navigation.reset({
+                      routes: [{ name: "Login" }]
+                    });
+                  })
+                }
+              },
+            ]
+          );
         }
         //tmp.concat(json)
-        setIsLoading(false);
       })
       .catch((err) => console.log(err, "error"));
   };

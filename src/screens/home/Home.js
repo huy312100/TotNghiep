@@ -12,10 +12,11 @@ import {
   ScrollView,
   ImageBackground,
   SafeAreaView,
-  SectionList
 } from "react-native";
 
 import io from "socket.io-client";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   FontAwesome,
@@ -89,7 +90,6 @@ const HomeScreen = ({ navigation }) => {
     getAwaitMsgNotRead();
     getMsgNotRead();
     getProfile();
-
     const backgroundSubscription =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
@@ -105,15 +105,8 @@ const HomeScreen = ({ navigation }) => {
           response.notification.request.content.title === "Môn học mới"
         ) {
           navigation.navigate("Course");
-        } else if (
-          response.notification.request.content.title === "Deadline môn học" ||
-          response.notification.request.content.title === "Nội dung môn học"
-        ) {
-          navigation.navigate("Content Course", {
-            idCourse: 1468,
-            name: "",
-          });
         } else {
+          navigation.navigate("Course");
         }
       });
 
@@ -255,7 +248,7 @@ const HomeScreen = ({ navigation }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `bearer ${token}`,
+        "Authorization": `bearer ${token}`,
       },
       body: formBody,
     })
@@ -329,7 +322,24 @@ const HomeScreen = ({ navigation }) => {
           dispatch(calendarActions.getCalendarOfMonth(dataCalendar));
           setCalendar(dataCalendar);
         } else if (statusCode === 401) {
-          console.log("Token het han");
+          Alert.alert(
+            "Phiên đăng nhập đã hết hạn",
+            "Vui lòng tiến hành đăng nhập lại",
+            [
+              { text: "OK", 
+                onPress: () => {
+                  AsyncStorage.removeItem('tokenValue').then(async () => {
+                    dispatch(authActions.logout);
+                    dispatch(homeActions.VisibleBotTab(false));
+                    Notifications.cancelAllScheduledNotificationsAsync();
+                    navigation.reset({
+                      routes: [{ name: "Login" }]
+                    });
+                  })
+                }
+              },
+            ]
+          );
         } else {
           console.log(statusCode);
         }

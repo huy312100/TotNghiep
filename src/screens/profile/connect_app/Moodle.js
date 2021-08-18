@@ -2,10 +2,15 @@ import React,{useState} from "react";
 import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity,Alert,ScrollView} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {useDispatch,useSelector} from "react-redux";
+import * as Notifications from 'expo-notifications';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import * as profileActions from '../../../../store/actions/Profile';
+import * as homeActions from "../../../../store/actions/Home";
+import * as authActions from '../../../../store/actions/Authen';
 
 import LoadingScreen from '../../LoadingScreen';
-
 
 const MoodleConnectScreen = ({navigation})=>{
 
@@ -67,6 +72,26 @@ const MoodleConnectScreen = ({navigation})=>{
                     [
                         { text: "Xác nhận", 
                         style: "cancel"
+                        },
+                    ]
+                );
+            }
+            else if (statusCode === 401){
+                Alert.alert(
+                    "Phiên đăng nhập đã hết hạn",
+                    "Vui lòng tiến hành đăng nhập lại",
+                    [
+                        { text: "OK", 
+                        onPress: () => {
+                            AsyncStorage.removeItem('tokenValue').then(async () => {
+                            dispatch(authActions.logout);
+                            dispatch(homeActions.VisibleBotTab(false));
+                            Notifications.cancelAllScheduledNotificationsAsync();
+                            navigation.reset({
+                                routes: [{ name: "Login" }]
+                            });
+                            })
+                        }
                         },
                     ]
                 );
@@ -156,6 +181,26 @@ const MoodleConnectScreen = ({navigation})=>{
             if (statusCode === 200){
                 getWebCustomed();
                 navigation.navigate("Profile");
+            }
+            else if (statusCode === 401){
+                Alert.alert(
+                    "Phiên đăng nhập đã hết hạn",
+                    "Vui lòng tiến hành đăng nhập lại",
+                    [
+                        { text: "OK", 
+                        onPress: () => {
+                            AsyncStorage.removeItem('tokenValue').then(async () => {
+                            dispatch(authActions.logout);
+                            dispatch(homeActions.VisibleBotTab(false));
+                            Notifications.cancelAllScheduledNotificationsAsync();
+                            navigation.reset({
+                                routes: [{ name: "Login" }]
+                            });
+                            })
+                        }
+                        },
+                    ]
+                );
             }
         }).catch((error) => console.log("error", error));
     };

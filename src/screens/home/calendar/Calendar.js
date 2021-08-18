@@ -12,8 +12,14 @@ import {
 import {useDispatch,useSelector} from 'react-redux';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import * as Notifications from 'expo-notifications';
+
+import * as authActions from '../../../../store/actions/Authen';
 import * as calendarActions from '../../../../store/actions/Calendar';
+import * as homeActions from '../../../../store/actions/Home';
+
 import LoadingScreen from '../../LoadingScreen';
 import TimelineCalendar from './timeline_calendar/TimelineCalendar';
 
@@ -241,7 +247,24 @@ const CalendarScreen =({navigation})=> {
         console.log(dataCalendar);
       }
       else if (statusCode === 401){
-        console.log("Token het han");
+        Alert.alert(
+          "Phiên đăng nhập đã hết hạn",
+          "Vui lòng tiến hành đăng nhập lại",
+          [
+            { text: "OK", 
+              onPress: () => {
+                AsyncStorage.removeItem('tokenValue').then(async () => {
+                  dispatch(authActions.logout);
+                  dispatch(homeActions.VisibleBotTab(false));
+                  Notifications.cancelAllScheduledNotificationsAsync();
+                  navigation.reset({
+                    routes: [{ name: "Login" }]
+                  });
+                })
+              }
+            },
+          ]
+        );
       }
       else{
         console.log(statusCode);

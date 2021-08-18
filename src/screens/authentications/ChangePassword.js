@@ -1,12 +1,15 @@
 import React,{ useState } from 'react';
 import { ScrollView,View, Text,TouchableOpacity,Keyboard,TouchableWithoutFeedback,StyleSheet,TextInput,Alert} from 'react-native';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import { useDispatch,useSelector } from 'react-redux';
+import * as Notifications from 'expo-notifications';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as authActions from '../../../store/actions/Authen';
-import LoadingScreen from '../LoadingScreen';
+import * as homeActions from "../../../store/actions/Home";
 
+import LoadingScreen from '../LoadingScreen';
 
 const ChangePasswordScreen = ({navigation}) => {
 
@@ -93,8 +96,29 @@ const ChangePasswordScreen = ({navigation}) => {
                                 text: "OK",
                                 style: "cancel"
                             }
-                        ])
-                    }
+                        ]
+                    )
+                }
+                if(dataRes.message === "Auth failed"){
+                    Alert.alert(
+                        "Phiên đăng nhập đã hết hạn",
+                        "Vui lòng tiến hành đăng nhập lại",
+                        [
+                            { text: "OK", 
+                            onPress: () => {
+                                AsyncStorage.removeItem('tokenValue').then(async () => {
+                                dispatch(authActions.logout);
+                                dispatch(homeActions.VisibleBotTab(false));
+                                Notifications.cancelAllScheduledNotificationsAsync();
+                                navigation.reset({
+                                    routes: [{ name: "Login" }]
+                                });
+                                })
+                            }
+                            },
+                        ]
+                    );
+                }
             }
           }).done();
     }

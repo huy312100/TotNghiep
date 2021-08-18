@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,ScrollView,Platform } from 'react-native';
+import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,ScrollView,Platform,Alert } from 'react-native';
 import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -360,6 +360,17 @@ const AddToCalendarScreen = ({navigation,route}) => {
                 setLoading(false);
                 navigation.goBack();
             }  
+            else{
+                Alert.alert(
+                    "Lỗi",
+                    "Đã xảy ra lỗi vui lòng thử lại sau",
+                    [
+                      { text: "OK"},
+                    ]
+                );
+                setLoading(false);
+                navigation.goBack();
+            }
         }).catch(error => console.log('error', error));
     };
 

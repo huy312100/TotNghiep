@@ -1,11 +1,15 @@
 import React,{useEffect,useRef,useState} from 'react';
-import { View, Text,TouchableOpacity,StyleSheet,FlatList,RefreshControl} from 'react-native';
+import { View, Text,TouchableOpacity,StyleSheet,FlatList,RefreshControl,Alert} from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from "expo-notifications";
 
 import LoadingWithSkeletonScreen from "./LoadingSkeleton";
 
 import * as courseActions from "../../../../store/actions/Course";
+import * as authActions from '../../../../store/actions/Authen';
+import * as homeActions from '../../../../store/actions/Home';
 
 const CurrentCourseInfoScreen = ( {navigation} ) => {
   const dispatch = useDispatch();
@@ -45,12 +49,34 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
     })
       .then(([statusCode, dataRes]) => {
           if(statusCode === 200){
+            setLoading(false);
             console.log(dataRes);
             setData(dataRes);
             dispatch(courseActions.getCurrentCourses(dataRes));
+            setLoading(false);
           }
-          setLoading(false);
 
+          else if (statusCode === 401){
+            setLoading(false);
+            Alert.alert(
+              "Phiên đăng nhập đã hết hạn",
+              "Vui lòng tiến hành đăng nhập lại",
+              [
+                { text: "OK", 
+                  onPress: () => {
+                    AsyncStorage.removeItem('tokenValue').then(async () => {
+                      dispatch(authActions.logout);
+                      dispatch(homeActions.VisibleBotTab(false));
+                      Notifications.cancelAllScheduledNotificationsAsync();
+                      navigation.reset({
+                        routes: [{ name: "Login" }]
+                      });
+                    })
+                  }
+                },
+              ]
+            );
+          }
       }).catch((err) => console.log(err, "error"));
 
   };

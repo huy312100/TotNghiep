@@ -1,12 +1,14 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { Dimensions, Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView } from 'react-native';
+import { Dimensions, Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView,Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { Badge } from 'react-native-elements';
 import {useDispatch,useSelector} from "react-redux";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import LoadingWithSkeletonScreen from "../LoadingSkeleton" 
 
 import * as homeActions from "../../../store/actions/Home";
+import * as authActions from '../../../store/actions/Authen';
 
 import * as dateUtils from "../../utils/Date";
 
@@ -111,6 +113,26 @@ const NotificationScreen=({navigation})=>{
               setData(dataRes);
               setRefreshing(false);
             }        
+          }
+          else if (statusCode === 401){
+            Alert.alert(
+              "Phiên đăng nhập đã hết hạn",
+              "Vui lòng tiến hành đăng nhập lại",
+              [
+                  { text: "OK", 
+                  onPress: () => {
+                      AsyncStorage.removeItem('tokenValue').then(async () => {
+                      dispatch(authActions.logout);
+                      dispatch(homeActions.VisibleBotTab(false));
+                      Notifications.cancelAllScheduledNotificationsAsync();
+                      navigation.reset({
+                          routes: [{ name: "Login" }]
+                      });
+                      })
+                  }
+                  },
+              ]
+            );
           }
           setIsLoading(false);
           //console.log(dataUniversity);

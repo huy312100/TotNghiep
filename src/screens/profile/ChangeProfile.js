@@ -1,14 +1,18 @@
 import React,{ useState,useEffect} from "react";
-import { View, Text, ScrollView, StyleSheet,TouchableOpacity,TouchableWithoutFeedback,Keyboard,ImageBackground } from "react-native";
+import { View, Text, ScrollView, StyleSheet,TouchableOpacity,TouchableWithoutFeedback,Keyboard,ImageBackground,Alert } from "react-native";
 import{Input,Icon} from "react-native-elements";
-import * as ImagePicker from 'expo-image-picker';
 import RNPickerSelect from "react-native-picker-select";
 import { useDispatch, useSelector  } from "react-redux";
+import * as Notifications from 'expo-notifications';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import LoadingScreen from "../LoadingScreen";
 
 import * as universityActions from "../../../store/actions/University";
 import * as profileActions from "../../../store/actions/Profile";
+import * as homeActions from "../../../store/actions/Home";
+import * as authActions from '../../../store/actions/Authen';
 
 import * as arrUtils from "../../utils/Array";
 import * as imagePicker from "../../utils/ImagePicker";
@@ -87,18 +91,41 @@ function ChangeProfileScreen({navigation}) {
           return Promise.all([statusCode, dataRes]);
       }).then(([statusCode, dataRes])=>{
         //console.log(dataRes);
-        const temp=[];
+        if(statusCode === 200){
+          const temp=[];
 
-        for (const key in dataRes) {
-          temp.push({
-            label: dataRes[key].TenKhoa,
-            value: dataRes[key].MaKhoa,
-          });
+          for (const key in dataRes) {
+            temp.push({
+              label: dataRes[key].TenKhoa,
+              value: dataRes[key].MaKhoa,
+            });
+          }
+          arrUtils.removeDuplicateName(temp,profile[0].MaKhoa);
+
+          console.log(temp);
+          setItemFacultyName(temp);
         }
-        arrUtils.removeDuplicateName(temp,profile[0].MaKhoa);
 
-        console.log(temp);
-        setItemFacultyName(temp);
+        else if(statusCode === 401){
+          Alert.alert(
+            "Phiên đăng nhập đã hết hạn",
+            "Vui lòng tiến hành đăng nhập lại",
+            [
+                { text: "OK", 
+                onPress: () => {
+                    AsyncStorage.removeItem('tokenValue').then(async () => {
+                    dispatch(authActions.logout);
+                    dispatch(homeActions.VisibleBotTab(false));
+                    Notifications.cancelAllScheduledNotificationsAsync();
+                    navigation.reset({
+                        routes: [{ name: "Login" }]
+                    });
+                    })
+                }
+                },
+            ]
+          );
+        }
 
       }).done();
   };

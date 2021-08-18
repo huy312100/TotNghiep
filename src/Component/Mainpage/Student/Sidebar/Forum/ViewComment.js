@@ -43,6 +43,7 @@ function ViewComment(props) {
                 // console.log(items[index])
 
                 setComments(result)
+                // console.log("comment",result)
                 setLoadding(false)
                 // setLoading(0)
             })
@@ -96,6 +97,7 @@ function ViewComment(props) {
             })
             .then(result => {
                 console.log(result)
+                props.setNumberofComment(props.forum,1)
                 getComments()
                 setLoadding(false)
             })
@@ -136,8 +138,11 @@ function ViewComment(props) {
 
         fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", requestOptions)
             .then(response => {
-                if (response.ok)
+                if (response.ok){
+                    props.setNumberofComment(props.forum,-1)
+
                     return response.text()
+            }
                 throw Error("Đã xảy ra lỗi khi xóa bình luận")
             })
             .catch(error => setComments(temp));

@@ -71,11 +71,13 @@ function Message() {
 
         newsocket.on('Private-Message-To-Client', (data) => {
             console.log(data)
+            // console.log(checkReceiveMess(data[0]))
+
 
             setSelectedmessage(selectedmessage => [...selectedmessage, {
                 state: false,
                 _id: data[0],
-                from: data[0],
+                from: selected.email,
                 text: data[2],
                 time: data[3]
             }]);
@@ -297,7 +299,18 @@ function Message() {
             .then(result => {
                 // console.log(result)
                 if (Array.isArray(result) && result.length > 0) {
+                    if (result !== null) {
+                        result.sort((a, b) => {
+                            var keyA = a.time,
+                                keyB = b.time;
+
+                            if (keyA < keyB) return 1;
+                            if (keyA > keyB) return -1;
+                            return 0;
+                        })
+                    }
                     setUsermessage(result);
+
                     setSelected({
                         image: result[0].Anh,
                         room: result[0].idRoom,

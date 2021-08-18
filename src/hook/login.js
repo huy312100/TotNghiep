@@ -74,7 +74,7 @@ export default function LoginButton() {
             })
             .catch(error => {
                 console.log('error', error)
-                alert("Sai mat khau hoac tai khoan")
+                alert("Sai mật khẩu hoặc tài khoản")
                 // alert(localStorage.getItem("token"))
                 setLoadding(0);
             });
@@ -84,7 +84,7 @@ export default function LoginButton() {
     function loaddingButton() {
         if (loadding === 1) {
             return (
-                <button type="button" className="btnSubmit"><i className="fa fa-circle-o-notch fa-spin"></i>Loading</button>
+                <button type="button" className="btnSubmit"><i className="fa fa-circle-o-notch fa-spin"></i>Đang tải</button>
 
             )
         }

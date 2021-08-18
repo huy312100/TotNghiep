@@ -51,7 +51,7 @@ function ViewForums() {
     useEffect(() => {
         // viewFacUniForums()
         // if (moodle === true)
-            viewCourseForums()
+        viewCourseForums()
 
     }, [])
 
@@ -430,6 +430,41 @@ function ViewForums() {
         </div>
     }
 
+    const setNumberofComment = (forum,number) => {
+        let items
+        let temp
+        let scopeFunction
+        if (forum.scope !== undefined) {
+            if (forum.scope === "u") {
+                items = [...uni];
+                temp = [...uni];
+                scopeFunction = setUni
+            }
+
+            else if (forum.scope === "f") {
+                items = [...fac];
+                temp = [...fac];
+                scopeFunction = setFac
+            }
+        }
+        else if (forum.IDCourses !== undefined) {
+            items = [...course];
+            temp = [...course];
+            scopeFunction = setCourse
+        }
+
+        console.log(items)
+        console.log(forum.ID)
+
+        const index = items.findIndex(item => item.ID === forum.ID);
+
+        console.log("index", index)
+
+        items[index].comment += number;
+
+        scopeFunction(items)
+    }
+
     const renderTagForum = (forum) => {
         if (selfpost === "self" && forum.EmailOwn !== email)
             return
@@ -493,7 +528,7 @@ function ViewForums() {
                             </div>
                         </div>
                     </div>
-                    {forum.showcomment === true ? <ViewComment getComments={getComments} forum={forum} /> : null}
+                    {forum.showcomment === true ? <ViewComment getComments={getComments} forum={forum} setNumberofComment={setNumberofComment}/> : null}
                 </div>
             </div>
             {popup !== null ? renderPopup() : null}

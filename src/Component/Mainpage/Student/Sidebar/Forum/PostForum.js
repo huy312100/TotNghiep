@@ -48,7 +48,8 @@ function PostForum(props) {
         var tag
         var url
         console.log(scope)
-        if (scope === "u" || scope === "u") {
+        console.log(course)
+        if (scope === "u" || scope === "f") {
             formdata.append("scope", scope);
             url = "https://hcmusemu.herokuapp.com/forum/post"
             if (scope === "u")
@@ -57,6 +58,7 @@ function PostForum(props) {
 
         }
         else if (scope === "c") {
+            if (course === "0" || course===null) return
             formdata.append("IDCourses", course);
             url = "https://hcmusemu.herokuapp.com/forum/courses/post"
             tag = "0"
@@ -92,6 +94,11 @@ function PostForum(props) {
         setimgData(null)
     }
 
+    const HandleCourse = (value) => {
+        setCourse(value)
+        // console.log(course)
+    }
+
     const AddPost = () => {
         if (popUp)
             return <div>
@@ -123,9 +130,10 @@ function PostForum(props) {
                             <select className="col select-scope" value={scope} onChange={(e) => setScope(e.target.value)} >
                                 <option value="u">Trường</option>
                                 <option value="f">Khoa</option>
-                                {moodle===true?<option value="c">Môn học</option>:null}
+                                {moodle === true ? <option value="c">Môn học</option> : null}
                             </select>
-                            {scope === "c" ? <select className="col select-scope" value={course} onChange={(e) => setCourse(e.target.value)} >
+                            {scope === "c" ? <select className="col select-scope" value={course} onChange={(e) => HandleCourse(e.target.value)} >
+                                <option value={0}>Chọn môn</option>
                                 {props.allcourse.map((element) => {
                                     return <option value={element.IDCourses}>{element.name}</option>
                                 })}

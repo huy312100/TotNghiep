@@ -1,4 +1,4 @@
-/* input[type=text], input[type=password] {
+.signup-box input[type=text], input[type=password] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
@@ -7,25 +7,25 @@
   background: #f1f1f1;
 }
 
-input[type=text]:focus, input[type=password]:focus {
+.signup-box input[type=text]:focus, input[type=password]:focus {
   background-color: #ddd;
   outline: none;
 }
 
-hr {
+.signup-box hr {
   border: 1px solid #f1f1f1;
   margin-bottom: 25px;
-} */
+}
 
 /* Set a style for all buttons */
 
-button:hover {
+.signup-box button:hover {
   opacity: 1;
 }
 
 /* Extra styles for the cancel button */
 
-a.cancelbtn {
+.signup-box a.cancelbtn {
   padding: 14px 20px;
   background-color: #ffffff;
   color: black;
@@ -35,7 +35,7 @@ a.cancelbtn {
 
 /* Float cancel and signup buttons and add an equal width */
 
-.cancelbtn, .signupbtn {
+.signup-box .cancelbtn, .signupbtn {
   /* float: left; */
   width: 50%;
   padding: 14px 20px;
@@ -46,22 +46,22 @@ a.cancelbtn {
   /* border: 1px solid black; */
   border: none;
   outline-offset: -1px;
-  outline: 1px solid black
+  outline: 1px solid #18468b
 }
 
-.signupbtn {
-  background-color: black;
+.signup-box .signupbtn {
+  background-color: #18468b;
   color: white;
   border: none;
 }
 
 /* Add padding to container elements */
 
-.container {
+.signup-box .container {
   padding: 16px;
 }
 
-.clearfix {
+.signup-box .clearfix {
   display: flex;
   align-items: center;
   /* justify-content: center; */
@@ -70,12 +70,12 @@ a.cancelbtn {
 /* Change styles for cancel button and signup button on extra small screens */
 
 @media screen and (max-width: 300px) {
-  .signupbtn {
+  .signup-box .signupbtn {
     width: 100%;
   }
 }
 
-.signup-box {
+.signup-box .signup-box {
   margin: 30px auto;
   width: 50vw;
   background: white;
@@ -83,21 +83,21 @@ a.cancelbtn {
   border: none;
 }
 
-.back {
+.signup-box .back {
   /* padding-left: 3vw; */
   margin: auto;
 }
 
-.birthday-box {
+.signup-box .birthday-box {
   margin-bottom: 20px;
 }
 
-.birthday {
+.signup-box .birthday {
   display: flex;
   /* margin: 15px 0px; */
 }
 
-.birthday select {
+.signup-box .birthday select {
   padding: 10px 0px;
   margin-right: 20px;
   flex-grow: 1;

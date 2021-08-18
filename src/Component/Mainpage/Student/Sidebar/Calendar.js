@@ -36,8 +36,9 @@ class Calendar extends Component {
             add_end: "23",
             add_endUNIX: 1621422000,
             add_desc: "",
-            add_color: "rgb(244, 67, 54)",
+            add_color: "#f44336",
             add_noti: 1621406700,
+            add_fulldate: "",
             add_date: new Date(),
 
             popup: 0,
@@ -144,12 +145,16 @@ class Calendar extends Component {
 
     convertAddingDate = () => {
         var fullday = new Date(this.state.add_date);
+        fullday.setHours(0, 0, 0, 0)
+        console.log("current", fullday)
         this.setState({
             add_day: fullday.getDate(),
             add_month: fullday.getMonth() + 1,
             add_year: fullday.getFullYear(),
-            add_startUNIX: this.toTimestamp(this.state.add_fulldate + " " + this.state.add_start + ":00:00"),
-            add_endUNIX: this.toTimestamp(this.state.add_fulldate + " " + this.state.add_end + ":00:00")
+            add_startUNIX: this.toTimestamp(fullday.setHours(this.state.add_start, 0, 0, 0)),
+            add_endUNIX: this.toTimestamp(fullday.setHours(this.state.add_end, 0, 0, 0))
+            // add_startUNIX: this.toTimestamp(this.state.add_fulldate + " " + this.state.add_start + ":00:00"),
+            // add_endUNIX: this.toTimestamp(this.state.add_fulldate + " " + this.state.add_end + ":00:00")
         })
     }
 
@@ -160,6 +165,7 @@ class Calendar extends Component {
     }
 
     removeEvent = async (id) => {
+        // this.setState({popup:0})
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -213,10 +219,10 @@ class Calendar extends Component {
                 // console.log(item);
                 if (item === "")
                     return <></>
-                if (item.id !== "") return <tr onClick={() => this.selectedEventClick(index)}>
-                    <td className="time">{item.time}</td>
-                    <td>{item === "" ? "" : "-"}</td>
-                    <td>{item.title}</td>
+                if (item.id !== "") return <tr>
+                    <td className="time" onClick={() => this.selectedEventClick(index)}>{item.time}</td>
+                    <td onClick={() => this.selectedEventClick(index)}>{item === "" ? "" : "-"}</td>
+                    <td onClick={() => this.selectedEventClick(index)}>{item.title}</td>
                     <td type="button" onClick={() => this.removeEvent(item.id)}><i className="remove fa fa-trash" ></i></td>
                 </tr>
                 else
@@ -278,7 +284,8 @@ class Calendar extends Component {
         this.setState({
             selectedDay: today.getDate(),
             month: today.getMonth() + 1,
-            year: today.getFullYear()
+            year: today.getFullYear(),
+            add_fulldate: today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear()
         })
     }
 
@@ -391,8 +398,15 @@ class Calendar extends Component {
     }
 
     addEvent = async () => {
+        if (this.state.add_start >= this.state.add_end){
+            alert("Thời gian bắt đầu phải nhỏ hơn kết thúc")
+            return
+        }
+            
         this.setState({ popup: 0 })
         await this.convertAddingDate();
+        console.log("time default", this.state.add_startUNIX, this.state.add_endUNIX)
+
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/json");

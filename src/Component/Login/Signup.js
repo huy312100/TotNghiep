@@ -7,13 +7,13 @@ class Signup extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name:"",
+            name: "",
             email: "",
             password: "",
             pwrepeat: "",
             uniselected: "",
-            facselected:"",
-            university: [], 
+            facselected: "",
+            university: [],
             faculty: []
         }
         this.handleChange = this.handleChange.bind(this);
@@ -104,7 +104,8 @@ class Signup extends Component {
             .then(response => response.json())
             .then(result => {
                 if (result.message === "account created") {
-                    alert("Tạo thành công")
+                    alert("Đăng kí thành công")
+                    window.location.href = "/"
                 }
             })
             .catch(error => {
@@ -127,35 +128,39 @@ class Signup extends Component {
             <div className="signup-box">
                 <form>
                     <div className="container">
-                        <h1>Đăng kí</h1>
-                        <hr />
-                        <label htmlFor="email"><b>Nhập Email</b></label>
-                        <input type="text" placeholder="Nhập tên đăng nhập" name="email" onChange={this.setParams} required />
-                        <label htmlFor="psw"><b>Mật khẩu</b></label>
-                        <input type="password" placeholder="Nhập mật khẩu" name="password" onChange={this.setParams} required />
-                        <label htmlFor="psw-repeat"><b>Nhập lại mật khẩu</b></label>
-                        <input type="password" placeholder="Nhập lại mật khẩu" name="pwrepeat" onChange={this.setParams} required />
-                        <label htmlFor="email"><b>Nhập tên</b></label>
-                        <input type="text" placeholder="Nhập tên" name="name" onChange={this.setParams} />
-                        <label htmlFor="university"><b>Chọn trường</b></label>
-                        <select className="form-control" name="uniselected" onChange={this.handleChange} value={this.state.uniselected}>
-                            <option>Chọn trường</option>
-                            {this.state.university}
-                        </select>
-                        <label htmlFor="faculty" style={{ paddingTop: "30px" }}><b>Chọn khoa</b></label>
-                        <select className="form-control" name="facselected" onChange={this.handleChange} value={this.state.facselected}>
-                            <option>Chọn khoa</option>
-                            {this.state.faculty}
-                        </select>
-                        <hr />
-                        <p>Bằng cách nhấp vào Đăng ký, bạn đồng ý với  <a href="/#" style={{ color: 'dodgerblue' }}>Điều khoản &amp; Chính sách</a> của chúng tôi.</p>
-                        <div className="clearfix">
-                            <button type="button" className="signupbtn" onClick={() => this.checkPasswordRepeat()}>Đăng Kí</button>
-                            <Link to="/" type="button" className="cancelbtn">Trở về</Link>
+                        <div class="row justify-content-center">
+                            <div className="col-md-6" style={{ background: "white", padding: "10px", boxShadow: "0 4px 24px 0 rgb(34 41 47 / 10%" }}>
+                                <h1>Đăng kí</h1>
+                                <hr />
+                                <label htmlFor="email"><b>Nhập Email</b></label>
+                                <input type="text" placeholder="Nhập tên đăng nhập" name="email" onChange={this.setParams} required />
+                                <label htmlFor="psw"><b>Mật khẩu</b></label>
+                                <input type="password" placeholder="Nhập mật khẩu" name="password" onChange={this.setParams} required />
+                                <label htmlFor="psw-repeat"><b>Nhập lại mật khẩu</b></label>
+                                <input type="password" placeholder="Nhập lại mật khẩu" name="pwrepeat" onChange={this.setParams} required />
+                                <label htmlFor="email"><b>Nhập tên</b></label>
+                                <input type="text" placeholder="Nhập tên" name="name" onChange={this.setParams} />
+                                <label htmlFor="university"><b>Chọn trường</b></label>
+                                <select className="form-control" name="uniselected" onChange={this.handleChange} value={this.state.uniselected}>
+                                    <option>Chọn trường</option>
+                                    {this.state.university}
+                                </select>
+                                <label htmlFor="faculty" style={{ paddingTop: "30px" }}><b>Chọn khoa</b></label>
+                                <select className="form-control" name="facselected" onChange={this.handleChange} value={this.state.facselected}>
+                                    <option>Chọn khoa</option>
+                                    {this.state.faculty}
+                                </select>
+                                <hr />
+                                <p>Bằng cách nhấp vào Đăng ký, bạn đồng ý với  <a href="/signup" style={{ color: 'dodgerblue' }}>Điều khoản &amp; Chính sách</a> của chúng tôi.</p>
+                                <div className="clearfix">
+                                    <button type="button" className="signupbtn" onClick={() => this.checkPasswordRepeat()}>Đăng Kí</button>
+                                    <Link to="/" type="button" className="cancelbtn">Trở về</Link>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
-            </div>
+            </div >
         );
     }
 }

@@ -84,9 +84,9 @@ const HomeScreen = ({ navigation }) => {
       localNotification();
       getUniversityNew();
       getFacultyNew();
+      getNotReadNotifications();
     });
     getRequestChatting();
-    getNotReadNotifications();
     getAwaitMsgNotRead();
     getMsgNotRead();
     getProfile();
@@ -108,6 +108,7 @@ const HomeScreen = ({ navigation }) => {
         } else {
           navigation.navigate("Course");
         }
+
       });
 
     const foregroundSubscription =
@@ -150,6 +151,7 @@ const HomeScreen = ({ navigation }) => {
             }
           }
           dispatch(homeActions.NotiNotRead(countNotRead));
+          Notifications.setBadgeCountAsync(countNotRead);
         }
       })
       .catch((err) => console.log(err, "error"));

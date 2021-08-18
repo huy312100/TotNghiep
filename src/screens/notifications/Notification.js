@@ -110,6 +110,7 @@ const NotificationScreen=({navigation})=>{
                 };
               };
               dispatch(homeActions.NotiNotRead(countNotRead));
+              Notifications.setBadgeCountAsync(countNotRead);
               setData(dataRes);
               setRefreshing(false);
             }        

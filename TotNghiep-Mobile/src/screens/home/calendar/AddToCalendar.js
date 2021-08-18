@@ -1,7 +1,8 @@
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView,FlatList } from 'react-native';
+import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,ScrollView,Platform } from 'react-native';
 import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Overlay,Header } from 'react-native-elements';
 import { useDispatch,useSelector } from 'react-redux';
 
@@ -16,6 +17,8 @@ const AddToCalendarScreen = ({navigation,route}) => {
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
     const [isLoading,setLoading] = useState(false);
+
+    const gmtDiff = 25200000;
 
     const getCurrentTimestamp=()=>{
         return Date.now();
@@ -93,6 +96,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
     const [isEndTimePickerVisible, setEndTimePickerVisibility] = useState(false);
+
     const [visibleOverlayAddTypeEvent, setVisibleOverlayAddTypeEvent] = useState(false);
     const [visibleOverlayAddColor, setVisibleOverlayAddColor] = useState(false);
     const [visibleOverlayRemindNoti, setVisibleOverlayRemindNoti] = useState(false);
@@ -103,12 +107,11 @@ const AddToCalendarScreen = ({navigation,route}) => {
     const [urlEvent,setUrlEvent] =useState(route.params.urlEvent);
     const [decriptionEvent,setDecriptionEvent] =useState(route.params.decriptionEvent);
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
+    const [labelRemindNoti,setLabelRemindNoti] = useState('');
 
     const [listGuestEmail,setGuestEmail] = useState(getAllGuestEmail());
     const [listGuestName,setGuestName] = useState(getAllGuestName());
 
-
-    const [labelRemindNoti,setLabelRemindNoti] = useState('');
 
     const dispatch=useDispatch();
 
@@ -127,21 +130,38 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
     const toggleSwitch = () => {
         setIsEnabled(previousState => !previousState);
-        if(!isEnabled){
-            console.log(day);
-            setStartTimeConvert(day+'T'+'00:00:00');
-            setEndTimeConvert(day+'T'+'23:59:00');
-            setStartTimestamp(new Date(day+'T'+'00:00:00').getTime());
-            setEndTimestamp(new Date(day+'T'+'23:59:00').getTime());
-
+        if(Platform.OS === 'ios'){
+            if(!isEnabled){
+                console.log(day);
+                setStartTimeConvert(day+'T'+'00:00:00');
+                setEndTimeConvert(day+'T'+'23:59:00');
+                setStartTimestamp(new Date(day+'T'+'00:00:00').getTime());
+                setEndTimestamp(new Date(day+'T'+'23:59:00').getTime());
+    
+            }
+            else{
+                setStartTimeConvert(day+'T'+startTime);
+                setEndTimeConvert(day+'T'+endTime);
+                setStartTimestamp(new Date(day+'T'+startTime).getTime());
+                setEndTimestamp(new Date(day+'T'+endTime).getTime());
+            }
         }
-        else{
-            setStartTimeConvert(day+'T'+startTime);
-            setEndTimeConvert(day+'T'+endTime);
-            setStartTimestamp(new Date(day+'T'+startTime).getTime());
-            setEndTimestamp(new Date(day+'T'+endTime).getTime());
+        else if (Platform.OS === 'android'){
+            if(!isEnabled){
+                console.log(day);
+                setStartTimeConvert(day+'T'+'00:00:00');
+                setEndTimeConvert(day+'T'+'23:59:00');
+                setStartTimestamp(new Date(day+'T'+'00:00:00').getTime() - gmtDiff);
+                setEndTimestamp(new Date(day+'T'+'23:59:00').getTime() - gmtDiff);
+    
+            }
+            else{
+                setStartTimeConvert(day+'T'+startTime);
+                setEndTimeConvert(day+'T'+endTime);
+                setStartTimestamp(new Date(day+'T'+startTime).getTime() - gmtDiff);
+                setEndTimestamp(new Date(day+'T'+endTime).getTime() - gmtDiff);
+            }
         }
-        
     };
 
     //Handle for date event
@@ -154,6 +174,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     };
 
     const handleDateConfirm = (a) => {
+        hideDatePicker();
         //const x=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
         //const x = moment("12-25-1995", "YYYY-MM-DD");
         //console.log(day);
@@ -161,6 +182,8 @@ const AddToCalendarScreen = ({navigation,route}) => {
         let year = date.getFullYear();
         let month = date.getMonth()+1;
         let dt = date.getDate();
+
+        console.log(new Date('2021-07-08T21:31:00').getTime());
 
         if (dt < 10) {
             dt = '0' + dt;
@@ -170,20 +193,34 @@ const AddToCalendarScreen = ({navigation,route}) => {
         }
 
         setDay(year+'-' + month+'-'+dt);
-        if(!isEnabled){
-            setStartTimeConvert(year+'-' + month+'-'+dt+'T'+startTime);
-            setEndTimeConvert(year+'-' + month+'-'+dt+'T'+endTime);
-            setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+startTime).getTime());
-            setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+endTime).getTime());
+        if(Platform.OS === 'ios'){
+            if(!isEnabled){
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+startTime);
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+endTime);
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+startTime).getTime());
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+endTime).getTime());
+            }
+            else{
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+'00:00:00');
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+'23:59:00');
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'00:00:00').getTime());
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'23:59:00').getTime());
+            }
         }
-        else{
-            setStartTimeConvert(year+'-' + month+'-'+dt+'T'+'00:00:00');
-            setEndTimeConvert(year+'-' + month+'-'+dt+'T'+'23:59:00');
-            setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'00:00:00').getTime());
-            setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'23:59:00').getTime());
+        else if (Platform.OS === 'android'){
+            if(!isEnabled){
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+startTime);
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+endTime);
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+startTime).getTime() - gmtDiff);
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+endTime).getTime() - gmtDiff);
+            }
+            else{
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+'00:00:00');
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+'23:59:00');
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'00:00:00').getTime() - gmtDiff);
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'23:59:00').getTime() - gmtDiff);
+            }
         }
-        
-        hideDatePicker();
     };
 
     //Handle for start time event
@@ -196,6 +233,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     };
 
     const handleStartConfirm = (date) => {
+        hideStartTimePicker();
         //console.log(day);
         //console.log(Date.now());
 
@@ -205,8 +243,12 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
         setStartTime(addZero(date.getHours())+':'+addZero(date.getMinutes()))
         //console.warn("A date has been picked: ", date);
-        setStartTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
-        hideStartTimePicker();
+        if(Platform.OS === 'ios'){
+            setStartTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
+        }
+        else if(Platform.OS === 'android'){
+            setStartTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime() - gmtDiff);
+        }
     };
 
 
@@ -220,6 +262,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     };
 
     const handleEndConfirm = (date) => {
+        hideEndTimePicker();
         //console.warn("A date has been picked: ", date);
         //setEndTimeConvert(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00');
         //console.log(new Date(endTimeConvert).getTime());
@@ -227,9 +270,13 @@ const AddToCalendarScreen = ({navigation,route}) => {
         setEndTimeConvert(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00');
 
         setEndTime(addZero(date.getHours())+':'+addZero(date.getMinutes()));
-        setEndTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
+        if(Platform.OS === 'ios'){
+            setEndTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
+        }
+        else if (Platform.OS === 'android'){
+            setEndTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime() - gmtDiff);
+        }
         //console.log(checkValidDate());
-        hideEndTimePicker();
     };
 
     //Handle Start and End Date
@@ -317,10 +364,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
     };
 
     return(
-        <KeyboardAvoidingView
-        keyboardVerticalOffset = {20} // adjust the value here if you need more padding
-
-         style={styles.container}>
+        <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
           }}>
@@ -330,12 +374,12 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
         
          <Header containerStyle={{
-                backgroundColor: '#33CCFF',
+                backgroundColor: 'white',
                 justifyContent: 'space-around',
             }}
             leftComponent={
                 <TouchableOpacity style={{flexDirection:'row'}} onPress={() =>{backButtonHandler()}}>
-                    <Entypo name="chevron-thin-left" size={24} color="white" />
+                    <Entypo name="chevron-thin-left" size={24} color="red" />
                     <Text style={headerStyle.textLeftComponent}>Hủy</Text>
                 </TouchableOpacity>
             }
@@ -372,11 +416,11 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
                 <View style={[styles.card,{marginBottom:0}]}>
                     <View style={styles.date}>
-                        <SimpleLineIcons name="clock" size={20} color="blue" />
+                        <SimpleLineIcons name="clock" size={20} color="red" />
                         <Text style={styles.label}>Cả ngày</Text>
                         <Switch
                             style={[{ transform: [{ scaleX: .8 }, { scaleY: .8 }],marginTop:-5,marginRight:-10},styles.onTheRight]}
-                            trackColor={{ false: "white", true: "blue" }}
+                            trackColor={{ false: "white", true: "green" }}
                             // thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
                             ios_backgroundColor="white"
                             onValueChange={toggleSwitch}
@@ -416,9 +460,13 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
                 </View>
                 
-                <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={() =>{navigation.navigate('Add people to calendar')}}>
+                <TouchableOpacity style={[styles.card,{marginBottom:0}]} 
+                onPress={() =>{
+                    navigation.navigate('Add people to calendar',{
+                        typeAction: 'Add Event',
+                    })}}>
                     <View style={styles.date}>
-                    <Ionicons name="people-outline" size={23} color="blue" />
+                    <Ionicons name="people-outline" size={23} color="red" />
                         <Text style={styles.label}>Thêm người</Text>
                         <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{allUserChoose.length}</Text>
                         <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
@@ -427,7 +475,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
                 <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddTypeEvent}>
                     <View style={styles.date}>
-                    <SimpleLineIcons name="event" size={21} color="blue" />
+                    <SimpleLineIcons name="event" size={21} color="red" />
                         <Text style={styles.label}>Loại sự kiện</Text>
                         <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{typeEvent}</Text>
                         <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
@@ -436,7 +484,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
                 <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0}]} onPress={toggleOverlayAddColor}>
                     <View style={styles.date}>
-                    <Ionicons name="color-palette-outline" size={23 } color="blue" />
+                    <Ionicons name="color-palette-outline" size={23 } color="red" />
                         <Text style={styles.label}>Màu sắc</Text>
                         <View style={[styles.onTheRight,colorStyle.SquareShapeView,styles.showChooseOnTheRight,{backgroundColor: colorEvent}]}/>
                         <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
@@ -445,7 +493,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
                 <TouchableOpacity style={[styles.card,{marginTop:0}]} onPress={toggleOverlayAddRemindNoti}>
                     <View style={styles.date}>
-                    <Ionicons name="ios-notifications-outline" size={23} color="blue" />
+                    <Ionicons name="ios-notifications-outline" size={23} color="red" />
                         <Text style={styles.label}>Thông báo</Text>
                         <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{labelRemindNoti}</Text>
                         <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
@@ -454,7 +502,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
                 <View style={[styles.card,{marginBottom:0}]}>
                     <View style={styles.date}>
-                    <SimpleLineIcons name="link" size={20} color="blue" />
+                    <SimpleLineIcons name="link" size={20} color="red" />
                     <TextInput style={[styles.label,{width:"100%",color:"blue",textDecorationLine:'underline'}]} placeholder="URL"
                     onChangeText={(url) => setUrlEvent(url)}>{urlEvent}</TextInput>
                     </View>
@@ -462,8 +510,8 @@ const AddToCalendarScreen = ({navigation,route}) => {
 
                 <View style={[styles.card,{marginTop:0,marginBottom:10}]}>
                     <View style={styles.date}>
-                        <SimpleLineIcons name="note" size={20} color="blue" />
-                        <TextInput style={[styles.label,{width:"95%",marginTop:-5,height:100}]} placeholder="Mô tả" multiline={true}
+                        <SimpleLineIcons name="note" size={20} color="red" />
+                        <TextInput style={[styles.label,{width:"95%",marginTop:-5,height:300,textAlignVertical:"top"}]} placeholder="Mô tả" multiline={true} 
                         onChangeText={(decription) => setDecriptionEvent(decription)}>{decriptionEvent}</TextInput>
                     </View>
                 </View> 
@@ -471,7 +519,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
                 
                 <DateTimePickerModal
                     locale={'vi'}
-                    isVisible={isDatePickerVisible }
+                    isVisible={isDatePickerVisible}
                     mode="date"
                     date={new Date(startTimestamp)}
                     headerTextIOS="Chọn ngày"
@@ -699,7 +747,7 @@ const AddToCalendarScreen = ({navigation,route}) => {
                 </ScrollView>
             </View>
         </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
     )
 };
 
@@ -763,12 +811,12 @@ const headerStyle = StyleSheet.create({
     },
 
     textLeftComponent:{
-        color:'white',
+        color:'red',
         fontSize:19,
     },
 
     textCenterComponent:{
-        color: 'white',
+        color: 'black',
         fontSize:17,
         fontWeight:'bold',
         marginTop:2

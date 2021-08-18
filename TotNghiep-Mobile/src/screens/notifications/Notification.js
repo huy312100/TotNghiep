@@ -1,31 +1,26 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView } from 'react-native';
+import { Dimensions, Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import { Badge, Header } from 'react-native-elements';
+import { Badge } from 'react-native-elements';
 import {useDispatch,useSelector} from "react-redux";
+
+import LoadingWithSkeletonScreen from "../LoadingSkeleton" 
 
 import * as homeActions from "../../../store/actions/Home";
 
 import * as dateUtils from "../../utils/Date";
 
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: true,
-//     shouldSetBadge: false,
-//   }),
-// });
-
 const NotificationScreen=({navigation})=>{
 
   const token = useSelector((state) => state.authen.token);
-  const tokenNoti = useSelector((state) => state.authen.tokenNotification);
-  const socket = useSelector((state) => state.authen.socket);
+  // const tokenNoti = useSelector((state) => state.authen.tokenNotification);
+  // const socket = useSelector((state) => state.authen.socket);
 
   const dispatch = useDispatch();
 
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading,setIsLoading] = useState(true);
   const unmounted = useRef(false);
 
   useEffect(() => {
@@ -65,12 +60,6 @@ const NotificationScreen=({navigation})=>{
       var s = new Date(1624872240000);
 
       console.log(s.getDate(),s.getMonth()+1,s.getFullYear(),s.getHours(),s.getMinutes());
-
-      // socket.on("Request-Accept",(data)=>{
-      //   console.log(data);
-      // });
-
-      // socket.emit('Private-Message',['a','nguyenngocduchuy','abc']);
   
       const id=await Notifications.scheduleNotificationAsync({
         content:{
@@ -92,6 +81,7 @@ const NotificationScreen=({navigation})=>{
 
     //call api get all notifications
     const getAllNotifications = () => {
+      setIsLoading(true);
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `bearer ${token}`);
 
@@ -107,18 +97,22 @@ const NotificationScreen=({navigation})=>{
           const dataRes = response.json();
           return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-          console.log(dataRes, statusCode);
+          console.log(statusCode,dataRes);
           if (statusCode === 200) {
-            let countNotRead = 0;
-            for (const key in dataRes) {
-              if(!dataRes[key].State){
-                countNotRead++;
+            if(dataRes.message !== "Dont have notification")
+            {
+              let countNotRead = 0;
+              for (const key in dataRes) {
+                if(!dataRes[key].State){
+                  countNotRead++;
+                };
               };
-            };
-            dispatch(homeActions.NotiNotRead(countNotRead));
-            setData(dataRes);
-            setRefreshing(false);
-          }        
+              dispatch(homeActions.NotiNotRead(countNotRead));
+              setData(dataRes);
+              setRefreshing(false);
+            }        
+          }
+          setIsLoading(false);
           //console.log(dataUniversity);
         }).catch((err) => console.log(err, "error"));
     };
@@ -147,9 +141,12 @@ const NotificationScreen=({navigation})=>{
           "Authorization": `bearer ${token}`,
         },
         body: formBody,
-      }).then((response) => response.json())
-        .then((json) => {
-          console.log(json);
+      }).then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+      }).then(([statusCode, dataRes]) => {
+
       }).catch((err) => console.log(err, "error"));
     };
 
@@ -170,8 +167,11 @@ const NotificationScreen=({navigation})=>{
             screen:'Faculty New'
           });
         }
+        else if(item.Title === 'Môn Học Mới'){
+          navigation.navigate("Course");
+        }
         else{
-          
+          navigation.navigate("Course");
         }
         changeStateNoti(item._id);
 
@@ -182,7 +182,7 @@ const NotificationScreen=({navigation})=>{
                   <Image style={styles.img} source={require("../../../assets/notification-flat.png")} />
                   {!item.State && <Badge
                       status="error"
-                      containerStyle={{ position: 'absolute', top: -4, right: -4 }}
+                      containerStyle={{ position: 'absolute', top: -2, right: -2 }}
                   />}
               </View>
           </View>
@@ -197,12 +197,6 @@ const NotificationScreen=({navigation})=>{
 
         </View>
       </TouchableOpacity>
-    );
-
-    const renderEmptyNotification = (
-      <View style={{alignItems: "center"}}> 
-        <Text>Không có thông báo mới</Text>
-      </View>
     );
 
     //   fetch("https://exp.host/--/api/v2/push/send",{
@@ -222,21 +216,22 @@ const NotificationScreen=({navigation})=>{
 
     return(
         <SafeAreaView style={styles.container}>
-          <Header
-            containerStyle={{
-            backgroundColor: '#33CCFF',
-            justifyContent: 'space-around',
-            borderBottomColor:'#DDDDDD'}}
+          {isLoading && data.length === 0 && LoadingWithSkeletonScreen()}
 
-            centerComponent={
-            <Text style={{fontSize:20,fontWeight:'500', color: "white"}}>Thông báo</Text>}
-          />
+          {!isLoading && data.length === 0 &&  <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                
+                <Text style={{color:'#BBBBBB'}}>
+                    Không tìm thấy thông báo nào
+                </Text>
+             </View>}
+
           {/* <Button
             title="Trigger Notifications"
             onPress={() => {
               triggerNotifications();
             }}
           /> */}
+          <View style={{flex: 1,alignItems: 'center',}}>
             <FlatList
               data={data}
               keyExtractor={item =>item._id}
@@ -246,8 +241,9 @@ const NotificationScreen=({navigation})=>{
                 refreshing={refreshing}
                 onRefresh={onRefresh}
               />}
-              ListEmptyComponent={renderEmptyNotification}
             />
+          </View>
+         
         </SafeAreaView>   
     )
 }
@@ -255,10 +251,11 @@ const NotificationScreen=({navigation})=>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
+        paddingTop: Platform.OS === 'android' ? 25 : 0
     },
 
     card: {
+        marginLeft:10,
         width: '100%',
     },
 
@@ -267,52 +264,52 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
       },
     
-      imgWrapper:{
-        paddingTop: 15,
-        paddingBottom: 15,
-      },
-    
-      img:{
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-      },
-    
-      textSection:{
-        flexDirection: "column",
-        justifyContent: "center",
-        padding: 15,
-        paddingLeft: 0,
-        marginLeft: 10,
-        width: 300,
-        borderBottomWidth: 1,
-        borderBottomColor: "#cccccc",
-      },
-    
-      infoText:{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginBottom: 5,
-      },
-    
-      titleName:{
-        fontSize: 14,
-        fontWeight: "bold",
-      },
-    
-      postTime: {
-        fontSize: 12,
-        color:"#666",
-      },
-    
-      contentText:{
-        fontSize: 14,
-        color: "#333333",
-      },
+    imgWrapper:{
+      paddingTop: 15,
+      paddingBottom: 15,
+    },
 
-      boldWhenNotRead: {
-        fontWeight: "bold",
-      }
+    img:{
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+    },
+
+    textSection:{
+      flexDirection: "column",
+      justifyContent: "center",
+      padding: 15,
+      paddingLeft: 0,
+      marginLeft: 10,
+      width: Dimensions.get("window").width*0.75,
+      borderBottomWidth: 1,
+      borderBottomColor: "#cccccc",
+    },
+
+    infoText:{
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 5,
+    },
+
+    titleName:{
+      fontSize: 14,
+      fontWeight: "bold",
+    },
+
+    postTime: {
+      fontSize: 12,
+      color:"#666",
+    },
+
+    contentText:{
+      fontSize: 14,
+      color: "#333333",
+    },
+
+    boldWhenNotRead: {
+      fontWeight: "bold",
+    }
 })
 
 export default NotificationScreen;

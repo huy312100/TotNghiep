@@ -1,35 +1,42 @@
 import "react-native-gesture-handler";
 import * as React from "react";
-import {TouchableOpacity,Image, Text, Dimensions} from "react-native"
+import {TouchableOpacity,Image,Dimensions,Text,View} from "react-native"
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { MaterialCommunityIcons,MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons,MaterialIcons,Ionicons } from '@expo/vector-icons';
 import { createStackNavigator, HeaderBackButton } from "@react-navigation/stack";
 
 import { useSelector,useDispatch } from "react-redux";
 import * as calendarActions from '../../store/actions/Calendar';
 // import * as msgActions from "../../store/actions/Message";
 
+//import authen screen
 import StartupScreen from "../screens/authentications/Startup";
 import LoginScreen from "../screens/authentications/Login";
 import RegisterScreen  from "../screens/authentications/Register";
+import HomeScreen from "../screens/home/Home";
 import ForgetPasswordScreen from "../screens/authentications/ForgetPassword";
 import MailSentScreen from "../screens/authentications/ConfirmSentMail";
-import HomeScreen from "../screens/home/Home";
+import ChangePasswordScreen from '../screens/authentications/ChangePassword';
+
+//import first sign in screen
+import StartConfigScreen from "../screens/first_config/StartConfig";
+import MoodleConfigScreen from "../screens/first_config/MoodleConfig";
+import EndConfigScreen from "../screens/first_config/EndConfig";
+
+import DeadlineMonthScreen from "../screens/home/deadline/DeadlineMonth";
 import CalendarScreen from "../screens/home/calendar/Calendar";
 import NormalMessageScreen from "../screens/message/NormalMessage";
 import FirstReadMessageScreen from "../screens/message/FirstReadMessage";
 import FindToChatScreen from "../screens/message/FindToChat";
 import ChatScreen from "../screens/message/Chat";
-import {ProfileScreen} from '../screens/profile/Profile';
+import ProfileScreen from '../screens/profile/Profile';
 import NotificationScreen from '../screens/notifications/Notification';
 import AllCourseInfoScreen from '../screens/home/courses/AllCourse';
 import CurrentCourseInfoScreen from '../screens/home/courses/CurrentCourse';
 import ChangeProfileScreen from '../screens/profile/ChangeProfile';
 import ContentCourseInfoScreen from '../screens/home/courses/DetailContentCourse';
-import WebCustomedScreen from '../screens/profile/TypeWebCustomed';
-import ChangePasswordScreen from '../screens/authentications/ChangePassword';
 import AddToCalendarScreen from '../screens/home/calendar/AddToCalendar';
 import ModifyCalendarScreen from '../screens/home/calendar/ModifyCalendar';
 import AddPeopleToCalendarScreen from '../screens/home/calendar/AddPeopleToCalendar';
@@ -41,6 +48,8 @@ import PortalConnectScreen from '../screens/profile/connect_app/Portal';
 import ClassroomConnectScreen from '../screens/profile/connect_app/Classroom';
 import SlackConnectScreen from '../screens/profile/connect_app/Slack';
 import TrelloConnectScreen from '../screens/profile/connect_app/Trello';
+
+//import forum
 import ForumCourseScreen from '../screens/home/forum/forum_course/ForumCourse';
 import ForumOfCourseMoodleScreen from '../screens/home/forum/forum_course/ForumMoodleCourse';
 import ContentForumMoodleScreen from '../screens/home/forum/forum_course/ContentForumMoodle';
@@ -50,18 +59,12 @@ import ForumUniversityScreen from "../screens/home/forum/forum_university/ForumU
 import ContentForumFacultyAndUniversityScreen from "../screens/home/forum/ContentForum";
 import ForumAllCourseScreen from "../screens/home/forum/forum_course/ForumAllCourse";
 import ForumCourseOfAppScreen from "../screens/home/forum/forum_course/ForumCourseOfApp";
+import ListUserLikedScreen from "../screens/home/forum/ListUserLiked";
 
-import StartConfigScreen from "../screens/first_config/StartConfig";
-import MoodleConfigScreen from "../screens/first_config/MoodleConfig";
-import EndConfigScreen from "../screens/first_config/EndConfig";
-
+//import my forum
 import MyCourseForumScreen from '../screens/home/forum/my_forum/MyCourseForum';
 import MyFacultyForumScreen from '../screens/home/forum/my_forum/MyFacultyForum';
 import MyUniversityForumScreen from '../screens/home/forum/my_forum/MyUniversityForum';
-import ListUserLikedScreen from "../screens/home/forum/ListUserLiked";
-
-import { View } from "react-native";
-
 
 const Stack = createStackNavigator();
 const bottomTab = createBottomTabNavigator();
@@ -88,9 +91,9 @@ export function AuthenStackNavigation() {
       />
 
       <Stack.Screen
-      name="Register"
-      component={RegisterScreen}
-      options={{ headerShown: false }}
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
@@ -140,15 +143,7 @@ function HomeStackNavigation({navigation}) {
         name="Home"
         component={HomeScreen}
         options={{ 
-          //headerShown: false,
-          title: "Trang chủ",
-          headerTitleAlign: 'center',
-          headerTintColor:"#FFFFFF",
-          headerStyle:{
-            backgroundColor:"#33CCFF"},
-            headerLeft:()=>{
-              return null;
-            }
+          headerShown: false
         }}
       />
       <Stack.Screen
@@ -192,10 +187,6 @@ function HomeStackNavigation({navigation}) {
           title: "Thông tin khóa học",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
-          headerTitleAlign: 'center',
-          headerTintColor:"#FFFFFF",
-          headerStyle:{
-            backgroundColor:"#33CCFF"},
         }}
       />
 
@@ -207,9 +198,6 @@ function HomeStackNavigation({navigation}) {
           headerTitleAlign: 'center',
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
-          headerTintColor:"#FFFFFF",
-          headerStyle:{
-            backgroundColor:"#33CCFF"},
         })}
       />
 
@@ -233,38 +221,32 @@ function HomeStackNavigation({navigation}) {
         name="University Info"
         component={UniversityInfoTopTab}
         options={{ 
-          title: "Thông tin trường",
-          headerTitleAlign: 'center',
-          headerTintColor:"#FFFFFF",
-          headerStyle:{
-            backgroundColor:"#33CCFF"},
+          title: "Tin tức",
+          headerBackTitle:false,
+          headerTruncatedBackTitle:false,
         }}
       />
 
-<Stack.Screen
+      <Stack.Screen
         name="Forum"
         component={ForumTopTab}
         options={{ 
           title: "Diễn đàn",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
-          headerTitleAlign: 'center',
-          headerTintColor: "white",
-          headerStyle:{
-            backgroundColor:"#33CCFF"},
 
           headerRight:()=>(
             <View style={{flexDirection:'row'}}>
-                <TouchableOpacity style={{marginRight:15}} onPress={() =>{
-                  navigation.navigate("My Forum");
-                  }}>
-                  <MaterialCommunityIcons name="clipboard-account-outline" size={25} color="white" />
-                </TouchableOpacity>
+              <TouchableOpacity style={{marginRight:15}} onPress={() =>{
+                navigation.navigate("My Forum");
+                }}>
+                <MaterialCommunityIcons name="clipboard-account-outline" size={25} color="#444444" />
+              </TouchableOpacity>
 
                 <TouchableOpacity style={{marginRight:5}} onPress={() =>{
                   navigation.navigate('Create Post Of Forum');
                   }}>
-                  <MaterialIcons name="library-add" size={25} color="white"/>
+                  <MaterialIcons name="library-add" size={25} color="#444444"/>
                 </TouchableOpacity>
             </View>
           )
@@ -275,8 +257,18 @@ function HomeStackNavigation({navigation}) {
         name="Forum Of A Course"
         component={ForumACourseTopTab}
         options={{ 
+          title:infoCourseChoose.nameCourse,
           headerBackTitle:false,
-          headerTruncatedBackTitle:false
+          headerTruncatedBackTitle:false,
+          headerRight:()=>(
+            <View style={{flexDirection:'row'}}>
+              <TouchableOpacity style={{marginRight:5}} onPress={() =>{
+                navigation.navigate('Create Post Of Forum');
+              }}>
+                <MaterialIcons name="library-add" size={25} color="#444444"/>
+              </TouchableOpacity>
+            </View>
+          )
         }}
       />
 
@@ -317,10 +309,24 @@ function HomeStackNavigation({navigation}) {
           title: "Diễn đàn của tôi",
           headerBackTitle:false,
           headerTruncatedBackTitle:false,
-          headerTitleAlign: 'center',
-          headerTintColor: "white",
-          headerStyle:{
-            backgroundColor:"#33CCFF"},
+          headerRight:()=>(
+            <View style={{flexDirection:'row'}}>
+              <TouchableOpacity style={{marginRight:5}} onPress={() =>{
+                navigation.navigate('Create Post Of Forum');
+                }}>
+                <MaterialIcons name="library-add" size={25} color="#444444"/>
+              </TouchableOpacity>
+            </View>
+          )
+        }}
+      />
+
+      <Stack.Screen
+        name="Deadline In Month"
+        component={DeadlineMonthScreen}
+        options={{ 
+          headerShown: false
+
         }}
       />
 
@@ -344,15 +350,15 @@ function MessageStackNavigation({navigation}) {
           title: "Tin nhắn",
           headerTitleAlign: 'center',
           headerTintColor:"#FFFFFF",
-           headerStyle:{
-             backgroundColor:"#33CCFF"
-           },
+          // headerStyle:{
+          //   backgroundColor:"#33CCFF"
+          // },
           headerTitleStyle: {
-              color: 'white'
+              color: 'black'
           },
           headerRight:()=>(
             <TouchableOpacity onPress={() =>{ navigation.navigate('Find to Chat')}}>
-              <MaterialCommunityIcons name="magnify" size={30} color={"white"} />
+              <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
             </TouchableOpacity>
           ),
           headerRightContainerStyle:{
@@ -465,23 +471,6 @@ function ProfileStackNavigation({navigation}) {
         }}
       />
 
-      <Stack.Screen
-        name="Web Customed"
-        component={WebCustomedScreen}
-        options={{ 
-          // title: "Ứng dụng đã được kết nối",
-          // headerTitleAlign: 'center',
-          // headerBackTitle:false,
-          // headerTruncatedBackTitle:false,
-          // headerTintColor:"#FFFFFF",
-          // headerStyle:{
-          //   backgroundColor:"#33CCFF"
-          // },
-
-          headerShown:false,
-          
-        }}
-      />
 
       <Stack.Screen
         name="Change Password"
@@ -497,6 +486,7 @@ function ProfileStackNavigation({navigation}) {
           },
         }}
       />
+
     </Stack.Navigator>
   )
 }
@@ -511,17 +501,37 @@ function MyBottomTabs() {
     <bottomTab.Navigator
       initialRouteName="Home"
       tabBarOptions={{
-        activeTintColor: 'blue',
+        activeTintColor: '#6666FF',
       }}
+
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'home-sharp' : 'home-outline';
+          } 
+          else if (route.name === 'Notifications') {
+            iconName = focused ? 'notifications-sharp' : 'notifications-outline';
+          }
+          else if (route.name === 'Message') {
+            iconName = focused ? 'chatbubble-ellipses-sharp' : 'chatbubble-ellipses-outline';
+          }
+          else if(route.name === 'Profile'){
+            iconName = focused ? 'person-sharp' : 'person-outline';
+          
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
     >
       <bottomTab.Screen
         name="Home"
         component={HomeStackNavigation}
         options={({route})=>({
           tabBarLabel: 'Trang chủ',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} />
-          ),
           tabBarVisible: getTabBarVisibility(route) && visibleBotTab,
           //tabBarVisible: false,
 
@@ -532,12 +542,7 @@ function MyBottomTabs() {
         component={NotificationScreen}
         options={{
           tabBarLabel: 'Thông báo',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={size} />
-          ),
-  
           tabBarBadge: notiNotRead > 0 ? notiNotRead :null,
-          
         }}
       />
 
@@ -546,11 +551,8 @@ function MyBottomTabs() {
         component={MessageStackNavigation}
         options={({route})=>({
           tabBarLabel: 'Tin nhắn',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="message-processing" color={color} size={size} />
-          ),
           tabBarVisible: getTabBarVisibility(route),
-          tabBarBadge: msgNotRead >0 ? msgNotRead :null,
+          tabBarBadge: msgNotRead > 0 ? msgNotRead :null,
         })}
       />
  
@@ -559,9 +561,6 @@ function MyBottomTabs() {
         component={ProfileStackNavigation}
         options={({route})=>({
           tabBarLabel: 'Tài khoản',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={size} />
-          ),
           tabBarVisible: getTabBarVisibility(route),
         })}
       />
@@ -574,10 +573,13 @@ const getTabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ;
 
   const arrHideBotTab=["Calendar","Chat","Course","Change Profile",
-  "Connect application","Content Course","Web Customed","Change Password",
+  "Connect application","Content Course","Change Password",
   "Add Event","Modify Event","Find to Chat","University Info",
   "Add people to calendar","Forum","Forum Of A Moodle Course","Content Forum",
-  "Create Post Of Forum","Content Forum Of A Moodle Course"];
+  "Create Post Of Forum","Content Forum Of A Moodle Course","Forum Of A Course",
+  "List User Liked","My Forum","Deadline In Month"];
+
+  console.log(routeName);
 
   for (var i = 0; i < arrHideBotTab.length; i++) {
     if (routeName === arrHideBotTab[i]) {
@@ -595,16 +597,19 @@ function BottomTabNavigator() {
 
 //Top tab of course screen
 function CourseInfoTopTab(){
-  const DeviceWidth = Dimensions.get('window').width;
   return (
-    <topTab.Navigator initialRouteName="Learning">
+    <topTab.Navigator initialRouteName="Learning"
+    tabBarOptions={{
+      activeTintColor: 'blue',
+      labelStyle: { fontSize: 10 }
+    }}>
       <topTab.Screen 
         name="Current Course" 
         component={CurrentCourseInfoScreen} 
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
-              HỌC KỲ GẦN NHẤT
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Học kì gần nhất
             </Text>
           )
         }}/>
@@ -613,8 +618,8 @@ function CourseInfoTopTab(){
         component={AllCourseInfoScreen}
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
-              TẤT CẢ MÔN HỌC
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Tất cả môn học
             </Text>
           )
         }}
@@ -625,29 +630,36 @@ function CourseInfoTopTab(){
 
 //Top tab of university info screen
 function UniversityInfoTopTab(){
+  const DeviceWidth = Dimensions.get('window').width;
+
   return (
-    <topTab.Navigator initialRouteName="University New" 
+    <topTab.Navigator initialRouteName="Faculty New" 
     tabBarOptions={{
       activeTintColor: 'blue',
-      indicatorStyle:{
-        backgroundColor: 'blue',
-      },
-      labelStyle: { fontSize: 11 },
+      labelStyle: { fontSize: 10 },
       }}>
-  
-      <topTab.Screen 
-        name="University New" 
-        component={UniversityNewScreen}
-        options={{
-          tabBarLabel:'Tin tức trường'
-        }}
-        />
 
       <topTab.Screen 
         name="Faculty New" 
         component={FacultyNewScreen}
         options={{
-          tabBarLabel:'Tin tức khoa'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:120}}>
+              Tin tức khoa
+            </Text>
+          )
+        }}
+      />
+  
+      <topTab.Screen 
+        name="University New" 
+        component={UniversityNewScreen}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:120}}>
+              Tin tức trường
+            </Text>
+          )
         }}
         />
 
@@ -655,7 +667,11 @@ function UniversityInfoTopTab(){
         name="University Info" 
         component={UniversityInfoScreen} 
         options={{
-          tabBarLabel:'Thông tin'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-240)+20}}>
+              Thông tin trường
+            </Text>
+          )
         }}
         />
     </topTab.Navigator>
@@ -667,18 +683,18 @@ function ConnectApplicationTopTab(){
   return (
     <topTab.Navigator initialRouteName="Moodle" 
     tabBarOptions={{
-      scrollEnabled:true,
+      //scrollEnabled:true,
   
       activeTintColor: 'green',
       inactiveTintColor:'#CCCCCC',
       indicatorStyle:{
         backgroundColor: 'green',
       },
-      tabStyle: {
-          width:110,
-      },
+      // tabStyle: {
+      //     width:'110',
+      // },
       labelStyle: { 
-        fontSize: 15,
+        fontSize: 14,
         textTransform:'none'
       },
       }}>
@@ -690,15 +706,8 @@ function ConnectApplicationTopTab(){
           tabBarLabel:'Moodle'
         }}/>
 
-      <topTab.Screen 
-        name="Portal" 
-        component={PortalConnectScreen}
-        options={{
-          tabBarLabel:'Portal'
-        }}
-        />
-
-      <topTab.Screen 
+      
+      {/* <topTab.Screen 
         name="Classroom" 
         component={ClassroomConnectScreen}
         options={{
@@ -720,7 +729,7 @@ function ConnectApplicationTopTab(){
         options={{
           tabBarLabel:'Trello'
         }}
-        />  
+        />   */}
     </topTab.Navigator>
   )
 }
@@ -733,24 +742,32 @@ function MessageTopTab(){
       activeTintColor: 'blue',
       inactiveTintColor:'#CCCCCC',
       indicatorStyle:{
-        backgroundColor: 'blue',
+        backgroundColor: 'green',
       },
 
-      labelStyle: { fontSize: 11 },
+      labelStyle: { fontSize: 10 },
       }}>
   
       <topTab.Screen 
         name="Normal Message" 
         component={NormalMessageScreen} 
         options={{
-          tabBarLabel:'Chat'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 14, color: focused? 'green' : 'silver'}}>
+              Chat
+            </Text>
+          )
         }}/>
 
       <topTab.Screen 
         name="First Read Message" 
         component={FirstReadMessageScreen}
         options={{
-          tabBarLabel:'Tin nhắn chờ'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 14, color: focused? 'green' : 'silver'}}>
+              Tin nhắn chờ
+            </Text>
+          )
         }}
         />
 
@@ -765,13 +782,16 @@ function ForumTopTab(){
   return (
     <topTab.Navigator initialRouteName="Forum Total Course" 
     tabBarOptions={{
+      scrollEnabled:true,
       activeTintColor: 'blue',
       inactiveTintColor:'#CCCCCC',
+      tabStyle:{
+        width:'auto',
+      },
       indicatorStyle:{
         backgroundColor: 'blue',
       },
 
-      labelStyle: { fontSize: 11 },
       }}>
 
       <topTab.Screen 
@@ -779,20 +799,20 @@ function ForumTopTab(){
         component={ForumAllCourseScreen} 
         options={{
           tabBarLabel: ({focused}) => (
-            <Text style = {{textAlign: 'center',fontSize: 10, color: focused? 'blue' : 'silver',width:90}}>
-              TẤT CẢ MÔN HỌC
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:90}}>
+              Tất cả khoá học
             </Text>
           )
         }}/>
-
-        <topTab.Screen 
+  
+      <topTab.Screen 
         name="Forum Course" 
         style={{color: 'white'}}
         component={ForumCourseScreen} 
         options={{
           tabBarLabel: ({focused}) => (
             <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
-              MÔN HỌC
+              Môn học
             </Text>
           )
         }}/>
@@ -801,28 +821,37 @@ function ForumTopTab(){
         name="Forum Faculty" 
         component={ForumFacultyScreen}
         options={{
-          tabBarLabel:'Khoa'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
+              Khoa
+            </Text>
+          )
         }}/>
 
       <topTab.Screen 
         name="Forum University" 
         component={ForumUniversityScreen}
         options={{
-          tabBarLabel:'Trường'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver',width:(DeviceWidth-90)/4}}>
+              Trường
+            </Text>
+          )
         }}/>
      
     </topTab.Navigator>
   )
 }
 
+//Top tab of forum course 
 function ForumACourseTopTab(){
   return (
     <topTab.Navigator initialRouteName="Forum Of A Course By App" 
     tabBarOptions={{
-      activeTintColor: 'green',
+      activeTintColor: 'blue',
       inactiveTintColor:'#CCCCCC',
       indicatorStyle:{
-        backgroundColor: 'green',
+        backgroundColor: 'blue',
       },
 
       labelStyle: { fontSize: 10 },
@@ -832,7 +861,11 @@ function ForumACourseTopTab(){
         name="Forum Of A Course By App" 
         component={ForumCourseOfAppScreen}
         options={{
-          tabBarLabel:'Ứng dụng'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Ứng dụng
+            </Text>
+          )
         }}
         />
   
@@ -840,13 +873,18 @@ function ForumACourseTopTab(){
         name="Forum Of A Moodle Course" 
         component={ForumOfCourseMoodleScreen} 
         options={{
-          tabBarLabel:'Trang môn học'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Trang môn học
+            </Text>
+          )
         }}/>
 
     </topTab.Navigator>
   )
 };
 
+//Top tab of my forum
 function MyForumTopTab(){
   return (
     <topTab.Navigator initialRouteName="My Course Forum" 
@@ -864,7 +902,11 @@ function MyForumTopTab(){
         name="My Course Forum" 
         component={MyCourseForumScreen}
         options={{
-          tabBarLabel:'Môn học'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Môn học
+            </Text>
+          )
         }}
         />
 
@@ -872,7 +914,11 @@ function MyForumTopTab(){
         name="My Faculty Forum" 
         component={MyFacultyForumScreen}
         options={{
-          tabBarLabel:'Khoa'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Khoa
+            </Text>
+          )
         }}
         />
 
@@ -880,7 +926,11 @@ function MyForumTopTab(){
         name="My University Forum" 
         component={MyUniversityForumScreen}
         options={{
-          tabBarLabel:'Trường'
+          tabBarLabel: ({focused}) => (
+            <Text style = {{textAlign: 'center',fontSize: 12, color: focused? 'blue' : 'silver'}}>
+              Trường
+            </Text>
+          )
         }}
         />
   
@@ -888,7 +938,3 @@ function MyForumTopTab(){
     </topTab.Navigator>
   )
 };
-
-
-
-

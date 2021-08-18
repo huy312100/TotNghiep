@@ -1,5 +1,5 @@
 import React,{ useState } from 'react';
-import { View, Text,TouchableOpacity,Keyboard,TouchableWithoutFeedback,StyleSheet,TextInput,Alert} from 'react-native';
+import { ScrollView,View, Text,TouchableOpacity,Keyboard,TouchableWithoutFeedback,StyleSheet,TextInput,Alert} from 'react-native';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useDispatch,useSelector } from 'react-redux';
@@ -94,7 +94,7 @@ const ChangePasswordScreen = ({navigation}) => {
                                 style: "cancel"
                             }
                         ])
-                }
+                    }
             }
           }).done();
     }
@@ -103,7 +103,7 @@ const ChangePasswordScreen = ({navigation}) => {
     <TouchableWithoutFeedback onPress={() =>{
         Keyboard.dismiss();}}>
 
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.instruction}>
               <Text style={styles.instructionLabel}>Mật khẩu phải chứa tối thiểu tám ký tự, ít nhất một chữ hoa, một chữ thường và một số</Text>
             </View>
@@ -180,7 +180,7 @@ const ChangePasswordScreen = ({navigation}) => {
             </TouchableOpacity>}
 
             {isLoading && LoadingScreen()}
-        </View>
+        </ScrollView>
     </TouchableWithoutFeedback>
     )
 };
@@ -222,7 +222,8 @@ const styles = StyleSheet.create({
     },
 
     passInputText:{
-        backgroundColor: "#ccc",
+        borderWidth:1,
+        borderColor:'green',
         width: "100%",
         borderRadius:10,
         padding:10,

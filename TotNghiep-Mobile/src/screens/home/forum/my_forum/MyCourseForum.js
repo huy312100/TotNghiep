@@ -1,6 +1,9 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,Linking } from 'react-native';
 import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
+import Hyperlink from 'react-native-hyperlink';
+
+import Lightbox from 'react-native-lightbox-v2';
 
 import {useSelector} from 'react-redux';
 
@@ -14,6 +17,7 @@ const MyCourseForumScreen =({navigation})=>{
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
     const [refresh,setRefresh] = useState(false);
 
     useEffect(() => {
@@ -28,6 +32,7 @@ const MyCourseForumScreen =({navigation})=>{
     },[refresh]);
 
     const getMyCourseForum = () => {
+        setIsLoading(true);
         fetch("https://hcmusemu.herokuapp.com/forum/courses/yourpost", {
             method: "GET",
             headers: {
@@ -43,6 +48,8 @@ const MyCourseForumScreen =({navigation})=>{
             if(statusCode === 200){
                 setDataForum(dataRes);
             }
+            setIsLoading(false);
+
         }).catch(error => console.log('error', error));
     };
 
@@ -69,11 +76,17 @@ const MyCourseForumScreen =({navigation})=>{
 
                 </View>
                 
-                <View tyle={[styles.info,{marginBottom:20}]}>      
-                    <Text style={[styles.content]}>{item.title}</Text>                
-                </View>
+                <Hyperlink linkStyle={{ color: 'blue',textDecorationLine:'underline' }} onPress={ (url) =>  Linking.openURL(url)}>
+                    <View tyle={[styles.info,{marginBottom:20}]}>      
+                        <Text style={[styles.content]}>{item.title}</Text>                
+                    </View>
+                </Hyperlink>
 
-                {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
+                {item.image !== "" && 
+                    <Lightbox>
+                        <Image style={styles.imagePost} source={{uri:item.image}}/>
+                    </Lightbox>
+                }
 
                 <View style={styles.footerCard}>
                     {item.LikeByOwn === 1 ?
@@ -105,20 +118,24 @@ const MyCourseForumScreen =({navigation})=>{
             </TouchableOpacity>
     )
 
-    const renderEmptyForum = (
-        <View style={{alignItems: "center"}}> 
-          <Text>Bạn chưa chưa đăng bài lên diễn đàn này</Text>
-        </View>
-      );
-
     return (
         <View style={styles.container}>
+
+            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="blue"/>
+            </View>}
+
+            {!isLoading && dataForum.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy diễn đàn nào 
+                    </Text>
+                </View>
+            }
 
             <FlatList
                 data={dataForum}
                 renderItem={renderItem}
                 keyExtractor = {(item,index) => index.toString()}
-                ListEmptyComponent = {renderEmptyForum}
             />
             
         </View>
@@ -131,7 +148,7 @@ const styles = StyleSheet.create({
     },
 
     card: {
-        marginTop:10,
+        marginVertical:10,
         width: '100%',
         backgroundColor:'white',
         borderBottomWidth:1,

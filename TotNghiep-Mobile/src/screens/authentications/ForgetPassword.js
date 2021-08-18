@@ -1,10 +1,13 @@
 import React,{ useState } from 'react';
 import { View,StyleSheet,Image,Text,TouchableOpacity,TextInput,TouchableWithoutFeedback,Keyboard } from 'react-native';
 
+import {
+    UsernameInput,
+  } from "../../components/authentications/common/Index";
+
 import LoadingScreen from '../LoadingScreen';
 
 import * as authenServies from '../../services/Authen';
-import { Alert } from 'react-native';
 
 
 const ForgetPasswordScreen = ({navigation}) => {
@@ -21,40 +24,6 @@ const ForgetPasswordScreen = ({navigation}) => {
         return false;
     }
 
-    const ForgetPassword = async (email) =>{
-        let details = {
-            emailApp: email,
-            emailReset: email
-        };
-      
-        let formBody = [];
-    
-        for (let property in details) {
-            let encodedKey = encodeURIComponent(property);
-            let encodedValue = encodeURIComponent(details[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-    
-        await fetch("https://hcmusemu.herokuapp.com/account/forgotpassword", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formBody,
-        }) .then((response) => {
-            const statusCode = response.status;
-            const dataRes = response.json();
-            return Promise.all([statusCode, dataRes]);
-        }).then(([statusCode, dataRes]) => {
-            console.log(statusCode,dataRes);
-            if(statusCode === 200){
-                navigation.navigate('Confirm Mail Sent');
-            }
-            else{Alert.alert("Lỗi!", "Không tìm thấy Email người dùng. Vui lòng nhập lại.")}
-        }).catch(error => console.log('error', error));
-    };
-
     return(
         <TouchableWithoutFeedback onPress={()=>{
             Keyboard.dismiss();
@@ -67,20 +36,25 @@ const ForgetPasswordScreen = ({navigation}) => {
                 Đặt lại mật khẩu
             </Text>
 
-            <Text style={{fontSize:12,marginHorizontal:40,marginTop:20, marginBottom:30,textAlign:'center'}}>
+            <Text style={{fontSize:12,marginHorizontal:40,marginVertical:20,textAlign:'center'}}>
                 Điền thông tin email liên kết với tài khoản để chúng tôi có thể khôi phục tài khoản cho bạn
             </Text>
 
-            <View style={{width:'100%',marginBottom:30}}>
+            {/* <View style={{width:'100%',marginBottom:30}}>
                 <TextInput style={styles.input} placeholder={"Nhập địa chỉ email"}
                     onChangeText={(email) => setEmail(email)}
                 />
-            </View>
+            </View> */}
+
+            <UsernameInput label="Nhập địa chỉ email"
+                hideLabel={email !== ''}
+                onChangeText={(email) => setEmail(email)} />
 
             <TouchableOpacity style={[styles.buttonSend,{backgroundColor:checkBtnSendDisabled()?'silver':'#0066FF',}]} disabled={checkBtnSendDisabled()}
                 onPress={async()=>{
                     setLoading(true);
-                    await ForgetPassword(email);
+                    await authenServies.ForgetPassword(email);
+                    navigation.navigate('Confirm Mail Sent');
                     setLoading(false);
                 }}>
                 <View style={{marginVertical:15}}>
@@ -101,6 +75,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: 'white'
     },
 
     imageLogo: {
@@ -122,7 +98,8 @@ const styles = StyleSheet.create({
         width:'80%',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius:25
+        borderRadius:25,
+        marginTop:20
     }
 });
 

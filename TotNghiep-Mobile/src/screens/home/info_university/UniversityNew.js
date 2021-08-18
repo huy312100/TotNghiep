@@ -102,6 +102,13 @@ const UniversityNewScreen = ({navigation}) =>{
             {statusCode === 500 && !isLoadingUniScreen && Error500Screen()}
             {statusCode === 503 && !isLoadingUniScreen && Error503Screen()}
 
+            {uniNews.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy tin tức trường nào
+                    </Text>
+                </View>
+            }
+
             
             <FlatList
                 data={uniNews}

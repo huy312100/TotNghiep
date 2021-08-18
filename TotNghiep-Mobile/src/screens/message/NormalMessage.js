@@ -1,79 +1,99 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl } from 'react-native';
+import { Dimensions, View, Text, StyleSheet, FlatList,TouchableOpacity,Image,RefreshControl } from 'react-native';
 
+import LoadingWithSkeletonScreen from '../LoadingSkeleton';
 
 import { useSelector,useDispatch } from 'react-redux';
 
 import * as dateUtils from '../../utils/Date';
 
-import {Header,SearchBar} from 'react-native-elements';
-import { MaterialCommunityIcons} from '@expo/vector-icons';
-
+import * as homeActions from '../../../store/actions/Home';
 
 const NormalMessageScreen = ({navigation}) => {
 
   const[dataMsg,setDataMsg] = useState([]);
 
   const token = useSelector((state) => state.authen.token);
+  const profile = useSelector((state) => state.profile.profile);
+
+  const dispatch = useDispatch();
+
+  const [isLoading,setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const unmounted = useRef(false);
 
+  var countMsgNotRead = 0;
+
   useEffect(() => {
-    getAllMessage();
+    const unsubscribe = navigation.addListener('focus', () => {
+      getAllMessage();
+    });
     return()=>{
       unmounted.current = true;
+      unsubscribe();
     };
-  },[])
+  },[]);
 
-    //call api get all message screen
-    const getAllMessage =() => {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", `bearer ${token}`);
+  //call api get all message screen
+  const getAllMessage =() => {
+    setIsLoading(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `bearer ${token}`);
 
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-      };
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
 
-      
-      fetch("https://hcmusemu.herokuapp.com/chat/findchat",requestOptions)
-      .then((response) => {
-          const statusCode = response.status;
-          const dataRes = response.json();
-          return Promise.all([statusCode, dataRes]);
-      }).then(([statusCode, dataRes])=> {
-          console.log(statusCode,dataRes);
-          if (statusCode === 200) {
-            if(dataRes.message==='Message is Empty'){
-              setDataMsg([]);
-            }
-            else{
-              const tmpMsg =[];
-              for (const key in dataRes) {
-                  tmpMsg.push(
-                  {
-                    idRoom: dataRes[key].idRoom,
-                    name: dataRes[key].name,
-                    Email: dataRes[key].Email,
-                    Anh: dataRes[key].Anh,
-                    TypeRoom: dataRes[key].TypeRoom,
-                    text: dataRes[key].text,
-                    time: dataRes[key].time,
-                    state:dataRes[key].state
-                  });
-              }
-              setDataMsg(tmpMsg);
-            }
+    
+    fetch("https://hcmusemu.herokuapp.com/chat/findchat",requestOptions)
+    .then((response) => {
+        const statusCode = response.status;
+        const dataRes = response.json();
+        return Promise.all([statusCode, dataRes]);
+    }).then(([statusCode, dataRes])=> {
+        console.log(statusCode,dataRes);
+        if (statusCode === 200) {
+          if(dataRes.message==='Message is Empty'){
+            setDataMsg([]);
           }
-         
           else{
-              console.log(statusCode)
+            const tmpMsg =[];
+            for (const key in dataRes) {
+              tmpMsg.push(
+              {
+                idRoom: dataRes[key].idRoom,
+                name: dataRes[key].name,
+                Email: dataRes[key].Email,
+                Anh: dataRes[key].Anh,
+                TypeRoom: dataRes[key].TypeRoom,
+                text: dataRes[key].text,
+                time: dataRes[key].time,
+                state:dataRes[key].state,
+                EmailEnd: dataRes[key].EmailEnd,
+              });
+
+              if(dataRes[key].EmailEnd !== profile[0].Email){
+                if (!dataRes[key].state) {
+                  countMsgNotRead++;
+                }
+              }
+            }
+            setDataMsg(tmpMsg);
           }
-          // setLoadingFacultScreen(false);
-          setRefreshing(false);
-      })
-      .catch((err) => console.log(err, "error"));
+        }
+        
+        else{
+            console.log(statusCode)
+        }
+        // setLoadingFacultScreen(false);
+        dispatch(homeActions.MessageNotRead(countMsgNotRead));
+        countMsgNotRead = 0;
+        setIsLoading(false);
+        setRefreshing(false);
+    })
+    .catch((err) => console.log(err, "error"));
   };
 
   //refresh control trigger
@@ -98,10 +118,12 @@ const NormalMessageScreen = ({navigation}) => {
         </View>
         <View style={styles.textSection}>
             <View style={styles.userInfoText}>
-            <Text style={styles.userName}>{item.name}</Text>
-            <Text style={styles.postTime}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
+              <Text style={styles.userName}>{item.name}</Text>
+              <Text style={[styles.postTime,{fontWeight : (!item.state && item.EmailEnd !== profile[0].Email) ? "bold" : "normal"}]}>{dateUtils.ConvertToTimeAgoGeneral(item.time)}</Text>
             </View>
-            <Text style={[styles.messageText,{fontWeight : (item.state) ? "normal":"bold"}]}>{item.text}</Text>
+            <Text style={[styles.messageText,{fontWeight : (!item.state && item.EmailEnd !== profile[0].Email) ? "bold" : "normal"}]}>{item.EmailEnd === profile[0].Email ? "Bạn: " :""}{item.text}</Text>
+
+
         </View>
         </View>
     </TouchableOpacity>
@@ -109,41 +131,32 @@ const NormalMessageScreen = ({navigation}) => {
 
 
     return (
-      <View style={styles.container}>
-         {/* <Header
-            containerStyle={{
-                backgroundColor: 'white',
-                justifyContent: 'space-around',
-                borderBottomColor:'#DDDDDD'
-            }}
 
-            centerComponent={
-                <Text style={headerStyle.centerText}>Tin nhắn</Text>
-            }
-            rightComponent={
-              <TouchableOpacity onPress={() =>{ navigation.navigate('Find to Chat')}}>
-                    <MaterialCommunityIcons name="plus" size={30} color={"blue"} />
-                </TouchableOpacity>
+      <View style={{flex: 1}}>
 
-            }/> */}
+      {isLoading && dataMsg.length === 0 && LoadingWithSkeletonScreen()}
 
+      {!isLoading && dataMsg.length === 0 &&  <View style={{flex:1,justifyContent: 'center',alignItems: 'center',backgroundColor: '#ffffff',}}>
+            
+            <Text style={{color:'#BBBBBB'}}>
+                Không tìm thấy tin nhắn nào
+            </Text>
+          </View>}
 
-        {/* {data.length==0 && <ImageBackground style={styles.img}
-             source={require('../../../assets/chat.png')}
-             resizeMode='contain'/>} */}
-
-
-        <FlatList
-          data={dataMsg}
-          renderItem={renderItem}
-          keyExtractor={(item,index) => index.toString()}
-          refreshControl={<RefreshControl
-            colors={["blue", "red"]}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />}
-        />
+        <View style={styles.container}>
+          <FlatList
+            data={dataMsg}
+            renderItem={renderItem}
+            keyExtractor={(item,index) => index.toString()}
+            refreshControl={<RefreshControl
+              colors={["blue", "red"]}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />}
+          />
+        </View>
       </View>
+      
     );
 };
 
@@ -151,10 +164,10 @@ export default NormalMessageScreen;
 
 const styles = StyleSheet.create({
   container: {
-  flex: 1,
-  paddingLeft:15,
-  alignItems: 'center',
-  backgroundColor: '#ffffff',
+    flex: 1,
+    paddingLeft:15,
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
 
   card: {
@@ -183,7 +196,7 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingLeft: 0,
     marginLeft: 10,
-    width: 300,
+    width: Dimensions.get("window").width*0.75,
     borderBottomWidth: 1,
     borderBottomColor: "#cccccc",
   },

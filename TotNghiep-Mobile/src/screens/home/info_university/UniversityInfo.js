@@ -9,7 +9,7 @@ const UniversityInfoScreen = () =>{
 
     const token = useSelector((state) => state.authen.token);
     const [dataUniversity,setDataUniversity] = useState([]);
-    const [isLoading,setLoading]=useState(false);
+    const [isLoading,setLoading]=useState(true);
 
     useEffect(() =>{
         getAllInfoUniversity();
@@ -30,7 +30,7 @@ const UniversityInfoScreen = () =>{
         fetch("https://hcmusemu.herokuapp.com/info/getinfo",requestOptions)
         .then((response) => response.json())
         .then((json) => {
-            //console.log(json);
+            console.log(json);
             setDataUniversity(json);
             setLoading(false);
         })
@@ -95,7 +95,7 @@ const UniversityInfoScreen = () =>{
 
     const renderItem = ({ item }) => (
         <View >
-            <ImageBackground style={styles.card} source={{ uri: "https://www.hcmus.edu.vn/images/2020/04/07/bn2.jpg"}}/>
+            <ImageBackground style={styles.card} source={{ uri: item.Images}}/>
 
             <View style={[styles.rowInfo,{marginTop:30}]}>
                 <View style={styles.squareShapeView}>
@@ -180,7 +180,13 @@ const UniversityInfoScreen = () =>{
 
     return(
         <View style={styles.container}>
-            {isLoading && loadingSkeleton()}
+            {isLoading && dataUniversity.length === 0 && loadingSkeleton()}
+            {!isLoading && dataUniversity.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Đã xảy ra lỗi . Vui lòng thử lại sau
+                    </Text>
+                </View>
+            }
             <FlatList
                 data={dataUniversity}
                 renderItem={renderItem}

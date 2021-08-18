@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { GiftedChat,Bubble,Send,InputToolbar,LeftAction, ChatInput, SendButton } from 'react-native-gifted-chat';
-import { View,Alert,Text,TouchableOpacity }  from 'react-native';
+import { View,KeyboardAvoidingView,Text,TouchableOpacity,Platform,ActivityIndicator }  from 'react-native';
 import { Ionicons,FontAwesome5,Entypo } from '@expo/vector-icons';
 import { useSelector,useDispatch } from 'react-redux';
 import { Header} from 'react-native-elements';
@@ -22,7 +22,7 @@ const ChatScreen = ({route,navigation}) => {
 
   const [roomID,setRoomID] = useState(route.params.idChatRoom);
 
-
+  const [pageCurrent,setPageCurrent] = useState(0);
   
 
   useEffect(() => {
@@ -50,7 +50,8 @@ const ChatScreen = ({route,navigation}) => {
           createdAt: new Date(data[3]),
           user:{
             _id:2,
-            name:data[1], 
+            name:data[1],
+            avatar: route.params.avatar == null ? `https://ui-avatars.com/api/?background=random&color=fff&name=${route.params.name}` : route.params.avatar,
           }
         }));
       });
@@ -70,14 +71,20 @@ const ChatScreen = ({route,navigation}) => {
     // return () => {
     //   socket.close();
     // }
-  },[]);
+
+    return () => {
+      socket.off('Private-Message-To-Client');
+      console.log("Socket off")
+    }
+  },[pageCurrent]);
 
 
   //call api load all messages  
   const loadMessage =() => {
+    console.log('aaaaaaaa')
     let details = {
       IDRoom:roomID,
-      page: 0,
+      page: pageCurrent,
     };
 
     let formBody = [];
@@ -107,10 +114,10 @@ const ChatScreen = ({route,navigation}) => {
         const tmpAttrMsg =[];
         for (const key in dataRes) {
           if(dataRes[key].from !== profile[0].Email){
-            if(route.params.avatar === undefined || route.params.avatar === "" || route.params.avatar === null ){
+            if(route.params.avatar === undefined || route.params.avatar === "" || route.params.avatar == null ){
               tmpAttrMsg.push(
                 {
-                  _id: key,
+                  _id: uuid.v4(),
                   text: dataRes[key].text,
                   //createdAt: new Date(dataRes[key].time).toISOString(),
                   createdAt: new Date(parseInt(dataRes[key].time)).toISOString(),
@@ -124,7 +131,7 @@ const ChatScreen = ({route,navigation}) => {
             else{
               tmpAttrMsg.push(
                 {
-                  _id: key,
+                  _id: uuid.v4(),
                   text: dataRes[key].text,
                   //createdAt: new Date(dataRes[key].time).toISOString(),
                   createdAt: new Date(parseInt(dataRes[key].time)).toISOString(),
@@ -139,7 +146,7 @@ const ChatScreen = ({route,navigation}) => {
           else{
             tmpAttrMsg.push(
               {
-                _id: key,
+                _id: uuid.v4(),
                 text: dataRes[key].text,
                 //createdAt: new Date(dataRes[key].time).toISOString(),
                 createdAt: new Date(parseInt(dataRes[key].time)).toISOString(),
@@ -151,7 +158,7 @@ const ChatScreen = ({route,navigation}) => {
           }  
         }
         console.log(tmpAttrMsg);
-        setMessages(tmpAttrMsg);
+        setMessages(messages.concat(tmpAttrMsg));
       }
     }).catch((err) => console.log(err, "error"));
   }
@@ -193,9 +200,8 @@ const ChatScreen = ({route,navigation}) => {
 
   const renderInputToolbar= (props) => {
     return (
-          <InputToolbar {...props} 
-            containerStyle={{borderRadius:25,}} 
-            placeholder="Nhập tin nhắn ..."/>
+      <InputToolbar {...props} 
+        placeholder="Nhập tin nhắn ..."/>
     )
   }
 
@@ -205,10 +211,13 @@ const ChatScreen = ({route,navigation}) => {
     )
   };
 
-
-  // const onSend = useCallback((messages = []) => {
-
-  // }, [roomID]);
+  const renderLoadEarlier = () =>{
+    return (
+      <TouchableOpacity style={{alignItems: 'center'}}>
+        <Text>aaa</Text>
+      </TouchableOpacity>
+    )
+  }
 
 
   const onSend =(messages = []) => {
@@ -244,6 +253,11 @@ const ChatScreen = ({route,navigation}) => {
       setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
       //console.log(messages);
     // }
+  };
+
+  const onLoadEarlier = () => {
+    console.log(pageCurrent);
+    setPageCurrent(pageCurrent+1);
   }
 
   return (
@@ -253,13 +267,13 @@ const ChatScreen = ({route,navigation}) => {
             containerStyle={{
                 backgroundColor: 'white',
                 justifyContent: 'space-around',
-                borderBottomColor:'#DDDDDD'
+                borderBottomColor:'#DDDDDD',
             }}
             centerComponent={
                 <Text style={{fontSize:20,fontWeight:'500'}}>{route.params.name}</Text>
             }
             leftComponent={
-              <TouchableOpacity onPress={() =>{
+              <TouchableOpacity onPress={() =>{ 
                 socket.emit('Return-Chat',[roomID,route.params.email]);
                 navigation.goBack()
                 }}>
@@ -275,12 +289,17 @@ const ChatScreen = ({route,navigation}) => {
         user={{
           _id: 1,
         }}
+        loadEarlier={true}
+        //isLoadingEarlier={true}
         renderBubble={renderBubble}
+        //renderLoadEarlier={renderLoadEarlier}
+        onLoadEarlier={onLoadEarlier}
         renderSend={renderSend}
         renderInputToolbar={renderInputToolbar}
         scrollToBottom
         scrollToBottomComponent={scrollToBottomComponent}
     />
+
     </View>
     
 

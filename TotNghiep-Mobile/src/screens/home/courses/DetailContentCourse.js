@@ -112,13 +112,11 @@ const ContentCourseInfoScreen = ({route}) => {
           "Chuyển tiếp",
           "Ứng dụng muốn chuyển tiếp đến trang môn học của bạn",
           [
-            { text: "Từ chối", 
-              style: "cancel"
-            },
             {
-              text: "Cho phép",
+              text: "Đồng ý",
               onPress: () => Linking.openURL(item.url),
             },
+            { text: "Từ chối"},
           ]
         );
       }}>

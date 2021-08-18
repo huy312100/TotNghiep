@@ -1,6 +1,9 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,Linking } from 'react-native';
 import { Fontisto,FontAwesome,MaterialIcons } from '@expo/vector-icons';
+import Hyperlink from 'react-native-hyperlink';
+
+import Lightbox from 'react-native-lightbox-v2';
 
 import {useSelector} from 'react-redux';
 
@@ -9,12 +12,13 @@ import * as forumServices from '../../../../services/Forum';
 import * as dateUtils from '../../../../utils/Date';
 
 const ForumAllCourseScreen =({navigation})=>{
-    const infoCourseChoose = useSelector((state) => state.course.infoCourseChoose);
     const token = useSelector((state) => state.authen.token);
     const unmounted = useRef(false);
     // const dataABC= forumServices.getForum();
     const [dataForum,setDataForum] = useState([]);
     const [refresh,setRefresh] = useState(false);
+    const [isLoading,setIsLoading] = useState(true);
+
 
     useEffect(() => {
         getForumAllCourse();
@@ -28,26 +32,13 @@ const ForumAllCourseScreen =({navigation})=>{
     },[refresh]);
 
     const getForumAllCourse = () => {
-        let details = {
-            //IDCourses: infoCourseChoose.idCourse,
-        };
-      
-        let formBody = [];
-    
-        for (let property in details) {
-            let encodedKey = encodeURIComponent(property);
-            let encodedValue = encodeURIComponent(details[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-        }
-        //formBody = formBody.join("&");
-    
+        setIsLoading(true);
         fetch("https://hcmusemu.herokuapp.com/forum/courses/view", {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
               "Authorization": `bearer ${token}`,
             },
-            body: formBody,
         }) .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
@@ -57,6 +48,7 @@ const ForumAllCourseScreen =({navigation})=>{
             if(statusCode === 200){
                 setDataForum(dataRes);
             }
+            setIsLoading(false);
         }).catch(error => console.log('error', error));
     }
 
@@ -73,7 +65,7 @@ const ForumAllCourseScreen =({navigation})=>{
                     <View>
                         
                         <View style={[styles.nameAndDate,{flexDirection:'row',flexWrap:'wrap'}]}>
-                            <Text style={{fontSize:15,fontWeight:'bold'}}>{item.NameOwn}</Text>
+                            <Text style={{fontSize:12,fontWeight:'bold'}}>{item.NameOwn}</Text>
                             <MaterialIcons style={{marginTop:3}} name="play-arrow" size={10} color="grey" />
                             <Text style={[{fontWeight:'300',fontSize:10,marginTop:2}]}>{item.NameCourses}</Text>
                         </View>
@@ -82,11 +74,17 @@ const ForumAllCourseScreen =({navigation})=>{
 
                 </View>
                 
-                <View tyle={[styles.info,{marginBottom:20}]}>      
-                    <Text style={[styles.content]}>{item.title}</Text>                
-                </View>
-
-                {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
+                <Hyperlink linkStyle={{ color: 'blue',textDecorationLine:'underline' }} onPress={ (url) =>  Linking.openURL(url)}>
+                    <View tyle={[styles.info,{marginBottom:20}]}>      
+                        <Text style={[styles.content]}>{item.title}</Text>                
+                    </View>
+                </Hyperlink>
+                
+                {item.image !== "" && 
+                    <Lightbox>
+                        <Image style={styles.imagePost} source={{uri:item.image}}/>
+                    </Lightbox>
+                }
 
                  <View style={styles.footerCard}>
 
@@ -94,7 +92,7 @@ const ForumAllCourseScreen =({navigation})=>{
                  
                  {item.LikeByOwn === 1 ? <TouchableOpacity style={styles.buttonFooter}
                          onPress={async()=>{
-                            await forumServices.unlikePost(token,item.ID);
+                            //await forumServices.likePost(token,item.ID);
                             setRefresh(!refresh);
                         }}>
                          <Fontisto style={{marginRight:8}} name="like" size={18} color="blue" />
@@ -120,20 +118,24 @@ const ForumAllCourseScreen =({navigation})=>{
             </TouchableOpacity>
     )
 
-    const renderEmptyForum = (
-        <View style={{alignItems: "center"}}> 
-          <Text>Bạn chưa tham gia diễn đàn</Text>
-        </View>
-      );
-
     return (
         <View style={styles.container}>
+            {isLoading && dataForum.length === 0 && <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="blue"/>
+            </View>}
+
+            {!isLoading && dataForum.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                    <Text style={{color:'#BBBBBB'}}>
+                        Không tìm thấy diễn đàn môn học nào 
+                    </Text>
+                </View>
+            }
+            
 
             <FlatList
                 data={dataForum}
                 renderItem={renderItem}
                 keyExtractor = {(item,index) => index.toString()}
-                ListEmptyComponent = {renderEmptyForum}
             />
             
         </View>
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
 
     card: {
         flex:1,
-        marginTop:10,
+        marginVertical:10,
         width: '100%',
         backgroundColor:'white',
         borderBottomWidth:1,
@@ -160,6 +162,8 @@ const styles = StyleSheet.create({
         width:38,
         height:38,
         borderRadius:25,
+        borderColor:'silver',
+        borderWidth:.3
     },
 
     nameAndDate: {
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
 
     content: {
         marginHorizontal:15,
-        fontSize:17,
+        fontSize:12,
         marginBottom:10,
     },
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect,useRef  } from "react";
 import {
+  Dimensions,
   StyleSheet,
   Text,
   View,
@@ -7,6 +8,7 @@ import {
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert
 } from "react-native";
 import {
   Heading,
@@ -14,7 +16,9 @@ import {
   PasswordInput,
 } from "../../components/authentications/common/Index";
 import RNPickerSelect from "react-native-picker-select";
-import { useDispatch, useSelector,shallowEqual  } from "react-redux";
+import { useDispatch} from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
+
 import * as universityActions from "../../../store/actions/University";
 import * as authActions from '../../../store/actions/Authen';
 
@@ -35,14 +39,6 @@ const RegisterScreen = ({ navigation }) => {
 
   const [itemNameUniversity,setItemNameUniversity] = useState([]);
   const [itemFacultyName,setItemFacultyName] = useState([]);
-
-  const allInfo = {
-    username:"",
-    password:"",
-    fullname:"",
-    idUni:"",
-    idFaculty:"",
-  };
 
   const dispatch = useDispatch();
 
@@ -134,6 +130,20 @@ const RegisterScreen = ({ navigation }) => {
       return false;
     }
     return true;
+  };
+
+  const checkIdUni = () => {
+    if(idUni==="" || idUni == null){
+      return false;
+    }
+    return true;
+  };
+
+  const checkIdFaculty = () => {
+    if(idFaculty ==="" || idFaculty == null){
+      return false;
+    }
+    return true;
   }
 
   const checkPassword = () => {
@@ -150,14 +160,14 @@ const RegisterScreen = ({ navigation }) => {
   }
 
   //call api register
-  const register = (registerInfo) => {
+  const register = () => {
     setLoading(true);
     let details = {
-      username: registerInfo.username,
-      password: registerInfo.password,
-      HoTen: registerInfo.HoTen,
-      MaTruong: registerInfo.MaTruong,
-      MaKhoa: registerInfo.MaKhoa,
+      username: username,
+      password: password,
+      HoTen: fullname,
+      MaTruong: idUni,
+      MaKhoa: idFaculty,
     };
 
     let formBody = [];
@@ -168,6 +178,8 @@ const RegisterScreen = ({ navigation }) => {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
+
+    console.log(formBody);
 
     fetch("https://hcmusemu.herokuapp.com/account/signup", {
       method: "POST",
@@ -184,7 +196,16 @@ const RegisterScreen = ({ navigation }) => {
       if(statusCode === 201){
         dispatch(authActions.register());
         setLoading(false);
-        navigation.navigate("Login");
+        Alert.alert(
+          "Thành công",
+          "Tạo tài khoản thành công",
+          [
+            {
+              text: "Xác nhận",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ]
+        );
       }
       else if(statusCode === 409){
         setLoading(false);
@@ -202,33 +223,33 @@ const RegisterScreen = ({ navigation }) => {
       onPress={() => {
         Keyboard.dismiss();
       }}>
-      <ScrollView>
+      <ScrollView style={{backgroundColor: "#fff"}}>
         {isLoading && LoadingScreen()}
 
         <View style={styles.container}>
           <Heading>Đăng ký</Heading>
-          <UsernameInput placeholder={"Tên đăng nhập"}
-          onChangeText={(username) => setUsername(username)} />
+          <UsernameInput label="Email"
+            hideLabel={username !== ''}
+            onChangeText={(username) => setUsername(username)} />
 
-          <PasswordInput placeholder={"Mật khẩu"}
-          onChangeText={(password) => setPassword(password)} />
+          <PasswordInput label="Mật khẩu"
+            hideLabel={password !== ''}
+            onChangeText={(password) => setPassword(password)} />
 
-          <PasswordInput placeholder={"Nhập lại mật khẩu"}
-          onChangeText={(password) => setConfirmPwd(password)} />
+          <PasswordInput label="Nhập lại mật khẩu"
+            hideLabel={confirmPwd !== ''}
+            onChangeText={(password) => setConfirmPwd(password)} />
 
-          <UsernameInput placeholder={"Họ và tên"} 
-          onChangeText={(fullname) => setFullname(fullname)} />
+          <UsernameInput label="Họ và tên" 
+            hideLabel={fullname !== ''}
+            onChangeText={(fullname) => setFullname(fullname)} />
 
           <View style={styles.dropdown}>
             <RNPickerSelect
               onValueChange={(value) => { 
-                if(value!=null){
-                  setIdUni(value);
-                  
-                  getAllFacultyName(value);
-
-                  console.log(allInfo);
-                }
+                console.log(value);
+                setIdUni(value);
+                getAllFacultyName(value);
               }}
               //style={{...pickerSelectStyles}}
               useNativeAndroidPickerStyle={false}
@@ -238,26 +259,43 @@ const RegisterScreen = ({ navigation }) => {
                 value: null,
               }}
               items={itemNameUniversity}
+              style={{
+                placeholder: {
+                  fontSize: 15.5,
+                  fontWeight:"500",
+                  color:'#b3b3b3'
+                },
+                inputAndroid: {color: 'black'}
+              }}
+              Icon={() => {
+                return <Ionicons style={pickerSelectStyles.iconDropdown} name="caret-down-outline" size={20} color="gray" />;
+              }}
             />
             </View>
 
           <View style={styles.dropdown}>
             <RNPickerSelect
               onValueChange={(value) => {
-
-                if(value!=null){
                   console.log(value);
                   setIdFaculty(value);
-                }
-               
-               
               }}
-              //style={{ inputAndroid: { color: "black" } }}
+              //style={[styles.inputAndroid,{ color: "black" }]}
               useNativeAndroidPickerStyle={false}
               //fixAndroidTouchableBug={true}
               placeholder={{
                 label: "Chọn khoa",
                 value: null,
+              }}
+              style={{
+                placeholder: {
+                  fontSize: 15.5,
+                  fontWeight:"500",
+                  color:'#b3b3b3'
+                },
+                inputAndroid: {color: 'black'}
+              }}
+              Icon={() => {
+                return <Ionicons style={pickerSelectStyles.iconDropdown} name="caret-down-outline" size={20} color="gray" />;
               }}
               items={itemFacultyName}
             />
@@ -267,14 +305,8 @@ const RegisterScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.btnLoginTouchable}
               onPress={() => {
-                if(checkPassword() && checkUsername() && idUni!="" && idFaculty !="" && fullname.trim().length>0) {
-                  allInfo.fullname=fullname;
-                  allInfo.idUni=idUni;
-                  allInfo.username=username;
-                  allInfo.password=password;
-                  allInfo.idFaculty=idFaculty;
-
-                  register(allInfo);
+                if(checkPassword() && checkUsername() && checkIdUni() && checkIdFaculty() && fullname.trim().length>0) {
+                  register();
                 }
                 else if(fullname.trim().length===0){
                   alert("Tên không được bỏ trống");
@@ -282,10 +314,10 @@ const RegisterScreen = ({ navigation }) => {
                 else if(!checkUsername()){
                   alert("Tên tài khoản không hợp lệ");
                 }
-                else if(idUni===""){
+                else if(!checkIdUni()){
                   alert("Xin vui lòng chọn trường");
                 }
-                else if(idFaculty ===""){
+                else if(!checkIdFaculty()){
                   alert("Xin vui lòng chọn khoa");
                 }
                 else{
@@ -317,22 +349,22 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
+    backgroundColor: "#fff",
     padding: 10,
     paddingTop: 120,
   },
 
   dropdown: {
-    marginLeft: 15,
-    marginRight: 15,
-    backgroundColor: "#cccc",
-    paddingLeft: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+    marginLeft:5,
+    paddingLeft: 16,
+    paddingVertical:14,
     width: "100%",
-    borderRadius: 10,
-    marginVertical: 20,
+    borderWidth: 2,
+    borderColor:'#b3b3b3',
+    borderRadius: 5,
+    marginTop:20,
+    marginBottom: 5,
   },
 
   buttonLoginContainer: {
@@ -340,7 +372,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
+    padding: Dimensions.get("window").height * 0.02,
     marginVertical: 20,
     borderRadius: 10,
   },
@@ -392,7 +424,12 @@ const pickerSelectStyles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     marginVertical: 20,
+    color: 'black',
   },
+
+  iconDropdown: {
+    marginRight:20
+  }
 });
 
 export default RegisterScreen;

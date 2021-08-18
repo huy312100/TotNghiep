@@ -4,6 +4,7 @@ import { GET_ALL_COURSES,GET_CURRENT_COURSES,GET_INFO_COURSE_CHOOSE } from '../a
 const initialState = {
     allCourses: [],
     curCourses: [],
+    infoCourseChoose:{}
 }
 
 export default (state=initialState,action) => {
@@ -17,12 +18,13 @@ export default (state=initialState,action) => {
             return {
                 ...state,
                 curCourses:action.curCourses,
-            }
-            case GET_INFO_COURSE_CHOOSE:
-                return {
-                    ...state,
-                    infoCourseChoose:action.infoCourseChoose
-            }   
+        }
+        case GET_INFO_COURSE_CHOOSE:
+            return {
+                ...state,
+                infoCourseChoose:action.infoCourseChoose
+        }
+        
         default:
             return state;
     }

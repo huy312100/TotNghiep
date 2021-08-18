@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity,Alert} from "react-native";
+import{View,StyleSheet,Text,TextInput,TouchableWithoutFeedback,Keyboard,TouchableOpacity,Alert,ScrollView} from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {useDispatch,useSelector} from "react-redux";
@@ -13,22 +13,23 @@ const PortalConnectScreen = ({navigation})=>{
 
     const [show,setShow]= useState(true);
     const [visible,setVisible]= useState(true);
-    const [url,setUrl]=useState('');
-    const [username,setUsername]=useState('');
-    const [password,setPassword]=useState('');
     const [isLoading,setLoading] = useState(false);
 
     const dispatch=useDispatch();
     const token = useSelector((state) => state.authen.token);
+    const typeWebCustomed = useSelector((state) => state.profile.allWebCustomed);
 
-    const ConnectAppHandler =()=>{
+    var nameWebCustomed = typeWebCustomed.find(item => item.Type === 'Portal');
+
+    const [url,setUrl] = useState(nameWebCustomed == undefined ? "" : nameWebCustomed.Url);
+
+
+    const ConnectAppHandler = async()=>{
         setLoading(true);
         //console.log(token);
         let details = {
             typeUrl: 'Portal',
             url:url,
-            username: username,
-            password: password,
           };
       
           let formBody = [];
@@ -40,7 +41,7 @@ const PortalConnectScreen = ({navigation})=>{
           }
           formBody = formBody.join("&");
 
-          fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", {
+        await fetch("https://hcmusemu.herokuapp.com/web/postaccountcustom", {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -54,9 +55,9 @@ const PortalConnectScreen = ({navigation})=>{
         }).then(([statusCode, dataRes])=>{
             console.log(dataRes,statusCode); 
             if(statusCode === 201){
+                getWebCustomed();
                 dispatch(profileActions.connectApplication());
-                navigation.navigate("Profile");
-                setLoading(false);
+                navigation.navigate("Profile");  
             }
             else if(statusCode ===409){
                 setLoading(false);
@@ -77,7 +78,7 @@ const PortalConnectScreen = ({navigation})=>{
         }).catch(error => console.log('error', error));
     };
 
-    const getWebCustomed = () =>{
+    const getWebCustomed = async() =>{
         //console.log(token);
 
         var myHeaders = new Headers();
@@ -89,12 +90,13 @@ const PortalConnectScreen = ({navigation})=>{
             redirect: 'follow'
         };
 
-        fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
+        await fetch("https://hcmusemu.herokuapp.com/web/getcustomlink",requestOptions)
         .then((response) => {
             const statusCode = response.status;
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
             const tmp =[];
             if (statusCode === 200){
                 for (const key in dataRes) {
@@ -102,14 +104,58 @@ const PortalConnectScreen = ({navigation})=>{
                     {
                         Type: dataRes[key].Type,
                         Url:dataRes[key].Url,
+                        Username:dataRes[key].Username,
                     });
                 };
+                dispatch(profileActions.getAllWebCustomed(tmp));
+            }
+            else if (statusCode === 500){
+                dispatch(profileActions.getAllWebCustomed(tmp));
+            }
+            else{
+                
             }
             //setData(json);
-            dispatch(profileActions.getAllWebCustomed(tmp));
         })
         .catch((err) => console.log(err, "error"));
     };
+
+    const onDelete = async () => {
+        await fetch("https://hcmusemu.herokuapp.com/web/deleteaccountportal", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `bearer ${token}`,
+        },
+        }).then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+            console.log(statusCode,dataRes);
+            if (statusCode === 200){
+                getWebCustomed();
+                navigation.navigate("Profile");
+            }
+        }).catch((error) => console.log("error", error));
+    };
+
+    const checkDisableButton = () => {
+        if(nameWebCustomed == undefined){
+            if(url.trim().length === 0 ) {
+                return true; 
+            }
+            return false;
+        }
+        return true;
+    };
+
+    const checkDisableDeleteButton = () => {
+        if(nameWebCustomed != undefined){
+            return false;
+        }
+        return true;
+    }
 
     return (
         <TouchableWithoutFeedback onPress={() =>{
@@ -117,44 +163,43 @@ const PortalConnectScreen = ({navigation})=>{
         }}>
             <View style={styles.container}>
                 {isLoading && LoadingScreen()}
-                
-                <Text style={styles.label}>
-                    URL
-                </Text>
 
-                <TextInput style={styles.input} onChangeText={(url)=>setUrl(url)}/>
+                <View style={{flexDirection:'row',alignItems: 'center' }}>
+                    <Text style={[styles.label,{marginRight:0}]}>
+                        URL
+                    </Text>
+                    <Text style={{color:'grey'}}>
+                        (https://portal.ctdb.hcmus.edu.vn)
+                    </Text>
+                </View>
 
-                {/* <Text style={styles.label}>
-                    Username ứng dụng
-                </Text>
+                <TextInput style={styles.input} onChangeText={(url)=>setUrl(url)}>{url}</TextInput>
 
-                <TextInput style={styles.input} keyboardType="default" 
-                    onChangeText={(username)=>setUsername(username)}/>
+                <View style={{flexDirection:'row',justifyContent: 'center'}}>
 
-                <Text style={styles.label}>
-                    Password ứng dụng
-                </Text>
-
-                <View style={styles.passInput}>
-                    <TextInput secureTextEntry={visible} style={styles.passInputText}
-                        onChangeText={(password)=>setPassword(password)}/>
-                    <TouchableOpacity style={styles.eyeBtn}  onPress={()=>{
-                        setVisible(!visible);
-                        setShow(!show);
-                    }}>
-                        <MaterialCommunityIcons name={show===false ? "eye-outline" : "eye-off-outline"} size={16} ></MaterialCommunityIcons>
+                    <TouchableOpacity
+                        disabled={checkDisableDeleteButton()}
+                        style={[styles.button,{backgroundColor: checkDisableDeleteButton() ? "grey" : "red"}]}
+                        onPress={async() => {
+                            setLoading(true);
+                            await onDelete();
+                            setLoading(false);
+                        }}>
+                        <Text style={styles.textBtnConnect}>Xóa thông tin</Text>
                     </TouchableOpacity>
-                </View> */}
 
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                    ConnectAppHandler();
-                    getWebCustomed();
-                }}>
-                <Text style={styles.textBtnConnect}>Kết nối</Text>
-            </TouchableOpacity>
-        </View>
+                    <TouchableOpacity
+                        disabled={checkDisableButton()}
+                        style={[styles.button,{backgroundColor: checkDisableButton() ? "grey" : "green"}]}
+                        onPress={async() => {
+                            setLoading(true);
+                            await ConnectAppHandler();
+                            setLoading(false);
+                        }}>
+                        <Text style={styles.textBtnConnect}>Kết nối</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </TouchableWithoutFeedback>
         
     ); 
@@ -196,16 +241,18 @@ const styles = StyleSheet.create({
     },
 
     button:{
-        backgroundColor: "green",
-        margin:60,
+        marginHorizontal:10,
+        marginVertical:40,
         borderRadius:20,
-        padding:10
+        paddingVertical:10,
+        paddingHorizontal:30
     },
     
     input:{
+        borderWidth:1,
+        borderColor:'green',
         marginLeft:15,
         marginRight:15,
-        backgroundColor:"#cccc",
         borderRadius:10,
         padding:10
     },

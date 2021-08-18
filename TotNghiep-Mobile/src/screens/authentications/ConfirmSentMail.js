@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,StyleSheet,Image,Text,TouchableOpacity} from 'react-native';
+import { View,StyleSheet,Image,Text,TouchableOpacity,TextInput } from 'react-native';
 
 
 const MailSentScreen = ({navigation}) => {

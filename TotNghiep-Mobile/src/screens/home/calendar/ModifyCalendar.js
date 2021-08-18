@@ -1,7 +1,8 @@
 import React,{useState} from 'react';
-import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,KeyboardAvoidingView,ScrollView } from 'react-native';
+import { StyleSheet, View, Text,TouchableOpacity,TouchableWithoutFeedback,Keyboard,TextInput,Switch,ScrollView,Alert,Platform } from 'react-native';
 import { Ionicons,Entypo,SimpleLineIcons,MaterialCommunityIcons,FontAwesome5,MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Overlay,Header } from 'react-native-elements';
 import { useDispatch,useSelector } from 'react-redux';
 
@@ -12,12 +13,62 @@ import LoadingScreen from '../../LoadingScreen';
 
 
 const ModifyCalendarScreen = ({navigation,route}) => {
+    const token = useSelector((state) => state.authen.token);
+    const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
-    const getCurrentTimestamp=()=>{
-        return Date.now();
+    const gmtDiff = 25200000;
+
+    //Handle for current time
+    const getCurrentDay = (timestamp)=>{
+        var today = new Date(timestamp); 
+        var day= today.getDate();
+        return day;
     };
 
-    const token = useSelector((state) => state.authen.token);
+    const getCurrentMonth =(timestamp)=> {
+        var today = new Date(timestamp);
+        var month = today.getMonth() + 1;
+        return month; 
+    };
+
+    const getCurrentYear = (timestamp) => {
+        var today = new Date(timestamp); 
+        var year= today.getFullYear();
+        return year;
+    };
+    
+    const addZero=(i) =>{
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    };
+    
+    const getCurrentTime = (timestamp) => {
+        var d = new Date(timestamp);
+        var h = addZero(d.getHours());
+        var m = addZero(d.getMinutes());
+        return h + ":" + m;
+    };
+
+    //Get all Guest name add to this calendar
+    const getAllGuestName = () => {
+        const tmp =[];
+        for (const key in allUserChoose){
+            tmp.push(allUserChoose[key].HoTen);
+        }
+        return tmp;
+    };
+
+    //Get all Email name add to this calendar
+    const getAllGuestEmail = () => {
+        const tmp =[];
+        for (const key in allUserChoose){
+            tmp.push(allUserChoose[key].Email);
+        }
+        return tmp;
+    };
+
 
     const [isLoading,setLoading] = useState(false);
 
@@ -25,28 +76,32 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     
     const [title,setTitle]=useState(route.params.nameEvent);
     
+    const [startTime,setStartTime] = useState(getCurrentTime(route.params.startTimestamp*1000));
+    const [endTime,setEndTime] =useState(getCurrentTime(route.params.endTimestamp*1000));
+
+    const [day,setDay] = useState(getCurrentYear(route.params.startTimestamp*1000)+'-'+addZero(getCurrentMonth(route.params.startTimestamp*1000))+'-'+addZero(getCurrentDay(route.params.startTimestamp*1000)));
+    const [startTimeConvert,setStartTimeConvert] = useState(day+'T'+startTime);
+    const [endTimeConvert,setEndTimeConvert] = useState(day+'T'+endTime);
 
     const [startTimestamp,setStartTimestamp]=useState(route.params.startTimestamp*1000);
     const [endTimestamp,setEndTimestamp]=useState(route.params.endTimestamp*1000);
     const [isEnabled, setIsEnabled] = useState(false);
 
-    const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
-    const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
+    const [isEndTimePickerVisible, setEndTimePickerVisibility] = useState(false);
+
     const [visibleOverlayAddPeople, setVisibleOverlayAddPeople] = useState(false);
     const [visibleOverlayAddTypeEvent, setVisibleOverlayAddTypeEvent] = useState(false);
     const [visibleOverlayAddColor, setVisibleOverlayAddColor] = useState(false);
     const [visibleOverlayRemindNoti, setVisibleOverlayRemindNoti] = useState(false);
 
-
-    const [allMembers,setAllMembers] = useState(route.params.listGuest);
     const [typeEvent,setTypeEvent]= useState(route.params.typeEvent);
     const [colorEvent,setColorEvent] =useState(route.params.colorEvent);
     const [urlEvent,setUrlEvent] =useState(route.params.urlEvent);
     const [decriptionEvent,setDecriptionEvent] =useState(route.params.decriptionEvent);
     const [timestampRemindNoti,setTimestampRemindNoti] = useState(startTimestamp);
     const [labelRemindNoti,setLabelRemindNoti] = useState('');
-
-    const [defaultTitle,setDefaultTitle] = useState(route.params.nameEvent);
 
     const dispatch=useDispatch();
 
@@ -67,72 +122,157 @@ const ModifyCalendarScreen = ({navigation,route}) => {
     };
 
 
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const toggleSwitch = () => {
+        setIsEnabled(previousState => !previousState);
+        if(Platform.OS === 'ios'){
+            if(!isEnabled){
+                console.log(day);
+                setStartTimeConvert(day+'T'+'00:00:00');
+                setEndTimeConvert(day+'T'+'23:59:00');
+                setStartTimestamp(new Date(day+'T'+'00:00:00').getTime());
+                setEndTimestamp(new Date(day+'T'+'23:59:00').getTime());
+    
+            }
+            else{
+                setStartTimeConvert(day+'T'+startTime);
+                setEndTimeConvert(day+'T'+endTime);
+                setStartTimestamp(new Date(day+'T'+startTime).getTime());
+                setEndTimestamp(new Date(day+'T'+endTime).getTime());
+            }
+        }
+        else if (Platform.OS === 'android'){
+            if(!isEnabled){
+                console.log(day);
+                setStartTimeConvert(day+'T'+'00:00:00');
+                setEndTimeConvert(day+'T'+'23:59:00');
+                setStartTimestamp(new Date(day+'T'+'00:00:00').getTime() - gmtDiff);
+                setEndTimestamp(new Date(day+'T'+'23:59:00').getTime() - gmtDiff);
+    
+            }
+            else{
+                setStartTimeConvert(day+'T'+startTime);
+                setEndTimeConvert(day+'T'+endTime);
+                setStartTimestamp(new Date(day+'T'+startTime).getTime() - gmtDiff);
+                setEndTimestamp(new Date(day+'T'+endTime).getTime() - gmtDiff);
+            }
+        }
 
-    //Handle for start time event
-    const showStartDatePicker = () => {
-        setStartDatePickerVisibility(true);
+        
+    };
+
+    //Handle for date event
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
     };
     
-    const hideStartDatePicker = () => {
-        setStartDatePickerVisibility(false);
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleDateConfirm = (a) => {
+        hideDatePicker();
+
+        //const x=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+        //const x = moment("12-25-1995", "YYYY-MM-DD");
+        //console.log(day);
+        let date = new Date(a);
+        let year = date.getFullYear();
+        let month = date.getMonth()+1;
+        let dt = date.getDate();
+
+        if (dt < 10) {
+            dt = '0' + dt;
+        }
+        if (month < 10) {
+            month = '0' + month;
+        }
+
+        setDay(year+'-' + month+'-'+dt);
+        if(Platform.OS === 'ios'){
+            if(!isEnabled){
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+startTime);
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+endTime);
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+startTime).getTime());
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+endTime).getTime());
+            }
+            else{
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+'00:00:00');
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+'23:59:00');
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'00:00:00').getTime());
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'23:59:00').getTime());
+            }
+        }
+        else if (Platform.OS === 'android'){
+            if(!isEnabled){
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+startTime);
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+endTime);
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+startTime).getTime() - gmtDiff);
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+endTime).getTime() - gmtDiff);
+            }
+            else{
+                setStartTimeConvert(year+'-' + month+'-'+dt+'T'+'00:00:00');
+                setEndTimeConvert(year+'-' + month+'-'+dt+'T'+'23:59:00');
+                setStartTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'00:00:00').getTime() - gmtDiff);
+                setEndTimestamp(new Date(year+'-' + month+'-'+dt+'T'+'23:59:00').getTime() - gmtDiff);
+            }
+        }
+        
+    };
+
+    //Handle for start time event
+    const showStartTimePicker = () => {
+        setStartTimePickerVisibility(true); 
+    };
+    
+    const hideStartTimePicker = () => {
+        setStartTimePickerVisibility(false);
     };
 
     const handleStartConfirm = (date) => {
+        hideStartTimePicker();
+        //console.log(day);
+        //console.log(Date.now());
+
+        //setStartTime(dayConvert);
+        setStartTimeConvert(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00');
+
+
+        setStartTime(addZero(date.getHours())+':'+addZero(date.getMinutes()))
         //console.warn("A date has been picked: ", date);
-        setStartTimestamp(date.getTime());
-        hideStartDatePicker();
+        if(Platform.OS === 'ios'){
+            setStartTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
+        }
+        else if(Platform.OS === 'android'){
+            setStartTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime() - gmtDiff);
+        }
     };
 
 
     //Handle for end time event
-    const showEndDatePicker = () => {
-        setEndDatePickerVisibility(true);
+    const showEndTimePicker = () => {
+        setEndTimePickerVisibility(true);
     };
     
-    const hideEndDatePicker = () => {
-        setEndDatePickerVisibility(false);
+    const hideEndTimePicker = () => {
+        setEndTimePickerVisibility(false);
     };
 
     const handleEndConfirm = (date) => {
+        hideEndTimePicker();
         //console.warn("A date has been picked: ", date);
-        setEndTimestamp(date.getTime());
-        //console.log(checkValidDate());
-        hideEndDatePicker();
-    };
+        //setEndTimeConvert(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00');
+        //console.log(new Date(endTimeConvert).getTime());
 
-    //Handle for current time
-    const getCurrenDay = (timestamp)=>{
-        var today = new Date(timestamp); 
-        var day= today.getDate();
-        return day;
-    };
+        setEndTimeConvert(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00');
 
-    const getCurrentMonth =(timestamp)=> {
-        var today = new Date(timestamp);
-        var month = today.getMonth() + 1;
-        return month; 
+        setEndTime(addZero(date.getHours())+':'+addZero(date.getMinutes()));
+        if(Platform.OS === 'ios'){
+            setEndTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime());
+        }
+        else if (Platform.OS === 'android'){
+            setEndTimestamp(new Date(day+'T'+addZero(date.getHours())+':'+addZero(date.getMinutes())+':00').getTime() - gmtDiff);
+        }        //console.log(checkValidDate());
     };
-
-    const getCurrentYear = (timestamp) => {
-        var today = new Date(timestamp); 
-        var year= today.getFullYear();
-        return year;
-    }
-    
-    const addZero=(i) =>{
-    if (i < 10) {
-        i = "0" + i;
-    }
-    return i;
-    }
-    
-    const getCurrentTime = (timestamp) => {
-        var d = new Date(timestamp);
-        var h = addZero(d.getHours());
-        var m = addZero(d.getMinutes());
-        return h + ":" + m;
-    }
 
     //Handle Start and End Date
     const checkValidDate = () =>{
@@ -159,7 +299,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
 
     //Handle for clickable add button
     const checkDisableAddButton =() =>{
-        if(checkTitle(title) && checkValidDate() && title !== defaultTitle){
+        if(checkTitle(title) && checkValidDate() && (title !== route.params.nameEvent || startTimestamp !== route.params.startTimestamp*1000 || endTimestamp !== route.params.endTimestamp*1000 || typeEvent !== route.params.typeEvent || colorEvent !== route.params.colorEvent || urlEvent !== route.params.urlEvent || decriptionEvent !== route.params.decriptionEvent)){
             return false;
         }
         return true;
@@ -180,7 +320,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
             "TypeEvent": typeEvent,
             "year": getCurrentYear(startTimestamp).toString(),
             "month": getCurrentMonth(startTimestamp).toString(),
-            "day": getCurrenDay(startTimestamp).toString(),
+            "day": getCurrentDay(startTimestamp).toString(),
             "StartHour": Math.floor(startTimestamp/1000),
             "EndHour": Math.floor(endTimestamp/1000),
             "desciptionText": decriptionEvent,
@@ -189,8 +329,8 @@ const ModifyCalendarScreen = ({navigation,route}) => {
             "Italic": false,
             "Bold": false,
             "Color": colorEvent,
-            "listguestEmail": [],
-            "listguestName": [],
+            "listguestEmail": getAllGuestEmail(),
+            "listguestName": getAllGuestName(),
             "Notification": timestampRemindNoti
         });
 
@@ -208,22 +348,63 @@ const ModifyCalendarScreen = ({navigation,route}) => {
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes])=>{
             console.log(raw);
-            console.log(dataRes);
+            console.log(statusCode,dataRes);
             if(statusCode === 200){
                 //getAllActivitiesInMonth();
                 //dispatch(calendarActions.addNewEventToCalendar());
-                setLoading(false);
                 navigation.navigate('Calendar');
+                setLoading(false);
+            }
+            else if(statusCode ===500){
+                if(dataRes.message === 'No your calendar in db'){
+                    Alert.alert(
+                        "Lỗi",
+                        "Lịch này không còn tồn tại ",
+                        [
+                          {
+                            text: "Xác nhận",
+                            style: "cancel",
+                          },
+                        ],
+                        {
+                          cancelable: true,
+                          onDismiss: () =>
+                            Alert.alert(
+                              "This alert was dismissed by tapping outside of the alert dialog."
+                            ),
+                        }
+                    );
+                    navigation.navigate('Calendar');
+                    setLoading(false);
+                }
+                else{
+                    Alert.alert(
+                        "Lỗi",
+                        "Đã xảy ra lỗi .Vui lòng thử lại sau",
+                        [
+                          {
+                            text: "Xác nhận",
+                            style: "cancel",
+                          },
+                        ],
+                        {
+                          cancelable: true,
+                          onDismiss: () =>
+                            Alert.alert(
+                              "This alert was dismissed by tapping outside of the alert dialog."
+                            ),
+                        }
+                    );
+                    navigation.navigate('Calendar');
+                    setLoading(false);
+                }
             }  
         })
         .catch(error => console.log('error', error));
     }
 
     return(
-        <KeyboardAvoidingView
-        //keyboardVerticalOffset = {Header.HEIGHT + 20} // adjust the value here if you need more padding
-         behavior={Platform.OS === "ios" ? "padding" : "height"}
-         style={styles.container}>
+        <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
           }}>
@@ -279,38 +460,48 @@ const ModifyCalendarScreen = ({navigation,route}) => {
             </View>
 
             <View style={[styles.card,{marginTop:0}]}>
-                <TouchableOpacity style={styles.date} onPress={showStartDatePicker}>
+
+                <TouchableOpacity style={styles.date} onPress={showDatePicker}>
+                    <Text style={[styles.label,{marginLeft:32}]}>Ngày</Text>
+                    <View style={[styles.onTheRight,{flexDirection:'row'}]}>
+                        <Text style={styles.label} >
+                            {getCurrentDay(startTimestamp)+" tháng "+ getCurrentMonth(startTimestamp)+"," + getCurrentYear(startTimestamp)}    
+                        </Text>
+
+                    </View>
+                </TouchableOpacity>
+
+                {!isEnabled && <TouchableOpacity style={styles.date} onPress={showStartTimePicker}>
                     <Text style={[styles.label,{marginLeft:32}]}>Bắt đầu</Text>
                     <View style={[styles.onTheRight,{flexDirection:'row'}]}>
                         <Text style={styles.label} >
-                            {getCurrenDay(startTimestamp)+" tháng "+ getCurrentMonth(startTimestamp)+"," + getCurrentYear(startTimestamp)}    
+                            {startTime}                            
                         </Text>
-
-                         {!isEnabled &&<Text style={[styles.label,{marginLeft:20}]} >
-                            {getCurrentTime(startTimestamp)}
-                        </Text>}
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity>}
 
-                <TouchableOpacity style={styles.date} onPress={showEndDatePicker}>
+                {!isEnabled && <TouchableOpacity style={styles.date} onPress={showEndTimePicker}>
                     <Text style={[styles.label,{marginLeft:32}]}>Kết thúc</Text>
                     <View style={[styles.onTheRight,{flexDirection:'row'}]}>
                         <Text style={[styles.label,{ textDecorationLine: checkValidDate() ? 'none' : 'line-through'}]} >
-                            {getCurrenDay(endTimestamp)+" tháng "+ getCurrentMonth(endTimestamp)+"," + getCurrentYear(endTimestamp)}
+                            {endTime}
                         </Text>
-                        {!isEnabled && <Text style={[styles.label,{marginLeft:20,textDecorationLine: checkValidDate() ? 'none' : 'line-through'}]}>
-                            {getCurrentTime(endTimestamp)}
-                        </Text>}
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
                
-            <TouchableOpacity style={[styles.card,{marginBottom:0}]} onPress={toggleOverlayAddPeople}>
+
+            {/* Second part   */}
+            <TouchableOpacity style={[styles.card,{marginBottom:0}]} 
+                onPress={() =>{
+                    navigation.navigate('Add people to calendar',{
+                        typeAction:'Modify Calendar',
+                })}}>
                 <View style={styles.date}>
                 <Ionicons name="people-outline" size={23} color="red" />
                     <Text style={styles.label}>Thêm người</Text>
+                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{allUserChoose.length}</Text>
                     <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
-                    <Text style={[styles.onTheRight,styles.showChooseOnTheRight,colorStyle.colorLabelOnTheRight]}>{allMembers.length}</Text>
                 </View>
             </TouchableOpacity> 
 
@@ -348,10 +539,10 @@ const ModifyCalendarScreen = ({navigation,route}) => {
                    onChangeText={(url) => setUrlEvent(url)}>{urlEvent}</TextInput>
                 </View>
             </View> 
-            <View style={[styles.card,{marginTop:0,height:"25%"}]}>
+            <View style={[styles.card,{marginTop:0,marginBottom:10}]}>
                 <View style={styles.date}>
                     <SimpleLineIcons name="note" size={20} color="red" />
-                    <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:"600%"}]} placeholder="Mô tả" multiline={true}
+                    <TextInput style={[styles.label,{width:"100%",marginTop:-5,height:300,textAlignVertical:"top"}]} placeholder="Mô tả" multiline={true}
                     onChangeText={(decription) => setDecriptionEvent(decription)}>{decriptionEvent}</TextInput>
                 </View>
             </View> 
@@ -359,50 +550,45 @@ const ModifyCalendarScreen = ({navigation,route}) => {
 
             <DateTimePickerModal
                 locale={'vi'}
-                isVisible={isStartDatePickerVisible && !isEnabled}
-                mode="datetime"
-                value={startTimestamp}
-                headerTextIOS="Chọn thời điểm bắt đầu"
+                isVisible={isDatePickerVisible }
+                mode="date"
+                date={new Date(startTimestamp)}
+                headerTextIOS="Chọn ngày"
                 cancelTextIOS="Huỷ bỏ"
                 confirmTextIOS="Xác nhận"
-                onConfirm={handleStartConfirm}
-                onCancel={hideStartDatePicker}
+                onConfirm={handleDateConfirm}
+                onCancel={hideDatePicker}
                 onHide={()=>{
                     checkValidDate();
                 }}/>
 
             <DateTimePickerModal
                 locale={'vi'}
-                isVisible={isEndDatePickerVisible && !isEnabled}
-                mode="datetime"
-                headerTextIOS="Chọn thời điểm kết thúc"
+                isVisible={isStartTimePickerVisible && !isEnabled}
+                mode="time"
+                date={new Date(startTimestamp)}
+                headerTextIOS="Chọn thời gian bắt đầu"
                 cancelTextIOS="Huỷ bỏ"
                 confirmTextIOS="Xác nhận"
-                onConfirm={handleEndConfirm}
-                onCancel={hideEndDatePicker}
+                onConfirm={handleStartConfirm}
+                onCancel={hideStartTimePicker}
                 onHide={()=>{
                     checkValidDate();
                 }}/>
 
             <DateTimePickerModal
                 locale={'vi'}
-                isVisible={isStartDatePickerVisible && isEnabled}
-                mode="date"
-                headerTextIOS="Chọn thời điểm bắt đầu"
-                cancelTextIOS="Huỷ bỏ"
-                confirmTextIOS="Xác nhận"
-                onConfirm={handleStartConfirm}
-                onCancel={hideStartDatePicker}/>
-
-            <DateTimePickerModal
-                locale={'vi'}
-                isVisible={isEndDatePickerVisible && isEnabled}
-                mode="date"
-                headerTextIOS="Chọn thời điểm kết thúc"
+                isVisible={isEndTimePickerVisible && !isEnabled}
+                mode="time"
+                date={new Date(endTimestamp)}
+                headerTextIOS="Chọn thời gian kết thúc"
                 cancelTextIOS="Huỷ bỏ"
                 confirmTextIOS="Xác nhận"
                 onConfirm={handleEndConfirm}
-                onCancel={hideEndDatePicker}/>
+                onCancel={hideEndTimePicker}
+                onHide={()=>{
+                    checkValidDate();
+                }}/>
 
 
             {isLoading && LoadingScreen()}
@@ -597,7 +783,7 @@ const ModifyCalendarScreen = ({navigation,route}) => {
 
             </ScrollView>
         </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
     )
 };
 

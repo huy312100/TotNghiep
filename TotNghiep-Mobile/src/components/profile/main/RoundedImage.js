@@ -16,8 +16,8 @@ const RoundedImage =(props)=>{
 
 const styles = StyleSheet.create({
     image: {
-        width:120,
-        height:120,
+        width:100,
+        height:100,
         marginTop: 10,
     },
 

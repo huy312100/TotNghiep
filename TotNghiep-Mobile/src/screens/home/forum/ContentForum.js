@@ -1,7 +1,10 @@
 import React,{useState,useEffect,useRef,useCallback} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform,ActivityIndicator} from 'react-native';
+import { ScrollView,View,StyleSheet,Text,TouchableOpacity,Image,FlatList,TextInput,KeyboardAvoidingView ,ImageBackground,Alert,Platform,ActivityIndicator,Linking} from 'react-native';
 import { Fontisto,FontAwesome,Entypo,MaterialCommunityIcons,AntDesign,Ionicons } from '@expo/vector-icons';
 import { Header } from 'react-native-elements';
+import Hyperlink from 'react-native-hyperlink';
+
+import Lightbox from 'react-native-lightbox-v2';
 
 import {useSelector} from 'react-redux';
 
@@ -173,7 +176,7 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         }
         formBody = formBody.join("&");
 
-        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewcmt", {
+        fetch("https://hcmusemu.herokuapp.com/forum/viewcmt", {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -219,11 +222,17 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                 </TouchableOpacity>}
             </View>
 
-            <View tyle={[styles.info,{marginBottom:20}]}>
-                <Text style={[styles.content]}>{dataOfForum.title}</Text>
-            </View>
+            <Hyperlink linkStyle={{ color: 'blue',textDecorationLine:'underline' }} onPress={ (url) =>  Linking.openURL(url)}>
+                <View tyle={[styles.info,{marginBottom:20}]}>      
+                    <Text style={[styles.content]}>{dataOfForum.title}</Text>                
+                </View>
+            </Hyperlink>
 
-            {dataOfForum.image !== "" && <Image style={styles.imagePost} source={{uri:dataOfForum.image}}/>}
+            {dataOfForum.image !== "" && 
+                <Lightbox>
+                    <Image style={styles.imagePost} source={{uri:dataOfForum.image}}/>
+                </Lightbox>
+            }
 
             {dataDetail.length !== 0 && <View style={styles.footerCard}>
                 {dataDetail[0].LikeByOwn === 0 ? <TouchableOpacity style={styles.buttonFooter}
@@ -320,11 +329,9 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
         <View style={styles.container}>
             <Header
                 containerStyle={{
+                    backgroundColor: 'white',
                     justifyContent: 'space-around',
-                    headerBackTitle:false,
-                    headerTruncatedBackTitle:false,
-                    headerTitleAlign: 'center',
-                    backgroundColor:"#33CCFF",
+                    borderBottomColor:'#DDDDDD'
                 }}
 
                 rightComponent={
@@ -334,24 +341,22 @@ const ContentForumFacultyAndUniversityScreen =({navigation,route})=>{
                             typeForum:typeForum,
                         });
                     }}>
-                        <Ionicons name="list" size={30} color="white" />
+                        <Ionicons name="list" size={30} color="#006666" />
                     </TouchableOpacity>
                 }
 
                 centerComponent={
-                    <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10, color: "white"}}>Diễn đàn của {dataOfForum.NameOwn}</Text>
+                    <Text numberOfLines={1} style={{fontSize:12,fontWeight:'500',marginTop:10}}>Diễn đàn của {dataOfForum.NameOwn}</Text>
                 }
 
                 leftComponent={
                 <TouchableOpacity onPress={() =>{
                     navigation.goBack();
                     }}>
-                        <Entypo name="chevron-left" size={30} color="white" />
+                        <Entypo name="chevron-left" size={30} color="blue" />
                     </TouchableOpacity>
                 }/>
                 {/* <Text>{dataDetail[0].like}</Text> */}
-
-                {}
 
             {loading ? <ActivityIndicator style={{flex: 1}} color="black"/>
             :
@@ -492,7 +497,8 @@ const styles = StyleSheet.create({
         width:38,
         height:38,
         borderRadius:25,
-        backgroundColor:'grey'
+        borderColor:'silver',
+        borderWidth:.3
     },
 
     nameAndDate: {

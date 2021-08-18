@@ -9,13 +9,14 @@ import { useDispatch,useSelector } from 'react-redux';
 import * as calendarActions from '../../../../store/actions/Calendar';
 
 
-const AddPeopleToCalendarScreen = ({navigation}) => {
+const AddPeopleToCalendarScreen = ({navigation,route}) => {
 
     const dispatch= useDispatch();
     const allUserChoose = useSelector((state) => state.calendar.allUserChoose);
 
     const token = useSelector((state) => state.authen.token);
 
+    const typeAction = route.params.typeAction;
 
     const [userChoose,setUserChoose] = useState(allUserChoose);
     const [data,setData] = useState([]);
@@ -142,8 +143,16 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
 
           <TouchableOpacity style={styles.confirm} disabled={checkEmptyPeopleInCalendar()} 
             onPress={() =>{
-              dispatch(calendarActions.addPeopleToCalendar(userChoose));
-              navigation.navigate('Add Event');
+              if(typeAction === 'Add Event'){
+                console.log(userChoose);
+                dispatch(calendarActions.addPeopleToCalendar(userChoose));
+                navigation.navigate('Add Event');
+              }
+              else if(typeAction === 'Modify Calendar'){
+                dispatch(calendarActions.addPeopleToCalendar(userChoose));
+                navigation.navigate('Modify Event');
+              }
+
             }}>
             <Text style={[styles.confirmLabel,{color: checkEmptyPeopleInCalendar() ? 'silver' : 'blue'}]}>Xong</Text>
           </TouchableOpacity>
@@ -170,6 +179,7 @@ const AddPeopleToCalendarScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: Platform.OS === 'android' ? 25 : 0
     },
 
     header: {

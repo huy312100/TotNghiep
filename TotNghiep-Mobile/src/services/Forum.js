@@ -79,6 +79,7 @@ export const createPost = async (token,title,image,scope)=>{
     }).catch((err) => console.log(err, "error"));
 };
 
+
 export const deletePost = async(token,idPost) => {
     let details = {
         IDPost: idPost,
@@ -93,7 +94,7 @@ export const deletePost = async(token,idPost) => {
     }
     formBody = formBody.join("&");
 
-    fetch("https://hcmusemu.herokuapp.com/forum/delete", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -126,7 +127,7 @@ export const likePost = async (token,idPost) =>{
     }
     formBody = formBody.join("&");
 
-    fetch("https://hcmusemu.herokuapp.com/forum/like", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/like", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -192,7 +193,7 @@ export const deleteCmt = async (token,idCmt) =>{
     }
     formBody = formBody.join("&");
 
-    fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -259,7 +260,9 @@ export const commentPost = async (token,idPost,comment,image ) => {
 
       //console.log(dataUniversity);
     }).catch((err) => console.log(err, "error"));
-}
+};
+
+
 
 //course services
 export const createCoursePost = async (token,IDCourses,title,image)=>{
@@ -376,7 +379,7 @@ export const commentCoursePost = async (token,idPost,comment,image ) => {
         redirect: 'follow'
         };
 
-    await fetch("https://hcmusemu.herokuapp.com/forum/courses/cmt",requestOptions)
+    await fetch("https://hcmusemu.herokuapp.com/forum/cmt",requestOptions)
     .then((response) => {
       const statusCode = response.status;
       const dataRes = response.json();
@@ -408,7 +411,7 @@ export const deleteCourseCmt = async(token,idCmt) => {
     }
     formBody = formBody.join("&");
 
-    await fetch("https://hcmusemu.herokuapp.com/forum/courses/deletecmt", {
+    await fetch("https://hcmusemu.herokuapp.com/forum/deletecmt", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -459,3 +462,4 @@ export const likeCoursePost = async (token,idPost) =>{
         }
     }).catch(error => console.log('error', error));
 };
+

@@ -1,6 +1,9 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator } from 'react-native';
+import { View,StyleSheet,Text,TouchableOpacity,Image,FlatList,ActivityIndicator,Linking } from 'react-native';
 import { Fontisto,FontAwesome } from '@expo/vector-icons';
+import Hyperlink from 'react-native-hyperlink';
+
+import Lightbox from 'react-native-lightbox-v2';
 
 import {useSelector} from 'react-redux';
 
@@ -16,6 +19,8 @@ const ForumFacultyScreen =({navigation})=>{
     const [dataForum,setDataForum] = useState([]);
     const [isLoading,setIsLoading] = useState(true);
     const [refresh,setRefresh] = useState(false);
+    const [visibleImageView, setIsVisibleImageView] = useState(false);
+
 
     useEffect(() => {
         getForum();
@@ -87,11 +92,18 @@ const ForumFacultyScreen =({navigation})=>{
 
                 </View>
                 
-                <View tyle={[styles.info,{marginBottom:20}]}>      
-                    <Text style={[styles.content]}>{item.title}</Text>                
-                </View>
+                <Hyperlink linkStyle={{ color: 'blue',textDecorationLine:'underline' }} onPress={ (url) =>  Linking.openURL(url)}>
+                    <View tyle={[styles.info,{marginBottom:20}]}>      
+                        <Text style={[styles.content]}>{item.title}</Text>                
+                    </View>
+                </Hyperlink>
+               
 
-                {item.image !== "" && <Image style={styles.imagePost} source={{uri:item.image}}/>}
+                {item.image !== "" && 
+                    <Lightbox>
+                        <Image style={styles.imagePost} source={{uri:item.image}}/>
+                    </Lightbox>
+                }
 
                 <View style={styles.footerCard}>
                     {item.LikeByOwn === 1 ?
@@ -153,7 +165,7 @@ const styles = StyleSheet.create({
     },
 
     card: {
-        marginTop:10,
+        marginVertical:10,
         width: '100%',
         backgroundColor:'white',
         borderBottomWidth:1,
@@ -165,6 +177,8 @@ const styles = StyleSheet.create({
         width:38,
         height:38,
         borderRadius:25,
+        borderColor:'silver',
+        borderWidth:.3
     },
 
     nameAndDate: {
@@ -189,6 +203,7 @@ const styles = StyleSheet.create({
     imagePost:{
         width:'100%',
         backgroundColor:'grey',
+        height: 'auto',
         aspectRatio: 1
     },
 

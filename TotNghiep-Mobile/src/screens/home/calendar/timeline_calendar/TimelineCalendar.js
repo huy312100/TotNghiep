@@ -9,7 +9,6 @@ import {
   import _ from 'lodash';
   import moment from 'moment';
   import React from 'react';
-  import DateTimePicker from "react-native-modal-datetime-picker";
   
   import styleConstructor from './Style';
   
@@ -26,29 +25,8 @@ import {
       this.state = {
         date: moment(this.props.initDate),
         index: this.props.size,
-        isDateTimePickerVisible: false,
-        getdate: moment(this.props.initDate),
       };
     }
-
-    changeDate = (datetochange) => {
-      this.state.getdate = datetochange;
-    };
-
-    showDateTimePicker = () => {
-      this.setState({ isDateTimePickerVisible: true });
-    };
-   
-    hideDateTimePicker = () => {
-      this.setState({ isDateTimePickerVisible: false });
-    };
-
-    handleDatePicked = (date) => {
-      console.log("A date has been picked: ", date);
-      this._goToDate(date);
-
-      this.hideDateTimePicker();
-    };
   
     componentDidMount() {
       if (this.props.onRef) {
@@ -98,25 +76,11 @@ import {
         formatHeader,
       } = this.props;
       const date = moment(initDate).add(index - this.props.size, 'days');
-      
-  
-      const leftIcon = this.props.headerIconLeft ? (
-          this.props.headerIconLeft
-      ) : (
-          <Image source={require('../../../../../assets/timeline_calendar/back.png')} style={this.styles.arrow} />
-      );
-      const rightIcon = this.props.headerIconRight ? (
-          this.props.headerIconRight
-      ) : (
-          <Image source={require('../../../../../assets/timeline_calendar/forward.png')} style={this.styles.arrow} />
-      );
-  
-      let headerText = date.format(formatHeader || 'DD MMMM YYYY');
   
       return (
         <View style={[this.styles.container, { width }]}>
 
-          <View style={this.styles.header}>
+          {/* <View style={this.styles.header}>
             <TouchableOpacity
                 style={this.styles.arrowButton}
                 onPress={this._previous}
@@ -125,8 +89,8 @@ import {
             </TouchableOpacity>
 
             <View style={this.styles.headerTextContainer}>
-              <TouchableOpacity onPress={this.showDateTimePicker}>
-                <Text style={this.styles.headerText}>{headerText}</Text>
+              <TouchableOpacity>
+                <Text style={this.styles.headerText}>jjj</Text>
               </TouchableOpacity>
             </View>
 
@@ -137,7 +101,7 @@ import {
               {rightIcon}
             </TouchableOpacity>
             
-          </View>
+          </View> */}
           <DayView
             date={date}
             index={index}
@@ -222,6 +186,7 @@ import {
             getItemLayout={this._getItemLayout.bind(this)}
             horizontal
             pagingEnabled
+            scrollEnabled={false}
             renderItem={this._renderItem.bind(this)}
             style={{ width: width }}
             onMomentumScrollEnd={event => {
@@ -237,11 +202,6 @@ import {
             }}
             {...virtualizedListProps}
           />
-          <DateTimePicker
-              isVisible={this.state.isDateTimePickerVisible}
-              onConfirm={this.handleDatePicked}
-              onCancel={this.hideDateTimePicker}
-            />
         </View>
       );
     }

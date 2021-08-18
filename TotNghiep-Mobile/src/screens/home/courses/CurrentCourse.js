@@ -12,7 +12,7 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
   const unmounted = useRef(false);
 
   const [data,setData] = useState([]);
-  const [isLoading,setLoading]=useState(false);
+  const [isLoading,setLoading]=useState(true);
 
 
   const currCourses = useSelector((state) => state.course.currCourses);
@@ -38,35 +38,27 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
     };
 
     fetch("https://hcmusemu.herokuapp.com/studycourses/currentcourses",requestOptions)
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-        //console.log(dataUniversity);
-        
-          for (const key in json) {
-            tmp.push({
-              idCourse: json[key].IDCourses,
-              category:json[key].category,
-              name:json[key].name,
-              startDate:json[key].startDate,
-              teacherName:json[key].teacher
-            });
+    .then((response) => {
+      const statusCode = response.status;
+      const dataRes = response.json();
+      return Promise.all([statusCode, dataRes]);
+    })
+      .then(([statusCode, dataRes]) => {
+          if(statusCode === 200){
+            console.log(dataRes);
+            setData(dataRes);
+            dispatch(courseActions.getCurrentCourses(dataRes));
           }
-        
-          setData(tmp) ;
-          dispatch(courseActions.getCurrentCourses(json));
           setLoading(false);
 
       }).catch((err) => console.log(err, "error"));
-            //console.log(currCourses.length); 
-    //dispatch(courseActions.getCurrentCourses());
-    //setData(currCourses);
+
   };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() =>{
       navigation.navigate("Content Course",{
-        idCourse : item.idCourse,
+        idCourse : item.IDCourses,
         name : item.name
       });
     }}>
@@ -76,11 +68,11 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
           
           <Text style={styles.courseName}>{item.name}</Text>
           
-            <View style={styles.teacherName}>
-              {item.teacherName.map((item,index)=>(
-                <Text key={index}>Giáo viên :{item}</Text>
+           <View style={styles.teacherName}>
+              {item.teacher.map((item,index)=>(
+                <Text key={index}>Giáo viên: {item}</Text>
               ))}
-            </View>    
+            </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -91,7 +83,12 @@ const CurrentCourseInfoScreen = ( {navigation} ) => {
       <View style={styles.container}>
         {/* <Text>{data.length}</Text> */}
 
-        {isLoading && LoadingWithSkeletonScreen()}
+        {isLoading && data.length === 0 && LoadingWithSkeletonScreen()}
+        {!isLoading && data.length === 0 && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+            <Text>
+              Không tìm thấy thông tin môn học nào
+            </Text>
+          </View>}
         
           <FlatList
             data={data}

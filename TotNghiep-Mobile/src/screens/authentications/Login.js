@@ -1,10 +1,23 @@
 import React,{ useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity,Keyboard,TouchableWithoutFeedback, Image} from "react-native";
+import { 
+  Dimensions,
+  StyleSheet, 
+  Text, 
+  View, 
+  TouchableOpacity,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Image,
+  Alert
+}from "react-native";
+
 import {
   Heading,
   UsernameInput,
   PasswordInput,
 } from "../../components/authentications/common/Index";
+
 
 import { useDispatch } from 'react-redux';
 
@@ -53,72 +66,94 @@ const LoginScreen = ({navigation}) => {
         .then(async ([statusCode, data]) => {
             console.log(statusCode,data);
             setLoading(false);
-            if(statusCode===200 && data.role==="2"){
+            if (statusCode===200 && data.role==="2")
+            {
               if(data.firstsign === true){
-              const token = data.token + 'tC';
-              await AsyncStorage.setItem('tokenValue',token);
-              dispatch(authActions.login(token));
-              navigation.navigate("Start Config");
-              setLoading(false);
+                const token = data.token + 'tC';
+                await AsyncStorage.setItem('tokenValue',token);
+                dispatch(authActions.login(token));
+                navigation.navigate("Start Config");
+                setLoading(false);
               }
               else{
                 const token = data.token + 'tC';
                 await AsyncStorage.setItem('tokenValue',token);
                 dispatch(authActions.login(token));
-                navigation.navigate("Main");
+                navigation.reset({
+                  routes: [{ name: "Main" }]
+                });
                 setLoading(false);
               }
-            }else{
-              setLoading(false);
-              alert("Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại")
             }
+            else{
+              setLoading(false);
+              Alert.alert(
+                "Lỗi",
+                "Tài khoản hoặc mật khẩu không đúng.Xin vui lòng thử lại",
+                [
+                    {
+                        text: "OK",
+                    }
+                ]);
+            }
+
         }).done();
     }
     else{
       alert("Xin vui lòng điển đầy đủ thông tin");
     }
  }
- return (
-  <TouchableWithoutFeedback onPress={()=>{
-    Keyboard.dismiss();
-  }}>
-    <View style={styles.container}>
+  return (
+      <TouchableWithoutFeedback onPress={()=>{
+        Keyboard.dismiss();
+      }}>
+        <View style={styles.container}>
 
-      <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
-      <Heading>E M U</Heading>
-      <Text style={{fontSize:20,
-        color:'blue',
-        fontWeight:'bold'}}>Giáo viên</Text>
-      <UsernameInput placeholder={"Địa chỉ E-mail"}
-        onChangeText={(username)=>setUsername(username)}/>
+          <Image style={styles.imageLogo} source={require("../../../assets/logo.png")}/>
+          <Heading>E M U</Heading>
 
-      <PasswordInput placeholder={"Mật khẩu"}
-        onChangeText={(password)=>setPassword(password)}/>
+          <UsernameInput label="Email"
+            hideLabel={username !== ''}
+            onChangeText={(username)=>setUsername(username)}/>
 
-      <View style={styles.viewForgetPassword}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Forget Password');
-          }}
-        >
-          <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
-        </TouchableOpacity>
-      </View>
+          <PasswordInput label="Mật khẩu"
+            hideLabel={password !== ''}
+            onChangeText={(password)=>setPassword(password)}/>
+
+          <View style={styles.viewForgetPassword}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Forget Password');
+              }}
+            >
+              <Text style={styles.forgetPassText}>Quên mật khẩu?</Text>
+            </TouchableOpacity>
+          </View>
 
 
 
-      <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
-        onPress={() => {
-          loginAPI();
-          }}>
-        <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonLoginContainer} testID="Button.Login"
+            onPress={() => {
+              loginAPI();
+              }}>
+            <Text style={styles.textBtnLogIn}>Đăng nhập</Text>
+          </TouchableOpacity>
 
-      {isLoading && LoadingScreen()}
-      </View>
-  </TouchableWithoutFeedback>
-  
-);
+          <View style={styles.bottomText}>
+            <Text>Chưa có tài khoản?</Text>
+            <TouchableOpacity onPress={() =>{
+              //dispatch(universityActions.getAllInfoUniversity());
+              navigation.navigate("Register");
+              
+            }}>
+              <Text style={styles.signupText}>Đăng ký ngay</Text>
+            </TouchableOpacity>
+          </View>
+
+          {isLoading && LoadingScreen()}
+          </View>
+      </TouchableWithoutFeedback>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -127,12 +162,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     padding: 10,
-    paddingTop: 80,
+    paddingTop: 50,
   },
 
   imageLogo: {
-    width:175,
-    height:125,
+    width:Dimensions.get("window").width * 0.35,
+    height:Dimensions.get("window").height * 0.15,
   },
 
   passInput: {
@@ -144,7 +179,7 @@ const styles = StyleSheet.create({
     width:'100%',
     alignItems: 'flex-end',
     paddingRight:5,
-    marginTop:20
+    marginVertical:Dimensions.get("window").height * 0.018
   },
 
   forgetPassText: {
@@ -174,10 +209,8 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 20,
     borderRadius: 10,
-    paddingTop:20,
-    paddingBottom:20
+    paddingVertical:Dimensions.get("window").height * 0.02
   },
 
   textBtnLogIn: {

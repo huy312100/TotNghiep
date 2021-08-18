@@ -1,4 +1,3 @@
-
 export const SignOut = async (token) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `bearer ${token}`);
@@ -72,3 +71,4 @@ export const ForgetPassword = async (email) =>{
         }
     }).catch(error => console.log('error', error));
 };
+

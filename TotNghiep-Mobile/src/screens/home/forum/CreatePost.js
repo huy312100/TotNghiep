@@ -1,11 +1,13 @@
 import React,{useState,useEffect} from 'react';
-import { View,StyleSheet,Text,TouchableOpacity,TextInput,TouchableWithoutFeedback,Keyboard,ImageBackground } from 'react-native';
+import { Dimensions,ScrollView,View,StyleSheet,Text,TouchableOpacity,TextInput,TouchableWithoutFeedback,Keyboard,ImageBackground,ActivityIndicator } from 'react-native';
 import { Entypo,FontAwesome,MaterialCommunityIcons } from '@expo/vector-icons'
 import { Header,Overlay } from 'react-native-elements';
 
 import RNPickerSelect from "react-native-picker-select";
 
 import {useSelector} from 'react-redux';
+
+import LoadingScreen from '../../LoadingScreen';
 
 import * as imagePickerUtils from '../../../utils/ImagePicker';
 import * as forumServices from '../../../services/Forum';
@@ -14,6 +16,8 @@ import * as forumServices from '../../../services/Forum';
 const CreatePostScreen = ({navigation}) => {
 
     const token = useSelector((state) => state.authen.token);
+
+    const [isLoading,setLoading] = useState(false);
 
     const [pageCurrent,setPageCurrent] = useState(0);
     const [title,setTitle] = useState('');
@@ -103,16 +107,22 @@ const CreatePostScreen = ({navigation}) => {
         <TouchableWithoutFeedback onPress={() =>{
             Keyboard.dismiss();
           }}>
-            <View style={styles.container}>
-                <Header
+            
+
+            <ScrollView style={styles.container}>
+                {isLoading && <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',height:200}}>
+                    <ActivityIndicator size="large" color="blue" />
+                    <Text style={{fontWeight:'bold',fontSize:15,color:'blue'}}>Đang xử lí </Text>
+                </View>}
+                {!isLoading && <Header
                     containerStyle={{
-                        backgroundColor: '#33CCFF',
+                        backgroundColor: 'white',
                         justifyContent: 'space-around',
                         borderBottomColor:'#DDDDDD'
                     }}
 
                     centerComponent={
-                        <Text style={{fontSize:20,fontWeight:'500',marginTop:3, color: "white"}}>Tạo mới </Text>
+                        <Text style={{fontSize:20,fontWeight:'500',marginTop:3}}>Tạo mới </Text>
                     }
 
                     leftComponent={
@@ -120,7 +130,7 @@ const CreatePostScreen = ({navigation}) => {
                         //socket.emit('Return-Chat',[roomID,route.params.email]);
                         navigation.goBack();
                         }}>
-                            <Entypo name="chevron-left" size={30} color="white" />
+                            <Entypo name="chevron-left" size={30} color="blue" />
                         </TouchableOpacity>
                     }
 
@@ -129,12 +139,16 @@ const CreatePostScreen = ({navigation}) => {
                             <TouchableOpacity style={{flexDirection:'row',marginTop:3}}  disabled={checkDisableAddButton()}
                                 onPress={async() =>{
                                     if(typeForum === 'Khoa' || typeForum === 'Trường'){
+                                        setLoading(true);
                                         await forumServices.createPost(token,title,imageSelected,typeForum);
+                                        setLoading(false);
                                         navigation.goBack();
                                     }
 
                                     else if(typeForum === 'Môn học'){
+                                        setLoading(true);
                                         await forumServices.createCoursePost(token,idCourse,title,imageSelected);
+                                        setLoading(false);
                                         navigation.goBack();
                                     }
 
@@ -143,17 +157,17 @@ const CreatePostScreen = ({navigation}) => {
                                {!checkDisableAddButton() && <FontAwesome name="send" size={24} color="#444444" />}
                             </TouchableOpacity>
                     }
-                    />
+                    />}
 
-                <View style={styles.card}>
-                    <TextInput multiline style={styles.titleName} placeholder='Thêm nội dung cho bài viết'
+                {!isLoading && <View style={styles.card}>
+                    <TextInput multiline style={[styles.titleName,{textAlignVertical:"top"}]} placeholder='Thêm nội dung cho bài viết'
                     onChangeText={(title)=>{
                         //console.log(checkTitle(title));
                         setTitle(title);
                         }}>{title}</TextInput>
-                </View> 
+                </View>} 
 
-                <TouchableOpacity style={[styles.card,{marginTop:0}]}
+                {!isLoading && <TouchableOpacity style={[styles.card,{marginTop:0}]}
                     onPress={() =>{
                         toggleOverlay();
                     }}>
@@ -164,9 +178,9 @@ const CreatePostScreen = ({navigation}) => {
                         <Entypo style={styles.onTheRight} name="chevron-thin-right" size={18} color="blue" />
                      
                     </View>
-                </TouchableOpacity> 
+                </TouchableOpacity>} 
 
-                {typeForum === 'Môn học' && <View style={[styles.card,{marginTop:0}]}>
+                {!isLoading && typeForum === 'Môn học' && <View style={[styles.card,{marginTop:0}]}>
                     <RNPickerSelect
                         onValueChange={(value) => { 
                             console.log(value);
@@ -192,7 +206,7 @@ const CreatePostScreen = ({navigation}) => {
                 </View>}
                 
 
-                <View style={styles.card}>
+                {!isLoading && <View style={styles.card}>
                     <View style={styles.rowView}>
                         <Text style={styles.label}>Thêm ảnh</Text>    
 
@@ -203,7 +217,7 @@ const CreatePostScreen = ({navigation}) => {
                                 setImageSelected(image)
                             }}
                         >
-                        <ImageBackground style={{width:200,height:200,borderStyle:'dashed',borderColor:'silver',borderWidth:2,justifyContent:'center',alignItems:'center'}}
+                        <ImageBackground style={{width:Dimensions.get("window").width*0.5,height:Dimensions.get("window").width*0.5,borderStyle:'dashed',borderColor:'silver',borderWidth:2,justifyContent:'center',alignItems:'center'}}
                              source={{uri: imageSelected.uri !=='' ? imageSelected.uri : null}}
                         >
                             <MaterialCommunityIcons name="image-plus" size={40} color="#0099CC" />
@@ -211,7 +225,7 @@ const CreatePostScreen = ({navigation}) => {
 
                     </TouchableOpacity>                 
                     </View>
-                </View> 
+                </View>} 
 
                 <Overlay isVisible={visibleOverlay} onBackdropPress={toggleOverlay}>
                     <TouchableOpacity style={[styles.card,{marginTop:0,marginBottom:0,borderBottomWidth:1,width:100,height:25}]} 
@@ -255,7 +269,7 @@ const CreatePostScreen = ({navigation}) => {
                         </View>
                     </TouchableOpacity>
                 </Overlay>
-            </View>
+            </ScrollView>
           </TouchableWithoutFeedback>
         
         
@@ -290,7 +304,7 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        fontSize:18,
+        fontSize:16,
         marginLeft:5
     },
 

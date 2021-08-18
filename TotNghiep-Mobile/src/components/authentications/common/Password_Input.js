@@ -1,6 +1,8 @@
 import React from "react";
-import { View,TextInput, StyleSheet,TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { View, StyleSheet,TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import GmailInput from 'react-native-gmailtype-textinput';
+
 
 export function PasswordInput(props) {
     const [show,setShow]=React.useState(true);
@@ -8,36 +10,46 @@ export function PasswordInput(props) {
 
     return (
       <View style={styles.passInput} >
-        <TextInput testID = "Form.PasswordInput" {...props} secureTextEntry={visible} style={styles.inputText}>
-          {props.children}
-      </TextInput>
-      <TouchableOpacity style={styles.eyeBtn}  onPress={()=>{
-          setVisible(!visible);
-          setShow(!show);
-      }}>
-        <MaterialCommunityIcons name={show===false ? "eye-outline" : "eye-off-outline"} size={16} ></MaterialCommunityIcons>
-      </TouchableOpacity>
+        <View style={styles.input}>
+          <GmailInput testID = "Form.PasswordInput" {...props} secureTextEntry={visible} >
+         
+          </GmailInput>
+          
+        </View>
+
+        <TouchableOpacity style={styles.eyeBtn}  onPress={()=>{
+              setVisible(!visible);
+              setShow(!show);
+          }}>
+          <Ionicons name={show===false ? "eye" : "eye-off"} size={20} color ='gray'></Ionicons>
+        </TouchableOpacity>
+
+        
+      
       </View>
   );
 }
 
 const styles = StyleSheet.create({
   passInput: {
-    alignItems: "center",
     flexDirection:"row",
-  },
+    alignItems: "center",
+    justifyContent:'center'
+  },  
 
   eyeBtn: {
     position: 'absolute',
     right: 0,
+    bottom: 0,
     paddingRight:10,
+    paddingBottom:15
   },
 
-  inputText:{
-    backgroundColor: "#ccc",
-    width: "100%",
-    marginVertical: 20,
-    padding: 20,
-    borderRadius: 10,
+
+  input: {
+    width:'100%',
+    marginLeft:-16,
+    backgroundColor:'white',
   }
+
 });

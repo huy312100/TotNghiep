@@ -9,16 +9,12 @@ import ForumIcon from '@material-ui/icons/Forum';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import AccountMenu from "./Account"
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MessageIcon from '@material-ui/icons/Message';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
-//import NotificationsIcon from '../images/notification.jpg';
 import {useHistory} from "react-router-dom"
-import {List,Toolbar,Typography,ListItem,ListItemIcon,IconButton,ListItemText,Menu,Badge,Hidden,Drawer,Divider,CssBaseline,AppBar} from "@material-ui/core"
+import {List,Toolbar,Typography,ListItem,ListItemIcon,Button,IconButton,ListItemText,Menu,Badge,Hidden,Drawer,Divider,CssBaseline,AppBar} from "@material-ui/core"
 import ScoreIcon from '@material-ui/icons/Score';
 import checkTokenExpired from '../ValidAccess/AuthToken';
-import NotifyListItem from "./NotifyListItem"
-import formatDistance from "date-fns/formatDistance";
 
 const drawerWidth = 200;
 const AppBarHeight = 60
@@ -157,8 +153,7 @@ function NavBar() {
            setUserInfo(dataRes)
           }
           else if (statusCode === 401){
-            //localStorage.clear()
-            //history.replace("/");
+            
             return null
           }
         })
@@ -187,6 +182,7 @@ function NavBar() {
         return Promise.all([statusCode, dataRes]);
       }).then(([statusCode, dataRes]) => {
         if(statusCode === 200){
+          dataRes = dataRes.filter(data => data.State === false);
           setListNoti(dataRes);
         }
         else{
@@ -220,7 +216,6 @@ function NavBar() {
         const dataRes = response.json();
         return Promise.all([statusCode, dataRes]);
       }).then(([statusCode, dataRes]) => {
-        //console.log(statusCode);
         if(statusCode === 200){
           updateStateNoti(id,"State",true);
         }
@@ -310,20 +305,27 @@ function NavBar() {
   }
   const handleNotiClick = (item) =>{
     changeNotiState(item._id);
-    if (item.Title ===  "Tin Tức Khoa"){
+    /*if (item.Title ===  "Tin Tức Khoa"){
      history.push("/news?tag=1")
     }
     else if  (item.Title ===  "Tin Tức Trường"){
      history.push("/news?tag=0")
-    }
+    }*/
+    window.open(item.Url, "_blank");
   }
   const renderNotify = () =>{
     return(
-      <List >
+      <List style={{height: "50vh",width:"20vw"}}>
+      <Typography style={{float:"left",marginLeft: "20px",fontSize:"20px"}}>
+          Mới
+      </Typography>
+      <Button style={{float: "right"}} onClick={()=>history.push("/notifications")}>
+        Xem thêm
+      </Button>
       {listNoti.map((item,index) => {
         return (
           <div key={index}>
-              <ListItem button onClick={()=>handleNotiClick(item)} divider= "true" alignItems="flex-start">
+              <ListItem button onClick={()=>handleNotiClick(item)}  alignItems="flex-start">
                   <ListItemText
                       primary={<div  style={{fontWeight:item.State === true ? "normal" : "750", }}>
                                 <span style={{color:"red"}}>

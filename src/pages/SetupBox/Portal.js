@@ -1,7 +1,6 @@
 import React , {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Box, Button,TextField,Typography} from "@material-ui/core"
-import VisibilityPasswordTextField from "../../components/shared/VisibilityPasswordTextField"
 import LoadingScreen from "../../components/shared/LoadingScreen"
 import {useHistory} from "react-router-dom"
 import checkTokenExpired from "../../ValidAccess/AuthToken"
@@ -132,7 +131,7 @@ export default function Portal()
     }
     useEffect(()=>{
         getPortalInfo();
-    },[])
+    })
     const postPortalLink = async() => {
         if (checkTokenExpired()) {
             localStorage.clear()
@@ -208,30 +207,10 @@ export default function Portal()
                     variant="outlined"   
                     margin="normal"  
                     style={{width:"50%"}}
-                    onChange={(e)=>setWebsite(e.target.value)}
+                    onChange={handleChangeURL}
                     size="medium"  
             />
-            {/*<Typography   style={{fontWeight:"bold",marginLeft:"10%",color:"blue"}}> Nhập tài khoản Portal ở đây </Typography>
-            <TextField 
-                    id = "user_name"
-                    value={username}  
-                    variant="outlined"   
-                    margin="normal"  
-                    style={{width:"50%"}}
-                    onChange={handleUsername}
-                    size="medium"  />
-            <Typography style={{fontWeight:"bold",marginLeft:"10%",color:"blue"}}> Nhập mật khẩu Portal ở đây </Typography>
-            <VisibilityPasswordTextField 
-                    isVisible={isVisible}
-                    onVisibilityChange = {handleVisible}
-                    id = "user_pass"
-                    value={password}  
-                    variant="outlined"   
-                    margin="normal"  
-                    style={{width:"50%"}}
-                    onChange={handlePassword}
-                    size="medium"  />
-            <br/>*/}
+          
             <div className="btn-toolbar" style={{marginLeft:"5%"}}>
                 <Button style={{width:"auto",backgroundColor: cancelBtnActive===true ? "green": "#bbf2ca" ,color:"white"}} disabled={!cancelBtnActive} onClick={handlePostPortal}>
                     Kết nối

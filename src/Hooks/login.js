@@ -111,7 +111,10 @@ export default function LoginButton() {
                 if (response.ok && response.status==200) {
                     return response.json()
                 }
-                throw Error(response.status)
+                {
+                  alert("Tài khoản hoặc mật khẩu chưa đúng")
+                    throw Error(response.status);
+                }
             })
             .then(result => {
                 if (result.token !== undefined) {
@@ -143,7 +146,7 @@ export default function LoginButton() {
 
         )}
         return (
-                <Button className={classes.btnSubmit} onClick={()=>AcctionLogin()}>Đăng nhập</Button>
+                <Button className={classes.btnSubmit} onKeyDown={()=>AcctionLogin()} onClick={()=>AcctionLogin()}>Đăng nhập</Button>
         )
     }
     

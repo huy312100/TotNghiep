@@ -157,9 +157,9 @@ export default function Khoa(props)
         await fetch("https://hcmusemu.herokuapp.com/forum/view", requestOptions)
             .then(response => {return response.json()})
             .then((result)=>{
-              result = result.filter(forum => forum.scope == 'f');
-              if (self == "self"){
-                result = result.filter(forum => forum.EmailOwn == userMail);
+              result = result.filter(forum => forum.scope === 'f');
+              if (self ==="self"){
+                result = result.filter(forum => forum.EmailOwn === userMail);
               }
               let data = [];
               for (var i=0;i< result.length;i++){
@@ -208,7 +208,7 @@ export default function Khoa(props)
     
     }
     const updateNumberLike = (id,type) => {
-      if (type==1){
+      if (type===1){
           var index = forumPosts.findIndex(x=> x.ID === id);
           let g = forumPosts[index]
           g['like']-=1
@@ -431,6 +431,7 @@ export default function Khoa(props)
     }
     const getComments = useCallback((forum) => {
       var myHeaders = new Headers();
+      myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
       var urlencoded = new URLSearchParams();
@@ -498,7 +499,7 @@ export default function Khoa(props)
                       aria-label="Comment the post"
                       onClick= {() => Btn_ClickShowComment(item)}
                       >
-                      <CommentIcon/> {item.comment}
+                      <CommentIcon/>
                     </IconButton>
                    
                 </CardActions>

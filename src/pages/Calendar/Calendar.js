@@ -68,6 +68,7 @@ export default class Calendar extends Component {
             add_listguestEmail: [],
             add_listguestName: [],
             add_url: "",
+            add_allday: false,
 
             add_temp_user: "",
             popup: 0,
@@ -222,6 +223,14 @@ export default class Calendar extends Component {
     selectedEventClick = (index) => {
 
         var viewevent = this.state.listEvent[this.state.selectedDay][index]
+        console.log(viewevent);
+        let tempMail = [];
+        let tempName = []
+        for (let i = 0;i< viewevent.value.ListGuest.length; i++){
+            tempMail.push(viewevent.value.ListGuest[i].Email)
+            tempName.push(viewevent.value.ListGuest[i].name)
+        }
+        console.log(tempMail);
         const date = new Date(viewevent.value.Date.month + "/" + viewevent.value.Date.day + "/" + viewevent.value.Date.year)
         this.setState({
             add_title: viewevent.value.Title,
@@ -231,7 +240,12 @@ export default class Calendar extends Component {
             add_desc: viewevent.value.Decription.text,
             add_color: viewevent.value.Color,
             edit_id: viewevent.value._id,
+            add_listguestEmail: tempMail,
+            add_listguestName: tempName,
+            add_url: viewevent.value.Decription.url,
+            
             add_fulldate: date.toDateString(),
+            
             popupview: 1
         })
     }
@@ -239,10 +253,10 @@ export default class Calendar extends Component {
     selectedDay = () => {
         if (this.state.loadcalendar === 0 && this.state.loadevent === 0) {
             var listE = this.state.listEvent[this.state.selectedDay].map((item, index) => {
-                console.log(item)
+                //console.log(item)
                 if (item === "")
                     return <></>
-                if (item.id !== "") return <tr style={{'background-color': item.value.Color}} onClick={() => this.selectedEventClick(index)}>
+                if (item.id !== "") return <tr  style={{'background-color': item.value.Color}} onClick={() => this.selectedEventClick(index)}>
                     <td className="time">{item.value.StartHour != null ? this.convertTimestamp(item.value.StartHour): "12 AM"}</td>
                     <td>-</td>
                     <td className="time">{item.value.EndHour != null ? this.convertTimestamp(item.value.EndHour): "11 PM"}</td>
@@ -250,7 +264,7 @@ export default class Calendar extends Component {
                     <td></td>
                 </tr>
                 else
-                    return <tr style={{'background-color': item.value.Color}} >
+                    return <tr  style={{'background-color': item.value.Color}} >
                        <td className="time">{item.value.StartHour != null ? this.convertTimestamp(item.value.StartHour): ""}</td>
                        <td>{item === "" ? "" : "-"}</td>
                        <td className="time">{item.value.EndHour != null ? this.convertTimestamp(item.value.EndHour): ""}</td>
@@ -451,45 +465,45 @@ export default class Calendar extends Component {
         });
     }
     renderTypeWork = () => {
-        var TypeEventPicker = this.TypeEvent.map((value) => {
-           return <ListItem value={value}>{value}</ListItem>
+        var TypeEventPicker = this.TypeEvent.map((value,index) => {
+           return <ListItem key={index} value={value}>{value}</ListItem>
         })
        
         return TypeEventPicker;
     }
     renderClockPickerStart = () => {
         let now = new Date();
-        var timepicker = this.timeclock.map((num) => {
+        var timepicker = this.timeclock.map((num,index) => {
             if (num === 0) {
-                return <ListItem  value={num}>12 AM</ListItem>
+                return <ListItem key={index}  value={num}>12 AM</ListItem>
             }
             else if (num === 12) {
-                return <ListItem value={num}>12 PM</ListItem>
+                return <ListItem key={index} value={num}>12 PM</ListItem>
             }
             else if (num > 12) {
-                return <ListItem  value={num}>{num - 12} PM</ListItem>
+                return <ListItem key={index} value={num}>{num - 12} PM</ListItem>
             }
 
-            else return <ListItem value={num}>{num} AM</ListItem>
+            else return <ListItem key={index} value={num}>{num} AM</ListItem>
         })
        
         return timepicker;
     }
 
     renderClockPickerEnd = () => {
-        var timepicker = this.timeclock.map((num) => {
+        var timepicker = this.timeclock.map((num,index) => {
             if (num === 0) {
-                return <ListItem disabled={num >= this.state.add_start ? false : true} value={num}>12 AM</ListItem>
+                return <ListItem key={index} disabled={num >= this.state.add_start ? false : true} value={num}>12 AM</ListItem>
             }
             else if (num === 12) {
-                return <ListItem disabled={num >= this.state.add_start ? false : true } value={num}>12 PM</ListItem>
+                return <ListItem key={index} disabled={num >= this.state.add_start ? false : true } value={num}>12 PM</ListItem>
             }
             else if (num > 12) {
-                return <ListItem disabled={num >= this.state.add_start ? false : true } value={num}>{num - 12} PM</ListItem>
+                return <ListItem key={index} disabled={num >= this.state.add_start ? false : true } value={num}>{num - 12} PM</ListItem>
             }
 
             else 
-                return <ListItem disabled={num >= this.state.add_start ? false : true } value={num}>{num} AM</ListItem>
+                return <ListItem key={index} disabled={num >= this.state.add_start ? false : true } value={num}>{num} AM</ListItem>
         })
        
         return timepicker;
@@ -524,13 +538,13 @@ export default class Calendar extends Component {
             "StartHour": this.state.add_startUNIX,
             "EndHour": this.state.add_endUNIX,
             "desciptionText": this.state.add_desc,
-            "url": this.add_url,
+            "url": this.state.add_url,
             "UnderLine": "",
             "Italic": "",
             "Bold": "",
             "Color": this.state.add_color,
-            "listguestEmail": this.add_listguestEmail,
-            "listguestName": this.add_listguestName,
+            "listguestEmail": this.state.add_listguestEmail,
+            "listguestName": this.state.add_listguestName,
             "Notification": "1800"
         });
 
@@ -596,7 +610,7 @@ export default class Calendar extends Component {
     }
     renderAddedUser = () => {
         
-        if (this.state.foundedUser.length > 0){
+        if (this.state.foundedUser.length > 0 || this.state.foundedUser !== undefined){
             return(
                 <div>
                     {this.state.foundedUser.map((user,index) => {
@@ -730,7 +744,7 @@ export default class Calendar extends Component {
                         />
                     </div>
                     <div>
-                        <Typography variant="h6"><PersonAddIcon/> Thêm người dùng</Typography>
+                        <Typography variant="h6"><PersonAddIcon/> Chỉnh sửa người tham dự</Typography>
                         <br/>
                         <TextField  
                             variant="outlined"
@@ -783,7 +797,8 @@ export default class Calendar extends Component {
     }
 
     renderAdderUser = () =>{
-        if (this.state.add_listguestEmail.length > 0 || this.state.add_listguestName.length > 0){
+        if (this.state.add_listguestEmail !== undefined || this.state.add_listguestName != undefined ||
+             this.state.add_listguestEmail.length > 0 || this.state.add_listguestName.length > 0){
             return(
                 <Box fullWidth style={{display:"block",borderRadius:"10px"}} multiline border={1}>
                     {this.state.add_listguestEmail.map((item,index)=>{

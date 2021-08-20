@@ -56,14 +56,21 @@ export default function Truong()
     
         await fetch("https://hcmusemu.herokuapp.com/info/newsuniversity", requestOptions)
             .then(response => {return response.json()})
-            .then(result => {setNewsUni(result);setLoading(false)})
+            .then(result => {
+              result.sort(function(a, b) {
+                let date_a = new Date(a.Date.split("-")[2],a.Date.split("-")[1],a.Date.split("-")[0])
+                let date_b = new Date(b.Date.split("-")[2],b.Date.split("-")[1],b.Date.split("-")[0])
+                return date_b - date_a;
+              });
+              setNewsUni(result);
+              setLoading(false)})
             .catch(error => console.log('error', error), setLoading(false));
 
     }
 
     useEffect(() => {
         getNewsUniversity();       
-     });
+     },[]);
      if (loading === true) 
      return (
       <LoadingScreen/>

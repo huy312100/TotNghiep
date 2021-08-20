@@ -1,7 +1,7 @@
 import React , {useState, useEffect,useCallback,useRef}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import LoadingScreen from "../../../components/shared/LoadingScreen"
-import { Typography,Card,CardHeader,CardActions,CardContent,CardMedia,Avatar,Box,Menu,MenuItem,Select  } from '@material-ui/core';
+import { Typography,Card,CardHeader,CardActions,CardContent,CardMedia,Avatar,Box,Menu,MenuItem,Select,ListItem } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
 import ConfirmDialog from "../../../components/shared/ConfirmDialog"
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -11,6 +11,10 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CommentIcon from '@material-ui/icons/Comment';
 import TimeAgo from '../../../components/functions/TimeAgo';
+import * as courseActions from "../../../store/actions/courses";
+import { useDispatch, useSelector } from "react-redux";
+import checkTokenExpired from '../../../ValidAccess/AuthToken';
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -116,7 +120,8 @@ export default function MonHoc(props)
     const [data,setData] = useState([]);
     const [selectedCourse,setSelectedCourse] = useState("");
     const [section,setSection] = useState("Ứng dụng");
-
+    const history = useHistory();
+    const dispatch = useDispatch();
     const handleChangeSelectedCourse = (event) => {
        setSelectedCourse(event.currentTarget.value);
       };
@@ -126,6 +131,11 @@ export default function MonHoc(props)
     }
 
     const getAllCourses = async () => {
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
         setLoading(true);
         let details = {
           page: pageCurrent,
@@ -139,9 +149,7 @@ export default function MonHoc(props)
           formBody.push(encodedKey + "=" + encodedValue);
         }
         formBody = formBody.join("&");
-    
-        console.log(formBody);
-    
+        
         fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", {
           method: "POST",
           headers: {
@@ -158,9 +166,10 @@ export default function MonHoc(props)
           .then(([statusCode, dataRes]) => {
             if(statusCode === 200){
               setData(data.concat(dataRes));
-              setPageCurrent(pageCurrent+1);
+              //dispatch(courseActions.getAllCourses(data.concat(dataRes)));
+              setPageCurrent(pageCurrent+1);            
             }
-            else if (statusCode === 500){
+            if (statusCode === 500){
               setLoadingAll(false);
             }
             setLoading(false);
@@ -168,32 +177,68 @@ export default function MonHoc(props)
           .catch((err) => console.log(err, "error"));
       };
 
-    
     const getAllCoursePosts = async(id) => {
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
+        console.log(id);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
-        var formdata = new FormData();
-        formdata.append("IDCourses",id);
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("IDCourses",id);
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
+            body: urlencoded,
             redirect: 'follow'
+           
         };
-    
-        await fetch("https://hcmusemu.herokuapp.com/forum/courses/viewone", requestOptions)
+        let url;
+        if (section==="Ứng dụng"){
+          url = "https://hcmusemu.herokuapp.com/forum/courses/viewone"
+        }
+        else if (section === "Moodle"){
+          url = "https://hcmusemu.herokuapp.com/forummoodle"
+        }
+        await fetch(url, requestOptions)
         .then((response) => {
           const statusCode = response.status;
           const dataRes = response.json();
           return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
               console.log(statusCode,dataRes);
-              /*if(statusCode === 200){
-                if (self == "self"){
+              if(statusCode === 200){
+                if (self == "self" && dataRes.length >0 ){
                     dataRes = dataRes.filter(forum => forum.EmailOwn == userMail);
                 }
+                let data = [];
+                for (var i=0;i< dataRes.length;i++){
+                  data.push({
+                    ID: dataRes[i].ID,
+                    IDCourses: dataRes[i].IDCourses,
+                    EmailOwn: dataRes[i].EmailOwn,
+                    AvartaOwn: dataRes[i].AvartaOwn,
+                    LikeByOwn: dataRes[i].LikeByOwn,
+                    NameOwn: dataRes[i].NameOwn,
+                    comment: dataRes[i].comment,
+                    image: dataRes[i].image,
+                    like: dataRes[i].like,
+                    scope: dataRes[i].scope,
+                    time: dataRes[i].time,
+                    title: dataRes[i].title,
+                    showcomment: false
+                  })
+                }
                 setForumPosts(dataRes);
-              }*/
-              
+              }
+              if (statusCode === 500){
+                setForumPosts([]);
+                
+              }
             })
             .catch(error => console.log('error', error));
         }
@@ -210,6 +255,11 @@ export default function MonHoc(props)
       
           
     const getUserEmail = ()=>{
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
             var myHeaders = new Headers();
               myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") );
       
@@ -225,20 +275,19 @@ export default function MonHoc(props)
                   .catch(error => console.log('error', error));
           }
     useEffect(()=>{
-      if (loadingAll === false){
+      if (loadingAll === false && (selectedCourse !== null || selectedCourse !== "")){
         getUserEmail();
         getAllCoursePosts(selectedCourse);
       }
-    })
+    },[selectedCourse,section,self])
     useEffect(() => {
         getAllCourses();
         return()=>{
             unmounted.current = true;
         }
-      }, [self,pageCurrent,selectedCourse,section]);
+      }, [pageCurrent]);
      const Btn_ClickShowComment = (forum) => {
         let items = [...forumPosts];
-        let scopeFunction = setForumPosts
     
         const index = items.findIndex(item => item.ID === forum.ID);
         if (items[index].showcomment === false){
@@ -247,7 +296,7 @@ export default function MonHoc(props)
         else{
           items[index].showcomment = false;
         }
-        scopeFunction(items)
+        setForumPosts(items)
       
       }
       const updateNumberLike = (id,type) => {
@@ -293,6 +342,11 @@ export default function MonHoc(props)
   
   
       const likePosts = async(id) => {
+        if (checkTokenExpired()) {
+          localStorage.clear()
+          history.replace("/");
+          return null
+          }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         
@@ -313,6 +367,11 @@ export default function MonHoc(props)
       }
   
       const unLikePosts = async(id) => {
+        if (checkTokenExpired()) {
+          localStorage.clear()
+          history.replace("/");
+          return null
+          }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         
@@ -333,6 +392,11 @@ export default function MonHoc(props)
       }
   
       const deletePosts = async(id) => {
+        if (checkTokenExpired()) {
+          localStorage.clear()
+          history.replace("/");
+          return null
+          }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         
@@ -368,6 +432,11 @@ export default function MonHoc(props)
           </div>
         )}
       const getPostLiked = async(id) => {
+        if (checkTokenExpired()) {
+          localStorage.clear()
+          history.replace("/");
+          return null
+          }
           let details = {
             IDPost: id
         }
@@ -398,20 +467,26 @@ export default function MonHoc(props)
         }).catch(error => console.log('error', error));
       }
       const renderSelectedCourse = () =>{
+        let default_data = data[0].IDCourses;
+        if (data.length> 0){
           return(
             <Select
             native
             value={selectedCourse}
             onChange={handleChangeSelectedCourse}
           >
-              {data.map((item, index) => {
+              <option selected disabled>Chọn 1 môn để xem</option>
+              {
+              data.map((item, index) => {
                     return (
-                        <option key={index} value={item.IDCourses}>{item.name}</option>
-                )})}
+                        <option  key={index} value={item.IDCourses}>{item.name}</option>
+                )})
+              }
           
           </Select>
           )
       }
+    }
       
       const renderSection = ()=>{
         return(
@@ -421,7 +496,7 @@ export default function MonHoc(props)
         onChange={handleSectionChange}
       
       >
-        <option value="Ứng dụng">Ứng dụng</option>
+        <option value="Ứng dụng" selected>Ứng dụng</option>
         <option value="Moodle">Moodle</option>
       </Select>)
       }
@@ -440,6 +515,9 @@ export default function MonHoc(props)
           return(
             <div  onClick={() => setPopUp(false)}>
               <div style={{ padding: "20px", borderRadius: "10px" }} className={classes.like_dialog_popup}>
+              <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}>
+                <HighlightOffIcon/>
+            </IconButton>
                 {listLike.map((item, index) => {
                     return (
                       <div key={index}>
@@ -517,6 +595,7 @@ export default function MonHoc(props)
       }, [])
   
       const renderForum = () =>{
+        if (loadingAll === false){
         if (forumPosts.length === 0){
           return(
             <Typography variant="h5" style={{textAlign:"center",marginTop:"5%"}}>
@@ -604,6 +683,7 @@ export default function MonHoc(props)
             </div>
           )})}
       }
+    }
   
     if (loadingAll === true){
       return(
@@ -622,8 +702,9 @@ export default function MonHoc(props)
                 </span>
 
                 <div>
-                    <Typography>Bạn đang chọn courseID: {selectedCourse} thuộc khu vực: {section}</Typography>
+                    <Typography>Bạn đang chọn xem diễn đàn: {selectedCourse} thuộc khu vực: {section} </Typography>
                 </div>
+                {renderForum()}
             </div>
     )}
 }

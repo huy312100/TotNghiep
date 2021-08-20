@@ -348,7 +348,7 @@ export default function Khoa(props)
           const dataRes = response.json();
           return Promise.all([statusCode, dataRes]);
       }).then(([statusCode, dataRes]) => {
-          console.log(statusCode,dataRes);
+          //console.log(statusCode,dataRes);
           if(statusCode === 200){
               setListLike(dataRes);
           }
@@ -498,7 +498,7 @@ export default function Khoa(props)
                       aria-label="Comment the post"
                       onClick= {() => Btn_ClickShowComment(item)}
                       >
-                      <CommentIcon/> {item.comment}
+                      <CommentIcon/>
                     </IconButton>
                    
                 </CardActions>

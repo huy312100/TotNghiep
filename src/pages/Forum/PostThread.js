@@ -246,8 +246,8 @@ export const PostThread =  ({
     const renderSuccess = () =>{
         if (success === true){
             return(
-                <Snackbar open={post} autoHideDuration={3000} onClose={()=>{handleClose();setSuccess(null)}}>
-                    <Alert oonClose={()=>{handleClose();setSuccess(null)}} severity="success">
+                <Snackbar open={post} autoHideDuration={3000} onClose={handleClose}>
+                    <Alert oonClose={handleClose} severity="success">
                         Đăng bài viết thành công
                     </Alert>
                 </Snackbar>
@@ -255,8 +255,8 @@ export const PostThread =  ({
         }
         else{
             return(
-                <Snackbar open={post} autoHideDuration={3000} onClose={()=>{handleClose();setSuccess(null)}}>
-                    <Alert onClose={()=>{handleClose();setSuccess(null)}} severity="error">
+                <Snackbar open={post} autoHideDuration={3000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error">
                         Đăng bài viết không thàn thành công. Vui lóng thử lại 
                     </Alert>
                 </Snackbar>

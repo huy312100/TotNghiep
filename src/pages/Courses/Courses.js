@@ -1,7 +1,7 @@
-import React , {useState, useEffect}from 'react';
+import React , {useState}from 'react';
 import NavBar from '../../Navigation/NavBar'
 import { makeStyles } from '@material-ui/core/styles';
-import { Tab, Tabs, Typography, Box,Paper,Toolbar  } from '@material-ui/core';
+import { Tab, Tabs,Paper,Toolbar  } from '@material-ui/core';
 import CurrentCourse from './CurrentCourse';
 import AllCourses from './AllCourses';
 import Category from "../Category"

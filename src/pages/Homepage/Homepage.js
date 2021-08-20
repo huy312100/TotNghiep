@@ -10,6 +10,7 @@ import Footer from '../../components/footer/Footer';
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import checkTokenExpired from "../../ValidAccess/AuthToken"
+import { Divider } from '@material-ui/core';
 const border = 200;
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -90,7 +91,6 @@ function Homepage() {
   TenKhoa: "Khoa Địa chất",
   Website: "https://phys.hcmus.edu.vn/",
   Images: "https://www.hcmus.edu.vn/images/2020/04/07/bn2.jpg"}]);
-  //console.log(localStorage.getItem("token"));
  
   const getNewsUniversity = async() => {
     if (checkTokenExpired()) {
@@ -98,6 +98,7 @@ function Homepage() {
       history.replace("/");
       return null
       }
+      setLoadUni(true);
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
 
@@ -114,16 +115,14 @@ function Homepage() {
             return Promise.all([statusCode, dataRes]);
           })
           .then(([statusCode, dataRes]) => {
-            console.log(statusCode,dataRes);
             if (statusCode === 200){
               setNewsUni(dataRes.slice(0,5));
             }
             else if (statusCode === 401){
-              //localStorage.clear()
-              //history.replace("/");
+              
               return;
             }
-            setLoadUni(false)
+            setLoadUni(!loaduni)
           })
           .catch(error => console.log('error', error));
   }
@@ -135,6 +134,7 @@ function Homepage() {
       history.replace("/");
       return null
       }
+      setLoadFac(true);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     
@@ -151,15 +151,14 @@ function Homepage() {
           return Promise.all([statusCode, dataRes]);
         })
         .then(([statusCode, dataRes]) => {
-            console.log(statusCode,dataRes);
             if (statusCode === 200){
-                setNewsFac(dataRes.slice(0,5)); setLoadFac(false);
+                setNewsFac(dataRes.slice(0,5)); 
+                setLoadFac(false);
             }
             else if (statusCode === 401){
-              //localStorage.clear()
-              //history.replace("/");
               return;
             }
+            setLoadFac(!loadfac);
             })
             .catch(error => console.log('error', error));
         }
@@ -169,6 +168,7 @@ function Homepage() {
         history.replace("/");
         return null
         }
+        setLoading(true);
           var myHeaders = new Headers();
           myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
       
@@ -185,15 +185,13 @@ function Homepage() {
             return Promise.all([statusCode, dataRes]);
           })
           .then(([statusCode, dataRes]) => {
-              console.log(statusCode,dataRes);
               if (statusCode === 200){
                setInfo(dataRes);
               }   
               else if (statusCode === 401){
-                //localStorage.clear()
-                //history.replace("/");
                 return;
               }
+              setLoading(!loading);
               })
               .catch(error => console.log('error', error));
           }
@@ -201,10 +199,9 @@ function Homepage() {
         getInfoUni();
         getNewsFaculty();
         getNewsUniversity();
-        setLoading(false);
      },[]);
      const renderNewsComponent = (id) => {
-        if (id==1){
+        if (id===1){
           return newsfac.map((item, index) => {
             return (
               <Box border={1} borderRadius="10px" color="white" width="100%">
@@ -242,7 +239,7 @@ function Homepage() {
             )
           })
         }
-        else if (id==0){
+        else if (id===0){
           return newsuni.map((item, index) => {
             return (
               <Box border={1} borderRadius="10px" color="white" width="100%">
@@ -287,16 +284,16 @@ function Homepage() {
      const renderNewsFac = () => {
        
       return (
-        <Box width="80%" border={4} borderRadius="25px" justifyContent="center" width="100%">
+        <Box  border={4} borderRadius="25px" width="100%">
           <Typography align="center" variant="h4" style={{color: "red"}}>
             Tin tức khoa
           </Typography>
           {renderNewsComponent(0)}
-          <a>
-          <Button  width="80%" onClick={()=> history.push("/news?tag=1")}>
+          <div style= {{textAlign:"center"}}>
+          <Button width="80%" onClick={()=> history.push("/news?tag=1")}>
             <Typography variant="h6" color="blue"> Xem thêm</Typography>
           </Button>
-          </a>
+          </div>
         </Box>
         )
       }
@@ -304,16 +301,16 @@ function Homepage() {
       const renderNewsUni = () => {
        
         return (
-          <Box width="80%" border={4} borderRadius="25px" justifyContent="center" width="100%">
+          <Box width="100%" border={4} borderRadius="25px" justifyContent="center">
             <Typography align="center" variant="h4" style={{color: "red"}}>
               Tin tức trường
             </Typography>
             {renderNewsComponent(1)}
-            <a>
+            <div style= {{textAlign:"center"}}>
             <Button  width="80%" onClick={()=> history.push("/news?tag=0")}>
               <Typography variant="h6" color="blue"> Xem thêm</Typography>
             </Button>
-            </a>
+            </div>
             <br/>
           </Box>
         
@@ -327,7 +324,7 @@ function Homepage() {
       const renderDeadline = () => {
        
         return (
-          <Box width="80%" border={4} borderRadius="25px" justifyContent="center" width="100%">
+          <Box border={4} borderRadius="25px" justifyContent="center" width="100%">
             <Typography align="center" variant="h4" style={{color: "red"}}>
               Deadline trong tháng
             </Typography>
@@ -341,7 +338,7 @@ function Homepage() {
         const renderCalendarEvent = () => {
        
           return (
-            <Box width="80%" border={4} borderRadius="25px" justifyContent="center" width="100%">
+            <Box border={4} borderRadius="25px" justifyContent="center" width="100%">
               <Typography align="center" variant="h4" style={{color: "red"}}>
                 Lịch trong tháng
               </Typography>
@@ -354,7 +351,11 @@ function Homepage() {
           }
     if (loading === true){
       return (
-        <LoadingScreen/>
+        <div>
+          <NavBar/>
+          <div className={classes.toolbar} />
+          <LoadingScreen/>
+        </div>
       )
     }
     else{

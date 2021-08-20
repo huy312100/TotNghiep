@@ -149,7 +149,7 @@ export default function Moodle()
     }
     useEffect(()=>{
         getMoodleInfo();
-    },[])
+    })
     const postMoodleLink = async() => {
         if (checkTokenExpired()) {
             localStorage.clear()

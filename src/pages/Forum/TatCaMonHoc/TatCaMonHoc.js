@@ -11,7 +11,8 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CommentIcon from '@material-ui/icons/Comment';
 import TimeAgo from '../../../components/functions/TimeAgo';
-
+import { useHistory } from 'react-router-dom';
+import checkTokenExpired from '../../../ValidAccess/AuthToken';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -109,9 +110,15 @@ export default function TatCaMonHoc(props)
     const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
     const [popup,setPopUp] = useState(false);
     const [listLike,setListLike] = useState([]);
+    const history = useHistory();
     const self = props.self;
 
     const getAllCoursePosts = async() => {
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
     
@@ -131,7 +138,27 @@ export default function TatCaMonHoc(props)
                 if (self == "self"){
                     dataRes = dataRes.filter(forum => forum.EmailOwn == userMail);
                 }
-                setForumPosts(dataRes);
+                
+                 let data = [];
+              for (var i=0;i< dataRes.length;i++){
+                data.push({
+                  ID: dataRes[i].ID,
+                  IDCourses: dataRes[i].IDCourses,
+                  EmailOwn: dataRes[i].EmailOwn,
+                  AvartaOwn: dataRes[i].AvartaOwn,
+                  LikeByOwn: dataRes[i].LikeByOwn,
+                  NameOwn: dataRes[i].NameOwn,
+                  comment: dataRes[i].comment,
+                  image: dataRes[i].image,
+                  like: dataRes[i].like,
+                  scope: dataRes[i].scope,
+                  time: dataRes[i].time,
+                  title: dataRes[i].title,
+                  showcomment: false
+                })
+              }
+              setForumPosts(data);
+                 
               }
               setLoading(false);
               
@@ -151,6 +178,11 @@ export default function TatCaMonHoc(props)
       
           
     const getUserEmail = ()=>{
+      if (checkTokenExpired()) {
+        localStorage.clear()
+        history.replace("/");
+        return null
+        }
             var myHeaders = new Headers();
               myHeaders.append("Authorization", "bearer " + localStorage.getItem("token") );
       
@@ -168,20 +200,19 @@ export default function TatCaMonHoc(props)
     useEffect(() => {
         getUserEmail();
       getAllCoursePosts();
-     },[self,forumPosts]);
+     },[self]);
 
      const Btn_ClickShowComment = (forum) => {
         let items = [...forumPosts];
-        let scopeFunction = setForumPosts
     
         const index = items.findIndex(item => item.ID === forum.ID);
         if (items[index].showcomment === false){
-        items[index].showcomment = true;
+            items[index].showcomment = true;
         }
         else{
           items[index].showcomment = false;
         }
-        scopeFunction(items)
+        setForumPosts(items)
       
       }
       const updateNumberLike = (id,type) => {
@@ -227,6 +258,11 @@ export default function TatCaMonHoc(props)
   
   
       const likePosts = async(id) => {
+        if (checkTokenExpired()) {
+          localStorage.clear()
+          history.replace("/");
+          return null
+          }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         
@@ -247,6 +283,11 @@ export default function TatCaMonHoc(props)
       }
   
       const unLikePosts = async(id) => {
+        if (checkTokenExpired()) {
+          localStorage.clear()
+          history.replace("/");
+          return null
+          }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         
@@ -267,6 +308,11 @@ export default function TatCaMonHoc(props)
       }
   
       const deletePosts = async(id) => {
+        if (checkTokenExpired()) {
+          localStorage.clear()
+          history.replace("/");
+          return null
+          }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         
@@ -288,7 +334,7 @@ export default function TatCaMonHoc(props)
             removeElementState(id);
           }
           else{
-            console.log("loi");
+            alert("Có lỗi xảy xoa khi xoá bài. Vui lòng thử lại sau")
           }
     
         }).catch((err) => console.log(err, "error"));
@@ -302,6 +348,11 @@ export default function TatCaMonHoc(props)
           </div>
         )}
       const getPostLiked = async(id) => {
+        if (checkTokenExpired()) {
+          localStorage.clear()
+          history.replace("/");
+          return null
+          }
           let details = {
             IDPost: id
         }
@@ -313,7 +364,7 @@ export default function TatCaMonHoc(props)
             formBody.push(encodedKey + "=" + encodedValue);
         }
         formBody = formBody.join("&");
-        fetch("https://hcmusemu.herokuapp.com/forum/courses/viewlike", {
+        await fetch("https://hcmusemu.herokuapp.com/forum/courses/viewlike", {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -325,7 +376,6 @@ export default function TatCaMonHoc(props)
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
-            console.log(statusCode,dataRes);
             if(statusCode === 200){
                 setListLike(dataRes);
             }
@@ -336,7 +386,9 @@ export default function TatCaMonHoc(props)
         if (listLike.length === 0){
           return(<div>
             <Box style={{ padding: "20px", borderRadius: "7px",borderColor:"black" }} className={classes.like_dialog_popup}>
-            <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}><HighlightOffIcon/></IconButton>
+            <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}>
+                <HighlightOffIcon/>
+            </IconButton>
             <Typography>Bạn hãy là người like bài viết đầu tiên ^^</Typography>
             </Box>
           </div>)
@@ -346,6 +398,9 @@ export default function TatCaMonHoc(props)
           return(
             <div  onClick={() => setPopUp(false)}>
               <div style={{ padding: "20px", borderRadius: "10px" }} className={classes.like_dialog_popup}>
+                <IconButton style={{position: "absolute",top: "0px",right: "0px",}}  onClick={() => setPopUp(false)}>
+                  <HighlightOffIcon/>
+              </IconButton>
                 {listLike.map((item, index) => {
                     return (
                       <div key={index}>
@@ -410,7 +465,7 @@ export default function TatCaMonHoc(props)
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
   
         var urlencoded = new URLSearchParams();
-        urlencoded.append("IDPost", forum.ID);
+        urlencoded.append("IDPost", forum.IDCourses);
   
         var requestOptions = {
             method: 'POST',

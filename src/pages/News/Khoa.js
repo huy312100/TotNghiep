@@ -58,15 +58,20 @@ export default function Khoa()
         await fetch("https://hcmusemu.herokuapp.com/info/newsfaculty", requestOptions)
             .then(response => {return response.json();})
             .then(result => {
-              setNewsFac(result)
+              result.sort(function(a, b) {
+                let date_a = new Date(a.Date.split("/")[2],a.Date.split("/")[1],a.Date.split("/")[0])
+                let date_b = new Date(b.Date.split("/")[2],b.Date.split("/")[1],b.Date.split("/")[0])
+                return date_b - date_a;
+              });
+              setNewsFac(result);
+              setLoading(false);
             })
             .catch(error => console.log('error', error));
         }
     useEffect(() => {
         getNewsFaculty();
-        setLoading(false);
      },[]);
-     if (loading==true) {
+     if (loading===true) {
        return(
       <LoadingScreen/>
     )}
@@ -96,7 +101,7 @@ export default function Khoa()
             alignItems: 'center',
             flexWrap: 'wrap',}}>
               <TimelapseIcon style={{color:"#3a4ca0"}} />
-              <span TimelapseIcon className={classes.news_page__time} >
+              <span className={classes.news_page__time} >
                   {item.Date}
               </span>
             </div>

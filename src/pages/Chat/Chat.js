@@ -1,12 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {makeStyles, Toolbar} from "@material-ui/core"
+import {makeStyles} from "@material-ui/core"
 import NavBar from "../../Navigation/NavBar"
-import { useSelector } from 'react-redux';
 import clsx from "clsx";
 import io from "socket.io-client";
-import { Tab,Tabs,Typography,Input,InputAdornment,TextField,IconButton,Box  } from '@material-ui/core';
+import { Tab,Tabs,InputAdornment,TextField,IconButton,Box  } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import LoadingScreen from "../../components/shared/LoadingScreen"
 import { useHistory } from 'react-router-dom';
 import checkTokenExpired from '../../ValidAccess/AuthToken';
 const useStyles = makeStyles((theme)=>({
@@ -221,7 +219,8 @@ function Chat() {
   const [avatar,setAvatar] = useState("");
   const divRef = useRef(null);
 
-  const socket = io.connect('/');
+
+  const [socket,setSocket] = useState(io("https://hcmusemu.herokuapp.com", { transports: ['websocket'] })); 
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -248,7 +247,7 @@ function Chat() {
     return () => {
         socket.off('Private-Message-To-Client');
     }
-  }, []);
+  });
 
   const getUserEmail = async()=>{
     if (checkTokenExpired()) {
@@ -273,7 +272,7 @@ function Chat() {
   useEffect(() => {
       if (search === "")
           setLoadingSearch(0)
-  }, [search])
+  })
 
   useEffect(() => {
       if (usermessage !== [""]) {
@@ -597,15 +596,10 @@ function Chat() {
             </div>
           );
       }
-      return <div className={classes.listfriend}>
-          <div>
-              {value === 0 && Messages()}
-              {value === 1 && renderAwaitUser() }
-          </div>
-      </div>;
+      return;
   }
 
-
+  console.log(search);
   return (
     <div className = {classes.root}> 
         <NavBar/>
@@ -634,6 +628,7 @@ function Chat() {
                           }}
                         />
                     </Box>
+                    {search.length > 0 && renderFoundedUser()}
                     <br/>
                     <Tabs
                               variant="fullWidth"
@@ -647,7 +642,12 @@ function Chat() {
                             <Tab fullWidth label="Tin nhắn"/>
                             <Tab fullWidth label="Tin nhắn chờ"/>
                       </Tabs>
-                    {search.length > 0 && renderFoundedUser()}
+                      <div className={classes.listfriend}>
+                        <div>
+                            {value === 0 && Messages()}
+                            {value === 1 && renderAwaitUser() }
+                        </div>
+                    </div>;
                 </div>
                  
                 <div className={classes.wrap__message_box}>

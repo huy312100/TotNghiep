@@ -272,19 +272,20 @@
 
 .popup-event .btn.add {
     background: rgb(100, 233, 122);
-    width: 15vw;
+    width: 10vw;
     border-radius: 10px;
 }
 
 .popup-event .btn.cancel {
     background: #ea5e5e;
-    width: 15vw;
+    width: 10vw;
     border-radius: 10px;
+    
 }
 
 .popup-event .btn.delete {
     background: yellow;
-    width: 15vw;
+    width: 10vw;
     border-radius: 10px;
 }
 

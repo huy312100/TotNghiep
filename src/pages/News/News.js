@@ -1,8 +1,7 @@
-import React , {useState, useEffect}from 'react';
+import React , {useState}from 'react';
 import NavBar from '../../Navigation/NavBar'
 import { makeStyles } from '@material-ui/core/styles';
-import { Tab, Tabs, Typography, Box,Paper  } from '@material-ui/core';
-import PropTypes from "prop-types"
+import { Tab, Tabs,Paper  } from '@material-ui/core';
 import Truong from './Truong';
 import Khoa from "./Khoa"
 import {useLocation} from "react-router-dom";

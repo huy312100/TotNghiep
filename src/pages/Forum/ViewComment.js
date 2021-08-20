@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
-import Category from '../Category';
+import React, { useEffect, useState,useReducer } from 'react';
 import { Button,makeStyles } from '@material-ui/core';
 import Zoom from 'react-medium-image-zoom'
 
@@ -31,31 +28,34 @@ const useStyles = makeStyles((theme) => ({
 function ViewComment(props) {
     const classes = useStyles();
     const [loadding, setLoadding] = useState(false)
-    const [comments, setComments] = useState(null)
+    const [comments, setComments] = useState([])
     const [imgData, setimgData] = useState(null);
     const [image, setImage] = useState(null);
     const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
 
     const [newcomment, SetNewcomment] = useState("");
-
+    const [count,setCount] = useState(0);
     const [popup, setPopup] = useState(null)
     const email = props.email;
 
     useEffect(() => {
-        getComments()
-    }, [])
+        getComments();
+    },[count])
 
     const getComments = () => {
         if (props.forum.comment === 0)
             return
 
         setLoadding(true)
-
         props.getComments(props.forum)
-            .then(response => response.json())
-            .then(result => {
-        
-                setComments(result)
+        .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+          }).then(([statusCode, dataRes]) => {
+                if (statusCode === 200){
+                    setComments(dataRes)
+                }
                 setLoadding(false)
             })
             .catch(error => console.log('error', error));
@@ -90,7 +90,6 @@ function ViewComment(props) {
         SetNewcomment("");
         setImage(null)
         setimgData(null)
-
         var url
         if (props.forum.scope !== undefined) {
             url = "https://hcmusemu.herokuapp.com/forum/cmt"
@@ -99,16 +98,19 @@ function ViewComment(props) {
             url = "https://hcmusemu.herokuapp.com/forum/courses/cmt"
         }
         else return
-
         await fetch(url, requestOptions)
-            .then(response => {
-                if (response.ok)
-                    return response
-                throw new Error("Đã xảy ra lỗi khi bình luận")
-            })
-            .then(result => {
-                console.log(result)
-                getComments()
+        .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+          }).then(([statusCode, dataRes]) => {
+                if (statusCode === 200){
+                    let val = count;
+                    setCount(val);
+                }
+                else{
+                    alert("Có lỗi khi bình luận")
+                }
                 setLoadding(false)
             })
             .catch(error => {
@@ -151,17 +153,23 @@ function ViewComment(props) {
         }
         else return
         fetch(url, requestOptions)
-            .then(response => {
-                if (response.ok)
-                    return response.text()
-                throw Error("Đã xảy ra lỗi khi xóa bình luận")
-            })
+        .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+          }).then(([statusCode, dataRes]) => {
+              if (statusCode === 200){
+                    
+              }
+              else{
+                  alert("Có lỗi khi xoá");
+              }
+          })
             .catch(error => setComments(temp));
     }
 
     const onChangePicture = e => {
         if (e.target.files[0]) {
-            console.log("picture: ", e.target.files);
             setImage(e.target.files[0])
             const reader = new FileReader();
             reader.addEventListener("load", () => {
@@ -225,9 +233,9 @@ function ViewComment(props) {
     }
 
     const renderComment = () => {
-        if (comments !== null) {
+      if (comments !== null && comments.length>=1) {
             var showcomment = comments.map((comment) => {
-                return <div class="row justify-content-center" >
+                return( <div className="row justify-content-center" >
                     <div className="col-md-12">
                         <div className="row list-forum" style={{ background: "white", padding: "10px 0", justifyContent: "space-start" }}>
                             <div className="col-1">
@@ -240,7 +248,7 @@ function ViewComment(props) {
                                             <span style={{ fontWeight: "bold", fontSize: "15px" }}>{comment.NameOwn}</span>
                                             <span className="comment time">&nbsp;&nbsp;&nbsp;{convertTimeAgo(comment.time)}</span>
                                             {comment.EmailOwn === email ?  <span style={{marginLeft:"20px"}} type="button" onClick={() => setPopup(comment.ID)}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-x-circle-fill" viewBox="0 0 16 16">
                                                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
                                                 </svg>
                                             </span> : null}
@@ -260,25 +268,25 @@ function ViewComment(props) {
                         {/* {remove} */}
                         {popup !== null ? renderPopup() : null}
                     </div>
-                </div>
+                </div>)
             })
             return showcomment
         }
     }
 
     if (loadding)
-        return <div class="text-center" style={{ padding: "10px" }}>
-            <div class="spinner-border" role="status">
-                <span class="sr-only">Loading...</span>
+        return <div className="text-center" style={{ padding: "10px" }}>
+            <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
             </div>
         </div>
 
     else return <div className="col-md-12">
         <div>
-            <div class="row justify-content-center" >
+            <div className="row justify-content-center" >
                 <div className="col-md-12">
-                    <div class="row" style={{ background: "white", margin: "0", justifyContent: "space-start", alignItems: "center" }}>
-                        <label style={{ width: "35px", padding: 0, margin: 0, textAlign: "center", borderRadius: "100%" }} for="files" class="col-auto btn"><i className="fa fa-file-image-o"></i></label>
+                    <div className="row" style={{ background: "white", margin: "0", justifyContent: "space-start", alignItems: "center" }}>
+                        <label style={{ width: "35px", padding: 0, margin: 0, textAlign: "center", borderRadius: "100%" }} for="files" className="col-auto btn"><i className="fa fa-file-image-o"></i></label>
                         <input width="0vw" id="files" type="file" hidden accept="image/png, image/jpeg" onChange={(e) => onChangePicture(e)} />
 
                         <input className="col-11 input-comment" type="text" placeholder="Nhập bình luận" value={newcomment} required onChange={(e) => SetNewcomment(e.target.value)} onKeyDown={handleNewcomment} />

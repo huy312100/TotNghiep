@@ -7,7 +7,7 @@ const initialState = {
     infoCourseChoose:{}
 }
 
-export default (state=initialState,action) => {
+const courseReducer = (state=initialState,action) => {
     switch (action.type) {
         case GET_ALL_COURSES:
             return {
@@ -29,3 +29,5 @@ export default (state=initialState,action) => {
             return state;
     }
 }
+
+export default courseReducer;

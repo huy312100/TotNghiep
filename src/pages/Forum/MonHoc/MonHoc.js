@@ -11,8 +11,6 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CommentIcon from '@material-ui/icons/Comment';
 import TimeAgo from '../../../components/functions/TimeAgo';
-import * as courseActions from "../../../store/actions/courses";
-import { useDispatch, useSelector } from "react-redux";
 import checkTokenExpired from '../../../ValidAccess/AuthToken';
 import { useHistory } from 'react-router-dom';
 
@@ -121,7 +119,6 @@ export default function MonHoc(props)
     const [selectedCourse,setSelectedCourse] = useState("");
     const [section,setSection] = useState("Ứng dụng");
     const history = useHistory();
-    const dispatch = useDispatch();
     const handleChangeSelectedCourse = (event) => {
        setSelectedCourse(event.currentTarget.value);
       };
@@ -166,7 +163,6 @@ export default function MonHoc(props)
           .then(([statusCode, dataRes]) => {
             if(statusCode === 200){
               setData(data.concat(dataRes));
-              //dispatch(courseActions.getAllCourses(data.concat(dataRes)));
               setPageCurrent(pageCurrent+1);            
             }
             if (statusCode === 500){

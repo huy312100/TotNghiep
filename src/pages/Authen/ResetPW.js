@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import React, {useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import NavBar from '../../Navigation/NavBar';
-import { Button } from '@material-ui/core';
+import { Button,IconButton } from '@material-ui/core';
+import checkTokenExpired from '../../ValidAccess/AuthToken';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 const background = {
     display: "block",
     position: "absolute",
     top: "25%",
     left: "50%",
-    // marginTop: "-15vw",
     marginLeft: "-15vw",
     width: "30vw",
-    // minWidth:"300px",
-    // height: "30vw",
-    // border: "1px solid black",
     background: "#fff",
     boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
 
@@ -68,14 +67,17 @@ export default function Reset() {
 
     const [oldPw, setOldPw] = useState(null)
     const [newPw, setNewPw] = useState(null)
-
-   // const location = useLocation()
-    //const token = new URLSearchParams(location.search).get("token")
-    //onst token = localStorage.getItem("token");
+    const [visible,setVisible] = useState(false);
     const history = useHistory()
 
-    const resetPassword_API = () => {
+    const resetPassword_API = async() => {
+        if (checkTokenExpired()) {
+            localStorage.clear()
+            history.replace("/");
+            return null
+        }
         var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         var urlencoded = new URLSearchParams();
@@ -89,25 +91,45 @@ export default function Reset() {
             redirect: 'follow'
         };
         
-        fetch("https://hcmusemu.herokuapp.com/account/changepassword", requestOptions)
-            .then(response => {
-                if (response.ok)
-                    return response
+        await fetch("https://hcmusemu.herokuapp.com/account/changepassword", requestOptions)
+        .then((response) => {
+            const statusCode = response.status;
+            const dataRes = response.json();
+            return Promise.all([statusCode, dataRes]);
+          })
+          .then(([statusCode, dataRes]) => {
+                console.log(statusCode,dataRes); 
+                if (statusCode === 200){
+                    alert("Thay mặt khẩu thành công")
+                    history.push("/")
+                }
                 else{
-                    console.log(response.status);
-                    console.log(response.text());
-                    throw Error("Đã xảy ra lỗi,vui lòng thử lại")
+                    alert("Đổi mật khẩu thất bại")
                 }
             })
-            .then(result => history.push("/"))
             .catch(error => { console.log('error', error) });
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (oldPw === newPw){
+            alert("Mật khẩu cũ giống mật khẩu mới");
+            return;
+        }
+        if (oldPw === "" || newPw === ""){
+            alert("Không được bỏ trống ô mật khẩu");
+            return;
+        }
         resetPassword_API()
     }
 
+    const renderVisible = () =>{
+        if (visible){
+            return <VisibilityIcon/>
+        }
+        return <VisibilityOffIcon/>
+    }
+    
     return(
         <div>
         <NavBar/>
@@ -115,10 +137,13 @@ export default function Reset() {
             <form >
                 <div style={header}>Thay đổi mật khẩu </div>
                 <div style={body}>
+                    <IconButton onClick={()=>setVisible(!visible)} style={{float:"right"}}>
+                        {renderVisible()}
+                    </IconButton>
                     <div style={text}>Nhập mật khẩu cũ</div>
-                    <input style={input} type="password" required onChange={(event) => setOldPw(event.target.value)} />
+                    <input  style={input} type={visible === true ? "text" : "password"} onChange={(event) => setOldPw(event.target.value)} />
                     <div style={text}>Nhập mật khẩu mới</div>
-                    <input style={input} type="password" required onChange={(event) => setNewPw(event.target.value)} />
+                    <input  style={input} type={visible === true ? "text" : "password"} onChange={(event) => setNewPw(event.target.value)} />
                     <Button  onClick={(e)=>handleSubmit(e)} style={button}>Xác nhận </Button>
                 </div>
             </form>

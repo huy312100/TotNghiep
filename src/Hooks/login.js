@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import clsx from "clsx"
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { Grid, FormControl,Input, FormGroup,Box,IconButton,InputAdornment ,Button} from '@material-ui/core';
 import Logo from "../images/logo.png"
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -108,10 +108,10 @@ export default function LoginButton() {
 
         await fetch("https://hcmusemu.herokuapp.com/account/signin", requestOptions)
             .then(response => {
-                if (response.ok && response.status==200) {
+                if (response.ok && response.status===200) {
                     return response.json()
                 }
-                {
+                else{
                   alert("Tài khoản hoặc mật khẩu chưa đúng")
                     throw Error(response.status);
                 }

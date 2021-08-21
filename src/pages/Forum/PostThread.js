@@ -6,9 +6,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import Select from '@material-ui/core/Select';
-import defaultValue from "../../images/default.png"
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import { render } from '@testing-library/react';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -224,11 +222,11 @@ export const PostThread =  ({
         setType(event.target.value);
     }
     const renderImage = ()=>{
-        if (image!=""){
+        if (image!==""){
             return(
                 <div>
                 <div class={classes.imgContainer}>
-                    <img src={image} style={{height:"120px",width:"120px"}}/>       
+                    <img src={image} alt="" style={{height:"120px",width:"120px"}}/>       
                     <IconButton className={classes.close} onClick={resetImage}>
                         <HighlightOffIcon/>
                     </IconButton>
@@ -310,7 +308,6 @@ export const PostThread =  ({
                     </Select>
 
                     <Select
-                    style={{width:"150px"}}
                     labelId="course-select"
                     id="demo-course-select"
                     value={courseSelected}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const background = {
@@ -6,12 +6,8 @@ const background = {
     position: "absolute",
     top: "25%",
     left: "50%",
-    // marginTop: "-15vw",
     marginLeft: "-15vw",
     width: "30vw",
-    // minWidth:"300px",
-    // height: "30vw",
-    // border: "1px solid black",
     background: "#fff",
     boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
 
@@ -62,15 +58,9 @@ const button = {
     fontSize: "1.3vw"
 }
 const link = {
-    // margin:"auto",
-    // width:"17vw",
-    // display:"block",
-    // padding: "0 0 2vw 0",
-    // fontSize: "1.3vw",
     textAlign:"center",
     background: "#3768a0",
     width: "20vw",
-    // height: "3vw",
     margin: "1.5vw auto",
     padding:"0.3vw",
     display: "block",
@@ -80,7 +70,6 @@ const link = {
     fontSize: "1.3vw",
     textDecoration: 'none'
 }
-//test
 
 export default function Forgot() {
 

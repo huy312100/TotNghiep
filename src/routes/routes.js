@@ -22,8 +22,8 @@ import Score from "../pages/Scores/Score"
 import Courses from '../pages/Courses/Courses';
 import {CssBaseline } from "@material-ui/core";
 import Notifications from '../pages/Notifications/Notifications';
-import checkTokenExpired from '../ValidAccess/AuthToken';
-import ConnectSocket from '../Hooks/socket';
+//import checkTokenExpired from '../ValidAccess/AuthToken';
+//import ConnectSocket from '../Hooks/socket';
 class ReactRouter extends Component {
   render() {
       return (

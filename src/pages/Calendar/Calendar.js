@@ -1,4 +1,4 @@
-import React, { Component,useEffect,useState } from 'react';
+import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import { registerLocale } from "react-datepicker";
 import vi from 'date-fns/locale/vi';
@@ -6,10 +6,9 @@ import "./Calendar.css";
 import NavBar from '../../Navigation/NavBar';
 import "react-datepicker/dist/react-datepicker.css";
 import { CirclePicker } from 'react-color';
-import {makeStyles, Typography} from "@material-ui/core"
-import clsx from 'clsx';
+import {Typography} from "@material-ui/core"
 import 'font-awesome/css/font-awesome.min.css';
-import {Button,TextField,Input,Toolbar,Select,ListItem,Box,InputAdornment,IconButton} from "@material-ui/core"
+import {Button,TextField,Select,ListItem,Box,InputAdornment,IconButton} from "@material-ui/core"
 import 'date-fns'
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -22,11 +21,9 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
 import CategoryIcon from '@material-ui/icons/Category';
 import TitleIcon from '@material-ui/icons/Title';
-import checkTokenExpired from "../../ValidAccess/AuthToken"
-import { useHistory } from 'react-router-dom';
+//import checkTokenExpired from "../../ValidAccess/AuthToken"
+//import { useHistory } from 'react-router-dom';
 import ClearIcon from '@material-ui/icons/Clear';
-import Draggable from 'react-draggable';
-import { ThumbDownSharp } from '@material-ui/icons';
 
 
 registerLocale('vi', vi)
@@ -121,7 +118,7 @@ export default class Calendar extends Component {
         let listevent = Array.from({ length: 31 }, () => [""]);
 
 
-        if (this.state.calendar.length != undefined){
+        if (this.state.calendar.length !== undefined){
         this.state.calendar.forEach((value, index) => {
 
             if (value.duedate !== undefined) {
@@ -257,17 +254,17 @@ export default class Calendar extends Component {
                 if (item === "")
                     return <></>
                 if (item.id !== "") return <tr  style={{'background-color': item.value.Color}} onClick={() => this.selectedEventClick(index)}>
-                    <td className="time">{item.value.StartHour != null ? this.convertTimestamp(item.value.StartHour): "12 AM"}</td>
+                    <td className="time">{item.value.StartHour !== null ? this.convertTimestamp(item.value.StartHour): "12 AM"}</td>
                     <td>-</td>
-                    <td className="time">{item.value.EndHour != null ? this.convertTimestamp(item.value.EndHour): "11 PM"}</td>
+                    <td className="time">{item.value.EndHour !== null ? this.convertTimestamp(item.value.EndHour): "11 PM"}</td>
                     <td>{item.title}</td>
                     <td></td>
                 </tr>
                 else
                     return <tr  style={{'background-color': item.value.Color}} >
-                       <td className="time">{item.value.StartHour != null ? this.convertTimestamp(item.value.StartHour): ""}</td>
+                       <td className="time">{item.value.StartHour !== null ? this.convertTimestamp(item.value.StartHour): ""}</td>
                        <td>{item === "" ? "" : "-"}</td>
-                       <td className="time">{item.value.EndHour != null ? this.convertTimestamp(item.value.EndHour): ""}</td>
+                       <td className="time">{item.value.EndHour !== null ? this.convertTimestamp(item.value.EndHour): ""}</td>
                        <td>{item.title}</td>
                      <td ></td>
                     </tr>
@@ -472,7 +469,6 @@ export default class Calendar extends Component {
         return TypeEventPicker;
     }
     renderClockPickerStart = () => {
-        let now = new Date();
         var timepicker = this.timeclock.map((num,index) => {
             if (num === 0) {
                 return <ListItem key={index}  value={num}>12 AM</ListItem>
@@ -797,7 +793,7 @@ export default class Calendar extends Component {
     }
 
     renderAdderUser = () =>{
-        if (this.state.add_listguestEmail !== undefined || this.state.add_listguestName != undefined ||
+        if (this.state.add_listguestEmail !== undefined || this.state.add_listguestName !==undefined ||
              this.state.add_listguestEmail.length > 0 || this.state.add_listguestName.length > 0){
             return(
                 <Box fullWidth style={{display:"block",borderRadius:"10px"}} multiline border={1}>

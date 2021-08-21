@@ -10,7 +10,6 @@ import Footer from '../../components/footer/Footer';
 import LoadingScreen from '../../components/shared/LoadingScreen';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import checkTokenExpired from "../../ValidAccess/AuthToken"
-import { Divider } from '@material-ui/core';
 const border = 200;
 const useStyles = makeStyles((theme)=>({
   root: {

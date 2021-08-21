@@ -536,7 +536,7 @@ export default function Khoa(props)
         )})}
     }
 
-  if (loading == true){
+  if (loading === true){
     return(
       <div>
         <LoadingScreen/>

@@ -1,6 +1,6 @@
-import React, { useEffect, useState,useReducer } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button,makeStyles } from '@material-ui/core';
-import Zoom from 'react-medium-image-zoom'
+//import Zoom from 'react-medium-image-zoom'
 
 const backCover = {
     backgroundColor: 'rgba(52, 52, 52, 0.2)',
@@ -31,7 +31,7 @@ function ViewComment(props) {
     const [comments, setComments] = useState([])
     const [imgData, setimgData] = useState(null);
     const [image, setImage] = useState(null);
-    const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
+    //const [confirmDialog,setConfirmDialog] = useState({isOpen:false, title:"",subTitle:""})  
 
     const [newcomment, SetNewcomment] = useState("");
     const [count,setCount] = useState(0);
@@ -239,7 +239,7 @@ function ViewComment(props) {
                     <div className="col-md-12">
                         <div className="row list-forum" style={{ background: "white", padding: "10px 0", justifyContent: "space-start" }}>
                             <div className="col-1">
-                                <img width="50px" height="50px" src={comment.AvartOwn} style={{ borderRadius: "100%" }} />
+                                <img width="50px" height="50px" src={comment.AvartOwn} alt="" style={{ borderRadius: "100%" }} />
                             </div>
                             <div className="col-11">
                                 <div className="row" style={{ margin: "0" }}>
@@ -256,7 +256,7 @@ function ViewComment(props) {
                                         <div style={{fontSize:"15px"}} className="own flex">
                                             <span className={"title comment"}>{comment.comment}</span>
                                         </div>
-                                        {comment.image === "" ? null : <img width="200vw" height="200vw" src={comment.image} style={{ paddingBottom: "10px" }} />}
+                                        {comment.image === "" ? null : <img width="200vw" height="200vw" src={comment.image} alt="" style={{ paddingBottom: "10px" }} />}
                                         {/* </div> */}
                                     </div>
 
@@ -292,7 +292,7 @@ function ViewComment(props) {
                         <input className="col-11 input-comment" type="text" placeholder="Nhập bình luận" value={newcomment} required onChange={(e) => SetNewcomment(e.target.value)} onKeyDown={handleNewcomment} />
                     </div>
                     <div style={{ background: "white", display: "flex", alignItems: "start", margin: "5px" }}>
-                        {imgData !== null ? <img style={{ width: "50%", maxWidth: "50vw", height: "50%", maxHeight: "50vh" }} src={imgData} /> : null}
+                        {imgData !== null ? <img style={{ width: "50%", maxWidth: "50vw", height: "50%", maxHeight: "50vh" }} src={imgData} alt=""/> : null}
                         {imgData !== null ? <div style={{ background: "#7367f0", color: "white", padding: "5px", borderRadius: "7px", margin: "5px", fontSize: "14px" }} type="button" onClick={removeImageComment}>Xóa ảnh</div> : null}
                     </div>
                 </div>

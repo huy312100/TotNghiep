@@ -57,7 +57,7 @@ export default function Notifications(){
 
     useEffect(()=>{
         getNofiData();
-    },[])
+    })
     const getNofiData = async() => {
         if (checkTokenExpired()) {
           localStorage.clear()
@@ -174,15 +174,6 @@ export default function Notifications(){
         }
     }
     
-    const handleNotiClick = (item) =>{
-        changeNotiState(item._id);
-        if (item.Title ===  "Tin Tức Khoa"){
-         history.push("/news?tag=1")
-        }
-        else if  (item.Title ===  "Tin Tức Trường"){
-         history.push("/news?tag=0")
-        }
-    }
     const renderNotify = () =>{
         return(
         <div>
@@ -219,7 +210,7 @@ export default function Notifications(){
                             </div>
                         </div>
                         <a classes={classes.news_page_a} href={item.Url} target="_blank" rel="noopener noreferrer">
-                            <Button>
+                            <Button onClick={()=>changeNotiState(item._id)} >
                                 Xem thêm
                             </Button>
                         </a>

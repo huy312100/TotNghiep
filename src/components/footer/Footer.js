@@ -5,12 +5,9 @@ import {
   Typography,
   Box,
   IconButton,
-  Hidden,
   withStyles,
   withWidth,
   isWidthUp,
-  TextField,
-  Button
 } from "@material-ui/core";
 import PhoneIcon from "@material-ui/icons/Phone";
 import MailIcon from "@material-ui/icons/Mail";
@@ -18,10 +15,8 @@ import WaveBorder from "../shared/WaveBorder";
 import transitions from "@material-ui/core/styles/transitions";
 import FacebookIcon from '@material-ui/icons/Facebook';
 import BusinessIcon from '@material-ui/icons/Business';
-import ContactMailIcon from '@material-ui/icons/ContactMail';
 import HomeIcon from '@material-ui/icons/Home';
 import WebIcon from '@material-ui/icons/Web';
-import Home from "@material-ui/icons/Home";
 
 const styles = theme => ({
   footerInner: {
@@ -100,7 +95,6 @@ function Footer(props) {
     Images: "https://www.hcmus.edu.vn/images/2020/04/07/bn2.jpg"}]);
 
     const getInfoUni = async() => {
-      console.log(localStorage.getItem("token"))
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "bearer " + localStorage.getItem("token"));
   

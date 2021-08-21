@@ -305,12 +305,6 @@ function NavBar() {
   }
   const handleNotiClick = (item) =>{
     changeNotiState(item._id);
-    /*if (item.Title ===  "Tin Tức Khoa"){
-     history.push("/news?tag=1")
-    }
-    else if  (item.Title ===  "Tin Tức Trường"){
-     history.push("/news?tag=0")
-    }*/
     window.open(item.Url, "_blank");
   }
   const renderNotify = () =>{

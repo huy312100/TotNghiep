@@ -1,6 +1,5 @@
 import React from 'react';
 
-import HomeIcon from '@material-ui/icons/Home';
 import {withStyles } from '@material-ui/core/styles';
 import PersonOutlineRoundedIcon from '@material-ui/icons/PersonOutlineRounded';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';

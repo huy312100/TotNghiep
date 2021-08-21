@@ -157,9 +157,9 @@ export default function Khoa(props)
         await fetch("https://hcmusemu.herokuapp.com/forum/view", requestOptions)
             .then(response => {return response.json()})
             .then((result)=>{
-              result = result.filter(forum => forum.scope == 'u');
-              if (self == "self"){
-                result = result.filter(forum => forum.EmailOwn == userMail);
+              result = result.filter(forum => forum.scope ==='u');
+              if (self === "self"){
+                result = result.filter(forum => forum.EmailOwn === userMail);
               }
               let data = [];
               for (var i=0;i< result.length;i++){
@@ -208,15 +208,16 @@ export default function Khoa(props)
     
     }
     const updateNumberLike = (id,type) => {
-      if (type==1){
-          var index = forumPosts.findIndex(x=> x.ID === id);
+      let index;
+      if (type===1){
+          index = forumPosts.findIndex(x=> x.ID === id);
           let g = forumPosts[index]
           g['like']-=1
           let value = g['like'];
           updateState(id,"like",value)
       }
       else{
-        var index = forumPosts.findIndex(x=> x.ID === id);
+        index = forumPosts.findIndex(x=> x.ID === id);
         let g = forumPosts[index]
         g['like']+=1
         let value = g['like'];
@@ -392,7 +393,7 @@ export default function Khoa(props)
         setPopUp(true);
     }
     const renderImage = (item) =>{
-      if (item.image != "")
+      if (item.image !== "")
       return(
         <CardMedia
         className={classes.media}
@@ -404,7 +405,7 @@ export default function Khoa(props)
     const getCurrentMail = (id) => {
       var array = [...forumPosts];
       var index = array.findIndex(x=> x.ID === id);
-      if (index != -1){
+      if (index !== -1){
         return array[index].EmailOwn;
       }
       return "";
@@ -535,7 +536,7 @@ export default function Khoa(props)
         )})}
     }
 
-  if (loading == true){
+  if (loading === true){
     return(
       <div>
         <LoadingScreen/>

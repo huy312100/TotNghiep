@@ -77,7 +77,7 @@ const HomeScreen =({navigation}) =>{
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `bearer ${token}`,
+          "Authorization": `bearer ${token}`,
         },
         body: formBody,
       })
@@ -177,9 +177,6 @@ const HomeScreen =({navigation}) =>{
                   setYear(obj.year);
                   setDeadlineThisMonth([]);
                 }}
-
-                
-
                 //onDayPress={(day) => {console.log('selected day', day)}}
                 
                 markedDates={markDate}
@@ -252,8 +249,8 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
       marginHorizontal: 15,
       marginTop: 15,
-      borderWidth: 0.3,
-      borderColor: "silver",
+      borderWidth: 1,
+      borderColor: "#dddddd",
     },
   
     onTheRight: {

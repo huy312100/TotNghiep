@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Button,RefreshControl,SafeAreaView } from 'react-native';
+import { Text, View, StyleSheet,FlatList,TouchableOpacity,Image,Dimensions,RefreshControl,SafeAreaView } from 'react-native';
 import {useDispatch,useSelector} from "react-redux";
 import { Badge } from 'react-native-paper';
 
@@ -229,7 +229,7 @@ const NotificationScreen=({navigation})=>{
           <View style={styles.textSection}>
             <View style={styles.infoText}>
               <Text style={[styles.titleName,!item.State && styles.boldWhenNotRead]}>{item.Title}</Text>
-              {/* <Text style={[styles.postTime,!item.State && styles.boldWhenNotRead]}>{dateUtils.ConvertToTimeAgoGeneral(parseInt(item.Date))}</Text> */}
+              <Text style={[styles.postTime,!item.State && styles.boldWhenNotRead]}>{dateUtils.ConvertToTimeAgo(parseInt(item.Date))}</Text>
             </View>
             <Text style={[styles.contentText,!item.State && styles.boldWhenNotRead]}>{item.Data}</Text>
           </View>
@@ -281,63 +281,63 @@ const NotificationScreen=({navigation})=>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
+        paddingTop: Platform.OS === 'android' ? 25 : 0
     },
 
     card: {
         width: '100%',
+        marginHorizontal:10,
     },
 
     info:{
-        flexDirection:"row",
-        justifyContent: "space-between",
-      },
-    
-      imgWrapper:{
-        paddingTop: 15,
-        paddingBottom: 15,
-      },
-    
-      img:{
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-      },
-    
-      textSection:{
-        flexDirection: "column",
-        justifyContent: "center",
-        padding: 15,
-        paddingLeft: 0,
-        marginLeft: 10,
-        width: 300,
-        borderBottomWidth: 1,
-        borderBottomColor: "#cccccc",
-      },
-    
-      infoText:{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginBottom: 5,
-      },
-    
-      titleName:{
-        fontSize: 14,
-      },
-    
-      postTime: {
-        fontSize: 12,
-        color:"#666",
-      },
-    
-      contentText:{
-        fontSize: 14,
-        color: "#333333",
-      },
+      flexDirection:"row",
+    },
+  
+    imgWrapper:{
+      paddingTop: 15,
+      paddingBottom: 15,
+    },
+  
+    img:{
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+    },
+  
+    textSection:{
+      flexDirection: "column",
+      justifyContent: "center",
+      padding: 15,
+      paddingLeft: 0,
+      marginLeft: 10,
+      width: Dimensions.get("window").width*0.82,
+      borderBottomWidth: 1,
+      borderBottomColor: "#cccccc",
+    },
+  
+    infoText:{
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 5,
+    },
+  
+    titleName:{
+      fontSize: 14,
+    },
+  
+    postTime: {
+      fontSize: 12,
+      color:"#666",
+    },
+  
+    contentText:{
+      fontSize: 14,
+      color: "#333333",
+    },
 
-      boldWhenNotRead: {
-        fontWeight: "bold",
-      }
+    boldWhenNotRead: {
+      fontWeight: "bold",
+    }
 })
 
 export default NotificationScreen;

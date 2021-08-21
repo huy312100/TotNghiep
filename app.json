@@ -2,7 +2,7 @@
   "expo": {
     "name": "EMU Parent",
     "slug": "emu-parent",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "fit.hcmus.emuparent",
-      "buildNumber": "1.0.1",
+      "buildNumber": "1.0.2",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "You need to provide photo album access to upload profile image.",
         "NSCameraUsageDescription": "You need to provide camera access to scanning the QR Code.",
@@ -37,7 +37,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "fit.hcmus.emuparent",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"

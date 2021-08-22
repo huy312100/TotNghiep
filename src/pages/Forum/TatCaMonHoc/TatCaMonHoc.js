@@ -135,8 +135,8 @@ export default function TatCaMonHoc(props)
           return Promise.all([statusCode, dataRes]);
         }).then(([statusCode, dataRes]) => {
               if(statusCode === 200){
-                if (self == "self"){
-                    dataRes = dataRes.filter(forum => forum.EmailOwn == userMail);
+                if (self === "self"){
+                    dataRes = dataRes.filter(forum => forum.EmailOwn === userMail);
                 }
                 
                  let data = [];
@@ -216,21 +216,23 @@ export default function TatCaMonHoc(props)
       
       }
       const updateNumberLike = (id,type) => {
-        if (type==1){
-            var index = forumPosts.findIndex(x=> x.ID === id);
+        let index;
+        if (type===1){
+            index = forumPosts.findIndex(x=> x.ID === id);
             let g = forumPosts[index]
             g['like']-=1
             let value = g['like'];
             updateState(id,"like",value)
         }
         else{
-          var index = forumPosts.findIndex(x=> x.ID === id);
+          index = forumPosts.findIndex(x=> x.ID === id);
           let g = forumPosts[index]
           g['like']+=1
           let value = g['like'];
           updateState(id,"like",value)
         }
       }
+
       const updateState =(id, whichvalue, newvalue)=> {
         var index = forumPosts.findIndex(x=> x.ID === id);
       
@@ -423,7 +425,7 @@ export default function TatCaMonHoc(props)
           setPopUp(true);
       }
       const renderImage = (item) =>{
-        if (item.image != "")
+        if (item.image !== "")
         return(
           <CardMedia
           className={classes.media}
@@ -435,7 +437,7 @@ export default function TatCaMonHoc(props)
       const getCurrentMail = (id) => {
         var array = [...forumPosts];
         var index = array.findIndex(x=> x.ID === id);
-        if (index != -1){
+        if (index !== -1){
           return array[index].EmailOwn;
         }
         return "";
@@ -443,7 +445,7 @@ export default function TatCaMonHoc(props)
   
        const handleLike = async(item) =>
        {
-          if (item.LikeByOwn != 0){
+          if (item.LikeByOwn !== 0){
             await unLikePosts(item.ID);
             await updateNumberLike(item.ID,1)
           }

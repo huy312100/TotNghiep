@@ -1,2 +1,14 @@
+# dependencies
+
 node_modules
 
+
+# production
+/build
+
+# extension
+.yarn
+.vscode
+.yarnrc
+yarn.lock
+yarn-error.log

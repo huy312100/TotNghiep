@@ -110,7 +110,6 @@ export const PostThread =  ({
         }
         formBody = formBody.join("&");
     
-        //console.log(formBody);
     
         fetch("https://hcmusemu.herokuapp.com/studycourses/allcourses", {
           method: "POST",
@@ -126,7 +125,6 @@ export const PostThread =  ({
           return Promise.all([statusCode, dataRes]);
         })
           .then(([statusCode, dataRes]) => {
-            console.log(statusCode);
             if(statusCode === 200){
             setDataCourse(dataCourse.concat(dataRes));
               setPageCurrent(pageCurrent+1);
@@ -185,13 +183,11 @@ export const PostThread =  ({
             const dataRes = response.json();
             return Promise.all([statusCode, dataRes]);
           }).then(([statusCode, dataRes]) => {
-            console.log(statusCode);
             if(statusCode === 200){
                 setSuccess(true);
             }
             else{
                 setSuccess(false);
-              console.log("loi");
             }
             setPost(true);
           }).catch((err) => console.log(err, "error"));
@@ -199,7 +195,6 @@ export const PostThread =  ({
 
     const handleImg = (event) => {
         setImage(URL.createObjectURL(event.target.files[0]))
-          //console.log(event.target.files[0])
         setUpload({uri:event.target.files[0]});
     }
     const resetImage = () => {

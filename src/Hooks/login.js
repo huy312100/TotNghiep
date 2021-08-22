@@ -107,32 +107,36 @@ export default function LoginButton() {
         };
 
         await fetch("https://hcmusemu.herokuapp.com/account/signin", requestOptions)
-            .then(response => {
-                if (response.ok && response.status===200) {
-                    return response.json()
-                }
-                else{
-                  alert("Tài khoản hoặc mật khẩu chưa đúng")
-                    throw Error(response.status);
-                }
-            })
-            .then(result => {
-                if (result.token !== undefined) {
-                    console.log(result.role);
-                    if (result.role === "1"){
-                      localStorage.setItem("token", result.token+ "sT")
+        .then((response) => {
+          const statusCode = response.status;
+          const dataRes = response.json();
+          return Promise.all([statusCode, dataRes]);
+        }).then(([statusCode, dataRes]) => {
+                if (statusCode === 200){
+                    console.log(dataRes.role);
+                    if (dataRes.role === "1"){
+                      localStorage.setItem("token", dataRes.token+ "sT")
                     }
                     else{
-                      localStorage.setItem("token", result.token+ "tC")
+                      localStorage.setItem("token", dataRes.token+ "tC")
                     }
                     localStorage.setItem("expired",(new Date().getTime()+7200000))
                     history.replace("/");
+                    setLoadding(0);
+                }
+                else if (statusCode === 401){
+                  alert("Sai mật khẩu hoặc tên tài khoản. Vui lòng thử lại sau.");
+                  setLoadding(0);
+                  return;
+                }
+                else if (statusCode === 500){
+                  alert("Đã có lỗi xảy ra. Vui lòng thử lại sau.");
+                  setLoadding(0);
+                  return;
                 }
             })
             .catch(error => {
                 console.log('error', error)
-                alert("Sai tài khoản hoặc mật khẩu")
-                setLoadding(0);
             });
     }
 
@@ -145,9 +149,11 @@ export default function LoginButton() {
             </button>
 
         )}
+        else{
         return (
                 <Button className={classes.btnSubmit} onKeyDown={()=>AcctionLogin()} onClick={()=>AcctionLogin()}>Đăng nhập</Button>
         )
+        }
     }
     
     const handleMouseDownPassword = (event) => {
@@ -214,13 +220,6 @@ export default function LoginButton() {
                           {loaddingButton()}
                           <Link to="/resetpassword" className={classes.btnForgetPwd}>Quên mật khẩu?</Link>
                       <br/>
-                      {/*<div style={{textAlign:"center"}}>
-                      <Typography>Bạn chưa có tài khoản?
-                        <Link to="/signup" className={classes.btnSignUp}>
-                          Đăng ký ngay
-                        </Link>
-                        </Typography>
-                      </div>*/}
                 </Grid>
                
             </Grid>
